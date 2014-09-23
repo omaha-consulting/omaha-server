@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema' elementFormDefault='qualified'>
+    <xs:simpleType name="GuidType">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="\{[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\}"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:element name='response'>
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element maxOccurs='1' ref='daystart'/>
+                <xs:element maxOccurs='unbounded' ref='app'/>
+            </xs:choice>
+            <xs:attribute name='protocol' use='required' type='xs:decimal' fixed="3.0"/>
+            <xs:attribute name='server' use='required' type='xs:string'/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="daystart">
+        <xs:complexType>
+            <xs:attribute name="elapsed_seconds" use="required" type="xs:positiveInteger"/>
+            <xs:attribute name="elapsed_days" use="optional" type="xs:nonPositiveInteger" default="0"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name='app'>
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref='updatecheck'/>
+                <xs:element ref='ping'/>
+                <xs:element ref='event' minOccurs="0"/>
+                <xs:element ref='data' minOccurs="0" maxOccurs="unbounded"/>
+            </xs:choice>
+            <xs:attribute name='appid' use='required'/>
+            <xs:attribute name='status' use='required' type="xs:string"/>
+            <xs:attribute name='experiments' use='optional' type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name='updatecheck'>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="urls" minOccurs="0"/>
+                <xs:element ref="manifest" minOccurs="0"/>
+            </xs:sequence>
+            <xs:attribute name="status" use="required" type="xs:string"/>
+            <xs:attribute name="updatedisabled" use="optional" type="xs:string"/>
+            <xs:attribute name="targetversionprefix" use="optional" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="urls">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="url" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="url">
+        <xs:complexType>
+            <xs:attribute name="codebase" use="required" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="manifest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="packages"/>
+                <xs:element ref="actions"/>
+            </xs:sequence>
+            <xs:attribute name="version" use="optional" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="packages">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="package" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="package">
+        <xs:complexType>
+            <xs:attribute name="name" use="required" type="xs:string"/>
+            <xs:attribute name="required" use="required" type="xs:string"/>
+            <xs:attribute name="size" use="required" type="xs:positiveInteger"/>
+            <xs:attribute name="hash" use="required" type="xs:string"/>
+            <xs:attribute name="fp" use="optional" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="actions">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="action" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="action">
+        <xs:complexType>
+            <xs:attribute name="event" use="required" type="xs:string"/>
+            <xs:attribute name="run" use="optional" type="xs:string"/>
+            <xs:attribute name="arguments" use="optional" type="xs:string"/>
+            <xs:attribute name="successurl" use="optional" type="xs:string"/>
+            <xs:attribute name="terminateallbrowsers" use="optional" type="xs:string"/>
+            <xs:attribute name="successsaction" use="optional" type="xs:string"/>
+            <xs:attribute name="onsuccess" use="optional" type="xs:string"/>
+            <xs:attribute name="version" use="optional" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="event">
+        <xs:complexType>
+            <xs:attribute name="status" use="required" type="xs:string" fixed="ok"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name='ping'>
+        <xs:complexType>
+            <xs:attribute name="status" use="required" type="xs:string" fixed="ok"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="data" type="DataType"/>
+    <xs:complexType name="DataType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="status" use="required" type="xs:string"/>
+                <xs:attribute name="name" use="required" type="xs:string"/>
+                <xs:attribute name="index" use="optional" type="xs:string"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+</xs:schema>

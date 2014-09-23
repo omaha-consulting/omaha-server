@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema' elementFormDefault='qualified'>
+    <xs:simpleType name="IsMachineType">
+        <xs:restriction base="xs:integer">
+            <xs:enumeration value="0"/>
+            <xs:enumeration value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="HwType">
+        <xs:restriction base="xs:integer">
+            <xs:enumeration value="-1"/>
+            <xs:enumeration value="0"/>
+            <xs:enumeration value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="PlatformType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="win"/>
+            <xs:enumeration value="mac"/>
+            <xs:enumeration value="ios"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="ArchType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="x86"/>
+            <xs:enumeration value="x64"/>
+            <xs:enumeration value="arm"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="GuidType">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="\{[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\}"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:element name='request'>
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref='hw' minOccurs="0"/>
+                <xs:element ref='os'/>
+                <xs:element maxOccurs='unbounded' ref='app'/>
+            </xs:choice>
+            <xs:attribute name='protocol' use='required' type='xs:decimal' fixed="3.0"/>
+            <xs:attribute name='version' use='required' type='xs:NMTOKEN'/>
+            <xs:attribute name='ismachine' use='required' type='IsMachineType'/>
+            <xs:attribute name='requestid' type='GuidType' use='required'/>
+            <xs:attribute name='sessionid' type='GuidType' use='required'/>
+            <xs:attribute name='userid' type='GuidType' use="optional"/>
+            <xs:attribute name='installsource' type="xs:NCName" use="optional"/>
+            <xs:attribute name='originurl' type="xs:string" use="optional"/>
+            <xs:attribute name='testsource' type='xs:NCName' use="optional"/>
+            <xs:attribute name='dedup' type='xs:NCName' use="optional"/>
+            <xs:attribute name='updaterchannel' type='xs:NCName' use="optional"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="hw">
+        <xs:complexType>
+            <xs:attribute name="sse" type="HwType" use="optional" default="-1"/>
+            <xs:attribute name="sse2" type="HwType" use="optional" default="-1"/>
+            <xs:attribute name="sse3" type="HwType" use="optional" default="-1"/>
+            <xs:attribute name="ssse3" type="HwType" use="optional" default="-1"/>
+            <xs:attribute name="sse41" type="HwType" use="optional" default="-1"/>
+            <xs:attribute name="sse42" type="HwType" use="optional" default="-1"/>
+            <xs:attribute name="avx" type="HwType" use="optional" default="-1"/>
+            <xs:attribute name="physmemory" type="xs:integer" use="optional" default="-1"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name='os'>
+        <xs:complexType>
+            <xs:attribute name='platform' use='required' type='PlatformType'/>
+            <xs:attribute name='version' use='required' type='xs:string'/>
+            <xs:attribute name='sp' type="xs:string" use='required'/>
+            <xs:attribute name='arch' use='required' type='xs:NCName'/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name='app'>
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref='updatecheck' minOccurs="0"/>
+                <xs:element ref='ping' minOccurs="0"/>
+                <xs:element ref='event' minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element ref='data' minOccurs="0" maxOccurs="unbounded"/>
+            </xs:choice>
+            <xs:attribute name='appid' use='required' type="GuidType"/>
+            <xs:attribute name='version' use='required' type='xs:string'/>
+            <xs:attribute name='nextversion' use='required'/>
+            <xs:attribute name='lang' use='required' type='xs:string'/>
+            <xs:attribute name='brand' use='required' type='xs:string'/>
+            <xs:attribute name='client' use='required' type="xs:string"/>
+            <xs:attribute name='ap' use='optional' type="xs:string"/>
+            <xs:attribute name='experiments' use='optional' type="xs:string"/>
+            <xs:attribute name='iid' use='optional' type="GuidType"/>
+            <xs:attribute name='installage' use='optional' type='xs:integer'/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name='updatecheck'>
+        <xs:complexType>
+            <xs:attribute name="tttoken" use="optional" type="xs:string"/>
+            <xs:attribute name="updatedisabled" use="optional" type="xs:string"/>
+            <xs:attribute name="targetversionprefix" use="optional" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="event">
+        <xs:complexType>
+            <xs:attribute name="eventtype" use="required" type="xs:integer"/>
+            <xs:attribute name="eventresult" use="required" type="xs:integer"/>
+            <xs:attribute name="errorcode" use="optional" type="xs:integer"/>
+            <xs:attribute name="extracode1" use="optional" type="xs:integer"/>
+            <xs:attribute name="download_time_ms" use="optional" type="xs:integer"/>
+            <xs:attribute name="total" use="optional" type="xs:integer"/>
+            <xs:attribute name="update_check_time_ms" use="optional" type="xs:integer"/>
+            <xs:attribute name="install_time_ms" use="optional" type="xs:integer"/>
+            <xs:attribute name="source_url_index" use="optional" type="xs:integer"/>
+            <xs:attribute name="state_cancelled" use="optional" type="xs:integer"/>
+            <xs:attribute name="time_since_update_available_ms" use="optional" type="xs:integer"/>
+            <xs:attribute name="time_since_download_start_ms" use="optional" type="xs:integer"/>
+            <xs:attribute name="nextversion" use="optional" type="xs:integer"/>
+            <xs:attribute name="previousversion" use="optional" type="xs:integer"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name='ping'>
+        <xs:complexType>
+            <xs:attribute name='active' use='optional' type='xs:integer' default="0"/>
+            <xs:attribute name='r' use='optional' type='xs:integer' default="0"/>
+            <xs:attribute name='a' use='optional' type='xs:integer' default="0"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="data" type="DataType"/>
+    <xs:complexType name="DataType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="name" use="required" type="xs:string"/>
+                <xs:attribute name="index" use="optional" type="xs:string"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+</xs:schema>
