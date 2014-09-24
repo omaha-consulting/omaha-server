@@ -1,0 +1,12 @@
+language: python
+
+python:
+  - "2.7"
+
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq libxml2-dev libxslt1-dev python-dev
+
+install: "pip install -r requirements-test.txt --use-mirrors"
+
+script: nosetests
