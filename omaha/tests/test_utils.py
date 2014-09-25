@@ -25,6 +25,14 @@ class UtilsTest(TestCase):
                                                          day=1,
                                                          hour=1)))
 
+        self.assertEqual(56508,
+                         get_sec_since_midnight(datetime(year=2014,
+                                                         month=1,
+                                                         day=1,
+                                                         hour=15,
+                                                         minute=41,
+                                                         second=48)))
+
         self.assertEqual((16 * 3600) + (23 * 60) + 17,
                          get_sec_since_midnight(datetime(year=2014,
                                                          month=1,
