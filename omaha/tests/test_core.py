@@ -25,6 +25,7 @@ from omaha.core import (
     Response,
     Ping,
     Event,
+    Data,
 )
 
 
@@ -65,6 +66,16 @@ class TestRequestScheme(TestCase, XmlTestMixin):
     def test_event(self):
         root = Event()
         self.assertXmlNode(root, tag='event', text=None)
+        self.assertXmlHasAttribute(root, 'status', expected_value='ok')
+
+    def test_data(self):
+        root = Data('install', index='verboselogging', text='app-specific values here')
+        self.assertXmlNode(root, tag='data', text='app-specific values here')
+        self.assertXmlHasAttribute(root, 'status', expected_value='ok')
+        self.assertXmlHasAttribute(root, 'index', expected_value='verboselogging')
+
+        root = Data('untrusted')
+        self.assertXmlNode(root, tag='data', text=None)
         self.assertXmlHasAttribute(root, 'status', expected_value='ok')
 
     def test_url(self):
@@ -246,3 +257,19 @@ class TestRequestScheme(TestCase, XmlTestMixin):
 
         self.assertXmlValidXSchema(response, filename=RESPONSE_XSD_FILE)
         self.assertXmlEquivalentOutputs(etree.tostring(response), fixtures.response_event)
+
+    def test_valid_response_data(self):
+        response = Response(
+            date=datetime(year=2014, month=1, day=1, hour=15, minute=45, second=54),
+            apps_list=[App(
+                app_id='{8A69D345-D564-463C-AFF1-A69D9E530F96}',
+                status='ok',
+                data_list=[
+                    Data('install', index='verboselogging', text='app-specific values here'),
+                    Data('untrusted')
+                ]
+            )]
+        )
+
+        self.assertXmlValidXSchema(response, filename=RESPONSE_XSD_FILE)
+        self.assertXmlEquivalentOutputs(etree.tostring(response), fixtures.response_data)

@@ -32,6 +32,18 @@ def Event(status='ok'):
     return E.event(dict(status=status))
 
 
+def Data(name, status='ok', index=None, text=None):
+    attrs = dict(
+        name=name,
+        status=status,
+    )
+    if index:
+        attrs['index'] = index
+    data = E.data(attrs)
+    data.text = text
+    return data
+
+
 def Url(url):
     return E.url(dict(codebase=url))
 
@@ -111,12 +123,13 @@ def Updatecheck_positive(urls, manifest):
     return Updatecheck(status='ok', urls=Urls(urls), manifest=manifest)
 
 
-def App(app_id, status='ok', experiments='', updatecheck=None, ping=False, events=None):
+def App(app_id, status='ok', experiments='', updatecheck=None, ping=False, events=None, data_list=None):
     attrs = dict(appid=app_id, status=status)
     if experiments:
         attrs['experiments'] = experiments
     app = E.app(attrs)
     map(app.append, events or [])
+    map(app.append, data_list or [])
     if updatecheck is not None:
         app.append(updatecheck)
     if ping:
