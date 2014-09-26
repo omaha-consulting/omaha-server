@@ -134,16 +134,11 @@ def Action(event, **kwargs):
     """
     attrs_optional_name = ('version', 'successurl', 'terminateallbrowsers',
                            'successsaction', 'onsuccess', 'arguments', 'run')
-    attrs = dict(
-        event=event
-    )
-
+    attrs = dict(event=event)
     attrs.update(
         dict([(key, val) for key, val in kwargs.iteritems() if key in attrs_optional_name])
     )
-
-    action = E.action(attrs)
-    return action
+    return E.action(attrs)
 
 
 def Actions(actions_list):
@@ -241,7 +236,8 @@ def Updatecheck_positive(urls, manifest):
     return Updatecheck(status='ok', urls=Urls(urls), manifest=manifest)
 
 
-def App(app_id, status='ok', experiments='', updatecheck=None, ping=False, events=None, data_list=None):
+def App(app_id, status='ok', experiments='', updatecheck=None, ping=False,
+        events=None, data_list=None):
     attrs = dict(appid=app_id, status=status)
     if experiments:
         attrs['experiments'] = experiments
