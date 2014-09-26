@@ -28,6 +28,10 @@ def Ping(status='ok'):
     return E.ping(dict(status=status))
 
 
+def Event(status='ok'):
+    return E.event(dict(status=status))
+
+
 def Url(url):
     return E.url(dict(codebase=url))
 
@@ -107,11 +111,12 @@ def Updatecheck_positive(urls, manifest):
     return Updatecheck(status='ok', urls=Urls(urls), manifest=manifest)
 
 
-def App(app_id, status='ok', experiments='', updatecheck=None, ping=False):
+def App(app_id, status='ok', experiments='', updatecheck=None, ping=False, events=None):
     attrs = dict(appid=app_id, status=status)
     if experiments:
         attrs['experiments'] = experiments
     app = E.app(attrs)
+    map(app.append, events or [])
     if updatecheck is not None:
         app.append(updatecheck)
     if ping:
