@@ -1,0 +1,4 @@
+-r requirements-test.txt
+
+psycopg2==2.5.4
+lxml==3.4.0

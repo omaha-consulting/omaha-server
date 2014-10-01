@@ -1,0 +1,16 @@
+db:
+  image: postgres
+web:
+  build: .
+  command: ./manage.py runserver 0.0.0.0:8000
+  working_dir: /srv/omaha/omaha_server
+  links:
+   - db
+  ports:
+   - "8001:8000"
+  environment:
+    DB_HOST: db_1
+    DB_USER: postgres
+    DB_NAME: postgres
+    DB_PASSWORD: ''
+    HOST_NAME: 'omaha-server'

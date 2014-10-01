@@ -1,0 +1,3 @@
+[run]
+omit = *settings*, *wsgi*, *urls.py*
+data_file = ../.coverage
