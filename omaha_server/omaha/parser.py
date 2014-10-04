@@ -5,6 +5,9 @@ import os
 from lxml import etree, objectify
 
 
+__all__ = ['parser', 'parse_request']
+
+
 BASE_DIR = os.path.dirname(__file__)
 
 with open(os.path.join(BASE_DIR, 'request.xsd')) as f:

@@ -17,3 +17,8 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Static files
+
+omaha_server/static
+omaha_server/media

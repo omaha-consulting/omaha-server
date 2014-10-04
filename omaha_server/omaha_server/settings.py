@@ -14,6 +14,7 @@ import os
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+PROJECT_DIR = BASE_DIR
 
 TEMPLATE_CONTEXT_PROCESSORS = TCP + (
     'django.core.context_processors.request',
@@ -51,6 +52,9 @@ INSTALLED_APPS = (
 
     'django_extensions',
     'debug_toolbar.apps.DebugToolbarConfig',
+    'versionfield',
+
+    'omaha',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -100,7 +104,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
+STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
+MEDIA_ROOT = os.path.join(PROJECT_DIR, 'media')
+
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
 
 
 #

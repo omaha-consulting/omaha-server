@@ -2,11 +2,11 @@ from django.conf.urls import patterns, include, url
 from django.conf import settings
 from django.contrib import admin
 
-urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'omaha_server.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
+from omaha.views import UpdateView
 
+
+urlpatterns = patterns('',
+    url(r'^api/update/$', UpdateView.as_view(), name='update'),
     url(r'^admin/', include(admin.site.urls)),
 )
 

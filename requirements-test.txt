@@ -6,3 +6,4 @@ nose-progressive==1.5.1
 xmlunittest==0.2.0
 coverage==3.7.1
 coveralls
+freezegun==0.1.19
