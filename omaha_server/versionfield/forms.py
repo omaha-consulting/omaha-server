@@ -26,5 +26,5 @@ class VersionField(forms.IntegerField):
 
     def widget_attrs(self, widget):
         attrs = super(VersionField, self).widget_attrs(widget)
-        attrs['pattern'] = r'^(\d+\.)?(\d+\.)?(\*|\d+)$'
+        attrs['pattern'] = '^' + (r'(\d+\.)?' * (len(self.number_bits) - 1)) + r'(\*|\d+)$'
         return attrs
