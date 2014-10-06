@@ -9,6 +9,7 @@ virtualenv:
 env:
   global:
     - HOST_NAME: 'travis-ci'
+    - SECRET_KEY: 'SECRET_KEY'
 
 before_install:
   - sudo apt-get install -qq python-lxml python-psycopg2

@@ -51,7 +51,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 
     'django_extensions',
-    'debug_toolbar.apps.DebugToolbarConfig',
     'versionfield',
 
     'omaha',
@@ -65,7 +64,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 ROOT_URLCONF = 'omaha_server.urls'
@@ -109,31 +107,3 @@ MEDIA_ROOT = os.path.join(PROJECT_DIR, 'media')
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
-
-
-#
-# Debug Toolbar
-#
-
-DEBUG_TOOLBAR_PANELS = (
-    'debug_toolbar.panels.versions.VersionsPanel',
-    'debug_toolbar.panels.timer.TimerPanel',
-    'debug_toolbar.panels.settings.SettingsPanel',
-    'debug_toolbar.panels.headers.HeadersPanel',
-    'debug_toolbar.panels.request.RequestPanel',
-    'debug_toolbar.panels.sql.SQLPanel',
-    'debug_toolbar.panels.staticfiles.StaticFilesPanel',
-    'debug_toolbar.panels.templates.TemplatesPanel',
-    'debug_toolbar.panels.cache.CachePanel',
-    'debug_toolbar.panels.signals.SignalsPanel',
-    'debug_toolbar.panels.logging.LoggingPanel',
-    'debug_toolbar.panels.redirects.RedirectsPanel',
-)
-
-IGNORED_TEMPLATES = ["debug_toolbar/*"]  # Ignore these templates from the output
-DEBUG_TOOLBAR_PATCH_SETTINGS = False
-
-DEBUG_TOOLBAR_CONFIG = {
-    'INTERCEPT_REDIRECTS': False,
-    'SHOW_TOOLBAR_CALLBACK': 'omaha_server.utils.show_toolbar',
-}

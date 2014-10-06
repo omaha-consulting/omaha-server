@@ -1,9 +1,14 @@
 # coding: utf8
 
+import os
+
 from django.db import models
 
 from django_extensions.db.models import TimeStampedModel
 from versionfield import VersionField
+
+
+__all__ = ['Application', 'Channel', 'Platform', 'Version']
 
 
 class Application(TimeStampedModel):
@@ -58,3 +63,15 @@ class Version(TimeStampedModel):
 
     def __unicode__(self):
         return u"{app} {version}".format(app=self.app, version=self.version)
+
+    @property
+    def file_absolute_url(self):
+        return self.file.url
+
+    @property
+    def file_package_name(self):
+        return os.path.basename(self.file_absolute_url)
+
+    @property
+    def file_url(self):
+        return '%s/' % os.path.dirname(self.file_absolute_url)

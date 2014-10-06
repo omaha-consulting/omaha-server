@@ -3,8 +3,9 @@
 from settings import *
 
 DEBUG = True
+TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = ('localhost', '127.0.0.1', 'xip.io', '.xip.io',)
+ALLOWED_HOSTS = ('localhost', '127.0.0.1', '.xip.io',)
 
 SUIT_CONFIG = {
     'ADMIN_NAME': 'Omaha Server - local',
@@ -18,3 +19,39 @@ STATICFILES_FINDERS = ("django.contrib.staticfiles.finders.FileSystemFinder",
                        "django.contrib.staticfiles.finders.AppDirectoriesFinder")
 
 SITE_ID = 1
+
+INSTALLED_APPS += (
+    'debug_toolbar.apps.DebugToolbarConfig',
+    'debug_panel',
+)
+
+MIDDLEWARE_CLASSES += (
+    'debug_panel.middleware.DebugPanelMiddleware',
+)
+
+#
+# Debug Toolbar
+#
+
+DEBUG_TOOLBAR_PANELS = (
+    'debug_toolbar.panels.versions.VersionsPanel',
+    'debug_toolbar.panels.timer.TimerPanel',
+    'debug_toolbar.panels.settings.SettingsPanel',
+    'debug_toolbar.panels.headers.HeadersPanel',
+    'debug_toolbar.panels.request.RequestPanel',
+    'debug_toolbar.panels.sql.SQLPanel',
+    'debug_toolbar.panels.staticfiles.StaticFilesPanel',
+    'debug_toolbar.panels.templates.TemplatesPanel',
+    'debug_toolbar.panels.cache.CachePanel',
+    'debug_toolbar.panels.signals.SignalsPanel',
+    'debug_toolbar.panels.logging.LoggingPanel',
+    'debug_toolbar.panels.redirects.RedirectsPanel',
+)
+
+IGNORED_TEMPLATES = ["debug_toolbar/*"]  # Ignore these templates from the output
+DEBUG_TOOLBAR_PATCH_SETTINGS = False
+
+DEBUG_TOOLBAR_CONFIG = {
+    'INTERCEPT_REDIRECTS': False,
+    'SHOW_TOOLBAR_CALLBACK': 'omaha_server.utils.show_toolbar',
+}

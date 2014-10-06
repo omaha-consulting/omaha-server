@@ -14,3 +14,4 @@ web:
     DB_NAME: postgres
     DB_PASSWORD: ''
     HOST_NAME: 'omaha-server'
+    SECRET_KEY: 'o7umldc^+kac%i03ck!n@^obe$ox4#)0ec93kkk7pcc1&$(1hm'
