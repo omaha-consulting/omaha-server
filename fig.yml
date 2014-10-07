@@ -2,16 +2,17 @@ db:
   image: postgres
 web:
   build: .
-  command: ./manage.py runserver 0.0.0.0:8000
+  command: /usr/bin/supervisord
   working_dir: /srv/omaha/omaha_server
   links:
    - db
   ports:
-   - "8001:8000"
+   - "9090:9090"
   environment:
     DB_HOST: db_1
     DB_USER: postgres
     DB_NAME: postgres
     DB_PASSWORD: ''
-    HOST_NAME: 'omaha-server'
-    SECRET_KEY: 'o7umldc^+kac%i03ck!n@^obe$ox4#)0ec93kkk7pcc1&$(1hm'
+    HOST_NAME: '*'
+    SECRET_KEY: 'SECRET_KEY'
+    DJANGO_SETTINGS_MODULE: 'omaha_server.settings'
