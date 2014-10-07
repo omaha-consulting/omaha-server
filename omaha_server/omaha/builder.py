@@ -19,7 +19,7 @@ def on_app(apps_list, app, os, channel):
     app_id = app.get('appid')
     version = app.get('version')
     platform = os.get('platform')
-    ping = bool(len(app.find('ping')))
+    ping = bool(app.findall('ping'))
     app = partial(App, app_id, status='ok', ping=ping)
 
     try:
@@ -55,7 +55,7 @@ def on_app(apps_list, app, os, channel):
 def build_response(request, pretty_print=True):
     obj = parse_request(request)
     channel = obj.get('updaterchannel', 'stable')
-    apps_list = reduce(partial(on_app, os=obj.os, channel=channel), obj.find('app'), [])
+    apps_list = reduce(partial(on_app, os=obj.os, channel=channel), obj.findall('app'), [])
     response = Response(apps_list, date=now())
     return etree.tostring(response, pretty_print=pretty_print,
                           xml_declaration=True, encoding='UTF-8')
