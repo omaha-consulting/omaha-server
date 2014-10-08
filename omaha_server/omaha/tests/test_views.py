@@ -35,12 +35,14 @@ class UpdateViewTest(TestCase, XmlTestMixin):
         app = ApplicationFactory.create(id='{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}', name='chrome')
         platform = PlatformFactory.create(name='win')
         channel = ChannelFactory.create(name='stable')
-        VersionFactory.create(app=app,
-                              platform=platform,
-                              channel=channel,
-                              version='13.0.782.112',
-                              file=SimpleUploadedFile('./chrome_installer.exe', 'b' * 23963192),
-                              file_hash='VXriGUVI0TNqfLlU02vBel4Q3Zo=')
+        obj = VersionFactory.create(
+            app=app,
+            platform=platform,
+            channel=channel,
+            version='13.0.782.112',
+            file=SimpleUploadedFile('./chrome_installer.exe', 'b' * 23963192))
+        obj.file_hash = 'VXriGUVI0TNqfLlU02vBel4Q3Zo='
+        obj.save()
 
         response = self.client.post(reverse('update'),
                                     fixtures.request_update_check, content_type='text/xml')

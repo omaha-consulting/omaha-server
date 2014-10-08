@@ -29,7 +29,7 @@ class PlatformModelTest(test.TestCase):
 class VersionModelTest(test.TestCase):
     @temporary_media_root()
     def test_factory(self):
-        version = VersionFactory.create()
+        version = VersionFactory.create(file=SimpleUploadedFile('./chrome_installer.exe', False))
         self.assertTrue(Version.objects.get(id=version.id))
 
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
@@ -40,3 +40,9 @@ class VersionModelTest(test.TestCase):
         self.assertEqual(version.file_package_name, 'chrome_installer.exe')
         self.assertEqual(version.file_url,
                          'http://cache.pack.google.com/edgedl/chrome/install/782.112/')
+
+    @temporary_media_root()
+    def test_pre_save_callbac(self):
+        version = VersionFactory.create(file=SimpleUploadedFile('./chrome_installer.exe', b''))
+        self.assertEqual(version.file.size, 0)
+        self.assertEqual(version.file_hash, '2jmj7l5rSw0yVb/vlWAYkK/YBwk=')

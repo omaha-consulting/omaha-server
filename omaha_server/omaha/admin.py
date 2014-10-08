@@ -23,3 +23,4 @@ class ApplicationAdmin(admin.ModelAdmin):
 class VersionAdmin(admin.ModelAdmin):
     list_display = ('app', 'version', 'channel', 'platform',)
     list_filter = ('channel__name', 'platform__name', 'app__name',)
+    readonly_fields = ('file_hash',)

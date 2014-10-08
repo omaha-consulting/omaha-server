@@ -1,8 +1,12 @@
 # coding: utf8
 
 import os
+import hashlib
+import base64
 
 from django.db import models
+from django.dispatch import receiver
+from django.db.models.signals import pre_save
 
 from django_extensions.db.models import TimeStampedModel
 from versionfield import VersionField
@@ -49,7 +53,7 @@ class Version(TimeStampedModel):
     version = VersionField(help_text='Format: 255.255.65535.65535', number_bits=(8, 8, 16, 16))
     release_notes = models.TextField(blank=True, null=True)
     file = models.FileField()
-    file_hash = models.CharField(max_length=140)
+    file_hash = models.CharField(verbose_name='Hash', max_length=140, null=True, blank=True)
 
     class Meta:
         db_table = 'versions'
@@ -74,3 +78,16 @@ class Version(TimeStampedModel):
     @property
     def file_url(self):
         return '%s/' % os.path.dirname(self.file_absolute_url)
+
+
+
+@receiver(pre_save, sender=Version)
+def pre_version_save(sender, instance, *args, **kwargs):
+    if instance.pk:
+        old = sender.objects.get(pk=instance.pk)
+        if old.file == instance.file:
+            return
+    sha1 = hashlib.sha1()
+    for chunk in instance.file.chunks():
+        sha1.update(chunk)
+    instance.file_hash = base64.b64encode(sha1.digest())
