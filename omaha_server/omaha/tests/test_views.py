@@ -52,3 +52,14 @@ class UpdateViewTest(TestCase, XmlTestMixin):
         self.assertXmlDocument(response.content)
         self.assertXmlEquivalentOutputs(response.content,
                                         fixtures.response_update_check_positive)
+
+    @freeze_time('2014-01-01 15:45:54')  # 56754 sec
+    def test_event(self):
+        response = self.client.post(reverse('update'),
+                                    fixtures.request_event, content_type='text/xml')
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertXmlDocument(response.content)
+        self.assertXmlEquivalentOutputs(response.content,
+                                        fixtures.response_event)
