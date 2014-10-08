@@ -6,7 +6,7 @@ from omaha.views import UpdateView
 
 
 urlpatterns = patterns('',
-    url(r'^api/update/$', UpdateView.as_view(), name='update'),
+    url(r'^service/update2$', UpdateView.as_view(), name='update'),
     url(r'^admin/', include(admin.site.urls)),
 )
 
