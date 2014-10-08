@@ -34,5 +34,4 @@ class VersionFactory(factory.DjangoModelFactory):
     channel = factory.lazy_attribute(lambda x: ChannelFactory())
     version = '37.0.2062.124'
     file = factory.django.FileField(filename='./chrome_installer.exe')
-    file_size = 23963192
     file_hash = 'VXriGUVI0TNqfLlU02vBel4Q3Zo='

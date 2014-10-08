@@ -23,10 +23,12 @@ def on_app(apps_list, app, os, channel):
     app = partial(App, app_id, status='ok', ping=ping)
 
     try:
-        version = Version.objects.filter(app=app_id,
-                                         platform__name=platform,
-                                         channel__name=channel,
-                                         version__gt=version).latest('version')
+        version_qs = Version.objects.filter(app=app_id,
+                                            platform__name=platform,
+                                            channel__name=channel)
+        if version:
+            version_qs.filter(version__gt=version)
+        version = version_qs.latest('version')
         updatecheck = Updatecheck_positive(
             urls=[version.file_url],
             manifest=Manifest(
@@ -34,7 +36,7 @@ def on_app(apps_list, app, os, channel):
                 packages=Packages([Package(
                     name=version.file_package_name,
                     required='true',
-                    size=str(version.file_size),
+                    size=str(version.file.size),
                     hash=version.file_hash,
                 )]),
                 actions=Actions([

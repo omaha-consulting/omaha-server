@@ -49,7 +49,6 @@ class Version(TimeStampedModel):
     version = VersionField(help_text='Format: 255.255.65535.65535', number_bits=(8, 8, 16, 16))
     release_notes = models.TextField(blank=True, null=True)
     file = models.FileField()
-    file_size = models.PositiveIntegerField()
     file_hash = models.CharField(max_length=140)
 
     class Meta:
