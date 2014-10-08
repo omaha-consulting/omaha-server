@@ -106,6 +106,7 @@
             <xs:attribute name="errorcode" use="optional" type="xs:integer"/>
             <xs:attribute name="extracode1" use="optional" type="xs:integer"/>
             <xs:attribute name="download_time_ms" use="optional" type="xs:integer"/>
+            <xs:attribute name="downloaded" use="optional" type="xs:integer"/>
             <xs:attribute name="total" use="optional" type="xs:integer"/>
             <xs:attribute name="update_check_time_ms" use="optional" type="xs:integer"/>
             <xs:attribute name="install_time_ms" use="optional" type="xs:integer"/>
