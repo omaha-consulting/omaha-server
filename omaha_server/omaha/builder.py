@@ -45,13 +45,7 @@ def on_app(apps_list, app, os, channel):
                         required='true',
                         size=str(version.file.size),
                         hash=version.file_hash,
-                    )]),
-                    actions=Actions([
-                        Action(event='install', arguments='--do-not-launch-chrome',
-                               run='chrome_installer.exe'),
-                        Action(event='postinstall', version=str(version.version),
-                               onsuccess='exitsilentlyonlaunchcmd'),
-                    ])
+                    )])
                 )
             )
             apps_list.append(AppPartial(updatecheck=updatecheck))
