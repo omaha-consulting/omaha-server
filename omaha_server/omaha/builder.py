@@ -20,6 +20,15 @@ def on_event(event_list, event):
     return event_list
 
 
+def on_action(action_list, action):
+    action = Action(
+        event=action.get_event_display(),
+        **action.get_attributes()
+    )
+    action_list.append(action)
+    return action_list
+
+
 def on_app(apps_list, app, os, channel):
     app_id = app.get('appid')
     version = app.get('version')
@@ -35,7 +44,9 @@ def on_app(apps_list, app, os, channel):
                                                 channel__name=channel)
             if version:
                 version_qs.filter(version__gt=version)
+            version_qs = version_qs.prefetch_related("actions")
             version = version_qs.latest('version')
+            actions = reduce(on_action, version.actions.all(), [])
             updatecheck = Updatecheck_positive(
                 urls=[version.file_url],
                 manifest=Manifest(
@@ -45,7 +56,8 @@ def on_app(apps_list, app, os, channel):
                         required='true',
                         size=str(version.file.size),
                         hash=version.file_hash,
-                    )])
+                    )]),
+                    actions=Actions(actions),
                 )
             )
             apps_list.append(AppPartial(updatecheck=updatecheck))

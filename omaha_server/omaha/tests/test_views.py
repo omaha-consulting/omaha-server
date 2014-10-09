@@ -12,6 +12,7 @@ import fixtures
 from utils import temporary_media_root
 
 from omaha.factories import ApplicationFactory, ChannelFactory, PlatformFactory, VersionFactory
+from omaha.models import Action, EVENT_DICT_CHOICES
 
 
 class UpdateViewTest(TestCase, XmlTestMixin):
@@ -43,6 +44,22 @@ class UpdateViewTest(TestCase, XmlTestMixin):
             file=SimpleUploadedFile('./chrome_installer.exe', 'b' * 23963192))
         obj.file_hash = 'VXriGUVI0TNqfLlU02vBel4Q3Zo='
         obj.save()
+
+        Action.objects.create(
+            version=obj,
+            arguments='--do-not-launch-chrome',
+            event=EVENT_DICT_CHOICES['install'],
+            run='chrome_installer.exe'
+        )
+
+        Action.objects.create(
+            version=obj,
+            event=EVENT_DICT_CHOICES['postinstall'],
+            other=dict(
+                version='13.0.782.112',
+                onsuccess='exitsilentlyonlaunchcmd',
+            )
+        )
 
         response = self.client.post(reverse('update'),
                                     fixtures.request_update_check, content_type='text/xml')

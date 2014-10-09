@@ -9,10 +9,12 @@ from django.dispatch import receiver
 from django.db.models.signals import pre_save
 
 from django_extensions.db.models import TimeStampedModel
+from jsonfield import JSONField
 from versionfield import VersionField
 
 
-__all__ = ['Application', 'Channel', 'Platform', 'Version']
+__all__ = ['Application', 'Channel', 'Platform', 'Version',
+           'Action', 'EVENT_DICT_CHOICES', 'EVENT_CHOICES']
 
 
 class Application(TimeStampedModel):
@@ -78,6 +80,53 @@ class Version(TimeStampedModel):
     @property
     def file_url(self):
         return '%s/' % os.path.dirname(self.file_absolute_url)
+
+
+EVENT_DICT_CHOICES = dict(
+    preinstall=0,
+    install=1,
+    postinstall=2,
+    update=3,
+)
+
+EVENT_CHOICES = zip(EVENT_DICT_CHOICES.values(), EVENT_DICT_CHOICES.keys())
+
+
+class Action(TimeStampedModel):
+    version = models.ForeignKey(Version, db_index=True, related_name='actions')
+    event = models.PositiveSmallIntegerField(
+        choices=EVENT_CHOICES,
+        help_text='Contains a fixed string denoting when this action should be run.')
+    run = models.CharField(
+        max_length=255, null=True, blank=True,
+        help_text='The name of an installer binary to run.')
+    arguments = models.CharField(
+        max_length=255, null=True, blank=True,
+        help_text='Arguments to be passed to that installer binary.')
+    successurl = models.URLField(
+        null=True, blank=True,
+        help_text="A URL to be opened using the system's "
+                  "default web browser on a successful install.")
+    terminateallbrowsers = models.BooleanField(
+        default=False,
+        help_text='If "true", close all browser windows before starting the installer binary.')
+    successsaction = models.CharField(
+        null=True, max_length=255, blank=True,
+        help_text='Contains a fixed string denoting some action to take '
+                  'in response to a successful install')
+    other = JSONField(verbose_name='Other attributes', help_text='JSON format', null=True, blank=True,)
+
+    class Meta:
+        db_table = 'actions'
+
+    def get_attributes(self):
+        exclude_fields = ('id', 'version', 'event', 'other', 'created', 'modified')
+        attrs = dict([(field.name, str(getattr(self, field.name)).lower())
+                      for field in self._meta.fields
+                      if field.name not in exclude_fields
+                      and getattr(self, field.name)])
+        attrs.update(self.other or {})
+        return attrs
 
 
 

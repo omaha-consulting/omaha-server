@@ -132,11 +132,9 @@ def Action(event, **kwargs):
         >>> ET.tostring(Action('install', run='chrome_installer.exe', arguments='--do-not-launch-chrome'))
         '<action run="chrome_installer.exe" event="install" arguments="--do-not-launch-chrome"/>'
     """
-    attrs_optional_name = ('version', 'successurl', 'terminateallbrowsers',
-                           'successsaction', 'onsuccess', 'arguments', 'run')
     attrs = dict(event=event)
     attrs.update(
-        dict([(key, val) for key, val in kwargs.iteritems() if key in attrs_optional_name])
+        kwargs
     )
     return E.action(attrs)
 
