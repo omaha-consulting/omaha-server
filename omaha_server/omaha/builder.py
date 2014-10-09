@@ -43,7 +43,7 @@ def on_app(apps_list, app, os, channel):
                                                 platform__name=platform,
                                                 channel__name=channel)
             if version:
-                version_qs.filter(version__gt=version)
+                version_qs = version_qs.filter(version__gt=version)
             version_qs = version_qs.prefetch_related("actions")
             version = version_qs.latest('version')
             actions = reduce(on_action, version.actions.all(), [])
