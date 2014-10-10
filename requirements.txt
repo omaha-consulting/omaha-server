@@ -2,3 +2,5 @@ Django==1.7
 django-extensions==1.4.0
 django-suit==0.2.11
 jsonfield==1.0.0
+boto==2.33.0
+django-storages==1.1.8

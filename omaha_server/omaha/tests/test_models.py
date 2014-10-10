@@ -3,6 +3,8 @@
 from django import test
 from django.core.files.uploadedfile import SimpleUploadedFile
 
+from mock import patch
+
 from omaha.models import Application, Channel, Platform, Version, Action, EVENT_DICT_CHOICES
 from omaha.factories import ApplicationFactory, ChannelFactory, PlatformFactory, VersionFactory
 from omaha.tests.utils import temporary_media_root
@@ -33,6 +35,7 @@ class VersionModelTest(test.TestCase):
         self.assertTrue(Version.objects.get(id=version.id))
 
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
+    @patch('omaha.models.version_upload_to', lambda o, f: f)
     def test_property(self):
         version = VersionFactory.create(file=SimpleUploadedFile('./chrome_installer.exe', ''))
         self.assertEqual(version.file_absolute_url,

@@ -48,13 +48,18 @@ class Channel(TimeStampedModel):
         return self.name
 
 
+def version_upload_to(obj, filename):
+    return os.path.join('build', obj.app.name, obj.channel.name,
+                        obj.platform.name, filename)
+
+
 class Version(TimeStampedModel):
     app = models.ForeignKey(Application)
     platform = models.ForeignKey(Platform)
     channel = models.ForeignKey(Channel)
     version = VersionField(help_text='Format: 255.255.65535.65535', number_bits=(8, 8, 16, 16))
     release_notes = models.TextField(blank=True, null=True)
-    file = models.FileField()
+    file = models.FileField(upload_to=lambda o, f: version_upload_to(o, f))
     file_hash = models.CharField(verbose_name='Hash', max_length=140, null=True, blank=True)
 
     class Meta:

@@ -9,3 +9,4 @@ coverage==3.7.1
 coveralls
 freezegun==0.1.19
 factory-boy==2.4.1
+mock==1.0.1

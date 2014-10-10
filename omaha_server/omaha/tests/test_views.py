@@ -7,6 +7,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 
 from xmlunittest import XmlTestMixin
 from freezegun import freeze_time
+from mock import patch
 
 import fixtures
 from utils import temporary_media_root
@@ -32,6 +33,7 @@ class UpdateViewTest(TestCase, XmlTestMixin):
 
     @freeze_time('2014-01-01 15:41:48')  # 56508 sec
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
+    @patch('omaha.models.version_upload_to', lambda o, f: f)
     def test_updatecheck_positive(self):
         app = ApplicationFactory.create(id='{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}', name='chrome')
         platform = PlatformFactory.create(name='win')
