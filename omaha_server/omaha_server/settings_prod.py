@@ -7,7 +7,7 @@ from settings import *
 DEBUG = False
 
 ALLOWED_HOSTS = (os.environ['HOST_NAME'], '*')
-SECRET_KEY = (os.environ['SECRET_KEY'],)
+SECRET_KEY = os.environ['SECRET_KEY']
 
 STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
@@ -25,3 +25,11 @@ AWS_IS_GZIPPED = True
 SUIT_CONFIG = {
     'ADMIN_NAME': 'Omaha Server [{}]'.format(os.environ.get('APP_VERSION')),
 }
+
+RAVEN_CONFIG = {
+    'dsn': os.environ.get('RAVEN_DNS'),
+}
+
+INSTALLED_APPS = INSTALLED_APPS + (
+    'raven.contrib.django.raven_compat',
+)
