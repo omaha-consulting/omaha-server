@@ -25,3 +25,8 @@ def up_dev_server():
     sh('fig run web ./manage.py createsuperuser --username=admin --email=admin@example.com --noinput')
     sh('fig run web ./manage.py set_fake_passwords --password=admin')
     print """Open http://DOCKER_HOST:9090/admin/\n username: admin\n password: admin"""
+
+
+@task
+def deploy_dev():
+    sh('ebs-deploy deploy -e omaha-server-dev', cwd='omaha_server')

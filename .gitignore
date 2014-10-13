@@ -22,3 +22,5 @@ target/
 
 omaha_server/static
 omaha_server/media
+omaha_server/*.zip
+omaha_server/ebs.config
