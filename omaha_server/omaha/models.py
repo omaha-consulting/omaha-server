@@ -125,11 +125,14 @@ class Action(TimeStampedModel):
         db_table = 'actions'
 
     def get_attributes(self):
-        exclude_fields = ('id', 'version', 'event', 'other', 'created', 'modified')
-        attrs = dict([(field.name, str(getattr(self, field.name)).lower())
+        exclude_fields = ('id', 'version', 'event', 'other', 'created',
+                          'modified', 'terminateallbrowsers')
+        attrs = dict([(field.name, str(getattr(self, field.name)))
                       for field in self._meta.fields
                       if field.name not in exclude_fields
                       and getattr(self, field.name)])
+        if self.terminateallbrowsers:
+            attrs['terminateallbrowsers'] = 'true'
         attrs.update(self.other or {})
         return attrs
 
