@@ -18,6 +18,7 @@ PROJECT_DIR = BASE_DIR
 
 TEMPLATE_CONTEXT_PROCESSORS = TCP + (
     'django.core.context_processors.request',
+    'absolute.context_processors.absolute',
 )
 
 SUIT_CONFIG = {
@@ -53,6 +54,7 @@ INSTALLED_APPS = (
     'storages',
     'django_extensions',
     'versionfield',
+    'absolute',
 
     'omaha',
 )
