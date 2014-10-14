@@ -13,7 +13,7 @@ TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 NOSE_ARGS = [
     '--with-coverage',
-    '--cover-package=omaha_server,omaha,versionfield',
+    '--cover-package=omaha_server,omaha',
     '--cover-inclusive',
     '--with-doctest',
 ]
