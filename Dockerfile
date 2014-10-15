@@ -11,7 +11,5 @@ COPY ./conf/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 WORKDIR /srv/omaha
 
-
-RUN pip install -r requirements.txt
-
-RUN ./omaha_server/manage.py collectstatic --noinput
+RUN pip install paver --use-mirrors
+RUN pip install -r requirements.txt --use-mirrors

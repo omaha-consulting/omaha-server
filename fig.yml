@@ -2,8 +2,8 @@ db:
   image: postgres
 web:
   build: .
-  command: /usr/bin/supervisord
-  working_dir: /srv/omaha/omaha_server
+  command: paver docker_run
+  working_dir: /srv/omaha
   links:
    - db
   ports:
