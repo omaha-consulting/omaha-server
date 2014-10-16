@@ -5,6 +5,7 @@ from functools import partial
 from django.utils.timezone import now
 
 from lxml import etree
+from raven.contrib.django.raven_compat.models import client
 
 from models import Version
 from parser import parse_request
@@ -62,6 +63,7 @@ def on_app(apps_list, app, os, channel):
             )
             apps_list.append(AppPartial(updatecheck=updatecheck))
         except Version.DoesNotExist:
+            client.captureException()
             apps_list.append(AppPartial(updatecheck=Updatecheck_negative()))
     else:
         apps_list.append(AppPartial())

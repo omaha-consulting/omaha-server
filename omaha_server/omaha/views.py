@@ -4,6 +4,9 @@ from django.views.generic import View, ListView
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 
+from lxml.etree import XMLSyntaxError
+from raven.contrib.django.raven_compat.models import client
+
 from builder import build_response
 from models import Version
 
@@ -16,7 +19,12 @@ class UpdateView(View):
         return super(UpdateView, self).dispatch(*args, **kwargs)
 
     def post(self, request):
-        return HttpResponse(build_response(request.body), content_type="text/xml; charset=utf-8")
+        try:
+            response = build_response(request.body)
+        except XMLSyntaxError:
+            client.captureException(request=request)
+            return HttpResponse('bad request', status=400, content_type="text/html; charset=utf-8")
+        return HttpResponse(response, content_type="text/xml; charset=utf-8")
 
 
 class SparkleView(ListView):

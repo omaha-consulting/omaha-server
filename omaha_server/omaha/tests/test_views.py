@@ -83,6 +83,12 @@ class UpdateViewTest(TestCase, XmlTestMixin):
         self.assertXmlEquivalentOutputs(response.content,
                                         fixtures.response_event)
 
+    def test_bad_request(self):
+        response = self.client.post(reverse('update'))
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.content, 'bad request')
+
 
 class SparkleViewTest(TestCase, XmlTestMixin):
     def setUp(self):
