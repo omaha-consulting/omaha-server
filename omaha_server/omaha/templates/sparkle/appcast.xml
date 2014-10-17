@@ -1,4 +1,7 @@
-{% load absolute %}<?xml version="1.0" encoding="utf-8"?>
+{% spaceless %}
+{% load absolute %}
+{% load cache %}
+{% endspaceless %}{% cache 300 app_name channel %}<?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
     <channel>
         <title>{{ app_name }}</title>
@@ -19,4 +22,4 @@
             </item>
         {% endfor %}
     </channel>
-</rss>
+</rss>{% endcache %}

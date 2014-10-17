@@ -31,6 +31,7 @@ Open http://{DOCKER_HOST}:9090/admin/
 - python 2.7
 - [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/)
 - PostgreSQL
+- Redis
 
 ```sh
 $ mkvirtualenv omaha-server
@@ -66,20 +67,24 @@ $ ebs-deploy init
 
 #### Environment variables
 
-| Environment variable name |       Default value        |    Description    |
-|---------------------------|----------------------------|-------------------|
-| APP_VERSION               | DEV                        |                   |
-| DJANGO_SETTINGS_MODULE    | omaha_server.settings_prod |                   |
-| SECRET_KEY                |                            | Django SECRET_KEY |
-| HOST_NAME                 |                            | Eb app host name  |
-| DB_HOST                   |                            | DB Host           |
-| DB_USER                   |                            | DB User           |
-| DB_NAME                   |                            | DB Name           |
-| DB_PASSWORD               |                            | DB Password       |
-| AWS_ACCESS_KEY_ID         |                            | AWS Access Key    |
-| AWS_SECRET_ACCESS_KEY     |                            | AWS Secret Key    |
-| AWS_STORAGE_BUCKET_NAME   |                            | S3 storage bucket |
-| RAVEN_DNS                 |                            | Sentry url        |
+| Environment variable name |    Description    |       Default value        |
+|---------------------------|-------------------|----------------------------|
+| APP_VERSION               | App version       | DEV                        |
+| DJANGO_SETTINGS_MODULE    |                   | omaha_server.settings_prod |
+| SECRET_KEY                | Django SECRET_KEY |                            |
+| HOST_NAME                 | Eb app host name  |                            |
+| DB_HOST                   | DB Host           | 127.0.0.1                  |
+| DB_USER                   | DB User           | postgres                   |
+| DB_NAME                   | DB Name           | postgres                   |
+| DB_PASSWORD               | DB Password       | ''                         |
+| DB_PORT                   | DB port           | 5432                       |
+| AWS_ACCESS_KEY_ID         | AWS Access Key    |                            |
+| AWS_SECRET_ACCESS_KEY     | AWS Secret Key    |                            |
+| AWS_STORAGE_BUCKET_NAME   | S3 storage bucket |                            |
+| RAVEN_DNS                 | Sentry url        |                            |
+| REDIS_HOST                | Redis host        | 127.0.0.1                  |
+| REDIS_PORT                | Redis port        | 6379                       |
+| REDIS_DB                  | Redis db          | 1                          |
 
 
 
