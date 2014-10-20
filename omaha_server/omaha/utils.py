@@ -23,6 +23,12 @@ def get_sec_since_midnight(date):
 
 
 def get_id(uuid):
+    """
+    >>> get_id('{8C65E04C-0383-4AE2-893F-4EC7C58F70DC}')
+    1
+    >>> get_id('{8C65E04C-0383-4AE2-893F-4EC7C58F70DC}')
+    1
+    """
     id = redis.get('{}:{}'.format(KEY_PREFIX, uuid))
     if id is None:
         id = create_id(uuid)
@@ -30,6 +36,10 @@ def get_id(uuid):
 
 
 def create_id(uuid):
+    """
+    >>> create_id('{8C65E04C-0383-4AE2-893F-4EC7C58F70DC}')
+    1
+    """
     with redis.pipeline() as pipe:
         while True:
             try:

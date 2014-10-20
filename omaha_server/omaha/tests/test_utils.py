@@ -8,6 +8,7 @@ from omaha.utils import (
     get_sec_since_midnight,
     redis,
     get_id,
+    create_id,
 )
 
 
@@ -72,3 +73,12 @@ class GetIdTest(TestCase):
         id = 123
         self.redis.set('{}:{}'.format(KEY_PREFIX, self.uid), 123)
         self.assertEqual(id, get_id(self.uid))
+
+    def test_cteate_id(self):
+        id = create_id(self.uid)
+
+        self.assertIsInstance(id, int)
+
+        _id = self.redis.get('{}:{}'.format(KEY_PREFIX, self.uid))
+        self.assertEqual(id, int(_id))
+        self.assertEqual(id, int(self.redis.get(KEY_LAST_ID)))
