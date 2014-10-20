@@ -85,6 +85,9 @@ $ ebs-deploy init
 | REDIS_HOST                | Redis host        | 127.0.0.1                  |
 | REDIS_PORT                | Redis port        | 6379                       |
 | REDIS_DB                  | Redis db          | 1                          |
+| REDIS_STAT_PORT           | For statistics    | REDIS_PORT                 |
+| REDIS_STAT_HOST           |                   | REDIS_HOST                 |
+| REDIS_STAT_DB             |                   | 15                         |
 
 
 
