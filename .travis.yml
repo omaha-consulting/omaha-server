@@ -11,6 +11,9 @@ env:
     - HOST_NAME: 'travis-ci'
     - SECRET_KEY: 'SECRET_KEY'
 
+services:
+  - redis-server
+
 before_install:
   - sudo apt-get install -qq python-lxml python-psycopg2
 

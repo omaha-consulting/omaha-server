@@ -111,13 +111,26 @@ MEDIA_ROOT = os.path.join(STATIC_ROOT, 'media')
 STATIC_URL = '/static/'
 MEDIA_URL = '/static/media/'
 
+REDIS_PORT = os.environ.get('REDIS_PORT', '6379')
+REDIS_HOST = os.environ.get('REDIS_HOST', '127.0.0.1')
+
 CACHES = {
     'default': {
         'BACKEND': 'redis_cache.cache.RedisCache',
         'LOCATION': '{REDIS_HOST}:{REDIS_PORT}:{REDIS_DB}'.format(
-            REDIS_PORT=os.environ.get('REDIS_PORT', '6379'),
-            REDIS_HOST=os.environ.get('REDIS_HOST', '127.0.0.1'),
+            REDIS_PORT=REDIS_PORT,
+            REDIS_HOST=REDIS_HOST,
             REDIS_DB=os.environ.get('REDIS_DB', 1)),
+        'OPTIONS': {
+            'CLIENT_CLASS': 'redis_cache.client.DefaultClient',
+        }
+    },
+    'statistics': {
+        'BACKEND': 'redis_cache.cache.RedisCache',
+        'LOCATION': '{REDIS_HOST}:{REDIS_PORT}:{REDIS_DB}'.format(
+            REDIS_PORT=os.environ.get('REDIS_STAT_PORT', REDIS_PORT),
+            REDIS_HOST=os.environ.get('REDIS_STAT_HOST', REDIS_HOST),
+            REDIS_DB=os.environ.get('REDIS_STAT_DB', 15)),
         'OPTIONS': {
             'CLIENT_CLASS': 'redis_cache.client.DefaultClient',
         }

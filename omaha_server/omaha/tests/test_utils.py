@@ -3,7 +3,12 @@
 from datetime import datetime
 from unittest import TestCase
 
-from omaha.utils import get_sec_since_midnight
+from omaha.settings import KEY_PREFIX, KEY_LAST_ID
+from omaha.utils import (
+    get_sec_since_midnight,
+    redis,
+    get_id,
+)
 
 
 class UtilsTest(TestCase):
@@ -40,3 +45,30 @@ class UtilsTest(TestCase):
                                                          hour=16,
                                                          minute=23,
                                                          second=17)))
+
+
+class GetIdTest(TestCase):
+    def setUp(self):
+        self.uid = '{8C65E04C-0383-4AE2-893F-4EC7C58F70DC}'
+        self.redis = redis
+        self.redis.flushdb()
+
+    def tearDown(self):
+        self.redis.flushdb()
+
+    def test_get_id_new(self):
+        id = get_id(self.uid)
+
+        self.assertIsInstance(id, int)
+
+        _id = self.redis.get('{}:{}'.format(KEY_PREFIX, self.uid))
+        self.assertEqual(id, int(_id))
+        self.assertEqual(id, int(self.redis.get(KEY_LAST_ID)))
+
+        get_id('new_uid')
+        self.assertEqual(id + 1, int(self.redis.get(KEY_LAST_ID)))
+
+    def test_get_id_exist(self):
+        id = 123
+        self.redis.set('{}:{}'.format(KEY_PREFIX, self.uid), 123)
+        self.assertEqual(id, get_id(self.uid))

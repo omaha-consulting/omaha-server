@@ -1,6 +1,12 @@
 # coding: utf8
 
-__all__ = ['get_sec_since_midnight']
+from redis_cache import get_redis_connection
+from redis.exceptions import WatchError
+from settings import KEY_PREFIX, KEY_LAST_ID
+
+__all__ = ['get_sec_since_midnight', 'get_id']
+
+redis = get_redis_connection('statistics')
 
 
 def get_sec_since_midnight(date):
@@ -14,3 +20,29 @@ def get_sec_since_midnight(date):
     midnight = date.replace(hour=0, minute=0, second=0, microsecond=0)
     delta = date - midnight
     return delta.seconds
+
+
+def get_id(uuid):
+    id = redis.get('{}:{}'.format(KEY_PREFIX, uuid))
+    if id is None:
+        id = create_id(uuid)
+    return int(id)
+
+
+def create_id(uuid):
+    with redis.pipeline() as pipe:
+        while True:
+            try:
+                pipe.watch(KEY_LAST_ID)
+                current_id = pipe.get(KEY_LAST_ID) or 0
+                next_id = int(current_id) + 1
+                pipe.multi()
+                pipe.set(KEY_LAST_ID, next_id)
+                pipe.execute()
+
+                redis.set('{}:{}'.format(KEY_PREFIX, uuid), next_id)
+                return next_id
+            except WatchError:
+                continue
+            except:
+                raise

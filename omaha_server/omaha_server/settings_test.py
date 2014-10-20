@@ -36,8 +36,20 @@ CELERY_ALWAYS_EAGER = True
 CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
 BROKER_BACKEND = 'memory'
 
-CACHES = {
-    "default": {
-        "BACKEND": 'django.core.cache.backends.locmem.LocMemCache',
+CACHES['default'] = {
+    'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+}
+
+CACHES['statistics'] = {
+    'BACKEND': 'redis_cache.cache.RedisCache',
+    'LOCATION': '{REDIS_HOST}:{REDIS_PORT}:{REDIS_DB}'.format(
+        REDIS_PORT=os.environ.get('REDIS_STAT_PORT', REDIS_PORT),
+        REDIS_HOST=os.environ.get('REDIS_STAT_HOST', REDIS_HOST),
+        REDIS_DB=os.environ.get('REDIS_STAT_DB', 13)),
+    'OPTIONS': {
+        'CLIENT_CLASS': 'redis_cache.client.DefaultClient',
     }
 }
+
+
+OMAHA_UID_KEY_PREFIX = 'test:uid'
