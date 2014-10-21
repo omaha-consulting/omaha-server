@@ -61,6 +61,9 @@ class Version(TimeStampedModel):
     release_notes = models.TextField(blank=True, null=True)
     file = models.FileField(upload_to=lambda o, f: version_upload_to(o, f))
     file_hash = models.CharField(verbose_name='Hash', max_length=140, null=True, blank=True)
+    dsa_signature = models.CharField(verbose_name='DSA signature',
+                                     help_text='Only for sparkle update', max_length=140,
+                                     null=True, blank=True)
 
     class Meta:
         db_table = 'versions'

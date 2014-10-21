@@ -37,7 +37,7 @@ CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
 BROKER_BACKEND = 'memory'
 
 CACHES['default'] = {
-    'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
 }
 
 CACHES['statistics'] = {

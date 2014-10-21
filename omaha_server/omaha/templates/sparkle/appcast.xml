@@ -18,6 +18,7 @@
                 <pubDate>{{ version.created|date:"r" }}</pubDate>
                 <enclosure url="{{ version.file.url }}"
                            sparkle:version="{{ version.version }}"
+                           {% if version.dsa_signature %}sparkle:dsaSignature="{{ version.dsa_signature }}"{% endif %}
                            length="{{ version.file.size }}" type="application/octet-stream"/>
             </item>
         {% endfor %}
