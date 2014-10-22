@@ -2,10 +2,9 @@
 
 [![Build Status](https://travis-ci.org/Crystalnix/omaha-server.svg?branch=master)](https://travis-ci.org/Crystalnix/omaha-server)
 [![Coverage Status](https://coveralls.io/repos/Crystalnix/omaha-server/badge.png?branch=master)](https://coveralls.io/r/Crystalnix/omaha-server?branch=master)
+[![Apache License, Version 2.0](https://img.shields.io/badge/license-Apache%202.0-red.svg)](https://github.com/Crystalnix/omaha-server/blob/master/LICENSE)
 
 Google Omaha server implementation + added Sparkle (mac) feed management
-
-© 2014 [Crystalnix](http://crystalnix.com) [contacts@crystalnix.com](mailto:contacts@crystalnix.com)
 
 ## Setting up a development server
 
@@ -97,3 +96,21 @@ $ ebs-deploy init
 ```sh
 $ ebs-deploy deploy -e omaha-server-dev
 ```
+
+## Copyright and license
+
+This software is licensed under the Apache 2 license, quoted below.
+
+Copyright 2014 [Crystalnix Limited](http://crystalnix.com)
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License. You may obtain a copy of
+the License at
+
+[http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+License for the specific language governing permissions and limitations under
+the License.
