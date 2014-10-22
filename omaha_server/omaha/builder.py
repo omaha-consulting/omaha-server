@@ -76,9 +76,10 @@ def build_response(request, pretty_print=True):
     obj = parse_request(request)
     channel = obj.get('updaterchannel', 'stable')
     userid = obj.get('userid')
-    apps_list = reduce(partial(on_app, os=obj.os, channel=channel), obj.findall('app'), [])
+    apps = obj.findall('app')
+    apps_list = reduce(partial(on_app, os=obj.os, channel=channel), apps, [])
     if userid:
-        userid_counting(userid, map(lambda i: i.get('appid'), apps_list))
+        userid_counting(userid, apps, obj.os.get('platform'), channel)
     response = Response(apps_list, date=now())
     return etree.tostring(response, pretty_print=pretty_print,
                           xml_declaration=True, encoding='UTF-8')
