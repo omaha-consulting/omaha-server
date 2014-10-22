@@ -72,6 +72,7 @@ def version_upload_to(obj, filename):
 
 
 class Version(TimeStampedModel):
+    is_enabled = models.BooleanField(default=True)
     app = models.ForeignKey(Application)
     platform = models.ForeignKey(Platform)
     channel = models.ForeignKey(Channel)

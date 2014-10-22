@@ -45,6 +45,6 @@ class ActionInline(admin.StackedInline):
 @admin.register(Version)
 class VersionAdmin(admin.ModelAdmin):
     inlines = (ActionInline,)
-    list_display = ('app', 'version', 'channel', 'platform',)
+    list_display = ('app', 'version', 'channel', 'platform', 'is_enabled',)
     list_filter = ('channel__name', 'platform__name', 'app__name',)
     readonly_fields = ('file_hash',)
