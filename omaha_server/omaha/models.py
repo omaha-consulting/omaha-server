@@ -27,6 +27,7 @@ from django.dispatch import receiver
 from django.db.models.signals import pre_save
 
 from managers import VersionManager
+from fields import PercentField
 
 from django_extensions.db.models import TimeStampedModel
 from jsonfield import JSONField
@@ -162,6 +163,13 @@ class Action(TimeStampedModel):
         attrs.update(self.other or {})
         return attrs
 
+
+class PartialUpdate(models.Model):
+    is_enabled = models.BooleanField(default=True)
+    version = models.OneToOneField(Version)
+    percent = PercentField()
+    start_date = models.DateField()
+    end_date = models.DateField()
 
 
 @receiver(pre_save, sender=Version)

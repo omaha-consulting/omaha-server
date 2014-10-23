@@ -19,8 +19,10 @@ the License.
 """
 
 from functools import partial
+from uuid import UUID
 
 from django.utils.timezone import now
+from django.db.models import Q
 
 from lxml import etree
 from raven.contrib.django.raven_compat.models import client
@@ -50,7 +52,7 @@ def on_action(action_list, action):
     return action_list
 
 
-def on_app(apps_list, app, os):
+def on_app(apps_list, app, os, userid):
     app_id = app.get('appid')
     version = app.get('version')
     platform = os.get('platform')
@@ -68,7 +70,19 @@ def on_app(apps_list, app, os):
             if version:
                 version_qs = version_qs.filter(version__gt=version)
             version_qs = version_qs.prefetch_related("actions")
-            version = version_qs.latest('version')
+
+            try:
+                version = version_qs.filter(partialupdate__start_date__lte=now(),
+                                            partialupdate__end_date__gte=now()).latest('version')
+                userid_int = UUID(userid).int
+                percent = version.partialupdate.percent
+                if not userid_int % int(100/percent):
+                    raise Version.DoesNotExist
+            except Version.DoesNotExist:
+                version = version_qs.filter(
+                    Q(partialupdate__isnull=True)
+                    | Q(partialupdate__is_enabled=False)).latest('version')
+
             actions = reduce(on_action, version.actions.all(), [])
             updatecheck = Updatecheck_positive(
                 urls=[version.file_url],
@@ -97,7 +111,7 @@ def build_response(request, pretty_print=True):
     obj = parse_request(request)
     userid = obj.get('userid')
     apps = obj.findall('app')
-    apps_list = reduce(partial(on_app, os=obj.os), apps, [])
+    apps_list = reduce(partial(on_app, os=obj.os, userid=userid), apps, [])
     if userid:
         userid_counting(userid, apps, obj.os.get('platform'))
     response = Response(apps_list, date=now())
