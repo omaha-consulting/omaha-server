@@ -59,9 +59,10 @@ def on_app(apps_list, app, os, channel):
 
     if app.findall('updatecheck'):
         try:
-            version_qs = Version.objects.filter(app=app_id,
-                                                platform__name=platform,
-                                                channel__name=channel)
+            version_qs = Version.objects.filter_by_enabled(
+                app=app_id,
+                platform__name=platform,
+                channel__name=channel)
             if version:
                 version_qs = version_qs.filter(version__gt=version)
             version_qs = version_qs.prefetch_related("actions")

@@ -26,6 +26,8 @@ from django.db import models
 from django.dispatch import receiver
 from django.db.models.signals import pre_save
 
+from managers import VersionManager
+
 from django_extensions.db.models import TimeStampedModel
 from jsonfield import JSONField
 from versionfield import VersionField
@@ -83,6 +85,8 @@ class Version(TimeStampedModel):
     dsa_signature = models.CharField(verbose_name='DSA signature',
                                      help_text='Only for sparkle update', max_length=140,
                                      null=True, blank=True)
+
+    objects = VersionManager()
 
     class Meta:
         db_table = 'versions'

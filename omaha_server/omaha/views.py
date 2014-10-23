@@ -47,7 +47,7 @@ class UpdateView(View):
 
 class SparkleView(ListView):
     http_method_names = ['get']
-    queryset = Version.objects.all()
+    queryset = Version.objects.filter_by_enabled()
     template_name = 'sparkle/appcast.xml'
 
     def get_queryset(self):
