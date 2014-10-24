@@ -4,7 +4,7 @@ wsgiref==0.1.2
 
 raven==5.0.0
 
-Django==1.7
+Django==1.7.1
 django-extensions==1.4.0
 django-suit==0.2.11
 jsonfield==1.0.0
