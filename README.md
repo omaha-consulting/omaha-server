@@ -14,11 +14,11 @@ Google Omaha server implementation + added Sparkle (mac) feed management
 - [docker](docker.com) or [boot2docker](https://github.com/boot2docker/boot2docker) for OS X & Windows
 - [fig](fig.sh)
 
-```sh
+```bash
 $ paver up_local_dev_server
 ```
 
-Open http://{DOCKER_HOST}:9090/admin/
+Open `http://{DOCKER_HOST}:9090/admin/`
 
 - username: `admin`
 - password: `admin`
@@ -32,20 +32,20 @@ Open http://{DOCKER_HOST}:9090/admin/
 - PostgreSQL
 - Redis
 
-```sh
+```bash
 $ mkvirtualenv omaha-server
 $ pip install -r requirements-dev.txt
 ```
 
 ## Tests
 
-```sh
+```bash
 $ paver test
 ```
 
 or
 
-```sh
+```bash
 $ paver run_test_in_docker
 ```
 
@@ -56,12 +56,122 @@ $ paver run_test_in_docker
 - [Elastic Beanstalk command line tools](http://aws.amazon.com/code/6752709412171743)
 - [ebs-deploy](https://github.com/briandilley/ebs-deploy)
 
-### Initialize your application
+### Initializing the Configuration
 
-```sh
+```bash
 $ cd omaha_server
-$ cp cp ebs.config.example ebs.config
-$ ebs-deploy init
+$ cp ebs.config.example ebs.config
+```
+
+To change Omaha-Server configuration, add the settings that you want to modify to the `ebs.config` file. For example:
+
+```yml
+aws:
+    access_key: 'AWS Access Key'
+    secret_key: 'AWS Secret Key'
+    region: 'us-east-1'
+    bucket: 'the bucket that beanstalk apps will be stored in'
+    bucket_path: 'omaha-server'
+
+app:
+    versions_to_keep: 10
+    app_name: 'omaha-server'
+    description: 'Omaha Server'
+
+    all_environments:
+        solution_stack_name: '64bit Amazon Linux 2014.03 v1.0.7 running Python 2.7'
+        tier_name: 'WebServer'
+        tier_type: 'Standard'
+        tier_version: '1.0'
+
+        option_settings:
+
+            'aws:autoscaling:launchconfiguration':
+                InstanceType: 't1.micro'
+                SecurityGroups: 'omaha_server_dev'
+                EC2KeyName: 'viasat_crystalnix_dev'
+
+            'aws:autoscaling:asg':
+                MinSize: 1
+                MaxSize: 10
+
+            'aws:autoscaling:trigger':
+                BreachDuration: 300
+                MeasureName: 'CPUUtilization'
+                Unit: 'Percent'
+                LowerThreshold: 20
+                UpperThreshold: 70
+                UpperBreachScaleIncrement: 1
+
+            'aws:elasticbeanstalk:application':
+                Application Healthcheck URL: '/admin/login/'
+
+            'aws:elasticbeanstalk:container:python':
+                WSGIPath: 'omaha_server/wsgi.py'
+                NumProcesses: 1
+                NumThreads: 15
+
+            'aws:elasticbeanstalk:application:environment':
+                AWS_ACCESS_KEY_ID: 'AWS Access Key'
+                AWS_SECRET_KEY: 'AWS Secret Key'
+
+        archive:
+
+            includes:
+                - '.*'
+
+            excludes: # files to exclude, a list of regex
+                - '^.gitignore$'
+                - '^\.git*'
+                - '^\.idea*'
+                - '^\static*'
+                - '.*\.zip$'
+                - '.*\.pyc$'
+
+            files:
+
+                - .ebextensions/01_init.config:
+                    yaml:
+                        packages:
+                            yum:
+                                python-devel: ''
+                                postgresql-devel: ''
+                                libxslt-devel: ''
+                                libxml2-devel: ''
+
+                        container_commands:
+                            01_migrate:
+                                command: "./manage.py migrate --noinput"
+                                leader_only: true
+                            02_createadmin:
+                                command: "./createadmin.py"
+                                leader_only: true
+                            03_collectstatic:
+                                command: "./manage.py collectstatic --noinput"
+                                leader_only: true
+
+
+    environments:
+
+        # the dev version of the app
+        'omaha-server-dev':
+            cname_prefix: 'your-domain-prefix'
+            option_settings:
+                'aws:elasticbeanstalk:application:environment':
+                    APP_VERSION: 'DEV'
+                    DJANGO_SETTINGS_MODULE: 'omaha_server.settings_prod'
+                    SECRET_KEY: 'Django SECRET_KEY'
+                    HOST_NAME: 'Eb app host name'
+                    DB_HOST: 'db host'
+                    DB_USER: 'db user'
+                    DB_NAME: 'db name'
+                    DB_PASSWORD: 'db password'
+                    AWS_ACCESS_KEY_ID: 'AWS Access Key'
+                    AWS_SECRET_ACCESS_KEY: 'AWS Secret Key'
+                    AWS_STORAGE_BUCKET_NAME: 'S3 storage bucket'
+                    RAVEN_DNS: 'Sentry url'
+                    REDIS_HOST: '127.0.0.1'
+
 ```
 
 #### Environment variables
@@ -88,12 +198,15 @@ $ ebs-deploy init
 | REDIS_STAT_HOST           |                   | REDIS_HOST                 |
 | REDIS_STAT_DB             |                   | 15                         |
 
+### Initialize your ElasticBeanstalk application
 
-
+```bash
+$ ebs-deploy init
+```
 
 ### Deploy your application
 
-```sh
+```bash
 $ ebs-deploy deploy -e omaha-server-dev
 ```
 
