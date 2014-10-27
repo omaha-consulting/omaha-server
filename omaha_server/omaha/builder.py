@@ -52,6 +52,33 @@ def on_action(action_list, action):
     return action_list
 
 
+def get_version(app_id, platform, channel, version, userid, date=None):
+    date = date or now()
+
+    version_qs = Version.objects.filter_by_enabled(
+        app=app_id,
+        platform__name=platform,
+        channel__name=channel)
+    if version:
+        version_qs = version_qs.filter(version__gt=version)
+    version_qs = version_qs.prefetch_related("actions")
+
+    try:
+        version = version_qs.filter(partialupdate__is_enabled=True,
+                                    partialupdate__start_date__lte=date,
+                                    partialupdate__end_date__gte=date).latest('version')
+        userid_int = UUID(userid).int
+        percent = version.partialupdate.percent
+        if not (userid_int % int(100 / percent)) == 0:
+            raise Version.DoesNotExist
+    except Version.DoesNotExist:
+        version = version_qs.filter(
+            Q(partialupdate__isnull=True)
+            | Q(partialupdate__is_enabled=False)).latest('version')
+
+    return version
+
+
 def on_app(apps_list, app, os, userid):
     app_id = app.get('appid')
     version = app.get('version')
@@ -63,26 +90,7 @@ def on_app(apps_list, app, os, userid):
 
     if app.findall('updatecheck'):
         try:
-            version_qs = Version.objects.filter_by_enabled(
-                app=app_id,
-                platform__name=platform,
-                channel__name=channel)
-            if version:
-                version_qs = version_qs.filter(version__gt=version)
-            version_qs = version_qs.prefetch_related("actions")
-
-            try:
-                version = version_qs.filter(partialupdate__start_date__lte=now(),
-                                            partialupdate__end_date__gte=now()).latest('version')
-                userid_int = UUID(userid).int
-                percent = version.partialupdate.percent
-                if not userid_int % int(100/percent):
-                    raise Version.DoesNotExist
-            except Version.DoesNotExist:
-                version = version_qs.filter(
-                    Q(partialupdate__isnull=True)
-                    | Q(partialupdate__is_enabled=False)).latest('version')
-
+            version = get_version(app_id, platform, channel, version, userid)
             actions = reduce(on_action, version.actions.all(), [])
             updatecheck = Updatecheck_positive(
                 urls=[version.file_url],
