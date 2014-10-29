@@ -41,7 +41,7 @@ def userid_counting(userid, apps_list, platform):
 def add_app_statistics(userid, platform, app):
     appid = app.get('appid')
     version = app.get('version')
-    channel = app.get('tag', DEFAULT_CHANNEL)
+    channel = app.get('tag') or DEFAULT_CHANNEL
     mark_event('request:%s' % appid, userid)
     mark_event('request:{}:{}'.format(appid, version), userid)
     mark_event('request:{}:{}'.format(appid, platform), userid)

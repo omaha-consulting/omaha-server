@@ -90,6 +90,7 @@
             <xs:attribute name='experiments' use='optional' type="xs:string"/>
             <xs:attribute name='iid' use='optional' type="GuidType"/>
             <xs:attribute name='installage' use='optional' type='xs:integer'/>
+            <xs:attribute name='tag' use='optional' type='xs:string'/>
         </xs:complexType>
     </xs:element>
     <xs:element name='updatecheck'>

@@ -83,7 +83,7 @@ def on_app(apps_list, app, os, userid):
     app_id = app.get('appid')
     version = app.get('version')
     platform = os.get('platform')
-    channel = app.get('tag', DEFAULT_CHANNEL)
+    channel = app.get('tag') or DEFAULT_CHANNEL
     ping = bool(app.findall('ping'))
     events = reduce(on_event, app.findall('event'), [])
     AppPartial = partial(App, app_id, status='ok', ping=ping, events=events)

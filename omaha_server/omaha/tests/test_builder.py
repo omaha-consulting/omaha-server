@@ -28,7 +28,7 @@ from utils import temporary_media_root
 
 from omaha.factories import VersionFactory
 from omaha.builder import get_version
-from omaha.models import PartialUpdate, Version
+from omaha.models import PartialUpdate, Version, Channel
 
 
 @temporary_media_root()
@@ -77,3 +77,21 @@ class BuilderTest(TestCase):
                                                    version.channel.name,
                                                    '36.0.2062.124',
                                                    userid_beta))
+
+    def test_get_app_version_channel(self):
+        userid = '{D0BBD725-742D-44ae-8D46-0231E881D58E}'
+        channel_beta = Channel.objects.create(name="beta")
+        version = VersionFactory.create(file=SimpleUploadedFile('./chrome_installer.exe', b''))
+        version_beta = Version.objects.create(
+            file=SimpleUploadedFile('./chrome_installer.exe', b''),
+            app=version.app,
+            platform=version.platform,
+            channel=channel_beta,
+            version='39.0.0.0',
+        )
+
+        self.assertEqual(version_beta, get_version(version.app.pk,
+                                              version.platform.name,
+                                              channel_beta.name,
+                                              '',
+                                              userid))
