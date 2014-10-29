@@ -12,7 +12,8 @@ web:
   ports:
    - "9090:9090"
   environment:
-    DB_HOST: db_1
+    DB_HOST: db
+    DB_PORT: 5432
     DB_USER: postgres
     DB_NAME: postgres
     DB_PASSWORD: ''
@@ -22,4 +23,5 @@ web:
     AWS_ACCESS_KEY_ID: 'AWS_ACCESS_KEY_ID'
     AWS_SECRET_ACCESS_KEY: 'AWS_SECRET_ACCESS_KEY'
     AWS_STORAGE_BUCKET_NAME: 'AWS_STORAGE_BUCKET_NAME'
-    REDIS_HOST: 'redis_1'
+    REDIS_HOST: redis
+    REDIS_PORT: 6379
