@@ -24,6 +24,7 @@ from django.conf import settings
 from bitmapist import setup_redis, mark_event
 
 from utils import get_id
+from settings import DEFAULT_CHANNEL
 
 __all__ = ['userid_counting']
 
@@ -31,15 +32,16 @@ host, port, db = settings.CACHES['statistics']['LOCATION'].split(':')
 setup_redis('default', host, port, db=db)
 
 
-def userid_counting(userid, apps_list, platform, channel):
+def userid_counting(userid, apps_list, platform):
     id = get_id(userid)
     mark_event('request', id)
-    map(partial(add_app_statistics, id, platform, channel), apps_list or [])
+    map(partial(add_app_statistics, id, platform), apps_list or [])
 
 
-def add_app_statistics(userid, platform, channel, app):
+def add_app_statistics(userid, platform, app):
     appid = app.get('appid')
     version = app.get('version')
+    channel = app.get('tag', DEFAULT_CHANNEL)
     mark_event('request:%s' % appid, userid)
     mark_event('request:{}:{}'.format(appid, version), userid)
     mark_event('request:{}:{}'.format(appid, platform), userid)

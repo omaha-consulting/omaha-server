@@ -28,6 +28,7 @@ from raven.contrib.django.raven_compat.models import client
 from models import Version
 from parser import parse_request
 from statistics import userid_counting
+from settings import DEFAULT_CHANNEL
 from core import (Response, App, Updatecheck_negative, Manifest, Updatecheck_positive,
                   Packages, Package, Actions, Action, Event)
 
@@ -49,10 +50,11 @@ def on_action(action_list, action):
     return action_list
 
 
-def on_app(apps_list, app, os, channel):
+def on_app(apps_list, app, os):
     app_id = app.get('appid')
     version = app.get('version')
     platform = os.get('platform')
+    channel = app.get('tag', DEFAULT_CHANNEL)
     ping = bool(app.findall('ping'))
     events = reduce(on_event, app.findall('event'), [])
     AppPartial = partial(App, app_id, status='ok', ping=ping, events=events)
@@ -93,12 +95,11 @@ def on_app(apps_list, app, os, channel):
 
 def build_response(request, pretty_print=True):
     obj = parse_request(request)
-    channel = obj.get('updaterchannel', 'stable')
     userid = obj.get('userid')
     apps = obj.findall('app')
-    apps_list = reduce(partial(on_app, os=obj.os, channel=channel), apps, [])
+    apps_list = reduce(partial(on_app, os=obj.os), apps, [])
     if userid:
-        userid_counting(userid, apps, obj.os.get('platform'), channel)
+        userid_counting(userid, apps, obj.os.get('platform'))
     response = Response(apps_list, date=now())
     return etree.tostring(response, pretty_print=pretty_print,
                           xml_declaration=True, encoding='UTF-8')
