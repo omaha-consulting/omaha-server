@@ -27,6 +27,7 @@ from bitmapist import DayEvents
 
 from omaha.statistics import userid_counting, add_app_statistics
 from omaha.utils import redis, get_id
+from omaha.settings import DEFAULT_CHANNEL
 
 
 class StatisticsTest(TestCase):
@@ -54,33 +55,33 @@ class StatisticsTest(TestCase):
         self.assertFalse(user1_id in request_events)
         self.assertEqual(len(request_events), 0)
 
-        userid_counting(userid1, app_list, 'win', 'stable')
+        userid_counting(userid1, app_list, 'win')
 
         for app in app_list:
-            mock_add_app_statistics.assert_any_call(user1_id, 'win', 'stable', app)
+            mock_add_app_statistics.assert_any_call(user1_id, 'win', app)
 
         self.assertEqual(len(request_events), 1)
         self.assertTrue(user1_id in request_events)
 
-        userid_counting(userid1, app_list, 'win', 'stable')
+        userid_counting(userid1, app_list, 'win')
 
         for app in app_list:
-            mock_add_app_statistics.assert_any_call(user1_id, 'win', 'stable', app)
+            mock_add_app_statistics.assert_any_call(user1_id, 'win', app)
 
         self.assertEqual(len(request_events), 1)
 
         self.assertFalse(user2_id in request_events)
-        userid_counting(userid2, app_list[:1], 'win', 'stable')
+        userid_counting(userid2, app_list[:1], 'win')
         self.assertTrue(user2_id in request_events)
         for app in app_list[:1]:
-            mock_add_app_statistics.assert_any_call(user2_id, 'win', 'stable', app)
+            mock_add_app_statistics.assert_any_call(user2_id, 'win', app)
 
         self.assertEqual(len(request_events), 2)
 
     def test_add_app_statistics(self):
         now = datetime.utcnow()
         userid = 1
-        channel = 'stable'
+        channel = DEFAULT_CHANNEL
         platform = 'win'
         app = dict(appid='{F97917B1-20AB-48C1-9802-CEF305B10804}', version='30.0.123.1234')
         appid = app.get('appid')
@@ -98,7 +99,7 @@ class StatisticsTest(TestCase):
         self.assertEqual(len(events_appid_channel), 0)
         self.assertEqual(len(events_appid_platform_version), 0)
 
-        add_app_statistics(userid, platform, channel, app)
+        add_app_statistics(userid, platform, app)
 
         self.assertEqual(len(events_appid), 1)
         self.assertEqual(len(events_appid_version), 1)
