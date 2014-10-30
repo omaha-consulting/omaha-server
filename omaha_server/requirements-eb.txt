@@ -13,4 +13,4 @@ django-storages==1.1.8
 django-absolute==0.3
 https://github.com/Crystalnix/django-versionfield/archive/fix-minor-bugs.zip#egg=versionfield
 django-redis==3.7.1
-bitmapist==2.31
+bitmapist==3.4
