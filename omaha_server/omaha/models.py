@@ -164,12 +164,25 @@ class Action(TimeStampedModel):
         return attrs
 
 
+ACTIVE_USERS_DICT_CHOICES = dict(
+    all=0,
+    week=1,
+    month=2,
+)
+
+ACTIVE_USERS_CHOICES = zip(ACTIVE_USERS_DICT_CHOICES.values(), ACTIVE_USERS_DICT_CHOICES.keys())
+
+
 class PartialUpdate(models.Model):
     is_enabled = models.BooleanField(default=True)
     version = models.OneToOneField(Version)
     percent = PercentField()
     start_date = models.DateField()
     end_date = models.DateField()
+    exclude_new_users = models.BooleanField(default=True)
+    active_users = models.PositiveSmallIntegerField(
+        help_text='Active users in the past ...',
+        choices=ACTIVE_USERS_CHOICES, default=1)
 
 
 @receiver(pre_save, sender=Version)

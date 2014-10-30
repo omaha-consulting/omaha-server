@@ -23,11 +23,12 @@ from datetime import datetime
 from django.test import TestCase
 
 from mock import patch
-from bitmapist import DayEvents
+from bitmapist import DayEvents, mark_event
 
-from omaha.statistics import userid_counting, add_app_statistics
+from omaha.statistics import userid_counting, add_app_statistics, is_user_active
 from omaha.utils import redis, get_id
 from omaha.settings import DEFAULT_CHANNEL
+from omaha.models import ACTIVE_USERS_DICT_CHOICES
 
 
 class StatisticsTest(TestCase):
@@ -112,3 +113,17 @@ class StatisticsTest(TestCase):
         self.assertIn(userid, events_appid_platform)
         self.assertIn(userid, events_appid_channel)
         self.assertIn(userid, events_appid_platform_version)
+
+    def test_is_user_active(self):
+        userid = '{F07B3878-CD6F-4B96-B52F-95C4D23077E0}'
+        id = get_id(userid)
+
+        self.assertTrue(is_user_active(ACTIVE_USERS_DICT_CHOICES['all'], userid))
+        self.assertFalse(is_user_active(ACTIVE_USERS_DICT_CHOICES['week'], userid))
+        self.assertFalse(is_user_active(ACTIVE_USERS_DICT_CHOICES['month'], userid))
+
+        mark_event('request', id)
+
+        self.assertTrue(is_user_active(ACTIVE_USERS_DICT_CHOICES['all'], userid))
+        self.assertTrue(is_user_active(ACTIVE_USERS_DICT_CHOICES['week'], userid))
+        self.assertTrue(is_user_active(ACTIVE_USERS_DICT_CHOICES['month'], userid))

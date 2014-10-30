@@ -18,6 +18,9 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
+from functools import wraps
+
+from singledispatch import singledispatch
 from redis_cache import get_redis_connection
 from redis.exceptions import WatchError
 from settings import KEY_PREFIX, KEY_LAST_ID
@@ -74,3 +77,16 @@ def create_id(uuid):
                 continue
             except:
                 raise
+
+
+def valuedispatch(func):
+    _func = singledispatch(func)
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        return _func.registry.get(args[0], _func)(*args, **kwargs)
+
+    wrapper.register = _func.register
+    wrapper.dispatch = _func.dispatch
+    wrapper.registry = _func.registry
+    return wrapper

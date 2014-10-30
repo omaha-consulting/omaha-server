@@ -9,3 +9,4 @@ https://github.com/Crystalnix/django-versionfield/archive/fix-minor-bugs.zip#egg
 raven==5.0.0
 django-redis==3.7.1
 bitmapist==3.4
+singledispatch==3.4.0.3

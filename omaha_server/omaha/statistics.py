@@ -21,12 +21,14 @@ the License.
 from functools import partial
 
 from django.conf import settings
-from bitmapist import setup_redis, mark_event
+from django.utils.timezone import now
+from bitmapist import setup_redis, mark_event, WeekEvents, MonthEvents
 
-from utils import get_id
+from utils import get_id, valuedispatch
 from settings import DEFAULT_CHANNEL
+from models import ACTIVE_USERS_DICT_CHOICES
 
-__all__ = ['userid_counting']
+__all__ = ['userid_counting', 'is_user_active']
 
 host, port, db = settings.CACHES['statistics']['LOCATION'].split(':')
 setup_redis('default', host, port, db=db)
@@ -47,3 +49,23 @@ def add_app_statistics(userid, platform, app):
     mark_event('request:{}:{}'.format(appid, platform), userid)
     mark_event('request:{}:{}'.format(appid, channel), userid)
     mark_event('request:{}:{}:{}'.format(appid, platform, version), userid)
+
+
+@valuedispatch
+def is_user_active(userid, period):
+    return False
+
+
+@is_user_active.register(ACTIVE_USERS_DICT_CHOICES['all'])
+def _(period, userid):
+    return True
+
+
+@is_user_active.register(ACTIVE_USERS_DICT_CHOICES['week'])
+def _(period, userid):
+    return get_id(userid) in WeekEvents.from_date('request', now())
+
+
+@is_user_active.register(ACTIVE_USERS_DICT_CHOICES['month'])
+def _(period, userid):
+    return get_id(userid) in MonthEvents.from_date('request', now())

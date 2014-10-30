@@ -29,7 +29,7 @@ from raven.contrib.django.raven_compat.models import client
 
 from models import Version
 from parser import parse_request
-from statistics import userid_counting
+from statistics import userid_counting, is_user_active
 from settings import DEFAULT_CHANNEL
 from core import (Response, App, Updatecheck_negative, Manifest, Updatecheck_positive,
                   Packages, Package, Actions, Action, Event)
@@ -52,6 +52,12 @@ def on_action(action_list, action):
     return action_list
 
 
+def is_new_user(version):
+    if version == '':
+        return True
+    return False
+
+
 def get_version(app_id, platform, channel, version, userid, date=None):
     date = date or now()
 
@@ -64,19 +70,26 @@ def get_version(app_id, platform, channel, version, userid, date=None):
     version_qs = version_qs.prefetch_related("actions")
 
     try:
-        version = version_qs.filter(partialupdate__is_enabled=True,
-                                    partialupdate__start_date__lte=date,
-                                    partialupdate__end_date__gte=date).latest('version')
+        new_version = version_qs.filter(partialupdate__is_enabled=True,
+                                        partialupdate__start_date__lte=date,
+                                        partialupdate__end_date__gte=date).latest('version')
+
+        if new_version.partialupdate.exclude_new_users and is_new_user(version):
+            raise Version.DoesNotExist
+
+        if not is_user_active(new_version.partialupdate.active_users, userid):
+            raise Version.DoesNotExist
+
         userid_int = UUID(userid).int
-        percent = version.partialupdate.percent
+        percent = new_version.partialupdate.percent
         if not (userid_int % int(100 / percent)) == 0:
             raise Version.DoesNotExist
     except Version.DoesNotExist:
-        version = version_qs.filter(
+        new_version = version_qs.filter(
             Q(partialupdate__isnull=True)
             | Q(partialupdate__is_enabled=False)).latest('version')
 
-    return version
+    return new_version
 
 
 def on_app(apps_list, app, os, userid):
