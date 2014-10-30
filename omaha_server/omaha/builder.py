@@ -19,15 +19,17 @@ the License.
 """
 
 from functools import partial
+from uuid import UUID
 
 from django.utils.timezone import now
+from django.db.models import Q
 
 from lxml import etree
 from raven.contrib.django.raven_compat.models import client
 
 from models import Version
 from parser import parse_request
-from statistics import userid_counting
+from statistics import userid_counting, is_user_active
 from settings import DEFAULT_CHANNEL
 from core import (Response, App, Updatecheck_negative, Manifest, Updatecheck_positive,
                   Packages, Package, Actions, Action, Event)
@@ -50,25 +52,58 @@ def on_action(action_list, action):
     return action_list
 
 
-def on_app(apps_list, app, os):
+def is_new_user(version):
+    if version == '':
+        return True
+    return False
+
+
+def get_version(app_id, platform, channel, version, userid, date=None):
+    date = date or now()
+
+    version_qs = Version.objects.filter_by_enabled(
+        app=app_id,
+        platform__name=platform,
+        channel__name=channel)
+    if version:
+        version_qs = version_qs.filter(version__gt=version)
+    version_qs = version_qs.prefetch_related("actions")
+
+    try:
+        new_version = version_qs.filter(partialupdate__is_enabled=True,
+                                        partialupdate__start_date__lte=date,
+                                        partialupdate__end_date__gte=date).latest('version')
+
+        if new_version.partialupdate.exclude_new_users and is_new_user(version):
+            raise Version.DoesNotExist
+
+        if not is_user_active(new_version.partialupdate.active_users, userid):
+            raise Version.DoesNotExist
+
+        userid_int = UUID(userid).int
+        percent = new_version.partialupdate.percent
+        if not (userid_int % int(100 / percent)) == 0:
+            raise Version.DoesNotExist
+    except Version.DoesNotExist:
+        new_version = version_qs.filter(
+            Q(partialupdate__isnull=True)
+            | Q(partialupdate__is_enabled=False)).latest('version')
+
+    return new_version
+
+
+def on_app(apps_list, app, os, userid):
     app_id = app.get('appid')
     version = app.get('version')
     platform = os.get('platform')
-    channel = app.get('tag', DEFAULT_CHANNEL)
+    channel = app.get('tag') or DEFAULT_CHANNEL
     ping = bool(app.findall('ping'))
     events = reduce(on_event, app.findall('event'), [])
     AppPartial = partial(App, app_id, status='ok', ping=ping, events=events)
 
     if app.findall('updatecheck'):
         try:
-            version_qs = Version.objects.filter_by_enabled(
-                app=app_id,
-                platform__name=platform,
-                channel__name=channel)
-            if version:
-                version_qs = version_qs.filter(version__gt=version)
-            version_qs = version_qs.prefetch_related("actions")
-            version = version_qs.latest('version')
+            version = get_version(app_id, platform, channel, version, userid)
             actions = reduce(on_action, version.actions.all(), [])
             updatecheck = Updatecheck_positive(
                 urls=[version.file_url],
@@ -97,7 +132,7 @@ def build_response(request, pretty_print=True):
     obj = parse_request(request)
     userid = obj.get('userid')
     apps = obj.findall('app')
-    apps_list = reduce(partial(on_app, os=obj.os), apps, [])
+    apps_list = reduce(partial(on_app, os=obj.os, userid=userid), apps, [])
     if userid:
         userid_counting(userid, apps, obj.os.get('platform'))
     response = Response(apps_list, date=now())
