@@ -23,6 +23,11 @@ TEMPLATE_CONTEXT_PROCESSORS = TCP + (
 
 SUIT_CONFIG = {
     'ADMIN_NAME': 'Omaha Server',
+    'MENU': (
+        'sites',
+        {'app': 'omaha', 'label': 'Omaha', 'icon': 'icon-refresh'},
+        {'label': 'Statistics', 'url': 'omaha_statistics', 'icon': 'icon-star'},
+    ),
 }
 
 
@@ -55,6 +60,9 @@ INSTALLED_APPS = (
     'django_extensions',
     'versionfield',
     'absolute',
+    'django_nvd3',
+    'djangobower',
+    'django_filters',
 
     'omaha',
 )
@@ -139,3 +147,14 @@ CACHES = {
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 SESSION_CACHE_ALIAS = 'default'
+
+STATICFILES_FINDERS = ("django.contrib.staticfiles.finders.FileSystemFinder",
+                       "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+                       "djangobower.finders.BowerFinder",)
+
+BOWER_COMPONENTS_ROOT = os.path.join(PROJECT_DIR, 'assets', 'components')
+
+BOWER_INSTALLED_APPS = (
+    'd3#3.3.6',
+    'nvd3#1.1.12-beta',
+)

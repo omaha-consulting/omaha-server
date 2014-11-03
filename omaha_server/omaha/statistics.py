@@ -19,14 +19,16 @@ the License.
 """
 
 from functools import partial
+from datetime import datetime, timedelta
 
 from django.conf import settings
-from django.utils.timezone import now
-from bitmapist import setup_redis, mark_event, WeekEvents, MonthEvents
+from django.db import transaction
+from django.utils import timezone
+from bitmapist import setup_redis, mark_event, WeekEvents, MonthEvents, DayEvents
 
 from utils import get_id, valuedispatch
 from settings import DEFAULT_CHANNEL
-from models import ACTIVE_USERS_DICT_CHOICES
+from models import ACTIVE_USERS_DICT_CHOICES, Request, AppRequest, Os, Hw, Event, Version, Channel
 
 __all__ = ['userid_counting', 'is_user_active']
 
@@ -34,25 +36,72 @@ host, port, db = settings.CACHES['statistics']['LOCATION'].split(':')
 setup_redis('default', host, port, db=db)
 
 
-def userid_counting(userid, apps_list, platform):
+def userid_counting(userid, apps_list, platform, now=None):
     id = get_id(userid)
-    mark_event('request', id)
-    map(partial(add_app_statistics, id, platform), apps_list or [])
+    mark_event('request', id, now=now)
+    map(partial(add_app_statistics, id, platform, now=now), apps_list or [])
 
 
-def add_app_statistics(userid, platform, app):
+def add_app_statistics(userid, platform, app, now=None):
+    mark = partial(mark_event, now=now)
     appid = app.get('appid')
     version = app.get('version')
     channel = app.get('tag') or DEFAULT_CHANNEL
-    mark_event('request:%s' % appid, userid)
-    mark_event('request:{}:{}'.format(appid, version), userid)
-    mark_event('request:{}:{}'.format(appid, platform), userid)
-    mark_event('request:{}:{}'.format(appid, channel), userid)
-    mark_event('request:{}:{}:{}'.format(appid, platform, version), userid)
+    mark('request:%s' % appid, userid)
+    mark('request:{}:{}'.format(appid, version), userid)
+    mark('request:{}:{}'.format(appid, platform), userid)
+    mark('request:{}:{}'.format(appid, channel), userid)
+    mark('request:{}:{}:{}'.format(appid, platform, version), userid)
+
+
+def get_users_statistics_months(app_id=None):
+    now = timezone.now()
+    year = now.year
+    event_name = 'request:%s' % app_id if app_id else 'request'
+
+    months = []
+    for m in xrange(1, 13):
+        months.append(MonthEvents(event_name, year, m))
+    data = [(datetime(year, i+1, 1).strftime("%B"), len(e)) for i, e in enumerate(months)]
+    return data
+
+
+def get_users_statistics_weeks(app_id=None):
+    now = timezone.now()
+    event_name = 'request:%s' % app_id if app_id else 'request'
+    year = now.year
+    current_week = now.isocalendar()[1]
+    previous_week = (now - timedelta(weeks=1)).isocalendar()[1]
+    yesterday = now - timedelta(days=1)
+    data = [
+        ('Previous week', len(WeekEvents(event_name, year, previous_week))),
+        ('Current week', len(WeekEvents(event_name, year, current_week))),
+        ('Yesterday', len(DayEvents(event_name, year, yesterday.month, yesterday.day))),
+        ('Today', len(DayEvents(event_name, year, now.month, now.day))),
+    ]
+    return data
+
+
+def get_channel_statistics(app_id):
+    now = timezone.now()
+    event_name = 'request:{}:{}'
+    week = now.isocalendar()[1]
+    channels = [c.name for c in Channel.objects.all()]
+    data = [(channel, len(WeekEvents(event_name.format(app_id, channel), now.year, week))) for channel in channels]
+    return data
+
+
+def get_users_versions(app_id):
+    now = timezone.now()
+    event_name = 'request:{}:{}'
+    week = now.isocalendar()[1]
+    versions = [str(v.version) for v in Version.objects.filter_by_enabled(app__id=app_id)]
+    data = [(v, len(WeekEvents(event_name.format(app_id, v), now.year, week))) for v in versions]
+    return data
 
 
 @valuedispatch
-def is_user_active(userid, period):
+def is_user_active(period, userid):
     return False
 
 
@@ -63,9 +112,70 @@ def _(period, userid):
 
 @is_user_active.register(ACTIVE_USERS_DICT_CHOICES['week'])
 def _(period, userid):
-    return get_id(userid) in WeekEvents.from_date('request', now())
+    return get_id(userid) in WeekEvents.from_date('request', timezone.now())
 
 
 @is_user_active.register(ACTIVE_USERS_DICT_CHOICES['month'])
 def _(period, userid):
-    return get_id(userid) in MonthEvents.from_date('request', now())
+    return get_id(userid) in MonthEvents.from_date('request', timezone.now())
+
+
+def get_kwargs_for_model(cls, obj, exclude=None):
+    exclude = exclude or []
+    fields = [(field.name, field.to_python) for field in cls._meta.fields if field.name not in exclude]
+    kwargs = dict([(i, convert(obj.get(i))) for (i, convert) in fields])
+    return kwargs
+
+
+def parse_os(os):
+    kwargs = get_kwargs_for_model(Os, os, exclude=['id'])
+    obj, flag = Os.objects.get_or_create(**kwargs)
+    return obj
+
+
+def parse_hw(hw):
+    kwargs = get_kwargs_for_model(Hw, hw, exclude=['id'])
+    obj, flag = Hw.objects.get_or_create(**kwargs)
+    return obj
+
+
+def parse_req(request):
+    kwargs = get_kwargs_for_model(Request, request, exclude=['os', 'hw', 'created', 'id'])
+    return Request(**kwargs)
+
+
+def parse_apps(apps, request):
+    app_list = []
+    for app in apps:
+        kwargs = get_kwargs_for_model(AppRequest, app, exclude=['request', 'version', 'nextversion', 'id'])
+        kwargs['version'] = app.get('version') or None
+        kwargs['nextversion'] = app.get('nextversion') or None
+        app_req = AppRequest.objects.create(request=request, **kwargs)
+        event_list = parse_events(app.findall('event'))
+        app_req.events.add(*event_list)
+        app_list.append(app_req)
+    return app_list
+
+
+def parse_events(events):
+    res = []
+    for event in events:
+        kwargs = get_kwargs_for_model(Event, event)
+        res.append(Event.objects.create(**kwargs))
+    return res
+
+
+@transaction.atomic
+def collect_statistics(request):
+    userid = request.get('userid')
+    apps = request.findall('app')
+
+    if userid:
+        userid_counting(userid, apps, request.os.get('platform'))
+
+    req = parse_req(request)
+    req.os = parse_os(request.os)
+    req.hw = parse_hw(request.hw) if request.get('hw') else None
+    req.save()
+
+    parse_apps(apps, req)

@@ -19,7 +19,7 @@ the License.
 """
 
 from django.contrib import admin
-from models import Channel, Platform, Application, Version, Action, PartialUpdate
+from models import Channel, Platform, Application, Version, Action, PartialUpdate, Request, AppRequest, Event
 from forms import ApplicationAdminForm
 
 

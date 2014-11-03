@@ -1,0 +1,159 @@
+# coding: utf8
+
+"""
+This software is licensed under the Apache 2 license, quoted below.
+
+Copyright 2014 Crystalnix Limited
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License. You may obtain a copy of
+the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+License for the specific language governing permissions and limitations under
+the License.
+"""
+
+from django.contrib.admin.views.decorators import staff_member_required
+from django.utils.decorators import method_decorator
+from django.views.generic import DetailView, ListView
+from django.views.generic.list import MultipleObjectMixin
+
+from omaha.statistics import (
+    get_users_statistics_months,
+    get_users_statistics_weeks,
+    get_users_versions,
+    get_channel_statistics,
+)
+from omaha.models import Application, AppRequest
+from filters import AppRequestFilter
+
+
+def make_discrete_bar_chart(id, data):
+    xdata = [i[0] for i in data]
+    ydata = [i[1] for i in data]
+
+    extra_serie1 = {"tooltip": {"y_start": "", "y_end": " cal"}}
+    chartdata = {
+        'x': xdata, 'name1': '', 'y1': ydata, 'extra1': extra_serie1,
+    }
+    charttype = "discreteBarChart"
+    chartcontainer = 'chart_container_%s' % id  # container name
+    data = {
+        'charttype': charttype,
+        'chartdata': chartdata,
+        'chartcontainer': chartcontainer,
+        'extra': {
+            'x_is_date': False,
+            'x_axis_format': '',
+            'tag_script_js': True,
+            'jquery_on_ready': True,
+        },
+    }
+    return data
+
+
+def make_piechart(id, data):
+    xdata = [i[0] for i in data]
+    ydata = [i[1] for i in data]
+
+    extra_serie = {
+        "tooltip": {"y_start": "", "y_end": " users"},
+    }
+    chartdata = {'x': xdata, 'y1': ydata, 'extra1': extra_serie}
+    charttype = "pieChart"
+    chartcontainer = 'chart_container_%s' % id  # container name
+
+    data = {
+        'charttype': charttype,
+        'chartdata': chartdata,
+        'chartcontainer': chartcontainer,
+        'extra': {
+            'x_is_date': False,
+            'x_axis_format': '',
+            'tag_script_js': True,
+            'jquery_on_ready': False,
+        }
+    }
+    return data
+
+
+class StaffMemberRequiredMixin(object):
+    @method_decorator(staff_member_required)
+    def dispatch(self, *args, **kwargs):
+        return super(StaffMemberRequiredMixin, self).dispatch(*args, **kwargs)
+
+
+class StatisticsView(StaffMemberRequiredMixin, ListView):
+    template_name = "admin/omaha/statistics.html"
+    model = Application
+    context_object_name = "app_list"
+
+    def get_context_data(self, **kwargs):
+        context = super(StatisticsView, self).get_context_data(**kwargs)
+
+        context['months'] = make_discrete_bar_chart('months', get_users_statistics_months())
+        context['weeks'] = make_discrete_bar_chart('weeks', get_users_statistics_weeks())
+
+        return context
+
+
+class StatisticsDetailView(StaffMemberRequiredMixin, DetailView):
+    model = Application
+    template_name = 'admin/omaha/statistics_detail.html'
+    context_object_name = 'app'
+
+    def get_object(self, queryset=None):
+        return Application.objects.get(name=self.kwargs.get('name'))
+
+    def get_context_data(self, **kwargs):
+        context = super(StatisticsDetailView, self).get_context_data(**kwargs)
+
+        app = self.object
+
+        context['months'] = make_discrete_bar_chart('months', get_users_statistics_months(app_id=app.id))
+        context['weeks'] = make_discrete_bar_chart('weeks', get_users_statistics_weeks(app_id=app.id))
+        context['versions'] = make_piechart('versions', get_users_versions(app.id))
+        context['channels'] = make_piechart('channels', get_channel_statistics(app.id))
+
+        return context
+
+
+class RequestListView(ListView, MultipleObjectMixin, StaffMemberRequiredMixin):
+    model = AppRequest
+    context_object_name = 'request_list'
+    template_name = 'admin/omaha/request_list.html'
+    paginate_by = 20
+
+    def get_queryset(self):
+        qs = super(RequestListView, self).get_queryset()
+        qs = qs.select_related('request', 'request__os',)
+        qs = qs.distinct()
+        self.filter = AppRequestFilter(self.request.GET, queryset=qs)
+        return self.filter.qs
+
+    def get_context_data(self, **kwargs):
+        context = super(RequestListView, self).get_context_data(**kwargs)
+        context['filter'] = self.filter
+        context['app_name'] = self.kwargs.get('name')
+        return context
+
+
+class AppRequestDetailView(StaffMemberRequiredMixin, DetailView):
+    model = AppRequest
+    template_name = 'admin/omaha/request_detail.html'
+
+    def get_queryset(self):
+        qs = super(AppRequestDetailView, self).get_queryset()
+        qs = qs.select_related('request', 'request__os', 'request__hw')
+        qs = qs.prefetch_related('events')
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super(AppRequestDetailView, self).get_context_data(**kwargs)
+        context['app_name'] = self.kwargs.get('name')
+        return context

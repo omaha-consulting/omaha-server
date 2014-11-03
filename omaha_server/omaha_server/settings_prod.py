@@ -22,9 +22,7 @@ AWS_PRELOAD_METADATA = True
 AWS_QUERYSTRING_AUTH = False
 AWS_IS_GZIPPED = True
 
-SUIT_CONFIG = {
-    'ADMIN_NAME': 'Omaha Server [{}]'.format(os.environ.get('APP_VERSION')),
-}
+SUIT_CONFIG['ADMIN_NAME'] = 'Omaha Server [{}]'.format(os.environ.get('APP_VERSION'))
 
 RAVEN_CONFIG = {
     'dsn': os.environ.get('RAVEN_DNS'),
