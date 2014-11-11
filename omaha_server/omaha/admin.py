@@ -20,6 +20,7 @@ the License.
 
 from django.contrib import admin
 from models import Channel, Platform, Application, Version, Action, PartialUpdate
+from forms import ApplicationAdminForm
 
 
 @admin.register(Platform)
@@ -35,6 +36,7 @@ class ChannelAdmin(admin.ModelAdmin):
 @admin.register(Application)
 class ApplicationAdmin(admin.ModelAdmin):
     list_display = ('name', 'id',)
+    form = ApplicationAdminForm
 
 
 class ActionInline(admin.StackedInline):
