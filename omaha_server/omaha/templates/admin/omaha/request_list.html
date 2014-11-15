@@ -1,0 +1,72 @@
+{% extends "admin/base.html" %}
+{% load suit_tags %}
+{% load suit_list %}
+{% load url_replace %}
+
+{% block title %}Statistics | {{ 'ADMIN_NAME'|suit_conf }}{% endblock %}
+
+{% block breadcrumbs %}
+    <ul class="breadcrumb">
+        <li><a href="{% url 'admin:index' %}">Home</a>
+            <span class="divider">&raquo;</span>
+        </li>
+        <li>
+            <a href="{% url "omaha_statistics" %}">Statistics</a>
+            <span class="divider">&raquo;</span>
+        </li>
+        <li>
+            <a href="{% url "omaha_statistics_detail" app_name %}">{{ app_name }}</a>
+            <span class="divider">&raquo;</span>
+        </li>
+        <li class="active">
+            <a href="#">Requests</a>
+        </li>
+    </ul>
+{% endblock %}
+
+
+{% block content %}
+
+    <form action="" method="get" class="form-horizontal">
+        {{ filter.form.as_p }}
+        <input type="submit" value="Search" class="btn"/>
+    </form>
+
+    <table class="table table-hover table-striped">
+        <thead>
+        <tr>
+            <th>OS</th>
+            <th>Arch</th>
+            <th>Date</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for req in request_list %}
+            <tr>
+                <td>{{ req.request.os.platform }} {{ req.request.os.version }} {{ req.request.os.sp }}</td>
+                <td>{{ req.request.os.arch }}</td>
+                <td>{{ req.request.created|date:"r" }}</td>
+                <td><a target="_blank" href="{% url "omaha_request_detail" req.pk %}">Detail</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="pagination pagination-centered">
+        <ul>
+            {% if page_obj.has_previous %}
+                <li><a href="?{% url_replace request 'page' page_obj.previous_page_number %}">Prev</a></li>
+            {% else %}
+                <li class="disabled"><a href="#">Prev</a></li>
+            {% endif %}
+            <li class="disabled"><a href="">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</a></li>
+            {% if page_obj.has_next %}
+                <li><a href="?{% url_replace request 'page' page_obj.next_page_number %}">Next</a></li>
+            {% else %}
+                <li class="disabled"><a href="#">Next</a></li>
+            {% endif %}
+        </ul>
+    </div>
+
+{% endblock %}

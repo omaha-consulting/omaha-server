@@ -10,3 +10,6 @@ raven==5.0.0
 django-redis==3.7.1
 bitmapist==3.4
 singledispatch==3.4.0.3
+django-bower==5.0.1
+django-nvd3==0.7.6
+django-filter==0.8

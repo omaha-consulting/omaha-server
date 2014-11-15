@@ -19,16 +19,50 @@ the License.
 """
 
 from datetime import datetime
+from uuid import UUID
 
 from django.test import TestCase
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from mock import patch
+from freezegun import freeze_time
 from bitmapist import DayEvents, mark_event
 
-from omaha.statistics import userid_counting, add_app_statistics, is_user_active
+import fixtures
+
+from omaha.parser import parse_request
+from omaha.statistics import (
+    userid_counting,
+    add_app_statistics,
+    is_user_active,
+    get_kwargs_for_model,
+    parse_os,
+    parse_hw,
+    parse_req,
+    parse_apps,
+    parse_events,
+    collect_statistics,
+    get_users_statistics_months,
+    get_users_statistics_weeks,
+    get_channel_statistics,
+    get_users_versions,
+)
+
+from omaha.tests.utils import temporary_media_root
 from omaha.utils import redis, get_id
 from omaha.settings import DEFAULT_CHANNEL
-from omaha.models import ACTIVE_USERS_DICT_CHOICES
+from omaha.models import (
+    ACTIVE_USERS_DICT_CHOICES,
+    Os,
+    Hw,
+    Request,
+    AppRequest,
+    Event,
+    Application,
+    Platform,
+    Channel,
+    Version,
+)
 
 
 class StatisticsTest(TestCase):
@@ -59,7 +93,7 @@ class StatisticsTest(TestCase):
         userid_counting(userid1, app_list, 'win')
 
         for app in app_list:
-            mock_add_app_statistics.assert_any_call(user1_id, 'win', app)
+            mock_add_app_statistics.assert_any_call(user1_id, 'win', app, now=None)
 
         self.assertEqual(len(request_events), 1)
         self.assertTrue(user1_id in request_events)
@@ -67,7 +101,7 @@ class StatisticsTest(TestCase):
         userid_counting(userid1, app_list, 'win')
 
         for app in app_list:
-            mock_add_app_statistics.assert_any_call(user1_id, 'win', app)
+            mock_add_app_statistics.assert_any_call(user1_id, 'win', app, now=None)
 
         self.assertEqual(len(request_events), 1)
 
@@ -75,7 +109,7 @@ class StatisticsTest(TestCase):
         userid_counting(userid2, app_list[:1], 'win')
         self.assertTrue(user2_id in request_events)
         for app in app_list[:1]:
-            mock_add_app_statistics.assert_any_call(user2_id, 'win', app)
+            mock_add_app_statistics.assert_any_call(user2_id, 'win', app, now=None)
 
         self.assertEqual(len(request_events), 2)
 
@@ -127,3 +161,233 @@ class StatisticsTest(TestCase):
         self.assertTrue(is_user_active(ACTIVE_USERS_DICT_CHOICES['all'], userid))
         self.assertTrue(is_user_active(ACTIVE_USERS_DICT_CHOICES['week'], userid))
         self.assertTrue(is_user_active(ACTIVE_USERS_DICT_CHOICES['month'], userid))
+
+    def test_get_kwargs_for_model(self):
+        os = dict(platform="win",
+                  version="6.1",
+                  sp="",
+                  arch="x64")
+        kwargs = get_kwargs_for_model(Os, os)
+        self.assertDictEqual(kwargs, dict(platform="win",
+                                          version="6.1",
+                                          sp="",
+                                          arch="x64",
+                                          id=None))
+
+    def test_parse_os(self):
+        request = parse_request(fixtures.request_event)
+        os = parse_os(request.os)
+        self.assertIsInstance(os, Os)
+        self.assertEqual(os.platform, 'win')
+        self.assertEqual(os.version, '6.1')
+        self.assertEqual(os.sp, '')
+        self.assertEqual(os.arch, 'x64')
+
+    def test_parse_hw(self):
+        hw = dict(sse2="1")
+        hw = parse_hw(hw)
+        self.assertIsInstance(hw, Hw)
+        self.assertEqual(hw.sse, None)
+        self.assertEqual(hw.sse2, 1)
+        self.assertEqual(hw.sse3, None)
+        self.assertEqual(hw.ssse3, None)
+        self.assertEqual(hw.sse41, None)
+        self.assertEqual(hw.sse42, None)
+        self.assertEqual(hw.avx, None)
+        self.assertEqual(hw.physmemory, None)
+
+    def test_parse_request(self):
+        request = parse_request(fixtures.request_event)
+        req = parse_req(request)
+        self.assertIsInstance(req, Request)
+        self.assertEqual(req.version, Request._meta.get_field_by_name('version')[0].to_python('1.3.23.0'))
+        self.assertEqual(req.ismachine, 1)
+        self.assertEqual(req.sessionid, '{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}')
+        self.assertEqual(req.userid, '{F25EC606-5FC2-449b-91FF-FA21CADB46E4}')
+        self.assertEqual(req.originurl, None)
+        self.assertEqual(req.testsource, 'ossdev')
+        self.assertEqual(req.updaterchannel, None)
+
+    def test_parse_apps(self):
+        request = parse_request(fixtures.request_event)
+        req = parse_req(request)
+        req.os = parse_os(request.os)
+        req.hw = parse_hw(request.hw) if request.get('hw') else None
+        req.save()
+
+        apps = parse_apps(request.findall('app'), req)
+        self.assertEqual(len(apps), 1)
+        app = apps[0]
+        self.assertIsInstance(app, AppRequest)
+        self.assertEqual(app.version, None)
+        self.assertEqual(app.nextversion, Request._meta.get_field_by_name('version')[0].to_python('13.0.782.112'))
+        self.assertEqual(app.lang, 'en')
+        self.assertEqual(app.tag, None)
+        self.assertEqual(app.installage, 6)
+        self.assertEqual(app.appid, '{8A69D345-D564-463C-AFF1-A69D9E530F96}')
+
+    def test_parse_events(self):
+        request = parse_request(fixtures.request_event)
+        events = request.findall('app')[0].findall('event')
+        events = parse_events(events)
+        self.assertEqual(len(events), 3)
+        event = events[0]
+        self.assertIsInstance(event, Event)
+        self.assertEqual(event.eventtype, 9)
+        self.assertEqual(event.eventresult, 1)
+        self.assertEqual(event.errorcode, 0)
+        self.assertEqual(event.extracode1, 0)
+        self.assertEqual(event.download_time_ms, None)
+        self.assertEqual(event.downloaded, None)
+        self.assertEqual(event.total, None)
+        self.assertEqual(event.update_check_time_ms, None)
+        self.assertEqual(event.install_time_ms, None)
+        self.assertEqual(event.source_url_index, None)
+        self.assertEqual(event.state_cancelled, None)
+        self.assertEqual(event.time_since_update_available_ms, None)
+        self.assertEqual(event.time_since_download_start_ms, None)
+        self.assertEqual(event.nextversion, None)
+        self.assertEqual(event.previousversion, None)
+
+    def test_collect_statistics(self):
+        request = parse_request(fixtures.request_event)
+
+        self.assertEqual(Os.objects.all().count(), 0)
+        self.assertEqual(Hw.objects.all().count(), 0)
+        self.assertEqual(Request.objects.all().count(), 0)
+        self.assertEqual(AppRequest.objects.all().count(), 0)
+        self.assertEqual(Event.objects.all().count(), 0)
+
+        collect_statistics(request)
+
+        self.assertEqual(Os.objects.all().count(), 1)
+        self.assertEqual(Hw.objects.all().count(), 0)
+        self.assertEqual(Request.objects.all().count(), 1)
+        self.assertEqual(AppRequest.objects.all().count(), 1)
+        self.assertEqual(Event.objects.all().count(), 3)
+
+        os = Os.objects.get()
+        req = Request.objects.get()
+        app_req = AppRequest.objects.get()
+        events = Event.objects.all()
+
+        self.assertEqual(os.platform, 'win')
+        self.assertEqual(os.version, '6.1')
+        self.assertEqual(os.sp, '')
+        self.assertEqual(os.arch, 'x64')
+
+        self.assertEqual(req.version, Request._meta.get_field_by_name('version')[0].to_python('1.3.23.0'))
+        self.assertEqual(req.ismachine, 1)
+        self.assertEqual(req.sessionid, '{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}')
+        self.assertEqual(req.userid, '{F25EC606-5FC2-449b-91FF-FA21CADB46E4}')
+        self.assertEqual(req.originurl, None)
+        self.assertEqual(req.testsource, 'ossdev')
+        self.assertEqual(req.updaterchannel, None)
+        self.assertEqual(req.os, os)
+        self.assertEqual(req.hw, None)
+
+        self.assertEqual(app_req.version, None)
+        self.assertEqual(app_req.nextversion, Request._meta.get_field_by_name('version')[0].to_python('13.0.782.112'))
+        self.assertEqual(app_req.lang, 'en')
+        self.assertEqual(app_req.tag, None)
+        self.assertEqual(app_req.installage, 6)
+        self.assertEqual(app_req.appid, '{8A69D345-D564-463C-AFF1-A69D9E530F96}')
+        self.assertEqual(app_req.request, req)
+
+        event = events[0]
+
+        self.assertEqual(event.eventtype, 9)
+        self.assertEqual(event.eventresult, 1)
+        self.assertEqual(event.errorcode, 0)
+        self.assertEqual(event.extracode1, 0)
+        self.assertEqual(event.download_time_ms, None)
+        self.assertEqual(event.downloaded, None)
+        self.assertEqual(event.total, None)
+        self.assertEqual(event.update_check_time_ms, None)
+        self.assertEqual(event.install_time_ms, None)
+        self.assertEqual(event.source_url_index, None)
+        self.assertEqual(event.state_cancelled, None)
+        self.assertEqual(event.time_since_update_available_ms, None)
+        self.assertEqual(event.time_since_download_start_ms, None)
+        self.assertEqual(event.nextversion, None)
+        self.assertEqual(event.previousversion, None)
+
+        for e in events:
+            self.assertIn(e, app_req.events.all())
+
+
+class GetStatisticsTest(TestCase):
+    def _generate_fake_statistics(self):
+        now = datetime.now()
+        year = now.year
+
+        for i in xrange(1, 13):
+            date = datetime(year=year, month=i, day=1)
+            for id in xrange(1, i + 1):
+                user_id = UUID(int=id)
+                userid_counting(user_id, self.app_list, self.platform.name, now=date)
+
+    @temporary_media_root()
+    def setUp(self):
+        redis.flushdb()
+        self.app = Application.objects.create(id='app', name='app')
+        self.channel = Channel.objects.create(name='stable')
+        self.platform = Platform.objects.create(name='win')
+        self.version1 = Version.objects.create(
+            app=self.app,
+            platform=self.platform,
+            channel=self.channel,
+            version='1.0.0.0',
+            file=SimpleUploadedFile('./chrome_installer.exe', False))
+        self.version2 = Version.objects.create(
+            app=self.app,
+            platform=self.platform,
+            channel=self.channel,
+            version='2.0.0.0',
+            file=SimpleUploadedFile('./chrome_installer.exe', False))
+        self.app_list = [dict(appid=self.app.id, version=str(self.version1.version))]
+
+        self._generate_fake_statistics()
+        self.users_statistics = [('January', 1),
+                                 ('February', 2),
+                                 ('March', 3),
+                                 ('April', 4),
+                                 ('May', 5),
+                                 ('June', 6),
+                                 ('July', 7),
+                                 ('August', 8),
+                                 ('September', 9),
+                                 ('October', 10),
+                                 ('November', 11),
+                                 ('December', 12)]
+
+    def tearDown(self):
+        redis.flushdb()
+
+    def test_get_users_statistics_months(self):
+        self.assertListEqual(get_users_statistics_months(), self.users_statistics)
+        self.assertListEqual(get_users_statistics_months(app_id=self.app.id), self.users_statistics)
+
+    def test_get_users_statistics_weeks(self):
+        now = datetime.now()
+        with freeze_time(datetime(year=now.year, month=now.month, day=1)):
+            self.assertListEqual(get_users_statistics_weeks(),
+                                 [('Previous week', 0),
+                                  ('Current week', now.month),
+                                  ('Yesterday', 0),
+                                  ('Today', now.month)])
+            self.assertListEqual(get_users_statistics_weeks(self.app.id),
+                                 [('Previous week', 0),
+                                  ('Current week', now.month),
+                                  ('Yesterday', 0),
+                                  ('Today', now.month)])
+
+    def test_get_chanels_statistics(self):
+        now = datetime.now()
+        with freeze_time(datetime(year=now.year, month=now.month, day=1)):
+            self.assertListEqual(get_channel_statistics(self.app.id), [('stable', now.month)])
+
+    def test_get_users_versions(self):
+        now = datetime.now()
+        with freeze_time(datetime(year=now.year, month=now.month, day=1)):
+            self.assertListEqual(get_users_versions(self.app.id), [('1.0.0.0', now.month), ('2.0.0.0', 0)])

@@ -15,3 +15,12 @@ https://github.com/Crystalnix/django-versionfield/archive/fix-minor-bugs.zip#egg
 django-redis==3.7.1
 bitmapist==3.4
 singledispatch==3.4.0.3
+django-bower==5.0.1
+django-nvd3==0.7.6
+django-filter==0.8
+
+
+# Only dev
+# django-httplog==0.2.1
+# ToDo: replace this https://github.com/futurecolors/django-httplog/pull/1
+https://github.com/yurtaev/django-httplog/archive/patch-1.zip#egg=httplog-0.2.2

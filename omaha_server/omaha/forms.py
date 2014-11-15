@@ -19,15 +19,8 @@ the License.
 """
 
 from django import forms
-from models import Application
 
 
 class ApplicationAdminForm(forms.ModelForm):
-    class Meta:
-        model = Application
-
-    def clean_name(self):
-        return self.cleaned_data["name"].lower()
-
     def clean_id(self):
         return self.cleaned_data["id"].upper()

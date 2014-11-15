@@ -25,6 +25,7 @@ import base64
 from django.db import models
 from django.dispatch import receiver
 from django.db.models.signals import pre_save
+from django.utils.timezone import now as datetime_now
 
 from managers import VersionManager
 from fields import PercentField
@@ -183,6 +184,79 @@ class PartialUpdate(models.Model):
     active_users = models.PositiveSmallIntegerField(
         help_text='Active users in the past ...',
         choices=ACTIVE_USERS_CHOICES, default=1)
+
+
+class Os(models.Model):
+    platform = models.CharField(max_length=10, null=True, blank=True)
+    version = models.CharField(max_length=10, null=True, blank=True)
+    sp = models.CharField(max_length=40, null=True, blank=True)
+    arch = models.CharField(max_length=10, null=True, blank=True)
+
+
+class Hw(models.Model):
+    sse = models.PositiveIntegerField(null=True, blank=True)
+    sse2 = models.PositiveIntegerField(null=True, blank=True)
+    sse3 = models.PositiveIntegerField(null=True, blank=True)
+    ssse3 = models.PositiveIntegerField(null=True, blank=True)
+    sse41 = models.PositiveIntegerField(null=True, blank=True)
+    sse42 = models.PositiveIntegerField(null=True, blank=True)
+    avx = models.PositiveIntegerField(null=True, blank=True)
+    physmemory = models.PositiveIntegerField(null=True, blank=True)
+
+
+class Request(models.Model):
+    os = models.ForeignKey(Os, null=True, blank=True)
+    hw = models.ForeignKey(Hw, null=True, blank=True)
+    version = VersionField(help_text='Format: 255.255.65535.65535', number_bits=(8, 8, 16, 16))
+    ismachine = models.PositiveSmallIntegerField(null=True, blank=True)
+    sessionid = models.CharField(max_length=40, null=True, blank=True)
+    userid = models.CharField(max_length=40, null=True, blank=True)
+    installsource = models.CharField(max_length=40, null=True, blank=True)
+    originurl = models.URLField(null=True, blank=True)
+    testsource = models.CharField(max_length=40, null=True, blank=True)
+    updaterchannel = models.CharField(max_length=10, null=True, blank=True)
+    created = models.DateTimeField(db_index=True, default=datetime_now, editable=False, blank=True)
+
+
+class Event(models.Model):
+    eventtype = models.PositiveSmallIntegerField(db_index=True)
+    eventresult = models.PositiveSmallIntegerField()
+    errorcode = models.IntegerField(null=True, blank=True)
+    extracode1 = models.IntegerField(null=True, blank=True)
+    download_time_ms = models.PositiveIntegerField(null=True, blank=True)
+    downloaded = models.PositiveIntegerField(null=True, blank=True)
+    total = models.PositiveIntegerField(null=True, blank=True)
+    update_check_time_ms = models.PositiveIntegerField(null=True, blank=True)
+    install_time_ms = models.PositiveIntegerField(null=True, blank=True)
+    source_url_index = models.URLField(null=True, blank=True)
+    state_cancelled = models.PositiveIntegerField(null=True, blank=True)
+    time_since_update_available_ms = models.PositiveIntegerField(null=True, blank=True)
+    time_since_download_start_ms = models.PositiveIntegerField(null=True, blank=True)
+    nextversion = models.CharField(max_length=40, null=True, blank=True)
+    previousversion = models.CharField(max_length=40, null=True, blank=True)
+
+    @property
+    def is_error(self):
+        if self.eventtype in (100, 102, 103):
+            return True
+        elif self.eventresult not in (1, 2, 3):
+            return True
+        elif self.errorcode != 0:
+            return True
+        return False
+
+
+class AppRequest(models.Model):
+    request = models.ForeignKey(Request, db_index=True)
+    appid = models.CharField(max_length=38, db_index=True)
+    version = VersionField(help_text='Format: 255.255.65535.65535',
+                           number_bits=(8, 8, 16, 16), default=0, null=True, blank=True)
+    nextversion = VersionField(help_text='Format: 255.255.65535.65535',
+                               number_bits=(8, 8, 16, 16), default=0, null=True, blank=True)
+    lang = models.CharField(max_length=40, null=True, blank=True)
+    tag = models.CharField(max_length=40, null=True, blank=True)
+    installage = models.SmallIntegerField(null=True, blank=True)
+    events = models.ManyToManyField(Event)
 
 
 @receiver(pre_save, sender=Version)

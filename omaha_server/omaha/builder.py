@@ -29,7 +29,7 @@ from raven.contrib.django.raven_compat.models import client
 
 from models import Version
 from parser import parse_request
-from statistics import userid_counting, is_user_active
+from statistics import is_user_active, collect_statistics
 from settings import DEFAULT_CHANNEL
 from core import (Response, App, Updatecheck_negative, Manifest, Updatecheck_positive,
                   Packages, Package, Actions, Action, Event)
@@ -130,11 +130,10 @@ def on_app(apps_list, app, os, userid):
 
 def build_response(request, pretty_print=True):
     obj = parse_request(request)
+    collect_statistics(request=obj)
     userid = obj.get('userid')
     apps = obj.findall('app')
     apps_list = reduce(partial(on_app, os=obj.os, userid=userid), apps, [])
-    if userid:
-        userid_counting(userid, apps, obj.os.get('platform'))
     response = Response(apps_list, date=now())
     return etree.tostring(response, pretty_print=pretty_print,
                           xml_declaration=True, encoding='UTF-8')
