@@ -24,7 +24,7 @@ from paver.easy import sh
 
 @task
 def test():
-    sh('./manage.py test', cwd='omaha_server')
+    sh('./manage.py test --settings=omaha_server.settings_test', cwd='omaha_server')
 
 
 @task
