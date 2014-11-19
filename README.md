@@ -14,7 +14,9 @@ Google Omaha server implementation + added Sparkle (mac) feed management
 - [docker](docker.com) or [boot2docker](https://github.com/boot2docker/boot2docker) for OS X & Windows
 - [fig](fig.sh)
 
-```bash
+```shell
+$ git clone git@github.com:Crystalnix/omaha-server.git
+$ cd omaha-server
 $ paver up_local_dev_server
 ```
 
@@ -32,20 +34,20 @@ Open `http://{DOCKER_HOST}:9090/admin/`
 - PostgreSQL
 - Redis
 
-```bash
+```shell
 $ mkvirtualenv omaha-server
 $ pip install -r requirements-dev.txt
 ```
 
 ## Tests
 
-```bash
+```shell
 $ paver test
 ```
 
 or
 
-```bash
+```shell
 $ paver run_test_in_docker
 ```
 
@@ -58,7 +60,7 @@ $ paver run_test_in_docker
 
 ### Initializing the Configuration
 
-```bash
+```shell
 $ cd omaha_server
 $ cp ebs.config.example ebs.config
 ```
@@ -200,13 +202,13 @@ app:
 
 ### Initialize your ElasticBeanstalk application
 
-```bash
+```shell
 $ ebs-deploy init
 ```
 
 ### Deploy your application
 
-```bash
+```shell
 $ ebs-deploy deploy -e omaha-server-dev
 ```
 
