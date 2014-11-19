@@ -53,7 +53,7 @@ $ paver run_test_in_docker
 
 ## Utils
 
-A command for generating fake data such as requests, events and statistics
+A command for generating fake data such as requests, events and statistics:
 
 ```shell
 # Usage: ./manage.py generate_fake_data [options] <app_id>
@@ -62,7 +62,16 @@ A command for generating fake data such as requests, events and statistics
 $ ./manage.py generate_fake_data {F07B3878-CD6F-4B96-B52F-95C4D2} --count=20
 ```
 
-## Deploying a Omaha-Server to AWS Elastic Beanstalk
+A command for generating fake statistics:
+
+```shell
+# Usage: ./manage.py generate_fake_statistics [options]
+# Options:
+#     --count=COUNT         Total number of data values (default: 100)
+$ ./manage.py generate_fake_statistics --count=3000
+```
+
+## Deploying Omaha-Server to AWS Elastic Beanstalk
 
 **Requirements:**
 
