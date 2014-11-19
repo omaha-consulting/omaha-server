@@ -1,13 +1,29 @@
-#!/usr/bin/env python
 # coding: utf8
 
-import django
+"""
+This software is licensed under the Apache 2 license, quoted below.
 
-django.setup()
+Copyright 2014 Crystalnix Limited
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License. You may obtain a copy of
+the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+License for the specific language governing permissions and limitations under
+the License.
+"""
 
 import random
 from datetime import datetime
 from uuid import uuid4
+from optparse import make_option
+
+from django.core.management.base import BaseCommand
 
 from freezegun import freeze_time
 
@@ -70,13 +86,13 @@ def get_random_date():
     return datetime(2014, month, day)
 
 
-def generate_events(app_id):
+def generate_events(app_id, **options):
     versions = Version.objects.filter_by_enabled(app__id=app_id)
 
     userid_list = map(lambda x: get_random_uuid(), xrange(1, 25))
     sessionid_list = map(lambda x: get_random_uuid(), xrange(1, 50))
 
-    for i in xrange(1, 100):
+    for i in xrange(1, options['count'] + 1):
         if i % 10 == 0:
             print '=> ', i
 
@@ -100,5 +116,16 @@ def generate_events(app_id):
             collect_statistics(request_obj)
 
 
-if __name__ == '__main__':
-    generate_events('{F07B3878-CD6F-4B96-B52F-95C4D23077E0}')  # test app
+class Command(BaseCommand):
+    args = '<app_id>'
+    help = 'A command for generating fake data such as requests, events and statistics'
+    option_list = BaseCommand.option_list + (
+        make_option('--count',
+                    dest='count',
+                    default='100',
+                    type=int,
+                    help='Total number of data values (default: 100)'),
+    )
+
+    def handle(self, app_id, *args, **options):
+        generate_events(app_id, **options)
