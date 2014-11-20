@@ -19,10 +19,13 @@ the License.
 """
 
 from django.test import TestCase
+from django.test.client import Client
 from django.contrib.auth import get_user_model
+from django.core.urlresolvers import reverse
 
 
 from omaha.factories import ApplicationFactory
+from omaha.models import Request, AppRequest
 from omaha.views_admin import (
     StatisticsView,
 )
@@ -43,3 +46,33 @@ class AdminViewStatisticsTest(TestCase):
         view = StatisticsView()
         self.assertListEqual(list(view.get_queryset()), self.apps)
 
+
+class ViewsStaffMemberRequiredTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.app = ApplicationFactory.create()
+        self.request = Request.objects.create(version='1.0.0.0')
+        self.app_request = AppRequest.objects.create(
+            request=self.request,
+            appid=self.app.id,
+        )
+
+    def test_omaha_statistics(self):
+        url = reverse('omaha_statistics')
+        response = self.client.get(url)
+        self.assertRedirects(response, '/admin/login/?next=%s' % url)
+
+    def test_omaha_statistics_detail(self):
+        url = reverse('omaha_statistics_detail', kwargs=dict(name=self.app.name))
+        response = self.client.get(url)
+        self.assertRedirects(response, '/admin/login/?next=%s' % url)
+
+    def test_omaha_request_list(self):
+        url = reverse('omaha_request_list', kwargs=dict(name=self.app.name))
+        response = self.client.get(url)
+        self.assertRedirects(response, '/admin/login/?next=%s' % url)
+
+    def test_omaha_request_detail(self):
+        url = reverse('omaha_request_detail', kwargs=dict(pk=self.app_request.pk))
+        response = self.client.get(url)
+        self.assertRedirects(response, '/admin/login/?next=%s' % url)

@@ -75,7 +75,7 @@ class StatisticsDetailView(StaffMemberRequiredMixin, DetailView):
         return context
 
 
-class RequestListView(ListView, MultipleObjectMixin, StaffMemberRequiredMixin):
+class RequestListView(StaffMemberRequiredMixin, ListView, MultipleObjectMixin):
     model = AppRequest
     context_object_name = 'request_list'
     template_name = 'admin/omaha/request_list.html'
