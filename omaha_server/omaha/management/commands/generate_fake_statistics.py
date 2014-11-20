@@ -70,11 +70,11 @@ class Command(BaseCommand):
     )
 
     def handle(self, *args, **options):
-        user_count = options['count']
+        user_count = options['count'] + 1
         users = range(1, user_count)
         versions = list(Version.objects.select_related('app', 'platform').filter_by_enabled())
 
-        job_size = user_count / (cpu_count() * 2)
+        job_size = (user_count / (cpu_count() or 1 * 2)) or 1
         job_data = [users[i:i + job_size] for i in range(0, len(users), job_size)]
 
         pool = Pool()
