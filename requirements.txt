@@ -13,3 +13,6 @@ singledispatch==3.4.0.3
 django-bower==5.0.1
 django-nvd3==0.7.6
 django-filter==0.8
+
+# Only dev
+django-httplog==0.2.2

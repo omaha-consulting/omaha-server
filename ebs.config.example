@@ -27,7 +27,7 @@ app:
     description: 'Omaha Server'
 
     all_environments:
-        solution_stack_name: '64bit Amazon Linux 2014.03 v1.0.7 running Python 2.7'
+        solution_stack_name: '64bit Amazon Linux 2014.09 v1.0.9 running Docker 1.2.0'
         tier_name: 'WebServer'
         tier_type: 'Standard'
         tier_version: '1.0'
@@ -35,7 +35,7 @@ app:
         option_settings:
 
             'aws:autoscaling:launchconfiguration':
-                InstanceType: 't1.micro'
+                InstanceType: 't2.small'
                 SecurityGroups: 'omaha_server_dev'
                 EC2KeyName: 'viasat_crystalnix_dev'
 
@@ -54,11 +54,6 @@ app:
             'aws:elasticbeanstalk:application':
                 Application Healthcheck URL: '/admin/login/'
 
-            'aws:elasticbeanstalk:container:python':
-                WSGIPath: 'omaha_server/wsgi.py'
-                NumProcesses: 1
-                NumThreads: 15
-
             'aws:elasticbeanstalk:application:environment':
                 AWS_ACCESS_KEY_ID: 'AWS Access Key'
                 AWS_SECRET_KEY: 'AWS Secret Key'
@@ -66,37 +61,7 @@ app:
         archive:
 
             includes:
-                - '.*'
-
-            excludes: # files to exclude, a list of regex
-                - '^.gitignore$'
-                - '^\.git*'
-                - '^\.idea*'
-                - '^\static*'
-                - '.*\.zip$'
-                - '.*\.pyc$'
-
-            files:
-
-                - .ebextensions/01_init.config:
-                    yaml:
-                        packages:
-                            yum:
-                                python-devel: ''
-                                postgresql-devel: ''
-                                libxslt-devel: ''
-                                libxml2-devel: ''
-
-                        container_commands:
-                            01_migrate:
-                                command: "./manage.py migrate --noinput"
-                                leader_only: true
-                            02_createadmin:
-                                command: "./createadmin.py"
-                                leader_only: true
-                            03_collectstatic:
-                                command: "./manage.py collectstatic --noinput"
-                                leader_only: true
+                - 'Dockerrun.aws.json'
 
 
     environments:
