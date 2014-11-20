@@ -19,48 +19,19 @@ the License.
 """
 
 from django.test import TestCase
+from django.test.client import Client
 from django.contrib.auth import get_user_model
+from django.core.urlresolvers import reverse
 
 
 from omaha.factories import ApplicationFactory
+from omaha.models import Request, AppRequest
 from omaha.views_admin import (
-    make_piechart,
-    make_discrete_bar_chart,
     StatisticsView,
 )
 
 
 User = get_user_model()
-
-
-class AdminViewsTest(TestCase):
-    def test_make_piechart(self):
-        data = [('apple', 10), ('orange', 3)]
-        self.assertDictEqual(make_piechart('test', data),
-                             {'chartcontainer': 'chart_container_test',
-                              'chartdata': {
-                                  'extra1': {'tooltip': {'y_end': ' users', 'y_start': ''}},
-                                  'x': ['apple', 'orange'],
-                                  'y1': [10, 3]},
-                              'charttype': 'pieChart',
-                              'extra': {'jquery_on_ready': False,
-                                        'tag_script_js': True,
-                                        'x_axis_format': '',
-                                        'x_is_date': False}})
-
-    def test_make_discrete_bar_chart(self):
-        data = [('apple', 10), ('orange', 3)]
-        self.assertDictEqual(make_discrete_bar_chart('test', data),
-                             {'chartcontainer': 'chart_container_test',
-                              'chartdata': {'extra1': {'tooltip': {'y_end': ' cal', 'y_start': ''}},
-                                            'name1': '',
-                                            'x': ['apple', 'orange'],
-                                            'y1': [10, 3]},
-                              'charttype': 'discreteBarChart',
-                              'extra': {'jquery_on_ready': True,
-                                        'tag_script_js': True,
-                                        'x_axis_format': '',
-                                        'x_is_date': False}})
 
 
 class AdminViewStatisticsTest(TestCase):
@@ -75,3 +46,33 @@ class AdminViewStatisticsTest(TestCase):
         view = StatisticsView()
         self.assertListEqual(list(view.get_queryset()), self.apps)
 
+
+class ViewsStaffMemberRequiredTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.app = ApplicationFactory.create()
+        self.request = Request.objects.create(version='1.0.0.0')
+        self.app_request = AppRequest.objects.create(
+            request=self.request,
+            appid=self.app.id,
+        )
+
+    def test_omaha_statistics(self):
+        url = reverse('omaha_statistics')
+        response = self.client.get(url)
+        self.assertRedirects(response, '/admin/login/?next=%s' % url)
+
+    def test_omaha_statistics_detail(self):
+        url = reverse('omaha_statistics_detail', kwargs=dict(name=self.app.name))
+        response = self.client.get(url)
+        self.assertRedirects(response, '/admin/login/?next=%s' % url)
+
+    def test_omaha_request_list(self):
+        url = reverse('omaha_request_list', kwargs=dict(name=self.app.name))
+        response = self.client.get(url)
+        self.assertRedirects(response, '/admin/login/?next=%s' % url)
+
+    def test_omaha_request_detail(self):
+        url = reverse('omaha_request_detail', kwargs=dict(pk=self.app_request.pk))
+        response = self.client.get(url)
+        self.assertRedirects(response, '/admin/login/?next=%s' % url)

@@ -21,6 +21,4 @@ django-filter==0.8
 
 
 # Only dev
-# django-httplog==0.2.1
-# ToDo: replace this https://github.com/futurecolors/django-httplog/pull/1
-https://github.com/yurtaev/django-httplog/archive/patch-1.zip#egg=httplog-0.2.2
+django-httplog==0.2.2

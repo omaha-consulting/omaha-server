@@ -14,8 +14,16 @@ Google Omaha server implementation + added Sparkle (mac) feed management
 - [docker](docker.com) or [boot2docker](https://github.com/boot2docker/boot2docker) for OS X & Windows
 - [fig](fig.sh)
 
-```bash
+```shell
+$ git clone git@github.com:Crystalnix/omaha-server.git
+$ cd omaha-server
 $ paver up_local_dev_server
+```
+
+**If you're using Linux then you should use `sudo`**:
+
+```shell
+$ sudo paver up_local_dev_server
 ```
 
 Open `http://{DOCKER_HOST}:9090/admin/`
@@ -32,24 +40,44 @@ Open `http://{DOCKER_HOST}:9090/admin/`
 - PostgreSQL
 - Redis
 
-```bash
+```shell
 $ mkvirtualenv omaha-server
 $ pip install -r requirements-dev.txt
 ```
 
-## Tests
+### Tests
 
-```bash
+```shell
 $ paver test
 ```
 
 or
 
-```bash
+```shell
 $ paver run_test_in_docker
 ```
 
-## Deploying a Omaha-Server to AWS Elastic Beanstalk
+## Utils
+
+A command for generating fake data such as requests, events and statistics:
+
+```shell
+# Usage: ./manage.py generate_fake_data [options] <app_id>
+# Options:
+#     --count=COUNT         Total number of data values (default: 100)
+$ ./manage.py generate_fake_data {F07B3878-CD6F-4B96-B52F-95C4D2} --count=20
+```
+
+A command for generating fake statistics:
+
+```shell
+# Usage: ./manage.py generate_fake_statistics [options]
+# Options:
+#     --count=COUNT         Total number of data values (default: 100)
+$ ./manage.py generate_fake_statistics --count=3000
+```
+
+## Deploying Omaha-Server to AWS Elastic Beanstalk
 
 **Requirements:**
 
@@ -58,7 +86,7 @@ $ paver run_test_in_docker
 
 ### Initializing the Configuration
 
-```bash
+```shell
 $ cd omaha_server
 $ cp ebs.config.example ebs.config
 ```
@@ -200,13 +228,13 @@ app:
 
 ### Initialize your ElasticBeanstalk application
 
-```bash
+```shell
 $ ebs-deploy init
 ```
 
 ### Deploy your application
 
-```bash
+```shell
 $ ebs-deploy deploy -e omaha-server-dev
 ```
 

@@ -31,55 +31,7 @@ from omaha.statistics import (
 )
 from omaha.models import Application, AppRequest
 from filters import AppRequestFilter
-
-
-def make_discrete_bar_chart(id, data):
-    xdata = [i[0] for i in data]
-    ydata = [i[1] for i in data]
-
-    extra_serie1 = {"tooltip": {"y_start": "", "y_end": " cal"}}
-    chartdata = {
-        'x': xdata, 'name1': '', 'y1': ydata, 'extra1': extra_serie1,
-    }
-    charttype = "discreteBarChart"
-    chartcontainer = 'chart_container_%s' % id  # container name
-    data = {
-        'charttype': charttype,
-        'chartdata': chartdata,
-        'chartcontainer': chartcontainer,
-        'extra': {
-            'x_is_date': False,
-            'x_axis_format': '',
-            'tag_script_js': True,
-            'jquery_on_ready': True,
-        },
-    }
-    return data
-
-
-def make_piechart(id, data):
-    xdata = [i[0] for i in data]
-    ydata = [i[1] for i in data]
-
-    extra_serie = {
-        "tooltip": {"y_start": "", "y_end": " users"},
-    }
-    chartdata = {'x': xdata, 'y1': ydata, 'extra1': extra_serie}
-    charttype = "pieChart"
-    chartcontainer = 'chart_container_%s' % id  # container name
-
-    data = {
-        'charttype': charttype,
-        'chartdata': chartdata,
-        'chartcontainer': chartcontainer,
-        'extra': {
-            'x_is_date': False,
-            'x_axis_format': '',
-            'tag_script_js': True,
-            'jquery_on_ready': False,
-        }
-    }
-    return data
+from omaha.utils import make_piechart, make_discrete_bar_chart
 
 
 class StaffMemberRequiredMixin(object):
@@ -123,7 +75,7 @@ class StatisticsDetailView(StaffMemberRequiredMixin, DetailView):
         return context
 
 
-class RequestListView(ListView, MultipleObjectMixin, StaffMemberRequiredMixin):
+class RequestListView(StaffMemberRequiredMixin, ListView, MultipleObjectMixin):
     model = AppRequest
     context_object_name = 'request_list'
     template_name = 'admin/omaha/request_list.html'

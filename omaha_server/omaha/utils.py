@@ -90,3 +90,52 @@ def valuedispatch(func):
     wrapper.dispatch = _func.dispatch
     wrapper.registry = _func.registry
     return wrapper
+
+
+def make_piechart(id, data):
+    xdata = [i[0] for i in data]
+    ydata = [i[1] for i in data]
+
+    extra_serie = {
+        "tooltip": {"y_start": "", "y_end": " users"},
+    }
+    chartdata = {'x': xdata, 'y1': ydata, 'extra1': extra_serie}
+    charttype = "pieChart"
+    chartcontainer = 'chart_container_%s' % id  # container name
+
+    data = {
+        'charttype': charttype,
+        'chartdata': chartdata,
+        'chartcontainer': chartcontainer,
+        'extra': {
+            'x_is_date': False,
+            'x_axis_format': '',
+            'tag_script_js': True,
+            'jquery_on_ready': False,
+        }
+    }
+    return data
+
+
+def make_discrete_bar_chart(id, data):
+    xdata = [i[0] for i in data]
+    ydata = [i[1] for i in data]
+
+    extra_serie1 = {"tooltip": {"y_start": "", "y_end": " cal"}}
+    chartdata = {
+        'x': xdata, 'name1': '', 'y1': ydata, 'extra1': extra_serie1,
+    }
+    charttype = "discreteBarChart"
+    chartcontainer = 'chart_container_%s' % id  # container name
+    data = {
+        'charttype': charttype,
+        'chartdata': chartdata,
+        'chartcontainer': chartcontainer,
+        'extra': {
+            'x_is_date': False,
+            'x_axis_format': '',
+            'tag_script_js': True,
+            'jquery_on_ready': True,
+        },
+    }
+    return data

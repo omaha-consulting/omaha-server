@@ -27,6 +27,8 @@ from omaha.utils import (
     redis,
     get_id,
     create_id,
+    make_piechart,
+    make_discrete_bar_chart,
 )
 
 
@@ -100,3 +102,33 @@ class GetIdTest(TestCase):
         _id = self.redis.get('{}:{}'.format(KEY_PREFIX, self.uid))
         self.assertEqual(id, int(_id))
         self.assertEqual(id, int(self.redis.get(KEY_LAST_ID)))
+
+
+class ChartsTest(TestCase):
+    def test_make_piechart(self):
+        data = [('apple', 10), ('orange', 3)]
+        self.assertDictEqual(make_piechart('test', data),
+                             {'chartcontainer': 'chart_container_test',
+                              'chartdata': {
+                                  'extra1': {'tooltip': {'y_end': ' users', 'y_start': ''}},
+                                  'x': ['apple', 'orange'],
+                                  'y1': [10, 3]},
+                              'charttype': 'pieChart',
+                              'extra': {'jquery_on_ready': False,
+                                        'tag_script_js': True,
+                                        'x_axis_format': '',
+                                        'x_is_date': False}})
+
+    def test_make_discrete_bar_chart(self):
+        data = [('apple', 10), ('orange', 3)]
+        self.assertDictEqual(make_discrete_bar_chart('test', data),
+                             {'chartcontainer': 'chart_container_test',
+                              'chartdata': {'extra1': {'tooltip': {'y_end': ' cal', 'y_start': ''}},
+                                            'name1': '',
+                                            'x': ['apple', 'orange'],
+                                            'y1': [10, 3]},
+                              'charttype': 'discreteBarChart',
+                              'extra': {'jquery_on_ready': True,
+                                        'tag_script_js': True,
+                                        'x_axis_format': '',
+                                        'x_is_date': False}})
