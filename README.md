@@ -20,6 +20,12 @@ $ cd omaha-server
 $ paver up_local_dev_server
 ```
 
+**If you're using Linux then you should use `sudo`**:
+
+```shell
+$ sudo paver up_local_dev_server
+```
+
 Open `http://{DOCKER_HOST}:9090/admin/`
 
 - username: `admin`
