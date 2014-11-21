@@ -118,7 +118,7 @@ app:
             'aws:autoscaling:launchconfiguration':
                 InstanceType: 't1.micro'
                 SecurityGroups: 'omaha_server_dev'
-                EC2KeyName: 'viasat_crystalnix_dev'
+                EC2KeyName: 'Key Name'
 
             'aws:autoscaling:asg':
                 MinSize: 1
@@ -142,15 +142,7 @@ app:
         archive:
 
             includes:
-                - '.*'
-
-            excludes: # files to exclude, a list of regex
-                - '^.gitignore$'
-                - '^\.git*'
-                - '^\.idea*'
-                - '^\static*'
-                - '.*\.zip$'
-                - '.*\.pyc$'
+                - 'Dockerrun.aws.json'
 
     environments:
 

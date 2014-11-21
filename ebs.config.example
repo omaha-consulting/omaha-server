@@ -37,7 +37,7 @@ app:
             'aws:autoscaling:launchconfiguration':
                 InstanceType: 't2.small'
                 SecurityGroups: 'omaha_server_dev'
-                EC2KeyName: 'viasat_crystalnix_dev'
+                EC2KeyName: 'Key Name'
 
             'aws:autoscaling:asg':
                 MinSize: 1
@@ -68,13 +68,13 @@ app:
 
         # the dev version of the app
         'omaha-server-dev':
-            cname_prefix: 'omaha-server-dev'
+            cname_prefix: 'your-domain-prefix'
             option_settings:
                 'aws:elasticbeanstalk:application:environment':
                     APP_VERSION: 'DEV'
                     DJANGO_SETTINGS_MODULE: 'omaha_server.settings_prod'
                     SECRET_KEY: 'Django SECRET_KEY'
-                    HOST_NAME: 'Eb app host name'
+                    HOST_NAME: 'Eb app host name your-domain-prefix.elasticbeanstalk.com'
                     DB_HOST: 'db host'
                     DB_USER: 'db user'
                     DB_NAME: 'db name'
