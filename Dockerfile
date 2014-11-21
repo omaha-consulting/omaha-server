@@ -13,3 +13,6 @@ WORKDIR /srv/omaha
 
 RUN pip install paver --use-mirrors
 RUN pip install -r requirements.txt --use-mirrors
+
+EXPOSE 9090
+ENTRYPOINT ["paver", "docker_run"]

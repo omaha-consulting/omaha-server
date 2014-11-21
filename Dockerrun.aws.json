@@ -1,0 +1,12 @@
+{
+  "AWSEBDockerrunVersion": "1",
+  "Image": {
+    "Name": "crystalnix/omaha-server",
+    "Update": "true"
+  },
+  "Ports": [
+    {
+      "ContainerPort": "9090"
+    }
+  ]  
+}

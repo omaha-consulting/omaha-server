@@ -3,7 +3,7 @@ db:
 redis:
   image: redis
 web:
-  image: crystalnix/omaha-server
+  build: .
   links:
    - db
    - redis
