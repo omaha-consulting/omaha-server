@@ -1,3 +1,11 @@
 [run]
-omit = *settings*, *wsgi*, *urls.py*, *migrations*, *admin.py*, *filters.py*
+omit =
+    omaha/tests/*
+    omaha_server/*
+    omaha/urls.py
+    omaha/migrations/*
+    omaha/admin.py
+    omaha/forms.py
+    omaha/fields.py
+    omaha/managers.py
 data_file = ../.coverage

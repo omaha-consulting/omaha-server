@@ -27,9 +27,10 @@ from django.db.models import Q
 from lxml import etree
 from raven.contrib.django.raven_compat.models import client
 
+import tasks
 from models import Version
 from parser import parse_request
-from statistics import is_user_active, collect_statistics
+from statistics import is_user_active
 from settings import DEFAULT_CHANNEL
 from core import (Response, App, Updatecheck_negative, Manifest, Updatecheck_positive,
                   Packages, Package, Actions, Action, Event)
@@ -130,7 +131,7 @@ def on_app(apps_list, app, os, userid):
 
 def build_response(request, pretty_print=True):
     obj = parse_request(request)
-    collect_statistics(request=obj)
+    tasks.collect_statistics(request=obj)
     userid = obj.get('userid')
     apps = obj.findall('app')
     apps_list = reduce(partial(on_app, os=obj.os, userid=userid), apps, [])

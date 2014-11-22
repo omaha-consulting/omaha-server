@@ -158,3 +158,10 @@ BOWER_INSTALLED_APPS = (
     'd3#3.3.6',
     'nvd3#1.1.12-beta',
 )
+
+
+# Celery
+
+BROKER_URL = CELERY_RESULT_BACKEND = 'redis://{}:{}/{}'.format(REDIS_HOST, REDIS_PORT, 3)
+CELERY_DISABLE_RATE_LIMITS = True
+
