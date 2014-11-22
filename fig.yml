@@ -10,7 +10,7 @@ web:
    - db
    - redis
   ports:
-   - "9090:9090"
+   - "9090:80"
   environment:
     DB_HOST: db
     DB_PORT: 5432
