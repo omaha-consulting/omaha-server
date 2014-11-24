@@ -48,6 +48,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
+    'cacheops',
     'suit',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -165,3 +166,16 @@ BOWER_INSTALLED_APPS = (
 BROKER_URL = CELERY_RESULT_BACKEND = 'redis://{}:{}/{}'.format(REDIS_HOST, REDIS_PORT, 3)
 CELERY_DISABLE_RATE_LIMITS = True
 
+
+# Cache
+
+CACHEOPS_REDIS = {
+    'host': REDIS_HOST,
+    'port': REDIS_PORT,
+    'db': 1,
+    'socket_timeout': 3,
+}
+
+CACHEOPS = {
+    'omaha.*': {'ops': ('fetch', 'get'), 'timeout': 60},
+}
