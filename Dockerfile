@@ -10,8 +10,9 @@ RUN apt-get clean
 ADD . /srv/omaha
 
 # setup all the configfiles
-RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 RUN rm /etc/nginx/sites-enabled/default
+RUN rm /etc/nginx/nginx.conf
+RUN ln -s /srv/omaha/conf/nginx.conf /etc/nginx/
 RUN ln -s /srv/omaha/conf/nginx-app.conf /etc/nginx/sites-enabled/
 RUN ln -s /srv/omaha/conf/supervisord.conf /etc/supervisor/conf.d/
 
