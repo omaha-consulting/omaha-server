@@ -2,10 +2,6 @@
 omit =
     omaha/tests/*
     omaha_server/*
-    omaha/urls.py
     omaha/migrations/*
-    omaha/admin.py
-    omaha/forms.py
-    omaha/fields.py
-    omaha/managers.py
+    omaha/models.py
 data_file = ../.coverage

@@ -18,18 +18,15 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
-from django import forms
+from django.test import TestCase
+from django.utils.functional import lazy
 
-from models import Application
-
-
-__all__ = ['ApplicationAdminForm']
+from omaha.fields import PercentField
 
 
-class ApplicationAdminForm(forms.ModelForm):
-    def clean_id(self):
-        return self.cleaned_data["id"].upper()
-
-    class Meta:
-        model = Application
-        exclude = []
+class PercentFieldTest(TestCase):
+    def test_PercentField(self):
+        lazy_func = lazy(lambda: 1.2, float)
+        self.assertIsInstance(PercentField().get_prep_value(lazy_func()), float)
+        self.assertEqual(PercentField.default_validators[0].limit_value, 0)
+        self.assertEqual(PercentField.default_validators[1].limit_value, 100)
