@@ -94,6 +94,7 @@ DATABASES = {
         'PASSWORD': os.environ.get('DB_PASSWORD', ''),
         'HOST': os.environ.get('DB_HOST', '127.0.0.1'),
         'PORT': os.environ.get('DB_PORT', '5432'),
+        'CONN_MAX_AGE': 60,
     }
 }
 
@@ -163,8 +164,15 @@ BOWER_INSTALLED_APPS = (
 
 # Celery
 
+from kombu import Queue
+
 BROKER_URL = CELERY_RESULT_BACKEND = 'redis://{}:{}/{}'.format(REDIS_HOST, REDIS_PORT, 3)
 CELERY_DISABLE_RATE_LIMITS = True
+CELERY_RESULT_SERIALIZER = 'msgpack'
+CELERY_MESSAGE_COMPRESSION = 'zlib'
+CELERY_QUEUES = (
+    Queue('transient', routing_key='transient', delivery_mode=1),
+)
 
 
 # Cache
@@ -177,5 +185,5 @@ CACHEOPS_REDIS = {
 }
 
 CACHEOPS = {
-    'omaha.*': {'ops': ('fetch', 'get'), 'timeout': 60},
+    'omaha.*': {'ops': (), 'timeout': 10},
 }

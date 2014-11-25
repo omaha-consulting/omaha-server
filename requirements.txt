@@ -15,6 +15,7 @@ django-nvd3==0.7.6
 django-filter==0.8
 celery[redis]==3.1.17
 django-cacheops==2.2.1
+msgpack-python
 
 # Only dev
 django-httplog==0.2.2

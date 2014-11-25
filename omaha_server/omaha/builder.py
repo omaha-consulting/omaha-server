@@ -70,16 +70,19 @@ def _get_version(partialupdate, app_id, platform, channel, version, date=None):
         channel__name=channel)
     if version:
         version_qs = version_qs.filter(version__gt=version)
-    version_qs = version_qs.prefetch_related("actions")
+    version_qs = version_qs.prefetch_related("actions", "partialupdate")
 
     if partialupdate:
-        new_version = version_qs.filter(partialupdate__is_enabled=True,
-                                        partialupdate__start_date__lte=date,
-                                        partialupdate__end_date__gte=date).latest('version')
+        try:
+            new_version = version_qs.filter(partialupdate__is_enabled=True,
+                                            partialupdate__start_date__lte=date,
+                                            partialupdate__end_date__gte=date).cache().latest('version')
+        except Version.DoesNotExist:
+            return None
     else:
         new_version = version_qs.filter(
             Q(partialupdate__isnull=True)
-            | Q(partialupdate__is_enabled=False)).latest('version')
+            | Q(partialupdate__is_enabled=False)).cache().latest('version')
 
     return new_version
 
@@ -87,6 +90,9 @@ def _get_version(partialupdate, app_id, platform, channel, version, date=None):
 def get_version(app_id, platform, channel, version, userid, date=None):
     try:
         new_version = _get_version(True, app_id, platform, channel, version, date=date)
+
+        if not new_version:
+            raise Version.DoesNotExist
 
         if new_version.partialupdate.exclude_new_users and is_new_user(version):
             raise Version.DoesNotExist
@@ -142,7 +148,7 @@ def on_app(apps_list, app, os, userid):
 
 def build_response(request, pretty_print=True):
     obj = parse_request(request)
-    tasks.collect_statistics(request=obj)
+    tasks.collect_statistics.apply_async(args=(request,), queue='transient')
     userid = obj.get('userid')
     apps = obj.findall('app')
     apps_list = reduce(partial(on_app, os=obj.os, userid=userid), apps, [])

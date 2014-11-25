@@ -11,6 +11,8 @@ web:
    - redis
   ports:
    - "9090:80"
+  volumes:
+   - ./:/srv/omaha
   environment:
     DB_HOST: db
     DB_PORT: 5432
