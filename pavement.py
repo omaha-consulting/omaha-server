@@ -52,6 +52,11 @@ def collectstatic():
 
 
 @task
+def loaddata():
+    sh('./manage.py loaddata fixtures/initial_data.json', cwd='omaha_server')
+
+
+@task
 def migrate():
     sh('./manage.py migrate --noinput', cwd='omaha_server')
 
@@ -64,6 +69,7 @@ def create_admin():
 @task
 def docker_run():
     migrate()
+    loaddata()
     create_admin()
     collectstatic()
     sh('/usr/bin/supervisord')

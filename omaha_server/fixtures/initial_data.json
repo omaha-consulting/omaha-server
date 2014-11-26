@@ -1,0 +1,47 @@
+[
+{
+    "fields": {
+        "modified": "2014-11-06T09:50:08.368Z",
+        "name": "win",
+        "created": "2014-11-06T09:50:08.356Z"
+    },
+    "model": "omaha.platform",
+    "pk": 1
+},
+{
+    "fields": {
+        "modified": "2014-11-26T12:02:38.321Z",
+        "name": "mac",
+        "created": "2014-11-26T12:02:38.293Z"
+    },
+    "model": "omaha.platform",
+    "pk": 2
+},
+{
+    "fields": {
+        "modified": "2014-11-06T09:50:00.488Z",
+        "name": "stable",
+        "created": "2014-11-06T09:50:00.472Z"
+    },
+    "model": "omaha.channel",
+    "pk": 1
+},
+{
+    "fields": {
+        "modified": "2014-11-26T12:02:19.850Z",
+        "name": "beta",
+        "created": "2014-11-26T12:02:19.823Z"
+    },
+    "model": "omaha.channel",
+    "pk": 2
+},
+{
+    "fields": {
+        "modified": "2014-11-26T12:02:31.768Z",
+        "name": "alpha",
+        "created": "2014-11-26T12:02:31.746Z"
+    },
+    "model": "omaha.channel",
+    "pk": 3
+}
+]
