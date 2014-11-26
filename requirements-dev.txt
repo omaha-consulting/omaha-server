@@ -1,7 +1,7 @@
 -r requirements-test.txt
 
 psycopg2==2.5.4
-lxml==3.4.0
-django-debug-toolbar==1.2.1
+lxml==3.4.1
+django-debug-toolbar==1.2.2
 django-debug-panel==0.8.0
 ebs-deploy==1.7
