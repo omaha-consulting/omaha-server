@@ -78,9 +78,9 @@ def version_upload_to(obj, filename):
 class Version(TimeStampedModel):
     is_enabled = models.BooleanField(default=True)
     app = models.ForeignKey(Application)
-    platform = models.ForeignKey(Platform)
-    channel = models.ForeignKey(Channel)
-    version = VersionField(help_text='Format: 255.255.65535.65535', number_bits=(8, 8, 16, 16))
+    platform = models.ForeignKey(Platform, db_index=True)
+    channel = models.ForeignKey(Channel, db_index=True)
+    version = VersionField(help_text='Format: 255.255.65535.65535', number_bits=(8, 8, 16, 16), db_index=True)
     release_notes = models.TextField(blank=True, null=True)
     file = models.FileField(upload_to=lambda o, f: version_upload_to(o, f))
     file_hash = models.CharField(verbose_name='Hash', max_length=140, null=True, blank=True)
@@ -175,11 +175,11 @@ ACTIVE_USERS_CHOICES = zip(ACTIVE_USERS_DICT_CHOICES.values(), ACTIVE_USERS_DICT
 
 
 class PartialUpdate(models.Model):
-    is_enabled = models.BooleanField(default=True)
-    version = models.OneToOneField(Version)
+    is_enabled = models.BooleanField(default=True, db_index=True)
+    version = models.OneToOneField(Version, db_index=True)
     percent = PercentField()
-    start_date = models.DateField()
-    end_date = models.DateField()
+    start_date = models.DateField(db_index=True)
+    end_date = models.DateField(db_index=True)
     exclude_new_users = models.BooleanField(default=True)
     active_users = models.PositiveSmallIntegerField(
         help_text='Active users in the past ...',

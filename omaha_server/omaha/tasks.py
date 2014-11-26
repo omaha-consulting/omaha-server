@@ -20,8 +20,9 @@ the License.
 
 from omaha_server.celery import app
 import statistics
+from parser import parse_request
 
 
 @app.task(ignore_result=True)
 def collect_statistics(request):
-    statistics.collect_statistics(request)
+    statistics.collect_statistics(parse_request(request))
