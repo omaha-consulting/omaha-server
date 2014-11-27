@@ -190,6 +190,10 @@ app:
 | REDIS_STAT_PORT           | For statistics    | REDIS_PORT                 |
 | REDIS_STAT_HOST           |                   | REDIS_HOST                 |
 | REDIS_STAT_DB             |                   | 15                         |
+| UWSGI_PROCESSES           |                   |                            |
+| UWSGI_THREADS             |                   |                            |
+
+- [uWSGI Options](http://uwsgi-docs.readthedocs.org/en/latest/Options.html) & [Environment variables](http://uwsgi-docs.readthedocs.org/en/latest/Configuration.html#environment-variables)
 
 ### Initialize your ElasticBeanstalk application
 
