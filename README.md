@@ -194,6 +194,7 @@ app:
 | UWSGI_THREADS             |                   |                            |
 
 - [uWSGI Options](http://uwsgi-docs.readthedocs.org/en/latest/Options.html) & [Environment variables](http://uwsgi-docs.readthedocs.org/en/latest/Configuration.html#environment-variables)
+- [Sentry](https://github.com/getsentry/sentry)
 
 ### Initialize your ElasticBeanstalk application
 

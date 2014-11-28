@@ -147,11 +147,16 @@ def parse_req(request):
 def parse_apps(apps, request):
     app_list = []
     for app in apps:
+        events = app.findall('event')
+
+        if not events:
+            continue
+
         kwargs = get_kwargs_for_model(AppRequest, app, exclude=['request', 'version', 'nextversion', 'id'])
         kwargs['version'] = app.get('version') or None
         kwargs['nextversion'] = app.get('nextversion') or None
         app_req = AppRequest.objects.create(request=request, **kwargs)
-        event_list = parse_events(app.findall('event'))
+        event_list = parse_events(events)
         app_req.events.add(*event_list)
         app_list.append(app_req)
     return app_list
@@ -172,6 +177,9 @@ def collect_statistics(request):
 
     if userid:
         userid_counting(userid, apps, request.os.get('platform'))
+
+    if not filter(lambda app: bool(app.findall('event')), apps):
+        return
 
     req = parse_req(request)
     req.os = parse_os(request.os)
