@@ -50,6 +50,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = (
     'cacheops',
     'suit',
+    'suit_redactor',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

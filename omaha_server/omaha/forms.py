@@ -20,10 +20,13 @@ the License.
 
 from django import forms
 
-from models import Application
+from suit.widgets import LinkedSelect
+from suit_redactor.widgets import RedactorWidget
+
+from models import Application, Version, Action
 
 
-__all__ = ['ApplicationAdminForm']
+__all__ = ['ApplicationAdminForm', 'VersionAdminForm', 'ActionAdminForm']
 
 
 class ApplicationAdminForm(forms.ModelForm):
@@ -32,4 +35,28 @@ class ApplicationAdminForm(forms.ModelForm):
 
     class Meta:
         model = Application
+        exclude = []
+
+
+class VersionAdminForm(forms.ModelForm):
+    class Meta:
+        model = Version
+        exclude = []
+        widgets = {
+            'app': LinkedSelect,
+            'release_notes': RedactorWidget(editor_options={'lang': 'en',
+                                                            'minHeight': 150}),
+        }
+
+
+class ActionAdminForm(forms.ModelForm):
+    SUCCESSSACTION_CHOICES = (
+        ('default', 'default'),
+        ('exitsilently', 'exitsilently'),
+        ('exitsilentlyonlaunchcmd', 'exitsilentlyonlaunchcmd')
+    )
+    successsaction = forms.ChoiceField(choices=SUCCESSSACTION_CHOICES)
+
+    class Meta:
+        model = Action
         exclude = []

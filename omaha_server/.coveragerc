@@ -4,4 +4,6 @@ omit =
     omaha_server/*
     omaha/migrations/*
     omaha/models.py
+    omaha/forms.py
+    omaha/admin.py
 data_file = ../.coverage
