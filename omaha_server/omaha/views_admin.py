@@ -18,10 +18,13 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
+import datetime
+
 from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, ListView
 from django.views.generic.list import MultipleObjectMixin
+from django.utils import timezone
 
 from omaha.statistics import (
     get_users_statistics_months,
@@ -66,6 +69,15 @@ class StatisticsDetailView(StaffMemberRequiredMixin, DetailView):
         context = super(StatisticsDetailView, self).get_context_data(**kwargs)
 
         app = self.object
+
+        now = timezone.now()
+        last_week = now - datetime.timedelta(days=7)
+
+        qs = AppRequest.objects.filter(appid=app.id,
+                                       request__created__range=[last_week, now])
+
+        context['install_count'] = qs.filter(events__eventtype=2).count()
+        context['update_count'] = qs.filter(events__eventtype=3).count()
 
         context['months'] = make_discrete_bar_chart('months', get_users_statistics_months(app_id=app.id))
         context['weeks'] = make_discrete_bar_chart('weeks', get_users_statistics_weeks(app_id=app.id))

@@ -35,6 +35,16 @@
 
     <hr/>
 
+    <h2>Last week</h2>
+
+    <div>
+        <ul>
+            <li>New Installations: <strong>{{ install_count }}</strong></li>
+            <li>Updates: <strong>{{ update_count }}</strong></li>
+        </ul>
+    </div>
+
+
     <h2>Users</h2>
     {% include_container months.chartcontainer 400 1200 %}
     {% include_container weeks.chartcontainer %}
