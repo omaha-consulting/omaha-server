@@ -25,6 +25,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, ListView
 from django.views.generic.list import MultipleObjectMixin
 from django.utils import timezone
+from raven.contrib.django.raven_compat.models import client
 
 from omaha.statistics import (
     get_users_statistics_months,
@@ -96,6 +97,13 @@ class RequestListView(StaffMemberRequiredMixin, ListView, MultipleObjectMixin):
     def get_queryset(self):
         qs = super(RequestListView, self).get_queryset()
         qs = qs.select_related('request', 'request__os',)
+
+        try:
+            app = Application.objects.get(name=self.kwargs.get('name'))
+            qs = qs.filter(appid=app.id)
+        except Application.DoesNotExist:
+            client.captureException()
+
         qs = qs.distinct()
         self.filter = AppRequestFilter(self.request.GET, queryset=qs)
         return self.filter.qs
@@ -118,6 +126,13 @@ class AppRequestDetailView(StaffMemberRequiredMixin, DetailView):
         return qs
 
     def get_context_data(self, **kwargs):
+        name = 'Unknown'
+        try:
+            app_req = self.get_object()
+            app = Application.objects.get(id=app_req.appid)
+            name = app.name
+        except Application.DoesNotExist:
+            client.captureException()
         context = super(AppRequestDetailView, self).get_context_data(**kwargs)
-        context['app_name'] = self.kwargs.get('name')
+        context['app_name'] = name
         return context
