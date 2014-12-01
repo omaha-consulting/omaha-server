@@ -73,7 +73,7 @@ EVENT_RESULT_OPTIONS = dict([
 ])
 
 EVENT_TYPE_OPTIONS = dict([
-    (k, (v.title(), (lambda k: lambda qs, name: qs.filter(events__eventresult=k+0))(k)))
+    (k, (v.title(), (lambda k: lambda qs, name: qs.filter(events__eventtype=k+0))(k)))
     for k, v in EVENT_TYPE.iteritems()
 ])
 
