@@ -65,6 +65,7 @@ INSTALLED_APPS = (
     'django_nvd3',
     'djangobower',
     'django_filters',
+    'django_tables2',
 
     'omaha',
 )

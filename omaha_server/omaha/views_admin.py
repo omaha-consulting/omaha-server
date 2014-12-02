@@ -23,9 +23,9 @@ import datetime
 from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, ListView
-from django.views.generic.list import MultipleObjectMixin
 from django.utils import timezone
 from raven.contrib.django.raven_compat.models import client
+from django_tables2 import SingleTableView
 
 from omaha.statistics import (
     get_users_statistics_months,
@@ -36,6 +36,30 @@ from omaha.statistics import (
 from omaha.models import Application, AppRequest
 from filters import AppRequestFilter
 from omaha.utils import make_piechart, make_discrete_bar_chart
+from omaha.filters import EVENT_RESULT, EVENT_TYPE
+from tables import AppRequestTable
+
+
+STATE_CANCELLED = {
+    0: 'unknown',
+    1: 'init',
+    2: 'waiting to check for update',
+    3: 'checking for update',
+    4: 'update available',
+    5: 'waiting to download',
+    6: 'retrying download',
+    7: 'downloading',
+    8: 'download complete',
+    9: 'extracting',
+    10: 'applying differential patch',
+    11: 'ready to install',
+    12: 'waiting to install',
+    13: 'installing',
+    14: 'install complete',
+    15: 'paused',
+    16: 'no update',
+    17: 'error',
+}
 
 
 class StaffMemberRequiredMixin(object):
@@ -88,15 +112,16 @@ class StatisticsDetailView(StaffMemberRequiredMixin, DetailView):
         return context
 
 
-class RequestListView(StaffMemberRequiredMixin, ListView, MultipleObjectMixin):
+class RequestListView(StaffMemberRequiredMixin, SingleTableView):
     model = AppRequest
     context_object_name = 'request_list'
     template_name = 'admin/omaha/request_list.html'
-    paginate_by = 20
+    table_class = AppRequestTable
 
     def get_queryset(self):
         qs = super(RequestListView, self).get_queryset()
         qs = qs.select_related('request', 'request__os',)
+        qs = qs.order_by('-request__created')
 
         try:
             app = Application.objects.get(name=self.kwargs.get('name'))
@@ -135,4 +160,7 @@ class AppRequestDetailView(StaffMemberRequiredMixin, DetailView):
             client.captureException()
         context = super(AppRequestDetailView, self).get_context_data(**kwargs)
         context['app_name'] = name
+        context['EVENT_RESULT'] = EVENT_RESULT
+        context['EVENT_TYPE'] = EVENT_TYPE
+        context['STATE_CANCELLED'] = STATE_CANCELLED
         return context

@@ -2,6 +2,7 @@
 {% load suit_tags %}
 {% load suit_list %}
 {% load url from future %}
+{% load get_item %}
 
 {% block title %}Statistics | {{ 'ADMIN_NAME'|suit_conf }}{% endblock %}
 
@@ -41,19 +42,19 @@
         </tr>
         <tr>
             <td>App version</td>
-            <td>{{ object.version }}</td>
+            <td>{{ object.version|default_if_none:'Unknown' }}</td>
         </tr>
         <tr>
             <td>Omaha version</td>
-            <td>{{ object.request.version }}</td>
+            <td>{{ object.request.version|default_if_none:'Unknown' }}</td>
         </tr>
         <tr>
-            <td>Is machine</td>
-            <td>{{ object.request.ismachine }}</td>
+            <td><a href="#" rel="tooltip" title="Yes or No, depending on whether the Omaha client is a per-user or per-machine instance">Is machine</a></td>
+            <td>{% if object.request.ismachine %}Yes{% else %}No{% endif %}</td>
         </tr>
         <tr>
             <td>Updater channel</td>
-            <td>{{ object.request.updaterchannel }}</td>
+            <td>{{ object.request.updaterchannel|default_if_none:'Unknown' }}</td>
         </tr>
         </tbody>
     </table>
@@ -88,6 +89,7 @@
         </div>
     </div>
 
+    {% if object.request.hw %}
     <div class="accordion" id="accordion_hw">
         <div class="accordion-group">
             <div class="accordion-heading">
@@ -99,40 +101,41 @@
                 <table class="table table-condensed">
                     <tr>
                         <td>sse</td>
-                        <td>{{ object.request.hw.sse }}</td>
+                        <td>{{ object.request.hw.sse|default_if_none:'Unknown' }}</td>
                     </tr>
                     <tr>
                         <td>sse2</td>
-                        <td>{{ object.request.hw.sse2 }}</td>
+                        <td>{{ object.request.hw.sse2|default_if_none:'Unknown' }}</td>
                     </tr>
                     <tr>
                         <td>sse3</td>
-                        <td>{{ object.request.hw.sse3 }}</td>
+                        <td>{{ object.request.hw.sse3|default_if_none:'Unknown' }}</td>
                     </tr>
                     <tr>
                         <td>ssse3</td>
-                        <td>{{ object.request.hw.ssse3 }}</td>
+                        <td>{{ object.request.hw.ssse3|default_if_none:'Unknown' }}</td>
                     </tr>
                     <tr>
                         <td>sse41</td>
-                        <td>{{ object.request.hw.sse41 }}</td>
+                        <td>{{ object.request.hw.sse41|default_if_none:'Unknown' }}</td>
                     </tr>
                     <tr>
                         <td>sse42</td>
-                        <td>{{ object.request.hw.sse42 }}</td>
+                        <td>{{ object.request.hw.sse42|default_if_none:'Unknown' }}</td>
                     </tr>
                     <tr>
                         <td>avx</td>
-                        <td>{{ object.request.hw.avx }}</td>
+                        <td>{{ object.request.hw.avx|default_if_none:'Unknown' }}</td>
                     </tr>
                     <tr>
                         <td>physmemory</td>
-                        <td>{{ object.request.hw.physmemory }}</td>
+                        <td>{{ object.request.hw.physmemory|default_if_none:'Unknown' }}</td>
                     </tr>
                 </table>
             </div>
         </div>
     </div>
+    {% endif %}
 
 
     <div class="accordion" id="accordion_events">
@@ -149,38 +152,38 @@
                         <th>type</th>
                         <th>result</th>
                         <th>error code</th>
-                        <th>extra code1</th>
-                        <th>download time ms</th>
-                        <th>downloaded</th>
-                        <th>total</th>
-                        <th>update check time ms</th>
-                        <th>install time ms</th>
-                        <th>source url index</th>
-                        <th>state cancelled</th>
-                        <th>time since update available ms</th>
-                        <th>time since download start ms</th>
-                        <th>next version</th>
-                        <th>previous version</th>
+                        <th><a href="#" rel="tooltip" title="Additional numerical information related to errorcode">extra code1</a></th>
+                        <th><a href="#" rel="tooltip" title="Time taken for the download (if there had been one, note for cached app, download time is 0)">download time ms</a></th>
+                        <th><a href="#" rel="tooltip" title="Bytes downloaded">downloaded</a></th>
+                        <th><a href="#" rel="tooltip" title="Sum of all packages sizes in this app">total</a></th>
+                        <th><a href="#" rel="tooltip" title="Time taken to do an update check for the app">update check time ms</a></th>
+                        <th><a href="#" rel="tooltip" title="Time take to install Omaha or an app">install time ms</a></th>
+                        <th><a href="#" rel="tooltip" title="Index of the URL that served app installer download">source url index</a></th>
+                        <th><a href="#" rel="tooltip" title="App state when user cancels installation">state cancelled</a></th>
+                        <th><a href="#" rel="tooltip" title="Time interval between update is available and user cancels installation">time since update available ms</a></th>
+                        <th><a href="#" rel="tooltip" title="Time interval between update download starts and user cancels installation">time since download start ms</a></th>
+                        <th><a href="#" rel="tooltip" title="The version of the app that an update was attempted to (regardless of whether or not the update succeeded)">next version</a></th>
+                        <th><a href="#" rel="tooltip" title="The version of the app prior to the update attempt">previous version</a></th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for event in object.events.all %}
                         <tr {% if event.is_error %}class="error"{% endif %}>
-                            <td>{{ event.eventtype }}</td>
-                            <td>{{ event.eventresult }}</td>
+                            <td>{{ EVENT_TYPE|get_item:event.eventtype }}</td>
+                            <td>{{ EVENT_RESULT|get_item:event.eventresult }}</td>
                             <td>{{ event.errorcode }}</td>
                             <td>{{ event.extracode1 }}</td>
-                            <td>{{ event.download_time_ms }}</td>
-                            <td>{{ event.downloaded }}</td>
-                            <td>{{ event.total }}</td>
-                            <td>{{ event.update_check_time_ms }}</td>
-                            <td>{{ event.install_time_ms }}</td>
-                            <td>{{ event.source_url_index }}</td>
-                            <td>{{ event.state_cancelled }}</td>
-                            <td>{{ event.time_since_update_available_ms }}</td>
-                            <td>{{ event.time_since_download_start_ms }}</td>
-                            <td>{{ event.nextversion }}</td>
-                            <td>{{ event.previousversion }}</td>
+                            <td>{{ event.download_time_ms|default_if_none:'' }}</td>
+                            <td>{{ event.downloaded|default_if_none:'' }}</td>
+                            <td>{{ event.total|default_if_none:'' }}</td>
+                            <td>{{ event.update_check_time_ms|default_if_none:'' }}</td>
+                            <td>{{ event.install_time_ms|default_if_none:'' }}</td>
+                            <td>{{ event.source_url_index|default_if_none:'' }}</td>
+                            <td>{{ STATE_CANCELLED|get_item:event.state_cancelled|default_if_none:'' }}</td>
+                            <td>{{ event.time_since_update_available_ms|default_if_none:'' }}</td>
+                            <td>{{ event.time_since_download_start_ms|default_if_none:'' }}</td>
+                            <td>{{ event.nextversion|default_if_none:'' }}</td>
+                            <td>{{ event.previousversion|default_if_none:'' }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -189,107 +192,12 @@
         </div>
     </div>
 
-    <div class="accordion" id="accordion_info">
-        <div class="accordion-group">
-            <div class="accordion-heading">
-                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion_os" href="#collapseInfo">
-                    Info
-                </a>
-            </div>
-            <div id="collapseInfo" class="accordion-body collapse out">
+{% endblock %}
 
-                <ul>
-                    <li><tt>eventtype</tt>: One of</li>
-                    <ul>
-                        <li>0: unknown</li>
-                        <li>1: download complete</li>
-                        <li>2: install complete</li>
-                        <li>3: update complete</li>
-                        <li>4: uninstall</li>
-                        <li>5: download started</li>
-                        <li>6: install started</li>
-                        <li>9: new application install started</li>
-                        <li>10: setup started</li>
-                        <li>11: setup finished</li>
-                        <li>12: update application started</li>
-                        <li>13: update download started</li>
-                        <li>14: update download finished</li>
-                        <li>15: update installer started</li>
-                        <li>16: setup update begin</li>
-                        <li>17: setup update complete</li>
-                        <li>20: register product complete</li>
-                        <li>30: OEM install first check</li>
-                        <li>40: app-specific command started</li>
-                        <li>41: app-specific command ended</li>
-                        <li>100: setup failure</li>
-                        <li>102: COM server failure</li>
-                        <li>103: setup update failure</li>
-                    </ul>
-                    <li><tt>eventresult</tt>: One of</li>
-                    <ul>
-                        <li>0: error</li>
-                        <li>1: success</li>
-                        <li>2: success reboot</li>
-                        <li>3: success restart browser</li>
-                        <li>4: cancelled</li>
-                        <li>5: error installer MSI</li>
-                        <li>6: error installer other</li>
-                        <li>7: noupdate</li>
-                        <li>8: error installer system</li>
-                        <li>9: update deferred</li>
-                        <li>10: handoff error</li>
-                    </ul>
-                    <li><tt>errorcode</tt>: (optional)</li>
-                    <ul>
-                        <li>For <tt>eventresult</tt>==0: Omaha error code</li>
-                        <li>For <tt>eventresult</tt>=={1 | 2 | 3| 5 | 6 | 8}: Application-specific installer exit/result
-                            code.
-                        </li>
-                    </ul>
-                    <li><tt>extracode1</tt>: (optional) Additional numerical information related to errorcode.</li>
-                    <li><tt>download_time_ms</tt>: (optional) time taken for the download (if there had been one, note
-                        for cached app, download time is 0)
-                    </li>
-                    <li><tt>downloaded</tt>: (optional) bytes downloaded</li>
-                    <li><tt>total</tt>:(optional) sum of all packages sizes in this app</li>
-                    <li><tt>update_check_time_ms</tt>: (optional) time taken to do an update check for the app.</li>
-                    <li><tt>install_time_ms</tt>: (optional) time take to install Omaha or an app.</li>
-                    <li><tt>source_url_index</tt>: (optional) Index of the URL that served app installer download.</li>
-                    <li><tt>state_cancelled</tt>: (optional) App state when user cancels installation. One of:</li>
-                    <ul>
-                        <li>0: unknown</li>
-                        <li>1: init</li>
-                        <li>2: waiting to check for update</li>
-                        <li>3: checking for update</li>
-                        <li>4: update available</li>
-                        <li>5: waiting to download</li>
-                        <li>6: retrying download</li>
-                        <li>7: downloading</li>
-                        <li>8: download complete</li>
-                        <li>9: extracting</li>
-                        <li>10: applying differential patch</li>
-                        <li>11: ready to install</li>
-                        <li>12: waiting to install</li>
-                        <li>13: installing</li>
-                        <li>14: install complete</li>
-                        <li>15: paused</li>
-                        <li>16: no update</li>
-                        <li>17: error</li>
-                    </ul>
-                    <li><tt>time_since_update_available_ms</tt>: (optional) Time interval between update is available
-                        and user cancels installation.
-                    </li>
-                    <li><tt>time_since_download_start_ms</tt>: (optional) Time interval between update download starts
-                        and user cancels installation.
-                    </li>
-                    <li><tt>nextversion</tt>: (optional) The version of the app that an update was attempted to
-                        (regardless of whether or not the update succeeded).
-                    </li>
-                    <li><tt>previousversion</tt>: (optional) The version of the app prior to the update attempt.</li>
-                </ul>
-
-            </div>
-        </div>
-    </div>
-
+{% block extrajs %}
+    <script>
+    $(document).ready(function(){
+        $("[rel=tooltip]").tooltip({placement: 'bottom'});
+    });
+    </script>
 {% endblock %}
