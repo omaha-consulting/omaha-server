@@ -2,8 +2,18 @@
 {% load suit_tags %}
 {% load suit_list %}
 {% load url_replace %}
+{% load render_table from django_tables2 %}
 
 {% block title %}Statistics | {{ 'ADMIN_NAME'|suit_conf }}{% endblock %}
+
+{% block extrahead %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
+    <style>
+        .table-container, .paleblue {
+            width: 100% !important;
+        }
+    </style>
+{% endblock %}
 
 {% block breadcrumbs %}
     <ul class="breadcrumb">
@@ -32,41 +42,6 @@
         <input type="submit" value="Search" class="btn"/>
     </form>
 
-    <table class="table table-hover table-striped">
-        <thead>
-        <tr>
-            <th>OS</th>
-            <th>Arch</th>
-            <th>Date</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for req in request_list %}
-            <tr>
-                <td>{{ req.request.os.platform }} {{ req.request.os.version }} {{ req.request.os.sp }}</td>
-                <td>{{ req.request.os.arch }}</td>
-                <td>{{ req.request.created|date:"r" }}</td>
-                <td><a target="_blank" href="{% url "omaha_request_detail" req.pk %}">Detail</a></td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <div class="pagination pagination-centered">
-        <ul>
-            {% if page_obj.has_previous %}
-                <li><a href="?{% url_replace request 'page' page_obj.previous_page_number %}">Prev</a></li>
-            {% else %}
-                <li class="disabled"><a href="#">Prev</a></li>
-            {% endif %}
-            <li class="disabled"><a href="">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</a></li>
-            {% if page_obj.has_next %}
-                <li><a href="?{% url_replace request 'page' page_obj.next_page_number %}">Next</a></li>
-            {% else %}
-                <li class="disabled"><a href="#">Next</a></li>
-            {% endif %}
-        </ul>
-    </div>
+    {% render_table table %}
 
 {% endblock %}
