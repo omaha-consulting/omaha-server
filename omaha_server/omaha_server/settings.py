@@ -26,6 +26,7 @@ SUIT_CONFIG = {
     'MENU': (
         'sites',
         {'app': 'omaha', 'label': 'Omaha', 'icon': 'icon-refresh'},
+        {'app': 'crash', 'label': 'Crash reports', 'icon': 'icon-fire'},
         {'label': 'Statistics', 'url': 'omaha_statistics', 'icon': 'icon-star'},
     ),
 }
@@ -68,6 +69,7 @@ INSTALLED_APPS = (
     'django_tables2',
 
     'omaha',
+    'crash',
 )
 
 MIDDLEWARE_CLASSES = (
