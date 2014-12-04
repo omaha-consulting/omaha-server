@@ -59,6 +59,10 @@ or
 $ paver run_test_in_docker
 ```
 
+## Statistics
+
+Required `userid`. [Including user id into request](https://github.com/Crystalnix/omaha/wiki/Omaha-Client-working-with-protocol#including-user-id-into-request)
+
 ## Utils
 
 A command for generating fake data such as requests, events and statistics:
