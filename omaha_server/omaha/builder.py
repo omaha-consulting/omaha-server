@@ -25,7 +25,6 @@ from django.utils.timezone import now
 from django.db.models import Q
 
 from lxml import etree
-from raven.contrib.django.raven_compat.models import client
 from cacheops import cached_as
 
 import tasks
@@ -138,7 +137,6 @@ def on_app(apps_list, app, os, userid):
             )
             apps_list.append(AppPartial(updatecheck=updatecheck))
         except Version.DoesNotExist:
-            client.captureException()
             apps_list.append(AppPartial(updatecheck=Updatecheck_negative()))
     else:
         apps_list.append(AppPartial())
