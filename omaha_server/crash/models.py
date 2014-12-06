@@ -18,10 +18,14 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
+import os
+
 from django.db import models
 from django_extensions.db.models import TimeStampedModel
 
 from jsonfield import JSONField
+
+from omaha.models import Version
 
 
 class Crash(TimeStampedModel):
@@ -29,3 +33,19 @@ class Crash(TimeStampedModel):
     app_id = models.CharField(max_length=38, null=True, blank=True)
     user_id = models.CharField(max_length=38, null=True, blank=True)
     meta = JSONField(verbose_name='Meta-information', help_text='JSON format', null=True, blank=True)
+
+
+def symbols_upload_to(obj, filename):
+    return os.path.join('symbols', obj.version.app.name, obj.version.channel.name,
+                        obj.version.platform.name, filename)
+
+
+class Symbols(TimeStampedModel):
+    version = models.ForeignKey(Version)
+    debug_id = models.CharField(verbose_name='Debug ID', max_length=33, db_index=True, null=True, blank=True)
+    debug_file = models.CharField(verbose_name='Debug file name', max_length=140, null=True, blank=True)
+    file = models.FileField(upload_to=symbols_upload_to)
+    is_enabled = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name_plural = 'Symbols'

@@ -19,6 +19,8 @@ the License.
 """
 
 from django import forms
+from django_select2 import Select2Widget
+from crash.models import Symbols
 from models import Crash
 
 
@@ -26,3 +28,13 @@ class CrashFrom(forms.ModelForm):
     class Meta:
         model = Crash
         exclude = []
+
+
+class SymbolsAdminForm(forms.ModelForm):
+    class Meta:
+        model = Symbols
+        exclude = []
+        widgets = {
+            'version': Select2Widget(attrs={'style': 'width:300px'},
+                                     select2_options={'minimumResultsForSearch': 2}),
+        }

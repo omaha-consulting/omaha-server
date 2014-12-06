@@ -19,7 +19,9 @@ the License.
 """
 
 from django.contrib import admin
-from models import Crash
+
+from crash.forms import SymbolsAdminForm
+from models import Crash, Symbols
 
 
 @admin.register(Crash)
@@ -28,3 +30,11 @@ class CrashAdmin(admin.ModelAdmin):
     list_display_links = ('app_id', 'user_id', 'created', 'modified',)
     list_filter = ('created',)
     search_fields = ('app_id', 'user_id',)
+
+
+@admin.register(Symbols)
+class SymbolsAdmin(admin.ModelAdmin):
+    list_display = ('version', 'is_enabled',)
+    list_display_links = ('version', 'is_enabled',)
+    readonly_fields = ('is_enabled', 'debug_id', 'debug_file',)
+    form = SymbolsAdminForm
