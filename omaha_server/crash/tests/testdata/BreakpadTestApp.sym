@@ -1,0 +1,1556 @@
+MODULE windows x86 C1C0FA629EAA4B4D9DD2ADE270A231CC1 BreakpadTestApp.pdb
+INFO CODE_ID 54819C56A000 BreakpadTestApp.exe
+FILE 1 c:\program files\microsoft sdks\windows\v6.1\include\rpc.h
+FILE 2 c:\program files (x86)\microsoft visual studio 9.0\vc\atlmfc\include\atldef.h
+FILE 3 c:\program files (x86)\microsoft visual studio 9.0\vc\atlmfc\include\atlrc.h
+FILE 4 c:\program files (x86)\microsoft visual studio 9.0\vc\include\errno.h
+FILE 5 c:\work\omaha\third_party\breakpad\src\google_breakpad\common\minidump_cpu_x86.h
+FILE 6 c:\program files (x86)\microsoft visual studio 9.0\vc\atlmfc\include\atlbase.inl
+FILE 7 c:\program files\microsoft sdks\windows\v6.1\include\rpcdce.h
+FILE 8 c:\program files\microsoft sdks\windows\v6.1\include\wingdi.h
+FILE 9 c:\work\omaha\third_party\breakpad\src\google_breakpad\common\minidump_cpu_arm.h
+FILE 10 c:\program files\microsoft sdks\windows\v6.1\include\oleidl.h
+FILE 11 c:\program files (x86)\microsoft visual studio 9.0\vc\include\xstring
+FILE 12 c:\program files\microsoft sdks\windows\v6.1\include\msxml.h
+FILE 13 c:\program files\microsoft sdks\windows\v6.1\include\cguid.h
+FILE 14 c:\program files (x86)\microsoft visual studio 9.0\vc\include\xmemory
+FILE 15 c:\program files\microsoft sdks\windows\v6.1\include\shlwapi.h
+FILE 16 c:\program files (x86)\microsoft visual studio 9.0\vc\include\new
+FILE 17 c:\program files\microsoft sdks\windows\v6.1\include\shtypes.h
+FILE 18 c:\program files\microsoft sdks\windows\v6.1\include\winefs.h
+FILE 19 c:\work\omaha\third_party\breakpad\src\google_breakpad\common\minidump_cpu_amd64.h
+FILE 20 c:\program files\microsoft sdks\windows\v6.1\include\winreg.h
+FILE 21 c:\program files (x86)\microsoft visual studio 9.0\vc\include\tchar.h
+FILE 22 c:\program files (x86)\microsoft visual studio 9.0\vc\include\new.h
+FILE 23 c:\program files (x86)\microsoft visual studio 9.0\vc\include\wchar.h
+FILE 24 c:\program files (x86)\microsoft visual studio 9.0\vc\include\swprintf.inl
+FILE 25 c:\program files (x86)\microsoft visual studio 9.0\vc\atlmfc\include\atlsimpcoll.h
+FILE 26 c:\program files (x86)\microsoft visual studio 9.0\vc\atlmfc\include\atlcommem.h
+FILE 27 c:\program files (x86)\microsoft visual studio 9.0\vc\include\crtassem.h
+FILE 28 c:\program files (x86)\microsoft visual studio 9.0\vc\include\vadefs.h
+FILE 29 c:\program files (x86)\microsoft visual studio 9.0\vc\atlmfc\include\atlsecurity.h
+FILE 30 c:\program files\microsoft sdks\windows\v6.1\include\sddl.h
+FILE 31 c:\program files (x86)\microsoft visual studio 9.0\vc\include\string
+FILE 32 c:\program files\microsoft sdks\windows\v6.1\include\profinfo.h
+FILE 33 c:\program files (x86)\microsoft visual studio 9.0\vc\atlmfc\include\atlcore.h
+FILE 34 c:\program files (x86)\microsoft visual studio 9.0\vc\include\istream
+FILE 35 c:\work\breakpadtestapp\breakpadtestapp\breakpadtestapp.cpp
+FILE 36 c:\work\omaha\third_party\breakpad\src\client\windows\crash_generation\crash_generation_client.h
+FILE 37 c:\work\omaha\third_party\breakpad\src\google_breakpad\common\minidump_cpu_ppc.h
+FILE 38 c:\program files (x86)\microsoft visual studio 9.0\vc\atlmfc\include\atlcoll.h
+FILE 39 c:\program files (x86)\microsoft visual studio 9.0\vc\include\mbstring.h
+FILE 40 c:\program files (x86)\microsoft visual studio 9.0\vc\include\ostream
+FILE 41 c:\program files (x86)\microsoft visual studio 9.0\vc\include\share.h
+FILE 42 c:\work\omaha\third_party\breakpad\src\processor\scoped_ptr.h
+FILE 43 c:\program files\microsoft sdks\windows\v6.1\include\mcx.h
+FILE 44 c:\program files\microsoft sdks\windows\v6.1\include\winver.h
+FILE 45 c:\program files\microsoft sdks\windows\v6.1\include\tvout.h
+FILE 46 c:\program files (x86)\microsoft visual studio 9.0\vc\include\ios
+FILE 47 c:\program files (x86)\microsoft visual studio 9.0\vc\include\assert.h
+FILE 48 c:\program files (x86)\microsoft visual studio 9.0\vc\include\xlocnum
+FILE 49 c:\program files (x86)\microsoft visual studio 9.0\vc\include\climits
+FILE 50 c:\program files (x86)\microsoft visual studio 9.0\vc\include\yvals.h
+FILE 51 c:\program files (x86)\microsoft visual studio 9.0\vc\include\use_ansi.h
+FILE 52 c:\program files\microsoft sdks\windows\v6.1\include\dlgs.h
+FILE 53 c:\program files\microsoft sdks\windows\v6.1\include\qos.h
+FILE 54 c:\program files\microsoft sdks\windows\v6.1\include\bcrypt.h
+FILE 55 c:\program files\microsoft sdks\windows\v6.1\include\winnls.h
+FILE 56 c:\program files\microsoft sdks\windows\v6.1\include\pshpack8.h
+FILE 57 c:\program files\microsoft sdks\windows\v6.1\include\oaidl.h
+FILE 58 c:\program files\microsoft sdks\windows\v6.1\include\winsock.h
+FILE 59 c:\program files\microsoft sdks\windows\v6.1\include\wincrypt.h
+FILE 60 c:\program files (x86)\microsoft visual studio 9.0\vc\include\locale.h
+FILE 61 c:\program files\microsoft sdks\windows\v6.1\include\pshpack4.h
+FILE 62 c:\program files\microsoft sdks\windows\v6.1\include\lzexpand.h
+FILE 63 c:\program files\microsoft sdks\windows\v6.1\include\ddeml.h
+FILE 64 c:\program files\microsoft sdks\windows\v6.1\include\guiddef.h
+FILE 65 c:\work\omaha\third_party\breakpad\src\google_breakpad\common\minidump_exception_linux.h
+FILE 66 c:\program files\microsoft sdks\windows\v6.1\include\reason.h
+FILE 67 c:\program files\microsoft sdks\windows\v6.1\include\rpcnterr.h
+FILE 68 c:\work\omaha\third_party\breakpad\src\client\windows\handler\exception_handler.h
+FILE 69 c:\program files\microsoft sdks\windows\v6.1\include\winsock2.h
+FILE 70 c:\program files\microsoft sdks\windows\v6.1\include\rpcasync.h
+FILE 71 c:\program files\microsoft sdks\windows\v6.1\include\rpcnsi.h
+FILE 72 c:\program files\microsoft sdks\windows\v6.1\include\dbghelp.h
+FILE 73 c:\program files (x86)\microsoft visual studio 9.0\vc\atlmfc\include\atliface.h
+FILE 74 c:\program files\microsoft sdks\windows\v6.1\include\ws2def.h
+FILE 75 c:\program files\microsoft sdks\windows\v6.1\include\shellapi.h
+FILE 76 c:\program files\microsoft sdks\windows\v6.1\include\windows.h
+FILE 77 c:\program files\microsoft sdks\windows\v6.1\include\inaddr.h
+FILE 78 c:\program files\microsoft sdks\windows\v6.1\include\sdkddkver.h
+FILE 79 c:\program files (x86)\microsoft visual studio 9.0\vc\include\excpt.h
+FILE 80 c:\program files\microsoft sdks\windows\v6.1\include\userenv.h
+FILE 81 c:\program files\microsoft sdks\windows\v6.1\include\poppack.h
+FILE 82 c:\work\omaha\third_party\breakpad\src\client\windows\common\ipc_protocol.h
+FILE 83 c:\program files\microsoft sdks\windows\v6.1\include\wbemcli.h
+FILE 84 c:\work\omaha\third_party\breakpad\src\common\windows\string_utils-inl.h
+FILE 85 c:\program files (x86)\microsoft visual studio 9.0\vc\atlmfc\include\atlchecked.h
+FILE 86 c:\program files (x86)\microsoft visual studio 9.0\vc\include\xutility
+FILE 87 c:\program files (x86)\microsoft visual studio 9.0\vc\atlmfc\include\atlexcept.h
+FILE 88 c:\program files\microsoft sdks\windows\v6.1\include\winperf.h
+FILE 89 c:\program files\microsoft sdks\windows\v6.1\include\winuser.h
+FILE 90 c:\program files (x86)\microsoft visual studio 9.0\vc\include\utility
+FILE 91 c:\program files\microsoft sdks\windows\v6.1\include\oleacc.h
+FILE 92 c:\program files (x86)\microsoft visual studio 9.0\vc\atlmfc\include\atltrace.h
+FILE 93 c:\program files (x86)\microsoft visual studio 9.0\vc\include\iosfwd
+FILE 94 c:\program files (x86)\microsoft visual studio 9.0\vc\atlmfc\include\atlconv.h
+FILE 95 c:\program files (x86)\microsoft visual studio 9.0\vc\include\cwchar
+FILE 96 c:\program files (x86)\microsoft visual studio 9.0\vc\atlmfc\include\atlalloc.h
+FILE 97 c:\program files\microsoft sdks\windows\v6.1\include\propidl.h
+FILE 98 c:\program files\microsoft sdks\windows\v6.1\include\cderr.h
+FILE 99 c:\program files (x86)\microsoft visual studio 9.0\vc\include\crtdbg.h
+FILE 100 c:\program files\microsoft sdks\windows\v6.1\include\dde.h
+FILE 101 c:\program files\microsoft sdks\windows\v6.1\include\winscard.h
+FILE 102 c:\program files (x86)\microsoft visual studio 9.0\vc\include\stdexcept
+FILE 103 c:\program files\microsoft sdks\windows\v6.1\include\wtypes.h
+FILE 104 c:\program files\microsoft sdks\windows\v6.1\include\ncrypt.h
+FILE 105 c:\program files (x86)\microsoft visual studio 9.0\vc\include\exception
+FILE 106 c:\program files\microsoft sdks\windows\v6.1\include\rpcndr.h
+FILE 107 c:\program files (x86)\microsoft visual studio 9.0\vc\include\xstddef
+FILE 108 c:\work\omaha\third_party\breakpad\src\google_breakpad\common\minidump_cpu_ppc64.h
+FILE 109 c:\program files\microsoft sdks\windows\v6.1\include\rpcnsip.h
+FILE 110 c:\program files (x86)\microsoft visual studio 9.0\vc\include\cstddef
+FILE 111 c:\program files (x86)\microsoft visual studio 9.0\vc\include\stddef.h
+FILE 112 c:\program files (x86)\microsoft visual studio 9.0\vc\include\xdebug
+FILE 113 c:\program files (x86)\microsoft visual studio 9.0\vc\include\stdarg.h
+FILE 114 c:\program files (x86)\microsoft visual studio 9.0\vc\include\wtime.inl
+FILE 115 c:\program files\microsoft sdks\windows\v6.1\include\windef.h
+FILE 116 c:\program files\microsoft sdks\windows\v6.1\include\aclapi.h
+FILE 117 c:\program files (x86)\microsoft visual studio 9.0\vc\include\eh.h
+FILE 118 c:\program files\microsoft sdks\windows\v6.1\include\accctrl.h
+FILE 119 c:\program files\microsoft sdks\windows\v6.1\include\imm.h
+FILE 120 c:\program files (x86)\microsoft visual studio 9.0\vc\include\streambuf
+FILE 121 c:\program files\microsoft sdks\windows\v6.1\include\commdlg.h
+FILE 122 c:\program files\microsoft sdks\windows\v6.1\include\pshpack1.h
+FILE 123 c:\program files (x86)\microsoft visual studio 9.0\vc\include\xiosbase
+FILE 124 c:\program files (x86)\microsoft visual studio 9.0\vc\include\xlocale
+FILE 125 c:\work\omaha\third_party\breakpad\src\google_breakpad\common\minidump_exception_win32.h
+FILE 126 c:\program files\microsoft sdks\windows\v6.1\include\urlmon.h
+FILE 127 c:\program files\microsoft sdks\windows\v6.1\include\mmsystem.h
+FILE 128 c:\program files\microsoft sdks\windows\v6.1\include\winbase.h
+FILE 129 c:\program files (x86)\microsoft visual studio 9.0\vc\include\xlocinfo
+FILE 130 c:\program files (x86)\microsoft visual studio 9.0\vc\include\cstring
+FILE 131 c:\work\omaha\third_party\breakpad\src\google_breakpad\common\minidump_exception_solaris.h
+FILE 132 c:\program files (x86)\microsoft visual studio 9.0\vc\atlmfc\include\statreg.h
+FILE 133 c:\program files (x86)\microsoft visual studio 9.0\vc\include\xlocinfo.h
+FILE 134 c:\program files (x86)\microsoft visual studio 9.0\vc\include\string.h
+FILE 135 c:\program files (x86)\microsoft visual studio 9.0\vc\include\ctype.h
+FILE 136 c:\program files\microsoft sdks\windows\v6.1\include\pshpack2.h
+FILE 137 c:\program files\microsoft sdks\windows\v6.1\include\servprov.h
+FILE 138 c:\program files (x86)\microsoft visual studio 9.0\vc\atlmfc\include\cstringt.h
+FILE 139 c:\program files (x86)\microsoft visual studio 9.0\vc\include\process.h
+FILE 140 c:\program files\microsoft sdks\windows\v6.1\include\winspool.h
+FILE 141 c:\program files (x86)\microsoft visual studio 9.0\vc\atlmfc\include\atlsimpstr.h
+FILE 142 c:\program files\microsoft sdks\windows\v6.1\include\prsht.h
+FILE 143 c:\program files\microsoft sdks\windows\v6.1\include\winnetwk.h
+FILE 144 c:\program files (x86)\microsoft visual studio 9.0\vc\atlmfc\include\atlmem.h
+FILE 145 c:\program files (x86)\microsoft visual studio 9.0\vc\atlmfc\include\atlcomcli.h
+FILE 146 c:\work\omaha\third_party\breakpad\src\google_breakpad\common\minidump_cpu_sparc.h
+FILE 147 c:\program files\microsoft sdks\windows\v6.1\include\olectl.h
+FILE 148 c:\program files\microsoft sdks\windows\v6.1\include\nb30.h
+FILE 149 c:\program files\microsoft sdks\windows\v6.1\include\ocidl.h
+FILE 150 c:\program files\microsoft sdks\windows\v6.1\include\ole2.h
+FILE 151 c:\program files\microsoft sdks\windows\v6.1\include\stralign.h
+FILE 152 c:\program files\microsoft sdks\windows\v6.1\include\objbase.h
+FILE 153 c:\program files\microsoft sdks\windows\v6.1\include\winioctl.h
+FILE 154 c:\program files\microsoft sdks\windows\v6.1\include\objidl.h
+FILE 155 c:\program files\microsoft sdks\windows\v6.1\include\winsvc.h
+FILE 156 c:\program files\microsoft sdks\windows\v6.1\include\rpcsal.h
+FILE 157 c:\program files\microsoft sdks\windows\v6.1\include\rpcdcep.h
+FILE 158 c:\work\omaha\third_party\breakpad\src\google_breakpad\common\minidump_format.h
+FILE 159 c:\program files\microsoft sdks\windows\v6.1\include\comcat.h
+FILE 160 c:\program files (x86)\microsoft visual studio 9.0\vc\include\limits.h
+FILE 161 c:\work\omaha\third_party\breakpad\src\google_breakpad\common\breakpad_types.h
+FILE 162 c:\program files (x86)\microsoft visual studio 9.0\vc\include\cstdio
+FILE 163 c:\program files\microsoft sdks\windows\v6.1\include\winsmcrd.h
+FILE 164 c:\program files (x86)\microsoft visual studio 9.0\vc\include\cstdlib
+FILE 165 c:\program files (x86)\microsoft visual studio 9.0\vc\include\stdlib.h
+FILE 166 c:\program files (x86)\microsoft visual studio 9.0\vc\atlmfc\include\cstringt.inl
+FILE 167 c:\program files\microsoft sdks\windows\v6.1\include\unknwn.h
+FILE 168 c:\program files\microsoft sdks\windows\v6.1\include\winnt.h
+FILE 169 c:\program files (x86)\microsoft visual studio 9.0\vc\include\malloc.h
+FILE 170 c:\work\breakpadtestapp\breakpadtestapp\stdafx.h
+FILE 171 c:\program files\microsoft sdks\windows\v6.1\include\specstrings.h
+FILE 172 c:\work\breakpadtestapp\breakpadtestapp\targetver.h
+FILE 173 c:\program files\microsoft sdks\windows\v6.1\include\specstrings_adt.h
+FILE 174 c:\program files (x86)\microsoft visual studio 9.0\vc\include\stdio.h
+FILE 175 c:\program files (x86)\microsoft visual studio 9.0\vc\include\crtdefs.h
+FILE 176 c:\program files (x86)\microsoft visual studio 9.0\vc\include\vector
+FILE 177 c:\program files\microsoft sdks\windows\v6.1\include\winerror.h
+FILE 178 c:\program files (x86)\microsoft visual studio 9.0\vc\include\typeinfo
+FILE 179 c:\program files (x86)\microsoft visual studio 9.0\vc\include\sal.h
+FILE 180 c:\program files (x86)\microsoft visual studio 9.0\vc\include\memory
+FILE 181 c:\program files\microsoft sdks\windows\v6.1\include\oleauto.h
+FILE 182 c:\program files (x86)\microsoft visual studio 9.0\vc\include\codeanalysis\sourceannotations.h
+FILE 183 c:\program files (x86)\microsoft visual studio 9.0\vc\include\iterator
+FILE 184 c:\program files\microsoft sdks\windows\v6.1\include\specstrings_strict.h
+FILE 185 c:\program files\microsoft sdks\windows\v6.1\include\wincon.h
+FILE 186 c:\program files\microsoft sdks\windows\v6.1\include\specstrings_undef.h
+FILE 187 c:\program files\microsoft sdks\windows\v6.1\include\basetsd.h
+FILE 188 c:\work\omaha\third_party\breakpad\src\google_breakpad\common\minidump_exception_mac.h
+FILE 189 c:\program files (x86)\microsoft visual studio 9.0\vc\atlmfc\include\atlsecurity.inl
+FILE 190 c:\program files (x86)\microsoft visual studio 9.0\vc\atlmfc\include\atlstr.h
+FILE 191 c:\program files\microsoft sdks\windows\v6.1\include\ktmtypes.h
+FILE 192 c:\program files (x86)\microsoft visual studio 9.0\vc\atlmfc\include\atlbase.h
+FILE 221 c:\work\omaha\third_party\breakpad\src\client\windows\crash_generation\client_info.cc
+FILE 317 c:\work\omaha\third_party\breakpad\src\client\windows\crash_generation\client_info.h
+FILE 339 c:\work\omaha\third_party\breakpad\src\common\windows\guid_string.h
+FILE 360 c:\work\omaha\third_party\breakpad\src\client\windows\handler\exception_handler.cc
+FILE 377 c:\program files (x86)\microsoft visual studio 9.0\vc\include\algorithm
+FILE 413 c:\program files (x86)\microsoft visual studio 9.0\vc\include\cassert
+FILE 491 c:\work\breakpadtestapp\breakpadtestapp\stdafx.cpp
+FILE 493 c:\work\breakpadtestapp\breakpadtestapp\release\breakpadtestapp.pch
+FILE 529 c:\work\omaha\third_party\breakpad\src\client\windows\crash_generation\crash_generation_client.cc
+FILE 655 c:\work\omaha\third_party\breakpad\src\common\windows\guid_string.cc
+FILE 739 c:\work\omaha\third_party\breakpad\src\client\windows\crash_generation\crash_generation_server.cc
+FILE 782 c:\work\omaha\third_party\breakpad\src\client\windows\crash_generation\minidump_generator.h
+FILE 821 c:\work\omaha\third_party\breakpad\src\client\windows\crash_generation\crash_generation_server.h
+FILE 822 c:\program files (x86)\microsoft visual studio 9.0\vc\include\list
+FILE 826 c:\program files (x86)\microsoft visual studio 9.0\vc\include\functional
+FILE 846 c:\work\omaha\third_party\breakpad\src\client\windows\common\auto_critical_section.h
+FILE 852 c:\program files\microsoft sdks\windows\v6.1\include\wininet.h
+FILE 875 c:\work\omaha\third_party\breakpad\src\common\windows\http_upload.cc
+FILE 943 c:\work\omaha\third_party\breakpad\src\common\windows\http_upload.h
+FILE 955 c:\program files (x86)\microsoft visual studio 9.0\vc\include\fstream
+FILE 977 c:\program files (x86)\microsoft visual studio 9.0\vc\include\map
+FILE 978 c:\program files (x86)\microsoft visual studio 9.0\vc\include\xtree
+FILE 1023 c:\work\omaha\third_party\breakpad\src\client\windows\sender\crash_report_sender.cc
+FILE 1086 c:\work\omaha\third_party\breakpad\src\client\windows\sender\crash_report_sender.h
+FILE 1146 c:\work\omaha\third_party\breakpad\src\client\windows\crash_generation\minidump_generator.cc
+FILE 1266 f:\dd\vctools\crt_bld\self_x86\crt\src\eh.h
+FILE 1267 f:\dd\vctools\crt_bld\self_x86\crt\src\newaop_s.cpp
+FILE 1268 f:\dd\vctools\crt_bld\self_x86\crt\src\malloc.h
+FILE 1269 f:\dd\vctools\crt_bld\self_x86\crt\src\use_ansi.h
+FILE 1270 f:\dd\vctools\crt_bld\self_x86\crt\src\newaop.cpp
+FILE 1271 f:\dd\vctools\crt_bld\self_x86\crt\src\new
+FILE 1272 f:\dd\vctools\crt_bld\self_x86\crt\src\exception
+FILE 1273 f:\dd\vctools\crt_bld\self_x86\crt\src\xstddef
+FILE 1274 f:\dd\vctools\crt_bld\self_x86\crt\src\yvals.h
+FILE 1275 f:\dd\vctools\crt_bld\self_x86\crt\src\crtdefs.h
+FILE 1276 f:\dd\vctools\crt_bld\self_x86\crt\src\sal.h
+FILE 1277 f:\dd\vctools\crt_bld\self_x86\crt\src\codeanalysis\sourceannotations.h
+FILE 1278 f:\dd\public\devdiv\inc\ddbanned.h
+FILE 1279 f:\dd\vctools\crt_bld\self_x86\crt\src\vadefs.h
+FILE 1280 f:\dd\vctools\crt_bld\self_x86\crt\src\cruntime.h
+FILE 1281 f:\dd\vctools\crt_bld\self_x86\crt\src\cstddef
+FILE 1282 f:\dd\vctools\crt_bld\self_x86\crt\src\stddef.h
+FILE 1283 f:\dd\public\sdk\inc\winver.h
+FILE 1284 f:\dd\public\sdk\inc\winnt.h
+FILE 1285 f:\dd\vctools\crt_bld\self_x86\crt\prebuild\h\ctype.h
+FILE 1286 f:\dd\public\sdk\inc\guiddef.h
+FILE 1287 f:\dd\public\sdk\inc\mcx.h
+FILE 1288 f:\dd\public\sdk\inc\winnls.h
+FILE 1289 f:\dd\public\sdk\inc\winuser.h
+FILE 1290 f:\dd\vctools\crt_bld\self_x86\crt\prebuild\eh\ehvecdtr.cpp
+FILE 1291 f:\dd\public\sdk\inc\winbase.h
+FILE 1292 f:\dd\vctools\crt_bld\self_x86\crt\prebuild\h\string.h
+FILE 1293 f:\dd\public\sdk\inc\tvout.h
+FILE 1294 f:\dd\public\sdk\inc\pshpack8.h
+FILE 1295 f:\dd\public\sdk\inc\pshpack1.h
+FILE 1296 f:\dd\public\sdk\inc\pshpack4.h
+FILE 1297 f:\dd\vctools\crt_bld\self_x86\crt\prebuild\h\excpt.h
+FILE 1298 f:\dd\vctools\langapi\include\ehdata.h
+FILE 1299 f:\dd\public\sdk\inc\poppack.h
+FILE 1300 f:\dd\vctools\crt_bld\self_x86\crt\prebuild\h\stddef.h
+FILE 1301 f:\dd\vctools\crt_bld\self_x86\crt\prebuild\h\crtdefs.h
+FILE 1302 f:\dd\vctools\crt_bld\self_x86\crt\prebuild\h\sal.h
+FILE 1303 f:\dd\vctools\crt_bld\self_x86\crt\prebuild\h\codeanalysis\sourceannotations.h
+FILE 1304 f:\dd\public\sdk\inc\imm.h
+FILE 1305 f:\dd\public\sdk\inc\reason.h
+FILE 1306 f:\dd\public\sdk\inc\stralign.h
+FILE 1307 f:\dd\public\sdk\inc\specstrings.h
+FILE 1308 f:\dd\public\sdk\inc\specstrings_adt.h
+FILE 1309 f:\dd\public\sdk\inc\wingdi.h
+FILE 1310 f:\dd\public\sdk\inc\pshpack2.h
+FILE 1311 f:\dd\public\sdk\inc\winsvc.h
+FILE 1312 f:\dd\vctools\crt_bld\self_x86\crt\prebuild\h\eh.h
+FILE 1313 f:\dd\public\sdk\inc\specstrings_strict.h
+FILE 1314 f:\dd\public\sdk\inc\specstrings_undef.h
+FILE 1315 f:\dd\public\sdk\inc\wincon.h
+FILE 1316 f:\dd\public\sdk\inc\basetsd.h
+FILE 1317 f:\dd\public\sdk\inc\winerror.h
+FILE 1318 f:\dd\public\sdk\inc\ktmtypes.h
+FILE 1319 f:\dd\public\sdk\inc\windows.h
+FILE 1320 f:\dd\public\sdk\inc\sdkddkver.h
+FILE 1321 f:\dd\vctools\crt_bld\self_x86\crt\prebuild\h\stdarg.h
+FILE 1322 f:\dd\public\sdk\inc\windef.h
+FILE 1324 f:\dd\public\sdk\inc\winnetwk.h
+FILE 1325 f:\dd\vctools\crt_bld\self_x86\crt\prebuild\h\vadefs.h
+FILE 1326 f:\dd\public\sdk\inc\winreg.h
+FILE 1327 f:\dd\vctools\crt_bld\self_x86\crt\prebuild\h\cruntime.h
+FILE 1330 f:\dd\vctools\crt_bld\self_x86\crt\prebuild\h\ehassert.h
+FILE 1334 f:\dd\vctools\crt_bld\self_x86\crt\prebuild\h\internal.h
+FILE 1335 f:\dd\vctools\crt_bld\self_x86\crt\prebuild\h\limits.h
+FILE 1343 f:\dd\vctools\crt_bld\self_x86\crt\prebuild\eh\unhandld.cpp
+FILE 1346 f:\dd\vctools\crt_bld\self_x86\crt\prebuild\h\stdlib.h
+FILE 1348 f:\dd\vctools\crt_bld\self_x86\crt\prebuild\h\crtdbg.h
+FILE 1362 f:\dd\vctools\crt_bld\self_x86\crt\prebuild\h\sect_attribs.h
+FILE 1378 f:\dd\vctools\crt_bld\self_x86\crt\prebuild\h\errno.h
+FILE 1380 f:\dd\vctools\crt_bld\self_x86\crt\prebuild\h\ehhooks.h
+FILE 1384 f:\dd\vctools\crt_bld\self_x86\crt\src\ctype.h
+FILE 1390 f:\dd\vctools\crt_bld\self_x86\crt\src\oscalls.h
+FILE 1394 f:\dd\vctools\crt_bld\self_x86\crt\src\mtdll.h
+FILE 1398 f:\dd\vctools\crt_bld\self_x86\crt\src\excpt.h
+FILE 1402 f:\dd\vctools\crt_bld\self_x86\crt\src\atonexit.c
+FILE 1411 f:\dd\vctools\crt_bld\self_x86\crt\src\stdlib.h
+FILE 1414 f:\dd\vctools\crt_bld\self_x86\crt\src\crtdbg.h
+FILE 1415 f:\dd\vctools\crt_bld\self_x86\crt\src\string.h
+FILE 1422 f:\dd\vctools\crt_bld\self_x86\crt\src\stdarg.h
+FILE 1424 f:\dd\vctools\crt_bld\self_x86\crt\src\internal.h
+FILE 1426 f:\dd\vctools\crt_bld\self_x86\crt\src\limits.h
+FILE 1428 f:\dd\vctools\crt_bld\self_x86\crt\src\errno.h
+FILE 1445 f:\dd\vctools\crt_bld\self_x86\crt\src\swprintf.inl
+FILE 1447 f:\dd\vctools\crt_bld\self_x86\crt\src\stdio.h
+FILE 1456 f:\dd\vctools\crt_bld\self_x86\crt\src\cinitexe.c
+FILE 1464 f:\dd\vctools\crt_bld\self_x86\crt\src\sect_attribs.h
+FILE 1501 f:\dd\vctools\crt_bld\self_x86\crt\src\gs_cookie.c
+FILE 1543 f:\dd\vctools\crt_bld\self_x86\crt\src\gs_report.c
+FILE 1552 f:\dd\vctools\crt_bld\self_x86\crt\src\dbgint.h
+FILE 1566 f:\binaries.x86ret\inc\emmintrin.h
+FILE 1567 f:\binaries.x86ret\inc\xmmintrin.h
+FILE 1568 f:\binaries.x86ret\inc\mmintrin.h
+FILE 1578 f:\binaries.x86ret\inc\mm3dnow.h
+FILE 1592 f:\dd\vctools\crt_bld\self_x86\crt\src\gs_support.c
+FILE 1601 f:\dd\vctools\crt_bld\self_x86\crt\src\intrin.h
+FILE 1602 f:\dd\vctools\crt_bld\self_x86\crt\src\setjmp.h
+FILE 1628 f:\dd\vctools\crt_bld\self_x86\crt\src\math.h
+FILE 1641 f:\dd\vctools\crt_bld\self_x86\crt\src\merr.c
+FILE 1687 f:\dd\vctools\crt_bld\self_x86\crt\src\natstart.c
+FILE 1730 f:\dd\vctools\crt_bld\self_x86\crt\src\pesect.c
+FILE 1750 f:\dd\vctools\crt_bld\self_x86\crt\src\ti_inst.cpp
+FILE 1751 f:\dd\vctools\crt_bld\self_x86\crt\src\typeinfo
+FILE 1755 f:\dd\vctools\crt_bld\self_x86\crt\src\typeinfo.h
+FILE 1766 f:\dd\vctools\crt_bld\self_x86\crt\src\locale.h
+FILE 1768 f:\dd\vctools\crt_bld\self_x86\crt\src\crtassem.h
+FILE 1773 f:\dd\vctools\crt_bld\self_x86\crt\src\rterr.h
+FILE 1778 f:\dd\vctools\crt_bld\self_x86\crt\src\crtexe.c
+FILE 1788 f:\dd\vctools\crt_bld\self_x86\crt\src\wtime.inl
+FILE 1790 f:\dd\vctools\crt_bld\self_x86\crt\src\wcrtexe.c
+FILE 1800 f:\dd\vctools\crt_bld\self_x86\crt\src\process.h
+FILE 1807 f:\dd\vctools\crt_bld\self_x86\crt\src\tchar.h
+FILE 1808 f:\dd\vctools\crt_bld\self_x86\crt\src\wchar.h
+FILE 1813 f:\dd\vctools\crt_bld\self_x86\crt\src\rtcapi.h
+FILE 1833 f:\dd\vctools\crt_bld\self_x86\crt\src\dllargv.c
+FILE 1848 f:\dd\vctools\crt_bld\self_x86\crt\src\wdllargv.c
+FILE 1896 f:\dd\vctools\crt_bld\self_x86\crt\src\wildcard.c
+FILE 1917 f:\dd\vctools\crt_bld\SELF_X86\crt\src\INTEL\ulldiv.asm
+FILE 1918 f:\dd\vctools\crt_bld\SELF_X86\crt\src\cruntime.inc
+FILE 1919 f:\dd\vctools\crt_bld\SELF_X86\crt\src\mm.inc
+FILE 1920 f:\dd\vctools\crt_bld\self_x86\crt\src\adjustfd.c
+FILE 1925 f:\dd\public\ddk\inc\ntimage.h
+FILE 1926 f:\dd\public\ddk\inc\pshpack4.h
+FILE 1928 f:\dd\public\ddk\inc\ntnls.h
+FILE 1929 f:\dd\public\sdk\inc\internal\ntelfapi.h
+FILE 1930 f:\dd\public\sdk\inc\internal\ntpsapi.h
+FILE 1931 f:\dd\public\sdk\inc\internal\nti386.h
+FILE 1937 f:\dd\public\sdk\inc\internal\ntpnpapi.h
+FILE 1938 f:\dd\public\sdk\inc\cfg.h
+FILE 1939 f:\dd\public\sdk\inc\internal\ntxcapi.h
+FILE 1941 f:\dd\public\sdk\inc\ntstatus.h
+FILE 1942 f:\dd\public\sdk\inc\internal\ntkeapi.h
+FILE 1943 f:\dd\public\sdk\inc\internal\nt.h
+FILE 1946 f:\dd\public\sdk\inc\internal\ntobapi.h
+FILE 1950 f:\dd\public\sdk\inc\internal\ntioapi.h
+FILE 1951 f:\dd\public\ddk\inc\devioctl.h
+FILE 1952 f:\dd\public\sdk\inc\internal\ntseapi.h
+FILE 1953 f:\dd\public\ddk\inc\mce.h
+FILE 1954 f:\dd\vctools\crt_bld\self_x86\crt\prebuild\misc\i386\chandler4gs.c
+FILE 1956 f:\dd\public\sdk\inc\internal\ntlpcapi.h
+FILE 1957 f:\dd\public\sdk\inc\internal\ntiolog.h
+FILE 1960 f:\dd\public\sdk\inc\internal\pebteb.h
+FILE 1962 f:\dd\public\sdk\inc\internal\ntldr.h
+FILE 1964 f:\dd\public\ddk\inc\ntdef.h
+FILE 1965 f:\dd\public\sdk\inc\internal\ntconfig.h
+FILE 1966 f:\dd\public\sdk\inc\internal\ntregapi.h
+FILE 1968 f:\dd\public\sdk\inc\internal\ntmmapi.h
+FILE 1970 f:\dd\public\sdk\inc\internal\nxi386.h
+FILE 1971 f:\dd\public\ddk\inc\poppack.h
+FILE 1972 f:\dd\vctools\crt_bld\self_x86\crt\prebuild\h\process.h
+FILE 1974 f:\dd\public\ddk\inc\ntpoapi.h
+FILE 1975 f:\dd\public\sdk\inc\internal\ntexapi.h
+FILE 2006 f:\dd\vctools\crt_bld\self_x86\crt\src\intel\fp8.c
+FILE 2011 f:\dd\vctools\crt_bld\self_x86\crt\src\float.h
+FILE 2012 f:\dd\vctools\crt_bld\self_x86\crt\src\crtwrn.h
+FILE 2047 f:\dd\vctools\crt_bld\self_x86\crt\src\intel\loadcfg.c
+FILE 2089 f:\dd\vctools\crt_bld\self_x86\crt\src\intel\secchk.c
+FILE 2110 f:\dd\vctools\crt_bld\SELF_X86\crt\prebuild\misc\i386\sehprolg4.asm
+FILE 2136 f:\dd\vctools\crt_bld\self_x86\crt\src\_newmode.c
+FILE 2177 f:\dd\vctools\crt_bld\self_x86\crt\src\xncommod.c
+FILE 2208 f:\dd\vctools\crt_bld\self_x86\crt\src\xtxtmode.c
+FILE 2212 f:\dd\vctools\crt_bld\self_x86\crt\src\setlocal.h
+FILE 2238 f:\dd\vctools\crt_bld\self_x86\crt\src\xthdloc.c
+FILE 2273 f:\dd\vctools\crt_bld\self_x86\crt\prebuild\rtc\initsect.cpp
+FILE 2284 f:\dd\vctools\crt_bld\self_x86\crt\prebuild\h\rtcapi.h
+FILE 2290 f:\dd\vctools\crt_bld\self_x86\crt\prebuild\h\rtcpriv.h
+FILE 2291 f:\dd\vctools\crt_bld\self_x86\crt\prebuild\h\malloc.h
+FUNC 1000 1a c google_breakpad::WindowsStringUtils::safe_wcscpy(wchar_t *,unsigned int,wchar_t const *)
+1000 3 107 84
+1003 15 109 84
+1018 2 118 84
+FUNC 1020 28 c google_breakpad::CustomInfoEntry::CustomInfoEntry(wchar_t const *,wchar_t const *)
+1020 7 54 82
+1027 c 55 82
+1033 c 56 82
+103f 9 57 82
+FUNC 1050 2f 8 google_breakpad::CustomInfoEntry::set_name(wchar_t const *)
+1050 7 59 82
+1057 6 60 82
+105d 8 61 82
+1065 2 62 82
+1067 12 64 82
+1079 6 65 82
+FUNC 1080 38 8 google_breakpad::CustomInfoEntry::set_value(wchar_t const *)
+1080 7 67 82
+1087 6 68 82
+108d c 69 82
+1099 2 70 82
+109b 17 73 82
+10b2 6 74 82
+FUNC 10c0 8 18 callbackFunc(wchar_t const *,wchar_t const *,void *,_EXCEPTION_POINTERS *,MDRawAssertionInfo *,bool)
+10c0 3 19 35
+10c3 3 20 35
+10c6 2 21 35
+FUNC 10d0 18 0 crashedFunc()
+10d0 4 32 35
+10d4 7 33 35
+10db 9 34 35
+10e4 4 35 35
+FUNC 10f0 a 0 deeperFunc()
+10f0 3 38 35
+10f3 5 39 35
+10f8 2 40 35
+FUNC 1100 a 0 deepFunc()
+1100 3 43 35
+1103 5 44 35
+1108 2 45 35
+FUNC 1110 a 0 anotherFunc()
+1110 3 48 35
+1113 5 49 35
+1118 2 50 35
+FUNC 1120 a 0 someFunc()
+1120 3 53 35
+1123 5 54 35
+1128 2 55 35
+FUNC 1130 a 0 func()
+1130 3 58 35
+1133 5 59 35
+1138 2 60 35
+FUNC 1140 e9 8 wmain
+1140 2c 63 35
+116c f 72 35
+117b 98 82 35
+1213 5 84 35
+1218 2 86 35
+121a f 87 35
+FUNC 1230 74 0 google_breakpad::ProtocolMessage::ProtocolMessage()
+1230 6d 113 82
+129d 7 114 82
+FUNC 12b0 71 2c google_breakpad::ProtocolMessage::ProtocolMessage(google_breakpad::MessageTag,unsigned long,_MINIDUMP_TYPE,unsigned long *,_EXCEPTION_POINTERS * *,MDRawAssertionInfo *,google_breakpad::CustomClientInfo const &,void *,void *,void *)
+12b0 68 136 82
+1318 9 137 82
+FUNC 1330 9c 10 google_breakpad::CrashGenerationClient::CrashGenerationClient(wchar_t const *,_MINIDUMP_TYPE,google_breakpad::CustomClientInfo const *)
+1330 66 105 529
+1396 16 106 529
+13ac 6 107 529
+13b2 11 108 529
+13c3 9 110 529
+FUNC 13d0 56 0 google_breakpad::CrashGenerationClient::~CrashGenerationClient()
+13d0 7 112 529
+13d7 9 113 529
+13e0 d 114 529
+13ed 9 117 529
+13f6 d 118 529
+1403 9 121 529
+140c d 122 529
+1419 d 124 529
+FUNC 1430 3e 0 google_breakpad::CrashGenerationClient::Register()
+1430 9 159 529
+1439 b 160 529
+1444 6 161 529
+144a 4 162 529
+144e f 165 529
+145d a 166 529
+1467 3 167 529
+146a 4 168 529
+FUNC 1470 67 0 google_breakpad::CrashGenerationClient::ConnectToServer()
+1470 9 170 529
+1479 1f 173 529
+1498 6 174 529
+149e 4 175 529
+14a2 7 178 529
+14a9 16 179 529
+14bf a 180 529
+14c9 7 181 529
+14d0 3 184 529
+14d3 4 185 529
+FUNC 14e0 110 8 google_breakpad::CrashGenerationClient::RegisterClient(void *)
+14e0 f 187 529
+14ef 4c 197 529
+153b 8 198 529
+1543 7 199 529
+154a 23 209 529
+156d 4 210 529
+1571 16 213 529
+1587 4 214 529
+158b 8 217 529
+1593 7 218 529
+159a 1a 220 529
+15b4 4 221 529
+15b8 c 223 529
+15c4 c 224 529
+15d0 c 225 529
+15dc c 226 529
+15e8 2 228 529
+15ea 6 229 529
+FUNC 15f0 77 10 google_breakpad::CrashGenerationClient::ConnectToPipe(wchar_t const *,unsigned long,unsigned long)
+15f0 9 233 529
+15f9 18 234 529
+1611 1d 241 529
+162e 6 242 529
+1634 5 243 529
+1639 d 248 529
+1646 2 249 529
+1648 13 253 529
+165b 2 254 529
+165d 2 256 529
+165f 2 258 529
+1661 6 259 529
+FUNC 1670 4e 8 google_breakpad::CrashGenerationClient::ValidateResponse(google_breakpad::ProtocolMessage const &)
+1670 9 262 529
+1679 3f 267 529
+16b8 6 268 529
+FUNC 16c0 19 0 google_breakpad::CrashGenerationClient::IsRegistered()
+16c0 7 270 529
+16c7 e 271 529
+16d5 4 272 529
+FUNC 16e0 6f c google_breakpad::CrashGenerationClient::RequestDump(_EXCEPTION_POINTERS *,MDRawAssertionInfo *)
+16e0 9 275 529
+16e9 f 276 529
+16f8 4 277 529
+16fc 9 280 529
+1705 c 281 529
+1711 6 283 529
+1717 10 284 529
+1727 2 285 529
+1729 16 286 529
+173f 8 289 529
+1747 8 290 529
+FUNC 1750 68 0 google_breakpad::CrashGenerationClient::SignalCrashEventAndWait()
+1750 9 300 529
+1759 11 308 529
+176a 4 309 529
+176e 11 312 529
+177f 4 313 529
+1783 12 316 529
+1795 16 321 529
+17ab 9 325 529
+17b4 4 326 529
+FUNC 17c0 26 8 std::bad_alloc::bad_alloc(char const *)
+17c0 1d 371 105
+17dd 9 372 105
+FUNC 17f0 1d 0 std::bad_alloc::~bad_alloc()
+17f0 10 380 105
+1800 d 381 105
+FUNC 1810 2c 0 std::bad_alloc::`vector deleting destructor'(unsigned int)
+FUNC 1840 8 8 operator new(unsigned int,void *)
+1840 3 58 16
+1843 3 59 16
+1846 2 60 16
+FUNC 1850 18 8 google_breakpad::scoped_ptr<google_breakpad::CrashGenerationClient>::scoped_ptr<google_breakpad::CrashGenerationClient>(google_breakpad::CrashGenerationClient *)
+1850 18 364 86
+FUNC 1870 e 0 std::allocator<google_breakpad::ExceptionHandler *>::allocator<google_breakpad::ExceptionHandler *>()
+1870 7 379 86
+1877 7 382 86
+FUNC 1880 b 0 std::_Container_base_aux::~_Container_base_aux()
+1880 7 402 86
+1887 4 404 86
+FUNC 1890 17 0 std::_Iterator_base_aux::_Iterator_base_aux()
+1890 17 448 86
+FUNC 18b0 17 8 std::_Iterator_base_aux::_Set_container(std::_Container_base_aux const * const)
+18b0 7 452 86
+18b7 a 453 86
+18c1 6 454 86
+FUNC 18d0 2e 0 std::_Iterator_base_aux::_Getmycont()
+18d0 9 457 86
+18d9 21 458 86
+18fa 4 459 86
+FUNC 1900 1c 8 std::_Iterator_base_aux::_Same_container(std::_Iterator_base_aux const &)
+1900 7 462 86
+1907 f 463 86
+1916 6 464 86
+FUNC 1920 18 0 std::_Iterator_base_aux::_Has_container()
+1920 7 467 86
+1927 d 468 86
+1934 4 469 86
+FUNC 1940 6a 8 std::logic_error::logic_error(std::basic_string<char,std::char_traits<char>,std::allocator<char> > const &)
+1940 4f 26 102
+198f 1b 27 102
+FUNC 19b0 29 0 std::logic_error::~logic_error()
+19b0 10 30 102
+19c0 19 31 102
+FUNC 19e0 17 0 std::logic_error::what()
+19e0 7 34 102
+19e7 c 35 102
+19f3 4 36 102
+FUNC 1a00 2c 0 std::logic_error::`scalar deleting destructor'(unsigned int)
+FUNC 1a30 25 8 std::length_error::length_error(std::basic_string<char,std::char_traits<char>,std::allocator<char> > const &)
+1a30 1c 105 102
+1a4c 9 106 102
+FUNC 1a60 1c 0 std::length_error::~length_error()
+1a60 10 109 102
+1a70 c 110 102
+FUNC 1a80 2c 0 std::length_error::`vector deleting destructor'(unsigned int)
+FUNC 1ab0 71 8 std::logic_error::logic_error(std::logic_error const &)
+FUNC 1b30 25 8 std::length_error::length_error(std::length_error const &)
+FUNC 1b60 1b 8 std::allocator<std::_Aux_cont>::allocate(unsigned int)
+1b60 7 144 14
+1b67 e 145 14
+1b75 6 146 14
+FUNC 1b80 4d 8 std::_Allocate<std::_Aux_cont>(unsigned int,std::_Aux_cont *)
+1b80 6 36 14
+1b86 6 37 14
+1b8c 9 38 14
+1b95 d 39 14
+1ba2 18 40 14
+1bba f 43 14
+1bc9 4 44 14
+FUNC 1bd0 26 8 std::bad_alloc::bad_alloc(std::bad_alloc const &)
+FUNC 1c00 25 8 std::out_of_range::out_of_range(std::basic_string<char,std::char_traits<char>,std::allocator<char> > const &)
+1c00 1c 129 102
+1c1c 9 130 102
+FUNC 1c30 1c 0 std::out_of_range::~out_of_range()
+1c30 10 133 102
+1c40 c 134 102
+FUNC 1c50 2c 0 std::out_of_range::`vector deleting destructor'(unsigned int)
+FUNC 1c80 25 8 std::out_of_range::out_of_range(std::out_of_range const &)
+FUNC 1cb0 37 8 google_breakpad::ExceptionHandler::set_dump_path(std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &)
+1cb0 7 174 68
+1cb7 10 175 68
+1cc7 12 176 68
+1cd9 8 177 68
+1ce1 6 178 68
+FUNC 1cf0 14 0 google_breakpad::ExceptionHandler::get_handle_debug_exceptions()
+1cf0 14 200 68
+FUNC 1d10 1c 0 google_breakpad::ExceptionHandler::IsOutOfProcess()
+1d10 1c 206 68
+FUNC 1d30 ad 24 google_breakpad::ExceptionHandler::ExceptionHandler(std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,bool (*)(void *,_EXCEPTION_POINTERS *,MDRawAssertionInfo *),bool (*)(wchar_t const *,wchar_t const *,void *,_EXCEPTION_POINTERS *,MDRawAssertionInfo *,bool),void *,int,_MINIDUMP_TYPE,wchar_t const *,google_breakpad::CustomClientInfo const *)
+1d30 6a 68 360
+1d9a 28 76 360
+1dc2 1b 77 360
+FUNC 1de0 3e3 24 google_breakpad::ExceptionHandler::Initialize(std::basic_string<wchar_t,std::char_traits<wchar_t>,std::allocator<wchar_t> > const &,bool (*)(void *,_EXCEPTION_POINTERS *,MDRawAssertionInfo *),bool (*)(wchar_t const *,wchar_t const *,void *,_EXCEPTION_POINTERS *,MDRawAssertionInfo *,bool),void *,int,_MINIDUMP_TYPE,wchar_t const *,google_breakpad::CustomClientInfo const *)
+1de0 28 101 360
+1e08 e 102 360
+1e16 8 103 360
+1e1e 9 104 360
+1e27 9 105 360
+1e30 a 106 360
+1e3a a 107 360
+1e44 a 108 360
+1e4e a 109 360
+1e58 a 110 360
+1e62 9 111 360
+1e6b a 112 360
+1e75 d 113 360
+1e82 c 114 360
+1e8e d 115 360
+1e9b d 117 360
+1ea8 d 119 360
+1eb5 d 120 360
+1ec2 a 121 360
+1ecc d 122 360
+1ed9 d 123 360
+1ee6 d 124 360
+1ef3 d 125 360
+1f00 d 126 360
+1f0d a 127 360
+1f17 a 128 360
+1f21 a 131 360
+1f2b 60 135 360
+1f8b 16 139 360
+1fa1 14 140 360
+1fb5 f 142 360
+1fc4 13 144 360
+1fd7 10 154 360
+1fe7 17 155 360
+1ffe 17 158 360
+2015 18 162 360
+202d 25 169 360
+2052 11 173 360
+2063 9 174 360
+206c 18 176 360
+2084 11 182 360
+2095 9 183 360
+209e 1b 185 360
+20b9 c 190 360
+20c5 6 204 360
+20cb b 205 360
+20d6 a 208 360
+20e0 b 209 360
+20eb 9 213 360
+20f4 44 214 360
+2138 15 216 360
+214d 8 218 360
+2155 14 219 360
+2169 8 222 360
+2171 17 223 360
+2188 8 226 360
+2190 17 227 360
+21a7 b 229 360
+21b2 11 231 360
+FUNC 21d0 88 4 google_breakpad::ExceptionHandler::ExceptionHandlerThreadMain(void *)
+21d0 4 318 360
+21d4 6 319 360
+21da 9 324 360
+21e3 16 326 360
+21f9 e 328 360
+2207 2 330 360
+2209 2 331 360
+220b 2f 335 360
+223a 14 339 360
+224e 2 341 360
+2250 2 345 360
+2252 6 346 360
+FUNC 2260 86 0 google_breakpad::AutoExceptionHandler::AutoExceptionHandler()
+2260 7 355 360
+2267 b 372 360
+2272 31 375 360
+22a3 12 379 360
+22b5 15 381 360
+22ca 15 383 360
+22df 7 384 360
+FUNC 22f0 4a 0 google_breakpad::AutoExceptionHandler::~AutoExceptionHandler()
+22f0 7 386 360
+22f7 b 388 360
+2302 e 390 360
+2310 e 392 360
+231e d 394 360
+232b b 395 360
+2336 4 396 360
+FUNC 2340 127 4 google_breakpad::ExceptionHandler::HandleException(_EXCEPTION_POINTERS *)
+2340 25 405 360
+2365 f 406 360
+2374 b 407 360
+237f a 414 360
+2389 28 417 360
+23b1 4 419 360
+23b5 17 422 360
+23cc f 429 360
+23db 18 433 360
+23f3 2 434 360
+23f5 11 435 360
+2406 8 446 360
+240e 7 447 360
+2415 2 448 360
+2417 c 457 360
+2423 12 458 360
+2435 2 459 360
+2437 7 460 360
+243e 18 464 360
+2456 11 465 360
+FUNC 2470 261 14 google_breakpad::ExceptionHandler::HandleInvalidParameter(wchar_t const *,wchar_t const *,wchar_t const *,unsigned int,unsigned int)
+2470 2b 473 360
+249b 12 476 360
+24ad 11 477 360
+24be 16 480 360
+24d4 20 483 360
+24f4 20 486 360
+2514 20 489 360
+2534 6 490 360
+253a 7 491 360
+2541 13 497 360
+2554 16 498 360
+256a 12 499 360
+257c a 501 360
+2586 1d 504 360
+25a3 9 505 360
+25ac d 506 360
+25b9 a 508 360
+25c3 a 513 360
+25cd c 515 360
+25d9 c 517 360
+25e5 9 518 360
+25ee 9 520 360
+25f7 7 523 360
+25fe 12 526 360
+2610 26 530 360
+2636 2 531 360
+2638 1f 533 360
+2657 b 536 360
+2662 f 537 360
+2671 25 544 360
+2696 2 545 360
+2698 6 558 360
+269e 8 566 360
+26a6 2b 567 360
+FUNC 26e0 1f2 0 google_breakpad::ExceptionHandler::HandlePureVirtualCall()
+26e0 2b 571 360
+270b 12 574 360
+271d 11 575 360
+272e 16 578 360
+2744 7 579 360
+274b 13 585 360
+275e 16 586 360
+2774 12 587 360
+2786 a 589 360
+2790 1d 592 360
+27ad 9 593 360
+27b6 d 594 360
+27c3 a 596 360
+27cd a 601 360
+27d7 c 603 360
+27e3 c 605 360
+27ef 9 606 360
+27f8 9 608 360
+2801 7 611 360
+2808 12 615 360
+281a 26 619 360
+2840 2 620 360
+2842 1f 622 360
+2861 b 625 360
+286c f 626 360
+287b e 629 360
+2889 2 630 360
+288b 14 633 360
+289f 8 640 360
+28a7 2b 641 360
+FUNC 28e0 d3 c google_breakpad::ExceptionHandler::WriteMinidumpOnHandlerThread(_EXCEPTION_POINTERS *,MDRawAssertionInfo *)
+28e0 9 644 360
+28e9 f 645 360
+28f8 c 649 360
+2904 10 650 360
+2914 7 651 360
+291b f 659 360
+292a c 660 360
+2936 c 661 360
+2942 14 664 360
+2956 12 667 360
+2968 c 668 360
+2974 d 671 360
+2981 d 672 360
+298e d 673 360
+299b f 675 360
+29aa 3 677 360
+29ad 6 678 360
+FUNC 29c0 30d 10 google_breakpad::ExceptionHandler::WriteMinidumpWithException(unsigned long,_EXCEPTION_POINTERS *,MDRawAssertionInfo *)
+29c0 10 710 360
+29d0 31 717 360
+2a01 7 718 360
+2a08 4 721 360
+2a0c 12 722 360
+2a1e 20 723 360
+2a3e 5 724 360
+2a43 10 725 360
+2a53 25 732 360
+2a78 a 733 360
+2a82 6 735 360
+2a88 6 736 360
+2a8e 7 737 360
+2a95 7 748 360
+2a9c 9 749 360
+2aa5 6 750 360
+2aab 7 754 360
+2ab2 7 755 360
+2ab9 6 756 360
+2abf 7 759 360
+2ac6 6 760 360
+2acc 6 762 360
+2ad2 7 763 360
+2ad9 7 764 360
+2ae0 6 765 360
+2ae6 9 766 360
+2aef 7 771 360
+2af6 a 775 360
+2b00 14 780 360
+2b14 28 791 360
+2b3c 14 795 360
+2b50 4e 798 360
+2b9e 5e 802 360
+2bfc 15 804 360
+2c11 4 806 360
+2c15 7 807 360
+2c1c 6 808 360
+2c22 6 809 360
+2c28 49 820 360
+2c71 a 822 360
+2c7b c 827 360
+2c87 3c 833 360
+2cc3 3 836 360
+2cc6 7 837 360
+FUNC 2cd0 ac c google_breakpad::ExceptionHandler::MinidumpWriteDumpCallback(void *,_MINIDUMP_CALLBACK_INPUT * const,_MINIDUMP_CALLBACK_OUTPUT *)
+2cd0 6 843 360
+2cd6 19 844 360
+2cef 6 847 360
+2cf5 b 848 360
+2d00 4 849 360
+2d04 10 852 360
+2d14 c 853 360
+2d20 7 854 360
+2d27 7 855 360
+2d2e 7 861 360
+2d35 7 866 360
+2d3c 9 870 360
+2d45 a 871 360
+2d4f 7 872 360
+2d56 2 875 360
+2d58 24 876 360
+FUNC 2d80 14c 0 google_breakpad::ExceptionHandler::UpdateNextID()
+2d80 31 878 360
+2db1 12 880 360
+2dc3 f 881 360
+2dd2 12 882 360
+2de4 55 884 360
+2e39 18 885 360
+2e51 2e 889 360
+2e7f 6 892 360
+2e85 16 894 360
+2e9b 18 895 360
+2eb3 19 896 360
+FUNC 2ed0 37 0 google_breakpad::scoped_ptr<google_breakpad::CrashGenerationClient>::~scoped_ptr<google_breakpad::CrashGenerationClient>()
+2ed0 9 73 42
+2ed9 2a 75 42
+2f03 4 76 42
+FUNC 2f10 4b 8 google_breakpad::scoped_ptr<google_breakpad::CrashGenerationClient>::reset(google_breakpad::CrashGenerationClient *)
+2f10 9 78 42
+2f19 a 81 42
+2f23 2a 82 42
+2f4d 8 83 42
+2f55 6 85 42
+FUNC 2f60 10 0 std::_Aux_cont::_Getcont()
+2f60 7 105 42
+2f67 5 106 42
+2f6c 4 107 42
+FUNC 2f70 21 0 google_breakpad::scoped_ptr<google_breakpad::CrashGenerationClient>::release()
+2f70 9 115 42
+2f79 8 116 42
+2f81 9 117 42
+2f8a 3 118 42
+2f8d 4 119 42
+FUNC 2fa0 65 0 std::vector<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >::vector<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >()
+2fa0 42 470 176
+2fe2 a 471 176
+2fec 19 472 176
+FUNC 3010 23 0 std::vector<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >::begin()
+3010 7 640 176
+3017 16 641 176
+302d 6 642 176
+FUNC 3040 23 0 std::vector<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >::end()
+3040 7 650 176
+3047 16 651 176
+305d 6 652 176
+FUNC 3070 1a 0 std::vector<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >::size()
+3070 7 725 176
+3077 f 726 176
+3086 4 727 176
+FUNC 3090 43 8 std::vector<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >::at(unsigned int)
+3090 9 752 176
+3099 d 753 176
+30a6 5 754 176
+30ab 22 755 176
+30cd 6 756 176
+FUNC 30e0 73 8 std::vector<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >::push_back(google_breakpad::ExceptionHandler * const &)
+30e0 a 809 176
+30ea 16 810 176
+3100 1b 819 176
+311b 2 822 176
+311d 2f 823 176
+314c 7 824 176
+FUNC 3160 13 0 std::_Vector_iterator<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >::operator*()
+3160 7 338 176
+3167 8 339 176
+316f 4 340 176
+FUNC 3180 2c 0 google_breakpad::CrashGenerationClient::`scalar deleting destructor'(unsigned int)
+FUNC 31b0 13 0 std::_Vector_val<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >::~_Vector_val<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >()
+FUNC 31d0 34 0 std::vector<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >::capacity()
+31d0 9 634 176
+31d9 27 635 176
+3200 4 636 176
+FUNC 3210 76 14 std::vector<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >::insert(std::_Vector_const_iterator<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >,google_breakpad::ExceptionHandler * const &)
+3210 9 875 176
+3219 33 876 176
+324c 16 877 176
+3262 1e 878 176
+3280 6 879 176
+FUNC 3290 80 8 std::vector<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >::_Buy(unsigned int)
+3290 7 1107 176
+3297 1e 1108 176
+32b5 6 1109 176
+32bb 6 1110 176
+32c1 d 1111 176
+32ce 5 1112 176
+32d3 2 1113 176
+32d5 15 1115 176
+32ea c 1116 176
+32f6 12 1117 176
+3308 2 1119 176
+330a 6 1120 176
+FUNC 3310 24 c std::vector<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >::_Destroy(google_breakpad::ExceptionHandler * *,google_breakpad::ExceptionHandler * *)
+3310 7 1123 176
+3317 17 1124 176
+332e 6 1125 176
+FUNC 3340 31 10 std::vector<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >::_Ufill(google_breakpad::ExceptionHandler * *,unsigned int,google_breakpad::ExceptionHandler * const &)
+3340 7 1251 176
+3347 1b 1252 176
+3362 9 1253 176
+336b 6 1254 176
+FUNC 3380 73 0 std::vector<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >::_Xran()
+3380 25 1262 176
+33a5 3f 1263 176
+33e4 f 1264 176
+FUNC 3400 38 8 std::_Vector_val<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >::_Vector_val<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >(std::allocator<google_breakpad::ExceptionHandler *>)
+3400 2f 425 176
+342f 9 426 176
+FUNC 3440 26 0 std::_Container_base_aux_alloc_real<std::allocator<google_breakpad::ExceptionHandler *> >::~_Container_base_aux_alloc_real<std::allocator<google_breakpad::ExceptionHandler *> >()
+3440 7 436 86
+3447 13 439 86
+345a c 440 86
+FUNC 3470 20 c std::_Vector_iterator<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >::_Vector_iterator<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >(google_breakpad::ExceptionHandler * *,std::_Container_base_aux const *)
+3470 17 327 176
+3487 9 328 176
+FUNC 3490 39 c std::_Vector_iterator<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >::operator+(int)
+3490 9 380 176
+3499 e 381 176
+34a7 1c 382 176
+34c3 6 383 176
+FUNC 34d0 47 0 std::_Vector_const_iterator<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >::operator*()
+34d0 7 91 176
+34d7 19 102 176
+34f0 1d 103 176
+350d 6 106 176
+3513 4 107 176
+FUNC 3520 16 0 std::vector<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >::max_size()
+3520 7 730 176
+3527 b 731 176
+3532 4 732 176
+FUNC 3540 343 14 std::vector<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >::_Insert_n(std::_Vector_const_iterator<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >,unsigned int,google_breakpad::ExceptionHandler * const &)
+3540 2f 1158 176
+356f b 1166 176
+357a b 1168 176
+3585 19 1170 176
+359e a 1171 176
+35a8 14 1172 176
+35bc 2e 1175 176
+35ea 10 1176 176
+35fa e 1177 176
+3608 12 1178 176
+361a 6 1179 176
+3620 7 1181 176
+3627 1a 1183 176
+3641 17 1184 176
+3658 19 1185 176
+3671 10 1187 176
+3681 13 1188 176
+3694 9 1189 176
+369d d 1190 176
+36aa 7 16707566 176
+36b1 e 1192 176
+36bf 9 1193 176
+36c8 16 1195 176
+36de 22 1196 176
+3700 f 1203 176
+370f f 1204 176
+371e e 1205 176
+372c 15 1207 176
+3741 8 1209 176
+3749 1d 1212 176
+3766 7 1214 176
+376d 27 1216 176
+3794 1f 1218 176
+37b3 9 1219 176
+37bc d 1220 176
+37c9 7 16707566 176
+37d0 12 1222 176
+37e2 1f 1229 176
+3801 2 1231 176
+3803 8 1233 176
+380b 9 1235 176
+3814 25 1237 176
+3839 1c 1244 176
+3855 1a 1246 176
+386f 14 1248 176
+FUNC 3890 73 0 std::vector<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >::_Xlen()
+3890 25 1257 176
+38b5 3f 1258 176
+38f4 f 1259 176
+FUNC 3910 ae 8 std::_Container_base_aux_alloc_real<std::allocator<google_breakpad::ExceptionHandler *> >::_Container_base_aux_alloc_real<std::allocator<google_breakpad::ExceptionHandler *> >(std::allocator<google_breakpad::ExceptionHandler *>)
+3910 46 419 86
+3956 4d 420 86
+39a3 1b 421 86
+FUNC 39c0 10 8 std::allocator<std::_Aux_cont>::allocator<std::_Aux_cont><google_breakpad::ExceptionHandler *>(std::allocator<google_breakpad::ExceptionHandler *> const &)
+39c0 7 128 14
+39c7 9 130 14
+FUNC 39d0 19 c std::allocator<std::_Aux_cont>::deallocate(std::_Aux_cont *,unsigned int)
+39d0 7 139 14
+39d7 c 140 14
+39e3 6 141 14
+FUNC 39f0 1c 8 std::_Vector_iterator<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >::operator+=(int)
+39f0 7 374 176
+39f7 c 375 176
+3a03 3 376 176
+3a06 6 377 176
+FUNC 3a10 53 c std::_Vector_const_iterator<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >::_Vector_const_iterator<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >(google_breakpad::ExceptionHandler * *,std::_Container_base_aux const *)
+3a10 f 76 176
+3a1f 26 78 176
+3a45 c 79 176
+3a51 9 80 176
+3a5a 9 81 176
+FUNC 3a70 48 8 std::_Vector_const_iterator<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >::operator-(std::_Vector_const_iterator<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> > const &)
+3a70 7 186 176
+3a77 2c 191 176
+3aa3 f 194 176
+3ab2 6 195 176
+FUNC 3ac0 16 0 std::_Ranit<google_breakpad::ExceptionHandler *,int,google_breakpad::ExceptionHandler * const *,google_breakpad::ExceptionHandler * const &>::_Ranit<google_breakpad::ExceptionHandler *,int,google_breakpad::ExceptionHandler * const *,google_breakpad::ExceptionHandler * const &>()
+FUNC 3ae0 16 0 std::_Iterator_with_base<std::random_access_iterator_tag,google_breakpad::ExceptionHandler *,int,google_breakpad::ExceptionHandler * const *,google_breakpad::ExceptionHandler * const &,std::_Iterator_base_aux>::_Iterator_with_base<std::random_access_iterator_tag,google_breakpad::ExceptionHandler *,int,google_breakpad::ExceptionHandler * const *,google_breakpad::ExceptionHandler * const &,std::_Iterator_base_aux>()
+FUNC 3b00 2c 0 std::allocator<google_breakpad::ExceptionHandler *>::max_size()
+3b00 9 164 14
+3b09 7 165 14
+3b10 18 166 14
+3b28 4 167 14
+FUNC 3b30 79 8 std::_Vector_const_iterator<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >::operator+=(int)
+3b30 8 159 176
+3b38 19 160 176
+3b51 32 161 176
+3b83 a 163 176
+3b8d 12 164 176
+3b9f 3 165 176
+3ba2 7 166 176
+FUNC 3bb0 49 8 std::max<unsigned __int64>(unsigned __int64 const &,unsigned __int64 const &)
+3bb0 6 3357 86
+3bb6 3f 3358 86
+3bf5 4 3359 86
+FUNC 3c00 49 8 std::min<unsigned __int64>(unsigned __int64 const &,unsigned __int64 const &)
+3c00 6 3372 86
+3c06 3f 3373 86
+3c45 4 3374 86
+FUNC 3c50 34 c std::_Destroy_range<std::allocator<google_breakpad::ExceptionHandler *> >(google_breakpad::ExceptionHandler * *,google_breakpad::ExceptionHandler * *,std::allocator<google_breakpad::ExceptionHandler *> &)
+3c50 4 224 14
+3c54 2c 225 14
+3c80 4 226 14
+FUNC 3c90 42 10 stdext::unchecked_uninitialized_fill_n<google_breakpad::ExceptionHandler * *,unsigned int,google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >(google_breakpad::ExceptionHandler * *,unsigned int,google_breakpad::ExceptionHandler * const &,std::allocator<google_breakpad::ExceptionHandler *> &)
+3c90 4 920 180
+3c94 3a 922 180
+3cce 4 923 180
+FUNC 3ce0 28 10 std::vector<google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >::_Umove<google_breakpad::ExceptionHandler * *>(google_breakpad::ExceptionHandler * *,google_breakpad::ExceptionHandler * *,google_breakpad::ExceptionHandler * *)
+3ce0 7 1150 176
+3ce7 1b 1153 176
+3d02 6 1154 176
+FUNC 3d10 2b c std::fill<google_breakpad::ExceptionHandler * *,google_breakpad::ExceptionHandler *>(google_breakpad::ExceptionHandler * *,google_breakpad::ExceptionHandler * *,google_breakpad::ExceptionHandler * const &)
+3d10 3 3160 86
+3d13 26 3161 86
+3d39 2 3162 86
+FUNC 3d40 64 c stdext::_Unchecked_move_backward<google_breakpad::ExceptionHandler * *,google_breakpad::ExceptionHandler * *>(google_breakpad::ExceptionHandler * *,google_breakpad::ExceptionHandler * *,google_breakpad::ExceptionHandler * *)
+3d40 4 3668 86
+3d44 5c 3670 86
+3da0 4 3671 86
+FUNC 3db0 19 4 std::_Checked_base<google_breakpad::ExceptionHandler * *>(google_breakpad::ExceptionHandler * * &)
+3db0 4 1163 86
+3db4 11 1165 86
+3dc5 4 1166 86
+FUNC 3dd0 5 10 std::_Destroy_range<std::allocator<google_breakpad::ExceptionHandler *> >(google_breakpad::ExceptionHandler * *,google_breakpad::ExceptionHandler * *,std::allocator<google_breakpad::ExceptionHandler *> &,std::_Scalar_ptr_iterator_tag)
+3dd0 3 241 14
+3dd3 2 242 14
+FUNC 3de0 19 18 std::_Uninit_fill_n<google_breakpad::ExceptionHandler * *,unsigned int,google_breakpad::ExceptionHandler *,std::allocator<google_breakpad::ExceptionHandler *> >(google_breakpad::ExceptionHandler * *,unsigned int,google_breakpad::ExceptionHandler * const &,std::allocator<google_breakpad::ExceptionHandler *> &,std::_Scalar_ptr_iterator_tag,std::_Range_checked_iterator_tag)
+3de0 3 414 180
+3de3 14 415 180
+3df7 2 416 180
+FUNC 3e00 50 10 stdext::_Unchecked_uninitialized_move<google_breakpad::ExceptionHandler * *,google_breakpad::ExceptionHandler * *,std::allocator<google_breakpad::ExceptionHandler *> >(google_breakpad::ExceptionHandler * *,google_breakpad::ExceptionHandler * *,google_breakpad::ExceptionHandler * *,std::allocator<google_breakpad::ExceptionHandler *> &)
+3e00 4 849 180
+3e04 48 851 180
+3e4c 4 852 180
+FUNC 3e50 24 c std::_Fill<google_breakpad::ExceptionHandler * *,google_breakpad::ExceptionHandler *>(google_breakpad::ExceptionHandler * *,google_breakpad::ExceptionHandler * *,google_breakpad::ExceptionHandler * const &)
+3e50 3 3130 86
+3e53 13 3132 86
+3e66 c 3133 86
+3e72 2 3134 86
+FUNC 3e80 b 8 std::_Ptr_cat<google_breakpad::ExceptionHandler * *,google_breakpad::ExceptionHandler * *>(google_breakpad::ExceptionHandler * * &,google_breakpad::ExceptionHandler * * &)
+3e80 4 1200 86
+3e84 3 1202 86
+3e87 4 1203 86
+FUNC 3e90 43 18 std::_Move_backward_opt<google_breakpad::ExceptionHandler * *,google_breakpad::ExceptionHandler * *,std::random_access_iterator_tag,std::_Undefined_move_tag>(google_breakpad::ExceptionHandler * *,google_breakpad::ExceptionHandler * *,google_breakpad::ExceptionHandler * *,std::random_access_iterator_tag,std::_Undefined_move_tag,std::_Range_checked_iterator_tag)
+3e90 4 2726 86
+3e94 3b 2728 86
+3ecf 4 2729 86
+FUNC 3ee0 a 8 std::_Checked_base<google_breakpad::ExceptionHandler * *>(google_breakpad::ExceptionHandler * * &,std::_Unchanged_checked_iterator_base_type_tag)
+3ee0 3 1146 86
+3ee3 5 1147 86
+3ee8 2 1148 86
+FUNC 3ef0 3a c stdext::unchecked_fill_n<google_breakpad::ExceptionHandler * *,unsigned int,google_breakpad::ExceptionHandler *>(google_breakpad::ExceptionHandler * *,unsigned int,google_breakpad::ExceptionHandler * const &)
+3ef0 4 3694 86
+3ef4 32 3695 86
+3f26 4 3696 86
+FUNC 3f30 1d 18 std::_Uninit_move<google_breakpad::ExceptionHandler * *,google_breakpad::ExceptionHandler * *,std::allocator<google_breakpad::ExceptionHandler *>,std::_Undefined_move_tag>(google_breakpad::ExceptionHandler * *,google_breakpad::ExceptionHandler * *,google_breakpad::ExceptionHandler * *,std::allocator<google_breakpad::ExceptionHandler *> &,std::_Undefined_move_tag,std::_Range_checked_iterator_tag)
+3f30 3 204 180
+3f33 18 205 180
+3f4b 2 206 180
+FUNC 3f50 4c 18 std::_Copy_backward_opt<google_breakpad::ExceptionHandler * *,google_breakpad::ExceptionHandler * *,std::random_access_iterator_tag>(google_breakpad::ExceptionHandler * *,google_breakpad::ExceptionHandler * *,google_breakpad::ExceptionHandler * *,std::random_access_iterator_tag,std::_Scalar_ptr_iterator_tag,std::_Range_checked_iterator_tag)
+3f50 6 2672 86
+3f56 c 2680 86
+3f62 e 2684 86
+3f70 6 2685 86
+3f76 1f 2686 86
+3f95 3 2687 86
+3f98 4 2688 86
+FUNC 3fa0 b 8 std::_Iter_cat<google_breakpad::ExceptionHandler * *>(google_breakpad::ExceptionHandler * * const &)
+3fa0 4 952 86
+3fa4 3 954 86
+3fa7 4 955 86
+FUNC 3fb0 3d 14 std::_Fill_n<google_breakpad::ExceptionHandler * *,unsigned int,google_breakpad::ExceptionHandler *>(google_breakpad::ExceptionHandler * *,unsigned int,google_breakpad::ExceptionHandler * const &,std::random_access_iterator_tag,std::_Range_checked_iterator_tag)
+3fb0 6 3224 86
+3fb6 c 3226 86
+3fc2 27 3228 86
+3fe9 4 3229 86
+FUNC 3ff0 54 10 stdext::unchecked_uninitialized_copy<google_breakpad::ExceptionHandler * *,google_breakpad::ExceptionHandler * *,std::allocator<google_breakpad::ExceptionHandler *> >(google_breakpad::ExceptionHandler * *,google_breakpad::ExceptionHandler * *,google_breakpad::ExceptionHandler * *,std::allocator<google_breakpad::ExceptionHandler *> &)
+3ff0 4 809 180
+3ff4 4c 811 180
+4040 4 812 180
+FUNC 4050 2b 10 std::_Fill_n<google_breakpad::ExceptionHandler * *,unsigned int,google_breakpad::ExceptionHandler *>(google_breakpad::ExceptionHandler * *,unsigned int,google_breakpad::ExceptionHandler * const &,std::_Range_checked_iterator_tag)
+4050 3 3170 86
+4053 1a 3171 86
+406d c 3172 86
+4079 2 3173 86
+FUNC 4080 4a 18 std::_Uninit_copy<google_breakpad::ExceptionHandler * *,google_breakpad::ExceptionHandler * *,std::allocator<google_breakpad::ExceptionHandler *> >(google_breakpad::ExceptionHandler * *,google_breakpad::ExceptionHandler * *,google_breakpad::ExceptionHandler * *,std::allocator<google_breakpad::ExceptionHandler *> &,std::_Scalar_ptr_iterator_tag,std::_Range_checked_iterator_tag)
+4080 6 143 180
+4086 c 146 180
+4092 c 147 180
+409e 6 148 180
+40a4 1f 149 180
+40c3 3 150 180
+40c6 4 151 180
+FUNC 40d0 ae 4 google_breakpad::GUIDString::GUIDToWString(_GUID *)
+40d0 17 43 655
+40e7 6a 51 655
+4151 6 54 655
+4157 19 56 655
+4170 e 57 655
+PUBLIC 417e 0 operator delete(void *)
+FUNC 4184 f 0 __security_check_cookie
+4184 0 52 2089
+4184 6 55 2089
+418a 2 56 2089
+418c 2 57 2089
+418e 5 59 2089
+FUNC 4193 4c 0 type_info::`vector deleting destructor'(unsigned int)
+PUBLIC 41e0 0 operator new(unsigned int)
+PUBLIC 41e6 0 std::exception::what()
+PUBLIC 41ec 0 std::exception::exception(std::exception const &)
+FUNC 41f2 4b 0 pre_cpp_init
+41f2 0 306 1778
+41f2 a 308 1778
+41fc 5 318 1778
+4201 2f 323 1778
+4230 4 330 1778
+4234 8 331 1778
+423c 1 333 1778
+FUNC 423d 176 0 __tmainCRTStartup
+423d c 406 1778
+4249 5 429 1778
+424e 9 454 1778
+4257 8 455 1778
+425f d 456 1778
+426c 4 458 1778
+4270 6 460 1778
+4276 2 461 1778
+4278 b 468 1778
+4283 5 469 1778
+4288 9 471 1778
+4291 a 473 1778
+429b 9 475 1778
+42a4 6 477 1778
+42aa 15 479 1778
+42bf 11 481 1778
+42d0 6 489 1778
+42d6 9 495 1778
+42df 11 497 1778
+42f0 a 498 1778
+42fa 5 501 1778
+42ff 8 506 1778
+4307 17 517 1778
+431e a 519 1778
+4328 d 578 1778
+4335 1f 579 1778
+4354 8 592 1778
+435c 7 593 1778
+4363 17 599 1778
+437a 8 605 1778
+4382 a 612 1778
+438c 7 613 1778
+4393 8 615 1778
+439b 6 616 1778
+43a1 7 617 1778
+43a8 5 619 1778
+43ad 6 620 1778
+FUNC 43b3 e1 0 pre_c_init
+43b3 0 217 1778
+43b3 5f 221 1778
+4412 d 229 1778
+441f 14 237 1778
+4433 e 242 1778
+4441 e 243 1778
+444f c 250 1778
+445b 5 257 1778
+4460 5 266 1778
+4465 9 275 1778
+446e c 276 1778
+447a 5 279 1778
+447f 9 283 1778
+4488 9 285 1778
+4491 2 288 1778
+4493 1 289 1778
+FUNC 4494 a 0 wmainCRTStartup
+4494 0 389 1778
+4494 5 396 1778
+4499 5 398 1778
+FUNC 449e 106 0 __report_gsfailure
+449e b 140 1543
+44a9 5 170 1543
+44ae 6 171 1543
+44b4 6 172 1543
+44ba 6 173 1543
+44c0 6 174 1543
+44c6 6 175 1543
+44cc 7 176 1543
+44d3 7 177 1543
+44da 7 178 1543
+44e1 7 179 1543
+44e8 7 180 1543
+44ef 7 181 1543
+44f6 1 182 1543
+44f7 6 183 1543
+44fd 3 190 1543
+4500 5 191 1543
+4505 3 192 1543
+4508 5 193 1543
+450d 3 194 1543
+4510 5 195 1543
+4515 6 201 1543
+451b a 204 1543
+4525 a 206 1543
+452f a 285 1543
+4539 a 286 1543
+4543 b 293 1543
+454e b 294 1543
+4559 b 297 1543
+4564 8 298 1543
+456c 8 302 1543
+4574 b 304 1543
+457f 9 313 1543
+4588 8 315 1543
+4590 12 319 1543
+45a2 2 320 1543
+FUNC 45a4 5e 10 __ArrayUnwind(void *,unsigned int,int,void (*)(void *))
+45a4 c 119 1290
+45b0 4 122 1290
+45b4 5 124 1290
+45b9 9 126 1290
+45c2 3 127 1290
+45c5 2 128 1290
+45c7 2c 130 1290
+45f3 7 133 1290
+45fa 8 134 1290
+FUNC 4602 63 10 `eh vector destructor iterator'(void *,unsigned int,int,void (*)(void *))
+FUNC 4665 42 4 __CxxUnhandledExceptionFilter(_EXCEPTION_POINTERS *)
+4665 5 67 1343
+466a 32 68 1343
+469c 5 69 1343
+46a1 2 72 1343
+46a3 4 73 1343
+FUNC 46a7 e 0 __CxxSetUnhandledExceptionFilter
+46a7 0 86 1343
+46a7 b 89 1343
+46b2 2 90 1343
+46b4 1 91 1343
+PUBLIC 46b6 0 _amsg_exit
+FUNC 46bc a5 4 _onexit
+46bc c 79 1402
+46c8 12 84 1402
+46da 5 86 1402
+46df c 90 1402
+46eb 8 103 1402
+46f3 4 105 1402
+46f7 b 107 1402
+4702 d 108 1402
+470f 1d 110 1402
+472c a 112 1402
+4736 d 113 1402
+4743 c 115 1402
+474f 3 120 1402
+4752 6 121 1402
+4758 9 117 1402
+FUNC 4761 17 4 atexit
+4761 5 126 1402
+4766 10 127 1402
+4776 2 128 1402
+FUNC 4778 26 0 _RTC_Initialize
+FUNC 479e 26 0 _RTC_Terminate
+PUBLIC 47c4 0 _XcptFilter
+FUNC 47d0 35 4 _ValidateImageBase
+47d0 5 44 1730
+47d5 d 50 1730
+47e2 2 52 1730
+47e4 2 68 1730
+47e6 5 55 1730
+47eb 6 56 1730
+47f1 2 58 1730
+47f3 10 62 1730
+4803 2 68 1730
+FUNC 4810 44 8 _FindPESection
+4810 5 92 1730
+4815 8 99 1730
+481d 18 108 1730
+4835 10 111 1730
+4845 8 108 1730
+484d 5 123 1730
+4852 2 124 1730
+FUNC 4860 bd 4 _IsNonwritableInCurrentImage
+4860 35 149 1730
+4895 7 156 1730
+489c f 164 1730
+48ab 2 166 1730
+48ad 8 174 1730
+48b5 e 175 1730
+48c3 2 176 1730
+48c5 2 178 1730
+48c7 12 185 1730
+48d9 12 195 1730
+48eb 17 187 1730
+4902 9 193 1730
+490b 12 195 1730
+PUBLIC 491e 0 _initterm
+PUBLIC 4924 0 _initterm_e
+FUNC 492c 45 0 _SEH_prolog4
+FUNC 4971 14 0 _SEH_epilog4
+FUNC 4985 25 10 _except_handler4
+FUNC 49aa 2b 0 _setdefaultprecision
+49aa 3 30 2006
+49ad 27 31 2006
+49d4 1 32 2006
+FUNC 49d5 3 0 _matherr
+49d5 0 56 1833
+49d5 2 57 1833
+49d7 1 58 1833
+FUNC 49d8 96 0 __security_init_cookie
+49d8 8 97 1592
+49e0 21 114 1592
+4a01 7 116 1592
+4a08 3 117 1592
+4a0b a 127 1592
+4a15 6 132 1592
+4a1b 8 135 1592
+4a23 8 136 1592
+4a2b 8 137 1592
+4a33 10 139 1592
+4a43 2 144 1592
+4a45 4 161 1592
+4a49 7 163 1592
+4a50 4 166 1592
+4a54 7 168 1592
+4a5b 6 172 1592
+4a61 b 173 1592
+4a6c 2 175 1592
+PUBLIC 4a6e 0 _crt_debugger_hook
+PUBLIC 4a74 0 terminate()
+PUBLIC 4a7a 0 type_info::~type_info()
+PUBLIC 4a80 0 _unlock
+PUBLIC 4a86 0 __dllonexit
+PUBLIC 4a8c 0 _lock
+PUBLIC 4a92 0 _except_handler4_common
+PUBLIC 4a98 0 _invoke_watson
+PUBLIC 4a9e 0 _controlfp_s
+PUBLIC 4aa4 0 __CxxFrameHandler3
+PUBLIC 4aaa 0 memset
+FUNC 4ab0 68 0 _aulldiv
+4ab0 0 44 1917
+4ab0 1 46 1917
+4ab1 1 47 1917
+4ab2 4 81 1917
+4ab6 2 82 1917
+4ab8 2 83 1917
+4aba 4 84 1917
+4abe 4 85 1917
+4ac2 2 86 1917
+4ac4 2 87 1917
+4ac6 2 88 1917
+4ac8 4 89 1917
+4acc 2 90 1917
+4ace 2 91 1917
+4ad0 2 92 1917
+4ad2 2 99 1917
+4ad4 4 100 1917
+4ad8 4 101 1917
+4adc 4 102 1917
+4ae0 2 104 1917
+4ae2 2 105 1917
+4ae4 2 106 1917
+4ae6 2 107 1917
+4ae8 2 108 1917
+4aea 2 109 1917
+4aec 2 110 1917
+4aee 2 111 1917
+4af0 4 120 1917
+4af4 2 121 1917
+4af6 4 122 1917
+4afa 2 123 1917
+4afc 2 124 1917
+4afe 2 125 1917
+4b00 4 133 1917
+4b04 2 134 1917
+4b06 2 135 1917
+4b08 4 136 1917
+4b0c 2 137 1917
+4b0e 1 139 1917
+4b0f 2 141 1917
+4b11 2 142 1917
+4b13 1 151 1917
+4b14 1 152 1917
+4b15 3 154 1917
+PUBLIC 4b18 8 _CxxThrowException
+FUNC 4d80 2d 0 `dynamic initializer for 'kCustomInfoEntries''
+4d80 3 24 35
+4d83 14 25 35
+4d97 14 26 35
+4dab 2 27 35
+STACK WIN 4 4184 f 0 0 0 0 0 0 1 $T0 .raSearch = $eip $T0 ^ = $esp $T0 4 + =
+STACK WIN 4 4193 4c c 0 4 0 0 0 1 $T0 $ebp = $eip $T0 4 + ^ = $ebp $T0 ^ = $esp $T0 8 + = $L $T0 .cbSavedRegs - = $P $T0 8 + .cbParams + =
+STACK WIN 4 419d 3e 2 0 4 4 0 0 1 $T0 $ebp = $eip $T0 4 + ^ = $ebp $T0 ^ = $esp $T0 8 + = $L $T0 .cbSavedRegs - = $P $T0 8 + .cbParams + =
+STACK WIN 4 41a2 22 0 0 4 8 0 0 1 $T0 $ebp = $eip $T0 4 + ^ = $ebp $T0 ^ = $esp $T0 8 + = $L $T0 .cbSavedRegs - = $P $T0 8 + .cbParams + =
+STACK WIN 4 41f2 4b 0 0 0 0 0 0 1 $T0 .raSearch = $eip $T0 ^ = $esp $T0 4 + =
+STACK WIN 4 423d 176 c 0 0 c 20 0 1 $T0 $ebp = $eip $T0 4 + ^ = $ebp $T0 ^ = $esp $T0 8 + = $L $T0 .cbSavedRegs - = $P $T0 8 + .cbParams + =
+STACK WIN 4 4363 14 0 0 0 c 20 0 1 $T0 $ebp = $T2 $esp = $T1 .raSearchStart = $eip $T1 ^ = $ebp $T0 = $esp $T1 4 + = $L $T0 .cbSavedRegs - = $P $T1 4 + .cbParams + =
+STACK WIN 4 43b3 e1 0 0 0 0 0 0 1 $T0 .raSearch = $eip $T0 ^ = $esp $T0 4 + =
+STACK WIN 4 4494 a 0 0 0 0 0 0 1 $T0 .raSearch = $eip $T0 ^ = $esp $T0 4 + =
+STACK WIN 4 449e 106 b 0 0 0 328 0 1 $T0 $ebp = $eip $T0 4 + ^ = $ebp $T0 ^ = $esp $T0 8 + = $L $T0 .cbSavedRegs - = $P $T0 8 + .cbParams + =
+STACK WIN 4 45a4 5e c 0 10 c 24 0 1 $T0 $ebp = $eip $T0 4 + ^ = $ebp $T0 ^ = $esp $T0 8 + = $L $T0 .cbSavedRegs - = $P $T0 8 + .cbParams + =
+STACK WIN 4 45c7 23 0 0 10 c 24 0 1 $T0 $ebp = $T2 $esp = $T1 .raSearchStart = $eip $T1 ^ = $ebp $T0 = $esp $T1 4 + = $L $T0 .cbSavedRegs - = $P $T1 4 + .cbParams + =
+STACK WIN 4 4602 63 c 0 10 c 1c 0 1 $T0 $ebp = $eip $T0 4 + ^ = $ebp $T0 ^ = $esp $T0 8 + = $L $T0 .cbSavedRegs - = $P $T0 8 + .cbParams + =
+STACK WIN 4 464d 17 0 0 10 c 1c 0 1 $T0 $ebp = $T2 $esp = $T1 .raSearchStart = $eip $T1 ^ = $ebp $T0 = $esp $T1 4 + = $L $T0 .cbSavedRegs - = $P $T1 4 + .cbParams + =
+STACK WIN 4 4665 42 5 0 4 0 0 0 1 $T0 $ebp = $eip $T0 4 + ^ = $ebp $T0 ^ = $esp $T0 8 + = $L $T0 .cbSavedRegs - = $P $T0 8 + .cbParams + =
+STACK WIN 4 46a7 e 0 0 0 0 0 0 1 $T0 .raSearch = $eip $T0 ^ = $esp $T0 4 + =
+STACK WIN 4 46bc a5 c 0 4 c 24 0 1 $T0 $ebp = $eip $T0 4 + ^ = $ebp $T0 ^ = $esp $T0 8 + = $L $T0 .cbSavedRegs - = $P $T0 8 + .cbParams + =
+STACK WIN 4 4758 8 0 0 4 c 24 0 1 $T0 $ebp = $T2 $esp = $T1 .raSearchStart = $eip $T1 ^ = $ebp $T0 = $esp $T1 4 + = $L $T0 .cbSavedRegs - = $P $T1 4 + .cbParams + =
+STACK WIN 4 4761 17 5 0 4 0 0 0 1 $T0 $ebp = $eip $T0 4 + ^ = $ebp $T0 ^ = $esp $T0 8 + = $L $T0 .cbSavedRegs - = $P $T0 8 + .cbParams + =
+STACK WIN 4 4778 26 e 0 0 0 0 0 1 $T0 .raSearch = $eip $T0 ^ = $esp $T0 4 + =
+STACK WIN 4 477b 22 b 0 0 4 0 0 1 $T0 .raSearch = $eip $T0 ^ = $esp $T0 4 + =
+STACK WIN 4 4786 16 0 0 0 8 0 0 1 $T0 .raSearch = $eip $T0 ^ = $esp $T0 4 + =
+STACK WIN 4 479e 26 e 0 0 0 0 0 1 $T0 .raSearch = $eip $T0 ^ = $esp $T0 4 + =
+STACK WIN 4 47a1 22 b 0 0 4 0 0 1 $T0 .raSearch = $eip $T0 ^ = $esp $T0 4 + =
+STACK WIN 4 47ac 16 0 0 0 8 0 0 1 $T0 .raSearch = $eip $T0 ^ = $esp $T0 4 + =
+STACK WIN 4 47d0 35 5 0 4 0 0 0 1 $T0 $ebp = $eip $T0 4 + ^ = $ebp $T0 ^ = $esp $T0 8 + = $L $T0 .cbSavedRegs - = $P $T0 8 + .cbParams + =
+STACK WIN 4 4810 44 1a 0 8 0 0 0 1 $T0 $ebp = $eip $T0 4 + ^ = $ebp $T0 ^ = $esp $T0 8 + = $L $T0 .cbSavedRegs - = $P $T0 8 + .cbParams + =
+STACK WIN 4 4822 30 8 0 8 4 0 0 1 $T0 $ebp = $eip $T0 4 + ^ = $ebp $T0 ^ = $esp $T0 8 + = $L $T0 .cbSavedRegs - = $P $T0 8 + .cbParams + = $ebx $T0 4 - ^ =
+STACK WIN 4 4823 2e 7 0 8 8 0 0 1 $T0 $ebp = $eip $T0 4 + ^ = $ebp $T0 ^ = $esp $T0 8 + = $L $T0 .cbSavedRegs - = $P $T0 8 + .cbParams + = $ebx $T0 4 - ^ =
+STACK WIN 4 482a 26 0 0 8 c 0 0 1 $T0 $ebp = $eip $T0 4 + ^ = $ebp $T0 ^ = $esp $T0 8 + = $L $T0 .cbSavedRegs - = $P $T0 8 + .cbParams + = $ebx $T0 4 - ^ =
+STACK WIN 4 4860 bd 35 0 4 c 18 0 1 $T0 $ebp = $eip $T0 4 + ^ = $ebp $T0 ^ = $esp $T0 8 + = $L $T0 .cbSavedRegs - = $P $T0 8 + .cbParams + =
+STACK WIN 4 487c a1 19 0 4 10 18 0 1 $T0 $ebp = $eip $T0 4 + ^ = $ebp $T0 ^ = $esp $T0 8 + = $L $T0 .cbSavedRegs - = $P $T0 8 + .cbParams + = $ebx $T0 28 - ^ =
+STACK WIN 4 48eb 14 0 0 4 c 18 0 1 $T0 $ebp = $T2 $esp = $T1 .raSearchStart = $eip $T1 ^ = $ebp $T0 = $esp $T1 4 + = $L $T0 .cbSavedRegs - = $P $T1 4 + .cbParams + = $ebx $T0 28 - ^ =
+STACK WIN 4 4985 25 5 0 10 0 0 0 1 $T0 $ebp = $eip $T0 4 + ^ = $ebp $T0 ^ = $esp $T0 8 + = $L $T0 .cbSavedRegs - = $P $T0 8 + .cbParams + =
+STACK WIN 4 49aa 2b 3 0 0 0 0 0 1 $T0 .raSearch = $eip $T0 ^ = $esp $T0 4 + =
+STACK WIN 4 49ad 27 0 0 0 4 0 0 1 $T0 .raSearch = $eip $T0 ^ = $esp $T0 4 + =
+STACK WIN 4 49d5 3 0 0 4 0 0 0 1 $T0 .raSearch = $eip $T0 ^ = $esp $T0 4 + =
+STACK WIN 4 49d8 96 17 0 0 0 10 0 1 $T0 $ebp = $eip $T0 4 + ^ = $ebp $T0 ^ = $esp $T0 8 + = $L $T0 .cbSavedRegs - = $P $T0 8 + .cbParams + =
+STACK WIN 4 49ee 7e 1 0 0 4 10 0 1 $T0 $ebp = $eip $T0 4 + ^ = $ebp $T0 ^ = $esp $T0 8 + = $L $T0 .cbSavedRegs - = $P $T0 8 + .cbParams + = $ebx $T0 20 - ^ =
+STACK WIN 4 49ef 7c 0 0 0 8 10 0 1 $T0 $ebp = $eip $T0 4 + ^ = $ebp $T0 ^ = $esp $T0 8 + = $L $T0 .cbSavedRegs - = $P $T0 8 + .cbParams + = $ebx $T0 20 - ^ =
+STACK WIN 4 4a0b 5f 0 0 0 c 10 0 1 $T0 $ebp = $eip $T0 4 + ^ = $ebp $T0 ^ = $esp $T0 8 + = $L $T0 .cbSavedRegs - = $P $T0 8 + .cbParams + = $ebx $T0 20 - ^ =
+STACK WIN 0 4363 14 0 0 0 0 0 0 0 0
+STACK WIN 0 45c7 24 0 0 0 0 0 0 0 0
+STACK WIN 0 464d 18 0 0 0 0 0 0 0 0
+STACK WIN 0 4758 9 0 0 0 0 0 0 0 0
+STACK WIN 0 48eb 14 0 0 0 0 0 0 0 0

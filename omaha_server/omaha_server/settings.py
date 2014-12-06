@@ -177,6 +177,7 @@ CELERY_RESULT_SERIALIZER = 'msgpack'
 CELERY_MESSAGE_COMPRESSION = 'zlib'
 CELERY_QUEUES = (
     Queue('transient', routing_key='transient', delivery_mode=1),
+    Queue('default', routing_key='default'),
 )
 
 
