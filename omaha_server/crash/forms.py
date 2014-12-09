@@ -19,6 +19,7 @@ the License.
 """
 
 from django import forms
+from django.forms import widgets
 from django_select2 import Select2Widget
 from crash.models import Symbols
 from models import Crash
@@ -37,4 +38,23 @@ class SymbolsAdminForm(forms.ModelForm):
         widgets = {
             'version': Select2Widget(attrs={'style': 'width:300px'},
                                      select2_options={'minimumResultsForSearch': 2}),
+            'debug_id': widgets.TextInput(attrs=dict(disabled='disabled')),
+            'debug_file': widgets.TextInput(attrs=dict(disabled='disabled')),
         }
+
+    def _parse_debug_meta_info(self, head):
+        head_list = head.split(' ')
+        if head_list[0] != 'MODULE':
+            raise forms.ValidationError(u"The file contains invalid data.")
+        return dict(debug_id=head_list[-2],
+                    debug_file=head_list[-1])
+
+    def clean_file(self):
+        file = self.cleaned_data["file"]
+        try:
+            head = file.readline().rstrip()
+            meta = self._parse_debug_meta_info(head)
+            self.cleaned_data.update(meta)
+        except:
+            raise forms.ValidationError(u"The file contains invalid data.")
+        return file

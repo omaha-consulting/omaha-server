@@ -20,12 +20,12 @@ the License.
 
 import os
 
-from django import test
+from django.test import TestCase
 from django.core.files.uploadedfile import SimpleUploadedFile
 
-from crash.models import Crash, Symbols
 from omaha.tests.utils import temporary_media_root
 from omaha.factories import VersionFactory
+from crash.forms import SymbolsAdminForm
 
 
 BASE_DIR = os.path.dirname(__file__)
@@ -33,38 +33,26 @@ TEST_DATA_DIR = os.path.join(BASE_DIR, 'testdata')
 SYM_FILE = os.path.join(TEST_DATA_DIR, 'BreakpadTestApp.sym')
 
 
-class CrashModelTest(test.TestCase):
-    @temporary_media_root()
-    def test_model(self):
-        meta = dict(
-            lang='en',
-            version='1.0.0.1',
-        )
-        app_id = '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}',
-        user_id = '{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}',
-        obj = Crash.objects.create(
-            app_id=app_id,
-            user_id=user_id,
-            mini_dump=SimpleUploadedFile('./dump.dat', False),
-            meta=meta,
-        )
-
-        self.assertTrue(obj)
-        self.assertDictEqual(obj.meta, meta)
-        self.assertEqual(obj.app_id, app_id)
-        self.assertEqual(obj.user_id, user_id)
-
-
-class SymbolsModelTest(test.TestCase):
+class SymbolsAdminFormTest(TestCase):
     @temporary_media_root()
     def setUp(self):
         self.version = VersionFactory.create(file=SimpleUploadedFile('./chrome_installer.exe', b''))
 
-    @temporary_media_root()
-    def test_model(self):
+    def test_parse_debug_meta_info(self):
+        head = 'MODULE windows x86 C1C0FA629EAA4B4D9DD2ADE270A231CC1 BreakpadTestApp.pdb'
+        form = SymbolsAdminForm()
+        self.assertDictEqual(form._parse_debug_meta_info(head),
+                             dict(debug_id='C1C0FA629EAA4B4D9DD2ADE270A231CC1',
+                                  debug_file='BreakpadTestApp.pdb'))
+
+    def test_form(self):
+        form_data = {'version': self.version.pk}
+
         with open(SYM_FILE, 'rb') as f:
-            obj = Symbols.objects.create(
-                version=self.version,
-                file=SimpleUploadedFile(f.name, f.read()),
-            )
-        self.assertTrue(obj)
+            form_file_data = {'file': SimpleUploadedFile('BreakpadTestApp.sym', f.read())}
+
+        form = SymbolsAdminForm(form_data, form_file_data)
+
+        self.assertTrue(form.is_valid())
+        self.assertEqual(form.cleaned_data['debug_id'], 'C1C0FA629EAA4B4D9DD2ADE270A231CC1')
+        self.assertEqual(form.cleaned_data['debug_file'], 'BreakpadTestApp.pdb')

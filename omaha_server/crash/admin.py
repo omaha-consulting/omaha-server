@@ -34,7 +34,6 @@ class CrashAdmin(admin.ModelAdmin):
 
 @admin.register(Symbols)
 class SymbolsAdmin(admin.ModelAdmin):
-    list_display = ('version', 'is_enabled',)
-    list_display_links = ('version', 'is_enabled',)
-    readonly_fields = ('is_enabled', 'debug_id', 'debug_file',)
+    list_display = ('version',)
+    list_display_links = ('version',)
     form = SymbolsAdminForm
