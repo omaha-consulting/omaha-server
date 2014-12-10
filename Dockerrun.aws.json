@@ -8,6 +8,5 @@
     {
       "ContainerPort": "80"
     }
-  ],
-  "Command": "--privileged"
+  ]
 }
