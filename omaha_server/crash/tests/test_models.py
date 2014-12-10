@@ -23,7 +23,7 @@ import os
 from django import test
 from django.core.files.uploadedfile import SimpleUploadedFile
 
-from crash.models import Crash, Symbols
+from crash.models import Crash, Symbols, symbols_upload_to
 from omaha.tests.utils import temporary_media_root
 from omaha.factories import VersionFactory
 
@@ -64,7 +64,26 @@ class SymbolsModelTest(test.TestCase):
     def test_model(self):
         with open(SYM_FILE, 'rb') as f:
             obj = Symbols.objects.create(
+                debug_file='BreakpadTestApp.pdb',
+                debug_id='C1C0FA629EAA4B4D9DD2ADE270A231CC1',
                 version=self.version,
                 file=SimpleUploadedFile(f.name, f.read()),
             )
         self.assertTrue(obj)
+
+    @temporary_media_root()
+    def test_symbols_upload_to(self):
+        with open(SYM_FILE, 'rb') as f:
+            obj = Symbols.objects.create(
+                debug_file='BreakpadTestApp.pdb',
+                debug_id='C1C0FA629EAA4B4D9DD2ADE270A231CC1',
+                version=self.version,
+                file=SimpleUploadedFile(f.name, f.read()),
+            )
+        self.assertIn('symbols/BreakpadTestApp.pdb/C1C0FA629EAA4B4D9DD2ADE270A231CC1/BreakpadTestApp.sym',
+                      obj.file.url)
+
+        self.assertEqual(symbols_upload_to(obj, 'BreakpadTestApp.pdb'),
+                         'symbols/BreakpadTestApp.pdb/C1C0FA629EAA4B4D9DD2ADE270A231CC1/BreakpadTestApp.sym')
+
+

@@ -36,8 +36,9 @@ class Crash(TimeStampedModel):
 
 
 def symbols_upload_to(obj, filename):
-    return os.path.join('symbols', obj.version.app.name, obj.version.channel.name,
-                        obj.version.platform.name, filename)
+    sym_filename = os.path.splitext(os.path.basename(obj.debug_file))[0]
+    sym_filename = '%s.sym' % sym_filename
+    return os.path.join('symbols', obj.debug_file, obj.debug_id, sym_filename)
 
 
 class Symbols(TimeStampedModel):
