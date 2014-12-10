@@ -19,6 +19,7 @@ django-cacheops==2.2.1
 msgpack-python
 django-tables2==0.15.0
 Django-Select2==4.2.2
+clom==0.7.5
 
 # Only dev
 django-httplog==0.2.2
