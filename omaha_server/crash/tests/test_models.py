@@ -34,7 +34,10 @@ SYM_FILE = os.path.join(TEST_DATA_DIR, 'BreakpadTestApp.sym')
 
 
 class CrashModelTest(test.TestCase):
-    @temporary_media_root()
+    @temporary_media_root(
+        CELERY_ALWAYS_EAGER=False,
+        CELERY_EAGER_PROPAGATES_EXCEPTIONS=False,
+    )
     def test_model(self):
         meta = dict(
             lang='en',
@@ -85,5 +88,3 @@ class SymbolsModelTest(test.TestCase):
 
         self.assertEqual(symbols_upload_to(obj, 'BreakpadTestApp.pdb'),
                          'symbols/BreakpadTestApp.pdb/C1C0FA629EAA4B4D9DD2ADE270A231CC1/BreakpadTestApp.sym')
-
-

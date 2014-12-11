@@ -193,3 +193,8 @@ CACHEOPS_REDIS = {
 CACHEOPS = {
     'omaha.*': {'ops': (), 'timeout': 10},
 }
+
+# Crash
+
+CRASH_S3_MOUNT_PATH = os.environ.get('CRASH_S3_MOUNT_PATH', '/srv/omaha_s3')
+CRASH_SYMBOLS_PATH = os.path.join(CRASH_S3_MOUNT_PATH, 'symbols')

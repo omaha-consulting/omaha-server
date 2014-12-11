@@ -24,6 +24,7 @@ RUN apt-get clean
 RUN wget https://github.com/s3fs-fuse/s3fs-fuse/archive/v1.78.tar.gz -O /usr/src/v1.78.tar.gz
 RUN tar xvz -C /usr/src -f /usr/src/v1.78.tar.gz
 RUN cd /usr/src/s3fs-fuse-1.78 && ./autogen.sh && ./configure --prefix=/usr && make && make install
+RUN mkdir /srv/omaha_s3
 
 
 ADD . /srv/omaha

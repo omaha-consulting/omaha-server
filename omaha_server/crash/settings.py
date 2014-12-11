@@ -35,3 +35,4 @@ MINIDUMP_STACKWALK_PATH = os.path.join(BASE_DIR, 'breakpad/%s/minidump_stackwalk
 
 MINIDUMP_STACKWALK_PATH = getattr(settings, 'CRASH_MINIDUMP_STACKWALK_PATH', MINIDUMP_STACKWALK_PATH)
 SYMBOLS_PATH = getattr(settings, 'CRASH_SYMBOLS_PATH')
+S3_MOUNT_PATH = getattr(settings, 'CRASH_S3_MOUNT_PATH')

@@ -55,3 +55,4 @@ CACHES['statistics'] = {
 OMAHA_UID_KEY_PREFIX = 'test:uid'
 
 CRASH_SYMBOLS_PATH = os.path.join(BASE_DIR, 'crash', 'tests', 'testdata', 'symbols')
+CRASH_S3_MOUNT_PATH = os.path.join(BASE_DIR, 'crash', 'tests', 'testdata')

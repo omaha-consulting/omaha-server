@@ -26,6 +26,10 @@ from crash.models import Crash
 
 
 class CrashViewTest(test.TestCase):
+    @test.override_settings(
+        CELERY_ALWAYS_EAGER=False,
+        CELERY_EAGER_PROPAGATES_EXCEPTIONS=False,
+    )
     def test_view(self):
         meta = dict(
             lang='en',

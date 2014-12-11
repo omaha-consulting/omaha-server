@@ -21,7 +21,10 @@ the License.
 import os
 
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
+from celery import signature
 from django_extensions.db.models import TimeStampedModel
 from jsonfield import JSONField
 
@@ -33,6 +36,7 @@ class Crash(TimeStampedModel):
     app_id = models.CharField(max_length=38, null=True, blank=True)
     user_id = models.CharField(max_length=38, null=True, blank=True)
     meta = JSONField(verbose_name='Meta-information', help_text='JSON format', null=True, blank=True)
+    stacktrace = models.TextField(null=True, blank=True)
 
 
 def symbols_upload_to(obj, filename):
@@ -49,3 +53,9 @@ class Symbols(TimeStampedModel):
 
     class Meta:
         verbose_name_plural = 'Symbols'
+
+
+@receiver(post_save, sender=Crash)
+def crash_post_save(sender, instance, created, *args, **kwargs):
+    if created:
+        signature("tasks.processing_crash_dump", args=(instance.pk,)).apply_async(queue='default')

@@ -1,3 +1,4 @@
+six==1.8.0
 Django==1.7.1
 django-extensions==1.4.6
 django-suit==0.2.12
@@ -20,6 +21,7 @@ msgpack-python
 django-tables2==0.15.0
 Django-Select2==4.2.2
 clom==0.7.5
+furl==0.4.0
 
 # Only dev
 django-httplog==0.2.2
