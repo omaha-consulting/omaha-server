@@ -18,13 +18,13 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
+import logging
 import datetime
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, ListView
 from django.utils import timezone
-from raven.contrib.django.raven_compat.models import client
 from django_tables2 import SingleTableView
 
 from omaha.statistics import (
@@ -38,6 +38,9 @@ from filters import AppRequestFilter
 from omaha.utils import make_piechart, make_discrete_bar_chart
 from omaha.filters import EVENT_RESULT, EVENT_TYPE
 from tables import AppRequestTable
+
+
+logger = logging.getLogger(__name__)
 
 
 STATE_CANCELLED = {
@@ -127,7 +130,7 @@ class RequestListView(StaffMemberRequiredMixin, SingleTableView):
             app = Application.objects.get(name=self.kwargs.get('name'))
             qs = qs.filter(appid=app.id)
         except Application.DoesNotExist:
-            client.captureException()
+            logger.error('RequestListView DoesNotExist', exc_info=True, extra=dict(request=self.request))
 
         qs = qs.distinct()
         self.filter = AppRequestFilter(self.request.GET, queryset=qs)
@@ -157,7 +160,7 @@ class AppRequestDetailView(StaffMemberRequiredMixin, DetailView):
             app = Application.objects.get(id=app_req.appid)
             name = app.name
         except Application.DoesNotExist:
-            client.captureException()
+            logger.error('AppRequestDetailView DoesNotExist', exc_info=True, extra=dict(request=self.request))
         context = super(AppRequestDetailView, self).get_context_data(**kwargs)
         context['app_name'] = name
         context['EVENT_RESULT'] = EVENT_RESULT

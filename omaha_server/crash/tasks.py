@@ -19,19 +19,21 @@ the License.
 """
 
 import os
+import logging
 
-from clom import shell
 from furl import furl
-from raven.contrib.django.raven_compat.models import client
 
 from omaha_server.celery import app
 from models import Crash
 from settings import S3_MOUNT_PATH
-from utils import get_stacktrace
+from utils import get_stacktrace, FileNotFoundError
 
 
-@app.task(name='tasks.processing_crash_dump', ignore_result=True, max_retries=12)
-def processing_crash_dump(crash_pk):
+logger = logging.getLogger(__name__)
+
+
+@app.task(name='tasks.processing_crash_dump', ignore_result=True, max_retries=12, bind=True)
+def processing_crash_dump(self, crash_pk):
     try:
         crash = Crash.objects.get(pk=crash_pk)
         url = furl(crash.mini_dump.url)
@@ -40,6 +42,9 @@ def processing_crash_dump(crash_pk):
         stacktrace, errors = get_stacktrace(crash_dump_path)
         crash.stacktrace = stacktrace
         crash.save()
-    except Crash.DoesNotExist, shell.CommandError:
-        client.captureException()
-        raise processing_crash_dump.retry(countdown=2 ** processing_crash_dump.request.retries)
+    except FileNotFoundError as exc:
+        logger.error('Failed processing_crash_dump',
+                     exc_info=True,
+                     extra=dict(crash_pk=crash_pk,
+                                crash_dump_path=crash_dump_path))
+        raise self.retry(exc=exc, countdown=2 ** processing_crash_dump.request.retries)

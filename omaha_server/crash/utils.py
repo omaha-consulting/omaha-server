@@ -18,14 +18,23 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
+import os
+
 from clom import clom
 
 from settings import MINIDUMP_STACKWALK_PATH, SYMBOLS_PATH
+
+
+class FileNotFoundError(Exception):
+    pass
 
 
 minidump_stackwalk = clom[MINIDUMP_STACKWALK_PATH].with_opts('-m')
 
 
 def get_stacktrace(crashdump_path):
+    if not os.path.isfile(crashdump_path):
+        raise FileNotFoundError
+
     rezult = minidump_stackwalk(crashdump_path, SYMBOLS_PATH).shell()
     return rezult, rezult.stderr
