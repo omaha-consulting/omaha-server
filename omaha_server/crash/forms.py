@@ -31,7 +31,17 @@ class CrashFrom(forms.ModelForm):
         exclude = []
 
 
+class SymbolsFileInput(forms.ClearableFileInput):
+    url_markup_template = '<a href="{0}">Link</a>'
+
+
+class SymbolsFileField(forms.Field):
+    widget = SymbolsFileInput
+
+
 class SymbolsAdminForm(forms.ModelForm):
+    file = SymbolsFileField()
+    
     class Meta:
         model = Symbols
         exclude = []
