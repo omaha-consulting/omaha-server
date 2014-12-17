@@ -27,6 +27,7 @@ from omaha_server.celery import app
 from models import Crash
 from settings import S3_MOUNT_PATH
 from utils import get_stacktrace, FileNotFoundError
+from stacktrace_to_json import pipe_dump_to_json_dump
 
 
 logger = logging.getLogger(__name__)
@@ -41,6 +42,7 @@ def processing_crash_dump(self, crash_pk):
         crash_dump_path = os.path.join(S3_MOUNT_PATH, *path.split('/'))
         stacktrace, errors = get_stacktrace(crash_dump_path)
         crash.stacktrace = stacktrace
+        crash.stacktrace_json = pipe_dump_to_json_dump(str(stacktrace).splitlines())
         crash.save()
     except FileNotFoundError as exc:
         logger.error('Failed processing_crash_dump',

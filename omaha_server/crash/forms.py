@@ -41,7 +41,7 @@ class SymbolsFileField(forms.Field):
 
 class SymbolsAdminForm(forms.ModelForm):
     file = SymbolsFileField()
-    
+
     class Meta:
         model = Symbols
         exclude = []

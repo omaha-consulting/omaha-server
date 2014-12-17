@@ -68,3 +68,5 @@ class CrashModelTest(test.TestCase):
 
         crash = Crash.objects.get(pk=obj.pk)
         self.assertEqual(crash.stacktrace, stacktrace)
+        self.assertIsNotNone(crash.stacktrace_json)
+        self.assertEqual(crash.stacktrace_json['crash_info']['type'], 'EXCEPTION_ACCESS_VIOLATION_WRITE')
