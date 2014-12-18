@@ -129,7 +129,7 @@ def on_app(apps_list, app, os, userid):
                     packages=Packages([Package(
                         name=version.file_package_name,
                         required='true',
-                        size=str(version.file.size),
+                        size=str(version.file_size),
                         hash=version.file_hash,
                     )]),
                     actions=Actions(actions),
