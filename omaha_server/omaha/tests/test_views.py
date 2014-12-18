@@ -69,7 +69,8 @@ class UpdateViewTest(TestCase, XmlTestMixin):
             platform=platform,
             channel=channel,
             version='13.0.782.112',
-            file=SimpleUploadedFile('./chrome_installer.exe', 'b' * 23963192))
+            file=SimpleUploadedFile('./chrome_installer.exe', 'b' * 23963192),
+            file_size=23963192)
         obj.file_hash = 'VXriGUVI0TNqfLlU02vBel4Q3Zo='
         obj.save()
 

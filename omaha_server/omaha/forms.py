@@ -19,6 +19,7 @@ the License.
 """
 
 from django import forms
+from django.forms import widgets
 
 from suit.widgets import LinkedSelect
 from suit_redactor.widgets import RedactorWidget
@@ -46,7 +47,12 @@ class VersionAdminForm(forms.ModelForm):
             'app': LinkedSelect,
             'release_notes': RedactorWidget(editor_options={'lang': 'en',
                                                             'minHeight': 150}),
+            'file_size': widgets.TextInput(attrs=dict(disabled='disabled')),
         }
+
+    def clean_file_size(self):
+        file = self.cleaned_data["file"]
+        return file.size
 
 
 class ActionAdminForm(forms.ModelForm):
