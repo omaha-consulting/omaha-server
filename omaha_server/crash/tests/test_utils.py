@@ -22,7 +22,8 @@ import os
 
 from django import test
 
-from crash.utils import get_stacktrace
+from crash.utils import get_stacktrace, add_signature_to_frame, parse_stacktrace, get_signature
+from test_stacktrace_to_json import stacktrace
 
 
 BASE_DIR = os.path.dirname(__file__)
@@ -41,3 +42,49 @@ class ShTest(test.TestCase):
 
         self.assertEqual(rezult, stacktrace)
 
+
+class SignatureTest(test.TestCase):
+    test_data = [
+        ({'frame': 0,
+          'module': 'bad.dll',
+          'function': 'Func(A * a,B b)',
+          'file': 'hg:hg.m.org/repo/name:dname/fname:rev',
+          'line': 576},
+         {'function': 'Func(A* a, B b)',
+          'short_signature': 'Func',
+          'line': 576,
+          'file': 'hg:hg.m.org/repo/name:dname/fname:rev',
+          'frame': 0,
+          'signature': 'Func(A* a, B b)',
+          'module': 'bad.dll'}),
+        ({'file': 'c:\\work\x08reakpadtestapp\x08reakpadtestapp\x08reakpadtestapp.cpp',
+          'frame': 0,
+          'function': 'crashedFunc()',
+          'line': 34,
+          'module': 'BreakpadTestApp.exe'},
+         {'file': 'c:\\work\x08reakpadtestapp\x08reakpadtestapp\x08reakpadtestapp.cpp',
+          'frame': 0,
+          'function': 'crashedFunc()',
+          'line': 34,
+          'module': 'BreakpadTestApp.exe',
+          'short_signature': 'crashedFunc',
+          'signature': 'crashedFunc()'})
+    ]
+
+    def test_add_signature_to_frame(self):
+        for i in self.test_data:
+            self.assertDictEqual(add_signature_to_frame(i[0]), i[1])
+
+    def test_parse_stacktrace(self):
+        stacktrace_dict = parse_stacktrace(stacktrace)
+        self.assertDictEqual(stacktrace_dict['crashing_thread']['frames'][0],
+                             {'file': 'c:\\work\x08reakpadtestapp\x08reakpadtestapp\x08reakpadtestapp.cpp',
+                              'frame': 0,
+                              'function': 'crashedFunc()',
+                              'line': 34,
+                              'module': 'BreakpadTestApp.exe',
+                              'short_signature': 'crashedFunc',
+                              'signature': 'crashedFunc()'})
+
+    def test_get_signature(self):
+        self.assertEqual(get_signature(parse_stacktrace(stacktrace)), 'crashedFunc()')

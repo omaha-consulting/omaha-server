@@ -19,10 +19,12 @@ the License.
 """
 
 import os
+import re
 
 from clom import clom
 
 from settings import MINIDUMP_STACKWALK_PATH, SYMBOLS_PATH
+from stacktrace_to_json import pipe_dump_to_json_dump
 
 
 class FileNotFoundError(Exception):
@@ -38,3 +40,38 @@ def get_stacktrace(crashdump_path):
 
     rezult = minidump_stackwalk(crashdump_path, SYMBOLS_PATH).shell()
     return rezult, rezult.stderr
+
+
+def add_signature_to_frame(frame):
+    frame = frame.copy()
+    if 'function' in frame:
+        # Remove spaces before all stars, ampersands, and commas
+        function = re.sub(' (?=[\*&,])', '', frame['function'])
+        # Ensure a space after commas
+        function = re.sub(',(?! )', ', ', function)
+        frame['function'] = function
+        signature = function
+    elif 'file' in frame and 'line' in frame:
+        signature = '%s#%d' % (frame['file'], frame['line'])
+    elif 'module' in frame and 'module_offset' in frame:
+        signature = '%s@%s' % (frame['module'], frame['module_offset'])
+    else:
+        signature = '@%s' % frame['offset']
+    frame['signature'] = signature
+    frame['short_signature'] = re.sub('\(.*\)', '', signature)
+    return frame
+
+
+def parse_stacktrace(stacktrace):
+    stacktrace_dict = pipe_dump_to_json_dump(str(stacktrace).splitlines())
+    stacktrace_dict['crashing_thread']['frames'] = map(add_signature_to_frame, stacktrace_dict['crashing_thread']['frames'])
+    return stacktrace_dict
+
+
+def get_signature(stacktrace):
+    try:
+        frame = stacktrace['crashing_thread']['frames'][0]
+        signature = frame['signature']
+    except KeyError, IndexError:
+        signature = 'EMPTY: no frame data available'
+    return signature

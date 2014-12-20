@@ -38,6 +38,7 @@ class Crash(TimeStampedModel):
     meta = JSONField(verbose_name='Meta-information', help_text='JSON format', null=True, blank=True)
     stacktrace = models.TextField(null=True, blank=True)
     stacktrace_json = JSONField(null=True, blank=True)
+    signature = models.CharField(max_length=255, db_index=True, null=True, blank=True)
 
 
 def symbols_upload_to(obj, filename):
