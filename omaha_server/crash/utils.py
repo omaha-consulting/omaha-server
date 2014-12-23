@@ -51,10 +51,10 @@ def add_signature_to_frame(frame):
         function = re.sub(',(?! )', ', ', function)
         frame['function'] = function
         signature = function
-    elif 'file' in frame and 'line' in frame:
-        signature = '%s#%d' % (frame['file'], frame['line'])
-    elif 'module' in frame and 'module_offset' in frame:
-        signature = '%s@%s' % (frame['module'], frame['module_offset'])
+    elif 'abs_path' in frame and 'lineno' in frame:
+        signature = '%s#%d' % (frame['abs_path'], frame['lineno'])
+    elif 'filename' in frame and 'module_offset' in frame:
+        signature = '%s@%s' % (frame['filename'], frame['module_offset'])
     else:
         signature = '@%s' % frame['offset']
     frame['signature'] = signature

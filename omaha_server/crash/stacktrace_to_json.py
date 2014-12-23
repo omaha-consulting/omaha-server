@@ -238,10 +238,10 @@ def _extract_frame_info(frame_line, json_dump):
     tmp_offset = _get(frame_line, 6, None)
     frame = DotDictWithPut()
     frame.put_if_not_none('frame', tmp_frame)
-    frame.put_if_not_none('module', tmp_module)
+    frame.put_if_not_none('filename', tmp_module)
     frame.put_if_not_none('function', tmp_function)
-    frame.put_if_not_none('file', tmp_file)
-    frame.put_if_not_none('line', tmp_line)
+    frame.put_if_not_none('abs_path', tmp_file)
+    frame.put_if_not_none('lineno', tmp_line)
     if tmp_file and tmp_line is not None:
         # skip offset entirely
         pass

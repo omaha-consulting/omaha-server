@@ -78,11 +78,11 @@ class SignatureTest(test.TestCase):
     def test_parse_stacktrace(self):
         stacktrace_dict = parse_stacktrace(stacktrace)
         self.assertDictEqual(stacktrace_dict['crashing_thread']['frames'][0],
-                             {'file': 'c:\\work\x08reakpadtestapp\x08reakpadtestapp\x08reakpadtestapp.cpp',
+                             {'abs_path': 'c:\\work\x08reakpadtestapp\x08reakpadtestapp\x08reakpadtestapp.cpp',
                               'frame': 0,
                               'function': 'crashedFunc()',
-                              'line': 34,
-                              'module': 'BreakpadTestApp.exe',
+                              'lineno': 34,
+                              'filename': 'BreakpadTestApp.exe',
                               'short_signature': 'crashedFunc',
                               'signature': 'crashedFunc()'})
 
