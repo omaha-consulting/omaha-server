@@ -21,10 +21,16 @@ the License.
 import os
 import re
 
+from django.conf import settings
+
 from clom import clom
+from raven import Client
 
 from settings import MINIDUMP_STACKWALK_PATH, SYMBOLS_PATH
 from stacktrace_to_json import pipe_dump_to_json_dump
+
+
+client = Client(getattr(settings, 'RAVEN_DSN_STACKTRACE'))
 
 
 class FileNotFoundError(Exception):
@@ -75,3 +81,43 @@ def get_signature(stacktrace):
     except KeyError, IndexError:
         signature = 'EMPTY: no frame data available'
     return signature
+
+
+def send_stacktrace_sentry(crash):
+    stacktrace = crash.stacktrace_json
+
+    exception = {
+        "values": [
+            {
+                "type": stacktrace.get('crash_info', {}).get('type', 'unknown exception'),
+                "value": stacktrace.get('crash_info', {}).get('crash_address', '0x0'),
+                "stacktrace": stacktrace['crashing_thread']
+            }
+        ]
+    }
+
+    data = {'sentry.interfaces.Exception': exception}
+
+    if crash.user_id:
+        data['sentry.interfaces.User'] = dict(id=crash.user_id)
+
+    extra = dict(
+        crashdump_url=crash.upload_file_minidump.url,
+    )
+
+    if crash.meta:
+        extra.update(crash.meta)
+
+    tags = {}
+    tags.update(stacktrace.get('system_info', {}))
+
+    if crash.app_id:
+        tags['app_id'] = crash.app_id
+
+    client.capture(
+        'raven.events.Message',
+        message=crash.signature,
+        extra=extra,
+        tags=tags,
+        data=data
+    )
