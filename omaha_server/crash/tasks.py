@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 def processing_crash_dump(self, crash_pk):
     try:
         crash = Crash.objects.get(pk=crash_pk)
-        url = furl(crash.mini_dump.url)
+        url = furl(crash.upload_file_minidump.url)
         path = url.pathstr
         crash_dump_path = os.path.join(S3_MOUNT_PATH, *path.split('/'))
         stacktrace, errors = get_stacktrace(crash_dump_path)

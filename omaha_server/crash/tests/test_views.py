@@ -39,7 +39,7 @@ class CrashViewTest(test.TestCase):
         form_data = dict(
             app_id='{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}',
             user_id='{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}',
-            mini_dump=mini_dump_file,
+            upload_file_minidump=mini_dump_file,
         )
 
         form_data.update(meta)
@@ -53,3 +53,4 @@ class CrashViewTest(test.TestCase):
         self.assertDictEqual(obj.meta, meta)
         self.assertEqual(obj.app_id, form_data['app_id'])
         self.assertEqual(obj.user_id, form_data['user_id'])
+        self.assertIsNotNone(obj.upload_file_minidump)

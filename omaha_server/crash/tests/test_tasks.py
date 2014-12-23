@@ -56,7 +56,7 @@ class CrashModelTest(test.TestCase):
             obj = Crash.objects.create(
                 app_id=app_id,
                 user_id=user_id,
-                mini_dump=SimpleUploadedFile('7b05e196-7e23-416b-bd13-99287924e214.dmp', f.read()),
+                upload_file_minidump=SimpleUploadedFile('7b05e196-7e23-416b-bd13-99287924e214.dmp', f.read()),
                 meta=meta,
             )
 

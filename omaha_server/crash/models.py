@@ -32,7 +32,7 @@ from omaha.models import Version
 
 
 class Crash(TimeStampedModel):
-    mini_dump = models.FileField(upload_to='minidump/%Y/%m/%d')
+    upload_file_minidump = models.FileField(upload_to='minidump/%Y/%m/%d')
     app_id = models.CharField(max_length=38, null=True, blank=True)
     user_id = models.CharField(max_length=38, null=True, blank=True)
     meta = JSONField(verbose_name='Meta-information', help_text='JSON format', null=True, blank=True)
