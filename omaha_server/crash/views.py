@@ -42,7 +42,7 @@ class CrashFormView(FormView):
         if meta:
             obj.meta = meta
         obj.save()
-        return HttpResponse(obj.pk, status=201)
+        return HttpResponse(obj.pk, status=200)
 
     def form_invalid(self, form):
         return HttpResponse(json.dumps(form.errors), status=400, content_type='application/json')

@@ -46,7 +46,7 @@ class CrashViewTest(test.TestCase):
 
         self.assertEqual(Crash.objects.all().count(), 0)
         response = self.client.post(reverse('crash'), form_data)
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(Crash.objects.all().count(), 1)
         obj = Crash.objects.get()
         self.assertEqual(response.content, str(obj.pk))
