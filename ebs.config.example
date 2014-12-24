@@ -99,4 +99,5 @@ app:
                     AWS_SECRET_ACCESS_KEY: 'AWS Secret Key'
                     AWS_STORAGE_BUCKET_NAME: 'S3 storage bucket'
                     RAVEN_DNS: 'Sentry url'
+                    RAVEN_DSN_STACKTRACE: 'Sentry url'
                     REDIS_HOST: '127.0.0.1'
