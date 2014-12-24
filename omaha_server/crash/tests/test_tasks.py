@@ -54,8 +54,8 @@ class CrashModelTest(test.TestCase):
         user_id = '{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}',
         with open(CRASH_DUMP_FILE) as f:
             obj = Crash.objects.create(
-                app_id=app_id,
-                user_id=user_id,
+                appid=app_id,
+                userid=user_id,
                 upload_file_minidump=SimpleUploadedFile('7b05e196-7e23-416b-bd13-99287924e214.dmp', f.read()),
                 meta=meta,
             )

@@ -112,8 +112,8 @@ class SendStackTraceTest(test.TestCase):
             upload_file_minidump=SimpleUploadedFile('./dump.dat', False),
             stacktrace=stacktrace,
             stacktrace_json=parse_stacktrace(stacktrace),
-            app_id='{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}',
-            user_id='{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}',
+            appid='{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}',
+            userid='{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}',
             meta=meta,
             signature='signature',
         )
@@ -209,7 +209,7 @@ class SendStackTraceTest(test.TestCase):
         tags = {
             'cpu_arch': 'x86',
             'cpu_count': 4,
-            'app_id': '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}',
+            'appid': '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}',
             'cpu_info': 'GenuineIntel family 6 model 42 stepping 7',
             'os': 'Windows NT',
             'os_ver': '6.1.7600'

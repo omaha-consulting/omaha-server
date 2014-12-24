@@ -26,10 +26,10 @@ from models import Crash, Symbols
 
 @admin.register(Crash)
 class CrashAdmin(admin.ModelAdmin):
-    list_display = ('app_id', 'user_id', 'created', 'modified',)
-    list_display_links = ('app_id', 'user_id', 'created', 'modified',)
+    list_display = ('appid', 'userid', 'created', 'modified',)
+    list_display_links = ('appid', 'userid', 'created', 'modified',)
     list_filter = ('created',)
-    search_fields = ('app_id', 'user_id',)
+    search_fields = ('appid', 'userid',)
 
 
 @admin.register(Symbols)

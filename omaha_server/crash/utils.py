@@ -98,8 +98,8 @@ def send_stacktrace_sentry(crash):
 
     data = {'sentry.interfaces.Exception': exception}
 
-    if crash.user_id:
-        data['sentry.interfaces.User'] = dict(id=crash.user_id)
+    if crash.userid:
+        data['sentry.interfaces.User'] = dict(id=crash.userid)
 
     extra = dict(
         crashdump_url=crash.upload_file_minidump.url,
@@ -111,8 +111,8 @@ def send_stacktrace_sentry(crash):
     tags = {}
     tags.update(stacktrace.get('system_info', {}))
 
-    if crash.app_id:
-        tags['app_id'] = crash.app_id
+    if crash.appid:
+        tags['appid'] = crash.appid
 
     client.capture(
         'raven.events.Message',

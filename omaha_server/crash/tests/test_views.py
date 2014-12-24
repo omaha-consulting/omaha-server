@@ -37,8 +37,8 @@ class CrashViewTest(test.TestCase):
         )
         mini_dump_file = SimpleUploadedFile("minidump.dat", "content")
         form_data = dict(
-            app_id='{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}',
-            user_id='{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}',
+            appid='{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}',
+            userid='{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}',
             upload_file_minidump=mini_dump_file,
         )
 
@@ -51,6 +51,6 @@ class CrashViewTest(test.TestCase):
         obj = Crash.objects.get()
         self.assertEqual(response.content, str(obj.pk))
         self.assertDictEqual(obj.meta, meta)
-        self.assertEqual(obj.app_id, form_data['app_id'])
-        self.assertEqual(obj.user_id, form_data['user_id'])
+        self.assertEqual(obj.appid, form_data['appid'])
+        self.assertEqual(obj.userid, form_data['userid'])
         self.assertIsNotNone(obj.upload_file_minidump)

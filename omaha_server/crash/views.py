@@ -36,8 +36,8 @@ class CrashFormView(FormView):
 
     def form_valid(self, form):
         meta = self.request.POST.dict()
-        meta.pop("app_id", None)
-        meta.pop("user_id", None)
+        meta.pop("appid", None)
+        meta.pop("userid", None)
         obj = form.save(commit=False)
         if meta:
             obj.meta = meta

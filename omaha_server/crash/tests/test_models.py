@@ -46,16 +46,16 @@ class CrashModelTest(test.TestCase):
         app_id = '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}',
         user_id = '{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}',
         obj = Crash.objects.create(
-            app_id=app_id,
-            user_id=user_id,
+            appid=app_id,
+            userid=user_id,
             upload_file_minidump=SimpleUploadedFile('./dump.dat', False),
             meta=meta,
         )
 
         self.assertTrue(obj)
         self.assertDictEqual(obj.meta, meta)
-        self.assertEqual(obj.app_id, app_id)
-        self.assertEqual(obj.user_id, user_id)
+        self.assertEqual(obj.appid, app_id)
+        self.assertEqual(obj.userid, user_id)
 
 
 class SymbolsModelTest(test.TestCase):
