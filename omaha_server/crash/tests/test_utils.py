@@ -24,6 +24,7 @@ from mock import patch
 
 from django import test
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.urlresolvers import reverse
 
 from crash.utils import (
     get_stacktrace,
@@ -103,12 +104,14 @@ class SignatureTest(test.TestCase):
 
 class SendStackTraceTest(test.TestCase):
     @patch('crash.utils.client')
+    @test.override_settings(HOST_NAME='example.com')
     def test_send_stacktrace_sentry(self, mock_client):
         meta = dict(
             lang='en',
             version='1.0.0.1',
         )
         crash = Crash(
+            pk=123,
             upload_file_minidump=SimpleUploadedFile('./dump.dat', False),
             stacktrace=stacktrace,
             stacktrace_json=parse_stacktrace(stacktrace),
@@ -121,6 +124,9 @@ class SendStackTraceTest(test.TestCase):
         send_stacktrace_sentry(crash)
 
         extra = {
+            'crash_admin_panel_url': 'http://{}{}'.format(
+                'example.com',
+                reverse('admin:crash_crash_change', args=(crash.pk,))),
             'crashdump_url': crash.upload_file_minidump.url,
             'lang': 'en',
             'version': '1.0.0.1'}

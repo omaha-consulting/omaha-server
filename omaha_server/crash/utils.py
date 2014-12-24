@@ -22,6 +22,7 @@ import os
 import re
 
 from django.conf import settings
+from django.core.urlresolvers import reverse
 
 from clom import clom
 from raven import Client
@@ -102,6 +103,9 @@ def send_stacktrace_sentry(crash):
         data['sentry.interfaces.User'] = dict(id=crash.userid)
 
     extra = dict(
+        crash_admin_panel_url='http://{}{}'.format(
+            settings.HOST_NAME,
+            reverse('admin:crash_crash_change', args=(crash.pk,))),
         crashdump_url=crash.upload_file_minidump.url,
     )
 
