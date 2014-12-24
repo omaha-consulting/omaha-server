@@ -26,7 +26,13 @@ from furl import furl
 from omaha_server.celery import app
 from models import Crash
 from settings import S3_MOUNT_PATH
-from utils import get_stacktrace, FileNotFoundError, parse_stacktrace, get_signature
+from utils import (
+    get_stacktrace,
+    FileNotFoundError,
+    parse_stacktrace,
+    get_signature,
+    send_stacktrace_sentry,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -44,6 +50,7 @@ def processing_crash_dump(self, crash_pk):
         crash.stacktrace_json = parse_stacktrace(stacktrace)
         crash.signature = get_signature(crash.stacktrace_json)
         crash.save()
+        send_stacktrace_sentry(crash)
     except FileNotFoundError as exc:
         logger.error('Failed processing_crash_dump',
                      exc_info=True,

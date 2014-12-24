@@ -23,6 +23,7 @@ import os
 from django import test
 from django.core.files.uploadedfile import SimpleUploadedFile
 
+from mock import patch
 from freezegun import freeze_time
 
 from crash.models import Crash
@@ -45,7 +46,9 @@ class CrashModelTest(test.TestCase):
         CRASH_SYMBOLS_PATH=SYMBOLS_PATH,
     )
     @freeze_time("2014-12-11")
-    def test_model(self):
+    @patch('crash.utils.send_stacktrace_sentry')
+    @patch('crash.utils.client')
+    def test_model(self, mock_send_stacktrace_sentry, mock_client):
         meta = dict(
             lang='en',
             version='1.0.0.1',
