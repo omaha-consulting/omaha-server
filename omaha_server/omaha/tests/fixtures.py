@@ -111,7 +111,7 @@ response_event = """<?xml version="1.0" encoding="UTF-8"?>
   </app>
 </response>"""
 
-response_data = """<?xml version="1.0" encoding="UTF-8"?>
+response_data_doc = """<?xml version="1.0" encoding="UTF-8"?>
 <response protocol="3.0" server="prod">
   <daystart elapsed_seconds="56754"/>
   <app appid="{8A69D345-D564-463C-AFF1-A69D9E530F96}" status="ok">
@@ -119,6 +119,26 @@ response_data = """<?xml version="1.0" encoding="UTF-8"?>
       app-specific values here
     </data>
     <data name="untrusted" status="ok"/>
+  </app>
+</response>"""
+
+response_data = """<?xml version="1.0" encoding="UTF-8"?>
+<response protocol="3.0" server="prod">
+  <daystart elapsed_seconds="56754"/>
+  <app status="ok" appid="{430FD4D0-B729-4F61-AA34-91526481799D}">
+    <data status="ok" index="verboselogging" name="install">app-specific values here</data>
+    <data status="ok" name="untrusted"/>
+    <updatecheck status="ok">
+      <urls>
+        <url codebase="http://cache.pack.google.com/edgedl/chrome/install/782.112/"/>
+      </urls>
+      <manifest version="13.0.782.112">
+        <packages>
+          <package hash="VXriGUVI0TNqfLlU02vBel4Q3Zo=" name="chrome_installer.exe" required="true" size="23963192"/>
+        </packages>
+      </manifest>
+    </updatecheck>
+    <ping status="ok"/>
   </app>
 </response>"""
 

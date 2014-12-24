@@ -64,5 +64,5 @@ class TestResponseScheme(TestCase, XmlTestMixin):
         self.assertXmlValidXSchema(root, filename=self.xsd_path)
 
     def test_response_data(self):
-        root = self.assertXmlDocument(fixtures.response_data)
+        root = self.assertXmlDocument(fixtures.response_data_doc)
         self.assertXmlValidXSchema(root, filename=self.xsd_path)

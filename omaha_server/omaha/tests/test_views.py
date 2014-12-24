@@ -34,7 +34,7 @@ import fixtures
 from utils import temporary_media_root
 
 from omaha.factories import ApplicationFactory, ChannelFactory, PlatformFactory, VersionFactory
-from omaha.models import Action, EVENT_DICT_CHOICES
+from omaha.models import Action, EVENT_DICT_CHOICES, Data, NAME_DATA_DICT_CHOICES
 from omaha.utils import redis, get_id
 
 
@@ -166,6 +166,42 @@ class UpdateViewTest(TestCase, XmlTestMixin):
         self.assertXmlDocument(response.content)
         self.assertXmlEquivalentOutputs(response.content,
                                         fixtures.response_event)
+
+    @freeze_time('2014-01-01 15:45:54')  # 56754 sec
+    @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
+    @patch('omaha.models.version_upload_to', lambda o, f: f)
+    def test_data(self):
+        app = ApplicationFactory.create(id='{430FD4D0-B729-4F61-AA34-91526481799D}', name='chrome')
+        platform = PlatformFactory.create(name='win')
+        channel = ChannelFactory.create(name='stable')
+        obj = VersionFactory.create(
+            app=app,
+            platform=platform,
+            channel=channel,
+            version='13.0.782.112',
+            file=SimpleUploadedFile('./chrome_installer.exe', 'b' * 23963192),
+            file_size=23963192)
+        obj.file_hash = 'VXriGUVI0TNqfLlU02vBel4Q3Zo='
+        obj.save()
+
+        Data.objects.create(
+            version=obj,
+            name=NAME_DATA_DICT_CHOICES['install'],
+            index='verboselogging',
+            value='app-specific values here')
+
+        Data.objects.create(
+            version=obj,
+            name=NAME_DATA_DICT_CHOICES['untrusted'])
+
+        response = self.client.post(reverse('update'),
+                                    fixtures.request_data, content_type='text/xml')
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertXmlDocument(response.content)
+        self.assertXmlEquivalentOutputs(response.content,
+                                        fixtures.response_data)
 
     def test_bad_request(self):
         response = self.client.post(reverse('update'))

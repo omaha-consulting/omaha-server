@@ -33,7 +33,7 @@ from parser import parse_request
 from statistics import is_user_active
 from settings import DEFAULT_CHANNEL
 from core import (Response, App, Updatecheck_negative, Manifest, Updatecheck_positive,
-                  Packages, Package, Actions, Action, Event)
+                  Packages, Package, Actions, Action, Event, Data)
 
 
 __all__ = ['build_response']
@@ -42,6 +42,22 @@ __all__ = ['build_response']
 def on_event(event_list, event):
     event_list.append(Event())
     return event_list
+
+
+def on_data(data_list, data, version):
+    name = data.get('name')
+    if name == 'untrusted':
+        _data = Data('untrusted')
+    elif name == 'install':
+        index = data.get('index')
+        data_obj_list = filter(lambda d: d.index == index, version.data_set.all())
+        if data_obj_list:
+            _data = Data('install', index=index, text=data_obj_list[0].value)
+        else:
+            _data = Data('install', index=index, status='error-nodata')
+
+    data_list.append(_data)
+    return data_list
 
 
 def on_action(action_list, action):
@@ -69,7 +85,7 @@ def _get_version(partialupdate, app_id, platform, channel, version, date=None):
         channel__name=channel)
     if version:
         version_qs = version_qs.filter(version__gt=version)
-    version_qs = version_qs.prefetch_related("actions", "partialupdate")
+    version_qs = version_qs.prefetch_related("actions", "partialupdate", "data_set",)
 
     if partialupdate:
         try:
@@ -118,9 +134,12 @@ def on_app(apps_list, app, os, userid):
     events = reduce(on_event, app.findall('event'), [])
     AppPartial = partial(App, app_id, status='ok', ping=ping, events=events)
 
-    if app.findall('updatecheck'):
-        try:
-            version = get_version(app_id, platform, channel, version, userid)
+    try:
+        version = get_version(app_id, platform, channel, version, userid)
+        data_list = reduce(partial(on_data, version=version), app.findall('data'), [])
+        AppPartial = partial(AppPartial, data_list=data_list)
+
+        if app.findall('updatecheck'):
             actions = reduce(on_action, version.actions.all(), [])
             updatecheck = Updatecheck_positive(
                 urls=[version.file_url],
@@ -132,15 +151,17 @@ def on_app(apps_list, app, os, userid):
                         size=str(version.file_size),
                         hash=version.file_hash,
                     )]),
-                    actions=Actions(actions),
+                    actions=Actions(actions) if actions else None,
                 )
             )
             apps_list.append(AppPartial(updatecheck=updatecheck))
-        except Version.DoesNotExist:
+        else:
+            apps_list.append(AppPartial())
+    except Version.DoesNotExist:
+        if app.findall('updatecheck'):
             apps_list.append(AppPartial(updatecheck=Updatecheck_negative()))
-    else:
-        apps_list.append(AppPartial())
-
+        else:
+            apps_list.append(AppPartial())
     return apps_list
 
 

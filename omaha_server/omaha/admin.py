@@ -19,7 +19,7 @@ the License.
 """
 
 from django.contrib import admin
-from models import Channel, Platform, Application, Version, Action, PartialUpdate
+from models import Channel, Platform, Application, Version, Action, PartialUpdate, Data
 from forms import ApplicationAdminForm, VersionAdminForm, ActionAdminForm
 
 
@@ -50,9 +50,14 @@ class PartialUpdateInline(admin.StackedInline):
     extra = 0
 
 
+class DataInline(admin.StackedInline):
+    model = Data
+    extra = 0
+
+
 @admin.register(Version)
 class VersionAdmin(admin.ModelAdmin):
-    inlines = (ActionInline, PartialUpdateInline)
+    inlines = (ActionInline, PartialUpdateInline, DataInline)
     list_display = ('app', 'version', 'channel', 'platform', 'is_enabled',)
     list_filter = ('channel__name', 'platform__name', 'app__name',)
     readonly_fields = ('file_hash',)

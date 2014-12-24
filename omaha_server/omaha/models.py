@@ -187,6 +187,21 @@ class PartialUpdate(models.Model):
         choices=ACTIVE_USERS_CHOICES, default=1)
 
 
+NAME_DATA_DICT_CHOICES = dict(
+    install=0,
+    untrusted=1,
+)
+
+NAME_DATA_CHOICES = zip(NAME_DATA_DICT_CHOICES.values(), NAME_DATA_DICT_CHOICES.keys())
+
+
+class Data(models.Model):
+    version = models.ForeignKey(Version, db_index=True)
+    name = models.PositiveSmallIntegerField(choices=NAME_DATA_CHOICES)
+    index = models.CharField(max_length=255, null=True, blank=True)
+    value = models.TextField(null=True, blank=True)
+
+
 class Os(models.Model):
     platform = models.CharField(max_length=10, null=True, blank=True)
     version = models.CharField(max_length=10, null=True, blank=True)
