@@ -290,4 +290,4 @@ class TestRequestScheme(TestCase, XmlTestMixin):
         )
 
         self.assertXmlValidXSchema(response, filename=RESPONSE_XSD_FILE)
-        self.assertXmlEquivalentOutputs(etree.tostring(response), fixtures.response_data)
+        self.assertXmlEquivalentOutputs(etree.tostring(response), fixtures.response_data_doc)
