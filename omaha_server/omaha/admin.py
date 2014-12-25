@@ -33,10 +33,16 @@ class ChannelAdmin(admin.ModelAdmin):
     list_display = ('name',)
 
 
+class DataInline(admin.StackedInline):
+    model = Data
+    extra = 0
+
+
 @admin.register(Application)
 class ApplicationAdmin(admin.ModelAdmin):
     list_display = ('name', 'id',)
     form = ApplicationAdminForm
+    inlines = (DataInline,)
 
 
 class ActionInline(admin.StackedInline):
@@ -50,14 +56,9 @@ class PartialUpdateInline(admin.StackedInline):
     extra = 0
 
 
-class DataInline(admin.StackedInline):
-    model = Data
-    extra = 0
-
-
 @admin.register(Version)
 class VersionAdmin(admin.ModelAdmin):
-    inlines = (ActionInline, PartialUpdateInline, DataInline)
+    inlines = (ActionInline, PartialUpdateInline,)
     list_display = ('app', 'version', 'channel', 'platform', 'is_enabled',)
     list_filter = ('channel__name', 'platform__name', 'app__name',)
     readonly_fields = ('file_hash',)

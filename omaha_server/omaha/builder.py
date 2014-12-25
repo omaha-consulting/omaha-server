@@ -50,7 +50,7 @@ def on_data(data_list, data, version):
         _data = Data('untrusted')
     elif name == 'install':
         index = data.get('index')
-        data_obj_list = filter(lambda d: d.index == index, version.data_set.all())
+        data_obj_list = filter(lambda d: d.index == index, version.app.data_set.all())
         if data_obj_list:
             _data = Data('install', index=index, text=data_obj_list[0].value)
         else:
@@ -79,13 +79,13 @@ def is_new_user(version):
 def _get_version(partialupdate, app_id, platform, channel, version, date=None):
     date = date or now()
 
-    version_qs = Version.objects.filter_by_enabled(
+    version_qs = Version.objects.select_related('app').filter_by_enabled(
         app=app_id,
         platform__name=platform,
         channel__name=channel)
     if version:
         version_qs = version_qs.filter(version__gt=version)
-    version_qs = version_qs.prefetch_related("actions", "partialupdate", "data_set",)
+    version_qs = version_qs.prefetch_related("actions", "partialupdate")
 
     if partialupdate:
         try:

@@ -196,7 +196,7 @@ NAME_DATA_CHOICES = zip(NAME_DATA_DICT_CHOICES.values(), NAME_DATA_DICT_CHOICES.
 
 
 class Data(models.Model):
-    version = models.ForeignKey(Version, db_index=True)
+    app = models.ForeignKey(Application, db_index=True)
     name = models.PositiveSmallIntegerField(choices=NAME_DATA_CHOICES)
     index = models.CharField(max_length=255, null=True, blank=True)
     value = models.TextField(null=True, blank=True)

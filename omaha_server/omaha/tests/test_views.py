@@ -185,13 +185,13 @@ class UpdateViewTest(TestCase, XmlTestMixin):
         obj.save()
 
         Data.objects.create(
-            version=obj,
+            app=app,
             name=NAME_DATA_DICT_CHOICES['install'],
             index='verboselogging',
             value='app-specific values here')
 
         Data.objects.create(
-            version=obj,
+            app=app,
             name=NAME_DATA_DICT_CHOICES['untrusted'])
 
         response = self.client.post(reverse('update'),
