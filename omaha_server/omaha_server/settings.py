@@ -70,6 +70,7 @@ INSTALLED_APPS = (
     'django_filters',
     'django_tables2',
     'django_select2',
+    'django_ace',
 
     'omaha',
     'crash',

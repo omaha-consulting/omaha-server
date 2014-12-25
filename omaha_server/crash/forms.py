@@ -25,6 +25,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.forms import widgets
 
 from django_select2 import Select2Widget
+from django_ace import AceWidget
 from crash.models import Symbols
 from models import Crash
 
@@ -33,6 +34,11 @@ class CrashFrom(forms.ModelForm):
     class Meta:
         model = Crash
         exclude = []
+        widgets = {
+            'stacktrace_json': AceWidget(mode='json', theme='monokai', width='600px', height='300px'),
+            'stacktrace': AceWidget(theme='monokai', width='600px', height='300px'),
+            'meta': AceWidget(mode='json', theme='monokai', width='600px', height='300px'),
+        }
 
     def clean_archive(self):
         return self.cleaned_data.get('archive_file')

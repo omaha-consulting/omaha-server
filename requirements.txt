@@ -22,6 +22,7 @@ django-tables2==0.15.0
 Django-Select2==4.2.2
 clom==0.8.0a1
 furl==0.4.1
+django-ace==1.0.2
 
 # Only dev
 django-httplog==0.2.2
