@@ -23,10 +23,10 @@ import tarfile
 from django import forms
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.forms import widgets
+
 from django_select2 import Select2Widget
 from crash.models import Symbols
 from models import Crash
-from utils import FileNotFoundError
 
 
 class CrashFrom(forms.ModelForm):
@@ -48,7 +48,7 @@ class CrashFrom(forms.ModelForm):
                 file = t_file.extractfile(dump_name[0])
                 file = SimpleUploadedFile(file.name, file.read())
             else:
-                raise FileNotFoundError
+                raise forms.ValidationError(u"The archive does not contain a valid crash dump file.")
 
         return file
 

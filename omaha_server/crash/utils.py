@@ -71,7 +71,8 @@ def add_signature_to_frame(frame):
 
 def parse_stacktrace(stacktrace):
     stacktrace_dict = pipe_dump_to_json_dump(str(stacktrace).splitlines())
-    stacktrace_dict['crashing_thread']['frames'] = map(add_signature_to_frame, stacktrace_dict['crashing_thread']['frames'])
+    stacktrace_dict['crashing_thread']['frames'] = map(add_signature_to_frame,
+                                                       stacktrace_dict['crashing_thread']['frames'])
     return stacktrace_dict
 
 
