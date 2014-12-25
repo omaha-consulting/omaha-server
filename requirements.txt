@@ -1,6 +1,6 @@
 six==1.8.0
 Django==1.7.1
-django-extensions==1.4.6
+django-extensions==1.4.9
 django-suit==0.2.12
 django-suit-redactor==0.0.2
 jsonfield==1.0.0
@@ -9,19 +9,19 @@ django-storages==1.1.8
 django-absolute==0.3
 https://github.com/Crystalnix/django-versionfield/archive/fix-minor-bugs.zip#egg=versionfield
 raven==5.1.1
-django-redis==3.7.2
+django-redis==3.8.0
 bitmapist==3.6
 singledispatch==3.4.0.3
 django-bower==5.0.1
 django-nvd3==0.7.7
-django-filter==0.8
+django-filter==0.9.1
 celery[redis]==3.1.17
 django-cacheops==2.2.1
 msgpack-python
 django-tables2==0.15.0
 Django-Select2==4.2.2
-clom==0.7.5
-furl==0.4.0
+clom==0.8.0a1
+furl==0.4.1
 
 # Only dev
 django-httplog==0.2.2
