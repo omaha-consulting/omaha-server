@@ -75,6 +75,8 @@ app:
                         container_commands:
                             00001-docker-privileged:
                                 command: 'sed -i "s/docker run -d/docker run --privileged -d/" /opt/elasticbeanstalk/hooks/appdeploy/pre/04run.sh'
+                            00002-add-swap:
+                                command: '[ -f /var/swap ] || (dd if=/dev/zero of=/var/swap bs=1M count=1024 && mkswap /var/swap && swapon /var/swap)'
 
             includes:
                 - 'Dockerrun.aws.json'
