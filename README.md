@@ -144,6 +144,22 @@ app:
                 AWS_SECRET_KEY: 'AWS Secret Key'
 
         archive:
+            files:
+                - .ebextensions/01_nginx.config:
+                    yaml:
+                        files:
+                            "/etc/nginx/conf.d/proxy.conf":
+                                mode: "000755"
+                                owner: root
+                                group: root
+                                content: |
+                                    client_max_body_size 275M;
+
+                - .ebextensions/02-commands.config:
+                    yaml:
+                        container_commands:
+                            00001-docker-privileged:
+                                command: 'sed -i "s/docker run -d/docker run --privileged -d/" /opt/elasticbeanstalk/hooks/appdeploy/pre/04run.sh'
 
             includes:
                 - 'Dockerrun.aws.json'
@@ -188,6 +204,7 @@ app:
 | AWS_SECRET_ACCESS_KEY     | AWS Secret Key    |                            |
 | AWS_STORAGE_BUCKET_NAME   | S3 storage bucket |                            |
 | RAVEN_DNS                 | Sentry url        |                            |
+| RAVEN_DSN_STACKTRACE      | Sentry url        | RAVEN_DNS                  |
 | REDIS_HOST                | Redis host        | 127.0.0.1                  |
 | REDIS_PORT                | Redis port        | 6379                       |
 | REDIS_DB                  | Redis db          | 1                          |

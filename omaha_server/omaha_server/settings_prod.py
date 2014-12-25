@@ -28,6 +28,8 @@ RAVEN_CONFIG = {
     'dsn': os.environ.get('RAVEN_DNS'),
 }
 
+RAVEN_DSN_STACKTRACE = os.environ.get('RAVEN_DSN_STACKTRACE', RAVEN_CONFIG['dsn'])
+
 INSTALLED_APPS = INSTALLED_APPS + (
     'raven.contrib.django.raven_compat',
 )
@@ -37,7 +39,7 @@ LOGGING = {
     'disable_existing_loggers': True,
     'root': {
         'level': 'WARNING',
-        'handlers': ['sentry'],
+        'handlers': ['sentry', 'console'],
     },
     'formatters': {
         'verbose': {

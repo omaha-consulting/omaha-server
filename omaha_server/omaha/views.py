@@ -18,15 +18,19 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
+import logging
+
 from django.views.generic import View, ListView
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 
 from lxml.etree import XMLSyntaxError
-from raven.contrib.django.raven_compat.models import client
 
 from builder import build_response
 from models import Version
+
+
+logger = logging.getLogger(__name__)
 
 
 class UpdateView(View):
@@ -40,7 +44,7 @@ class UpdateView(View):
         try:
             response = build_response(request.body)
         except XMLSyntaxError:
-            client.captureException(request=request)
+            logger.error('UpdateView', exc_info=True, extra=dict(request=request))
             return HttpResponse('bad request', status=400, content_type="text/html; charset=utf-8")
         return HttpResponse(response, content_type="text/xml; charset=utf-8")
 

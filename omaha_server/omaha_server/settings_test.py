@@ -13,7 +13,7 @@ TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 NOSE_ARGS = [
     '--with-coverage',
-    '--cover-package=omaha_server,omaha',
+    '--cover-package=omaha_server,omaha,crash',
     '--cover-inclusive',
     '--with-doctest',
 ]
@@ -53,3 +53,8 @@ CACHES['statistics'] = {
 
 
 OMAHA_UID_KEY_PREFIX = 'test:uid'
+
+CRASH_SYMBOLS_PATH = os.path.join(BASE_DIR, 'crash', 'tests', 'testdata', 'symbols')
+CRASH_S3_MOUNT_PATH = os.path.join(BASE_DIR, 'crash', 'tests', 'testdata')
+
+RAVEN_DSN_STACKTRACE = 'http://c5dc6f5ab74b4ab8a567f545b00cb138:c57ee00766cf497da102b7a83d731840@127.0.0.1/1'

@@ -18,6 +18,8 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
+import os
+
 from paver.easy import task
 from paver.easy import sh
 
@@ -67,11 +69,22 @@ def create_admin():
 
 
 @task
+def mount_s3():
+    kwargs = dict(bucket=os.environ['AWS_STORAGE_BUCKET_NAME'],
+                  mount_point='/srv/omaha_s3')
+    env = dict(AWSACCESSKEYID=os.environ['AWS_ACCESS_KEY_ID'],
+               AWSSECRETACCESSKEY=os.environ['AWS_SECRET_ACCESS_KEY'])
+    cmd = 's3fs {bucket} {mount_point} -ouse_cache=/tmp'.format(**kwargs)
+    sh(cmd, env=env)
+
+
+@task
 def docker_run():
     migrate()
     loaddata()
     create_admin()
     collectstatic()
+    mount_s3()
     sh('/usr/bin/supervisord')
 
 

@@ -6,4 +6,6 @@ omit =
     omaha/models.py
     omaha/forms.py
     omaha/admin.py
+    crash/admin.py
+    crash/models.py
 data_file = ../.coverage

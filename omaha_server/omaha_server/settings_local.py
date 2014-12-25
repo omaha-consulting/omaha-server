@@ -52,3 +52,7 @@ DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECTS': False,
     'SHOW_TOOLBAR_CALLBACK': 'omaha_server.utils.show_toolbar',
 }
+
+
+CRASH_S3_MOUNT_PATH = os.environ.get('CRASH_S3_MOUNT_PATH', BASE_DIR)
+CRASH_SYMBOLS_PATH = os.path.join(CRASH_S3_MOUNT_PATH, os.path.join(MEDIA_ROOT, 'symbols'))

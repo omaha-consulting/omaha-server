@@ -24,3 +24,6 @@ omaha_server/static
 omaha_server/media
 *.zip
 ebs.config
+
+### Vagrant ###
+.vagrant/

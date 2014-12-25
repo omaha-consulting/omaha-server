@@ -26,6 +26,7 @@ SUIT_CONFIG = {
     'MENU': (
         'sites',
         {'app': 'omaha', 'label': 'Omaha', 'icon': 'icon-refresh'},
+        {'app': 'crash', 'label': 'Crash reports', 'icon': 'icon-fire'},
         {'label': 'Statistics', 'url': 'omaha_statistics', 'icon': 'icon-star'},
     ),
 }
@@ -36,6 +37,8 @@ SUIT_CONFIG = {
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'qicy(##kk%%2%#5zyoz)&0*@2wlfis+6s*al2q3t!+#++(0%23'
+
+HOST_NAME = os.environ['HOST_NAME']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -66,8 +69,10 @@ INSTALLED_APPS = (
     'djangobower',
     'django_filters',
     'django_tables2',
+    'django_select2',
 
     'omaha',
+    'crash',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -174,6 +179,7 @@ CELERY_RESULT_SERIALIZER = 'msgpack'
 CELERY_MESSAGE_COMPRESSION = 'zlib'
 CELERY_QUEUES = (
     Queue('transient', routing_key='transient', delivery_mode=1),
+    Queue('default', routing_key='default'),
 )
 
 
@@ -189,3 +195,8 @@ CACHEOPS_REDIS = {
 CACHEOPS = {
     'omaha.*': {'ops': (), 'timeout': 10},
 }
+
+# Crash
+
+CRASH_S3_MOUNT_PATH = os.environ.get('CRASH_S3_MOUNT_PATH', '/srv/omaha_s3')
+CRASH_SYMBOLS_PATH = os.path.join(CRASH_S3_MOUNT_PATH, 'symbols')
