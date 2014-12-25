@@ -38,8 +38,8 @@ def up_local_dev_server():
     - [fig](fig.sh)
 
     """
-    sh('fig up -d db')
-    sh('fig up -d web')
+    sh('fig -f fig-dev.yml up -d db')
+    sh('fig -f fig-dev.yml up -d web')
     print """Open http://{DOCKER_HOST}:9090/admin/\n username: admin\n password: admin"""
 
 
