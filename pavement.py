@@ -90,10 +90,11 @@ def docker_run():
 
 @task
 def docker_run_test():
+    sh('apt-get install -y python-dev libxslt-dev')
     sh('pip install -r requirements-test.txt --use-mirrors')
     test()
 
 
 @task
 def run_test_in_docker():
-    sh('fig run --rm web paver docker_run_test')
+    sh('fig -f fig-dev.yml run --rm --entrypoint paver web docker_run_test')
