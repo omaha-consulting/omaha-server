@@ -25,12 +25,13 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 
 from omaha.tests.utils import temporary_media_root
 from omaha.factories import VersionFactory
-from crash.forms import SymbolsAdminForm
+from crash.forms import SymbolsAdminForm, CrashFrom
 
 
 BASE_DIR = os.path.dirname(__file__)
 TEST_DATA_DIR = os.path.join(BASE_DIR, 'testdata')
 SYM_FILE = os.path.join(TEST_DATA_DIR, 'BreakpadTestApp.sym')
+TAR_FILE = os.path.join(TEST_DATA_DIR, 'foo.tar')
 
 
 class SymbolsAdminFormTest(TestCase):
@@ -56,3 +57,33 @@ class SymbolsAdminFormTest(TestCase):
         self.assertTrue(form.is_valid())
         self.assertEqual(form.cleaned_data['debug_id'], 'C1C0FA629EAA4B4D9DD2ADE270A231CC1')
         self.assertEqual(form.cleaned_data['debug_file'], 'BreakpadTestApp.pdb')
+
+
+class CrashFormTest(TestCase):
+    def test_form(self):
+        form_file_data = dict(upload_file_minidump=SimpleUploadedFile(
+            "7b05e196-7e23-416b-bd13-99287924e214.dmp", "content"))
+        form_data = dict(
+            appid='{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}',
+            userid='{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}',
+        )
+
+        form = CrashFrom(form_data, form_file_data)
+
+        self.assertTrue(form.is_valid())
+        self.assertEqual(form.cleaned_data['upload_file_minidump'].name, '7b05e196-7e23-416b-bd13-99287924e214.dmp')
+
+    def test_form_tar_file(self):
+        with open(TAR_FILE, 'rb') as f:
+            form_file_data = dict(upload_file_minidump=SimpleUploadedFile(
+                "foo.tar", f.read()))
+        form_data = dict(
+            appid='{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}',
+            userid='{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}',
+        )
+
+        form = CrashFrom(form_data, form_file_data)
+
+        self.assertTrue(form.is_valid())
+        self.assertEqual(form.cleaned_data['upload_file_minidump'].name, '7b05e196-7e23-416b-bd13-99287924e214.dmp')
+        self.assertEqual(form.cleaned_data['archive'].name, 'foo.tar')

@@ -31,7 +31,7 @@ from settings import MINIDUMP_STACKWALK_PATH, SYMBOLS_PATH
 from stacktrace_to_json import pipe_dump_to_json_dump
 
 
-client = Client(getattr(settings, 'RAVEN_DSN_STACKTRACE'))
+client = Client(getattr(settings, 'RAVEN_DSN_STACKTRACE', None))
 
 
 class FileNotFoundError(Exception):
@@ -111,6 +111,9 @@ def send_stacktrace_sentry(crash):
 
     if crash.meta:
         extra.update(crash.meta)
+
+    if crash.archive:
+        extra['archive_url'] = crash.archive.url
 
     tags = {}
     tags.update(stacktrace.get('system_info', {}))

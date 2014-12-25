@@ -18,17 +18,39 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
+import tarfile
+
 from django import forms
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.forms import widgets
 from django_select2 import Select2Widget
 from crash.models import Symbols
 from models import Crash
+from utils import FileNotFoundError
 
 
 class CrashFrom(forms.ModelForm):
     class Meta:
         model = Crash
         exclude = []
+
+    def clean_archive(self):
+        return self.cleaned_data.get('archive_file')
+
+    def clean_upload_file_minidump(self):
+        file = self.cleaned_data["upload_file_minidump"]
+
+        if file.name.endswith('.tar'):
+            t_file = tarfile.open(fileobj=file, mode='r')
+            self.cleaned_data['archive_file'] = file
+            dump_name = filter(lambda i: i.endswith('.dmp'), t_file.getnames())
+            if dump_name:
+                file = t_file.extractfile(dump_name[0])
+                file = SimpleUploadedFile(file.name, file.read())
+            else:
+                raise FileNotFoundError
+
+        return file
 
 
 class SymbolsFileInput(forms.ClearableFileInput):

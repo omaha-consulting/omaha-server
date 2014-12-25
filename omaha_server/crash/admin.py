@@ -20,7 +20,7 @@ the License.
 
 from django.contrib import admin
 
-from crash.forms import SymbolsAdminForm
+from crash.forms import SymbolsAdminForm, CrashFrom
 from models import Crash, Symbols
 
 
@@ -30,6 +30,7 @@ class CrashAdmin(admin.ModelAdmin):
     list_display_links = ('appid', 'userid', 'created', 'modified',)
     list_filter = ('created',)
     search_fields = ('appid', 'userid',)
+    form = CrashFrom
 
 
 @admin.register(Symbols)
