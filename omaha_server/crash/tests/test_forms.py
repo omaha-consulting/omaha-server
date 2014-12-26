@@ -23,8 +23,6 @@ import os
 from django.test import TestCase
 from django.core.files.uploadedfile import SimpleUploadedFile
 
-from omaha.tests.utils import temporary_media_root
-from omaha.factories import VersionFactory
 from crash.forms import SymbolsAdminForm, CrashFrom
 
 
@@ -35,10 +33,6 @@ TAR_FILE = os.path.join(TEST_DATA_DIR, 'foo.tar')
 
 
 class SymbolsAdminFormTest(TestCase):
-    @temporary_media_root()
-    def setUp(self):
-        self.version = VersionFactory.create(file=SimpleUploadedFile('./chrome_installer.exe', b''))
-
     def test_parse_debug_meta_info(self):
         head = 'MODULE windows x86 C1C0FA629EAA4B4D9DD2ADE270A231CC1 BreakpadTestApp.pdb'
         form = SymbolsAdminForm()
@@ -47,7 +41,7 @@ class SymbolsAdminFormTest(TestCase):
                                   debug_file='BreakpadTestApp.pdb'))
 
     def test_form(self):
-        form_data = {'version': self.version.pk}
+        form_data = {}
 
         with open(SYM_FILE, 'rb') as f:
             form_file_data = {'file': SimpleUploadedFile('BreakpadTestApp.sym', f.read())}

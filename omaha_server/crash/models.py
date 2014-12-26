@@ -52,7 +52,6 @@ def symbols_upload_to(obj, filename):
 
 
 class Symbols(TimeStampedModel):
-    version = models.ForeignKey(Version)
     debug_id = models.CharField(verbose_name='Debug ID', max_length=33, db_index=True, null=True, blank=True)
     debug_file = models.CharField(verbose_name='Debug file name', max_length=140, null=True, blank=True)
     file = models.FileField(upload_to=symbols_upload_to)

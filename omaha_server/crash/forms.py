@@ -24,7 +24,6 @@ from django import forms
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.forms import widgets
 
-from django_select2 import Select2Widget
 from django_ace import AceWidget
 from crash.models import Symbols
 from models import Crash
@@ -74,8 +73,6 @@ class SymbolsAdminForm(forms.ModelForm):
         model = Symbols
         exclude = []
         widgets = {
-            'version': Select2Widget(attrs={'style': 'width:300px'},
-                                     select2_options={'minimumResultsForSearch': 2}),
             'debug_id': widgets.TextInput(attrs=dict(disabled='disabled')),
             'debug_file': widgets.TextInput(attrs=dict(disabled='disabled')),
         }

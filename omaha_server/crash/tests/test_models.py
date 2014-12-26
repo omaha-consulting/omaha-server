@@ -25,7 +25,6 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 
 from crash.models import Crash, Symbols, symbols_upload_to
 from omaha.tests.utils import temporary_media_root
-from omaha.factories import VersionFactory
 
 
 BASE_DIR = os.path.dirname(__file__)
@@ -60,16 +59,11 @@ class CrashModelTest(test.TestCase):
 
 class SymbolsModelTest(test.TestCase):
     @temporary_media_root()
-    def setUp(self):
-        self.version = VersionFactory.create(file=SimpleUploadedFile('./chrome_installer.exe', b''))
-
-    @temporary_media_root()
     def test_model(self):
         with open(SYM_FILE, 'rb') as f:
             obj = Symbols.objects.create(
                 debug_file='BreakpadTestApp.pdb',
                 debug_id='C1C0FA629EAA4B4D9DD2ADE270A231CC1',
-                version=self.version,
                 file=SimpleUploadedFile(f.name, f.read()),
             )
         self.assertTrue(obj)
@@ -80,7 +74,6 @@ class SymbolsModelTest(test.TestCase):
             obj = Symbols.objects.create(
                 debug_file='BreakpadTestApp.pdb',
                 debug_id='C1C0FA629EAA4B4D9DD2ADE270A231CC1',
-                version=self.version,
                 file=SimpleUploadedFile(f.name, f.read()),
             )
         self.assertIn('symbols/BreakpadTestApp.pdb/C1C0FA629EAA4B4D9DD2ADE270A231CC1/BreakpadTestApp.sym',

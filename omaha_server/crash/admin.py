@@ -35,6 +35,6 @@ class CrashAdmin(admin.ModelAdmin):
 
 @admin.register(Symbols)
 class SymbolsAdmin(admin.ModelAdmin):
-    list_display = ('version',)
-    list_display_links = ('version',)
+    list_display = ('debug_file', 'debug_id',)
+    list_display_links = ('debug_file', 'debug_id',)
     form = SymbolsAdminForm
