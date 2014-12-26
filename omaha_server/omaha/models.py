@@ -36,7 +36,8 @@ from versionfield import VersionField
 
 
 __all__ = ['Application', 'Channel', 'Platform', 'Version',
-           'Action', 'EVENT_DICT_CHOICES', 'EVENT_CHOICES']
+           'Action', 'EVENT_DICT_CHOICES', 'EVENT_CHOICES',
+           'Data']
 
 
 class Application(TimeStampedModel):

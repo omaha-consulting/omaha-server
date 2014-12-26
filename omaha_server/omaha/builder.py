@@ -79,25 +79,25 @@ def is_new_user(version):
 def _get_version(partialupdate, app_id, platform, channel, version, date=None):
     date = date or now()
 
-    version_qs = Version.objects.select_related('app').filter_by_enabled(
-        app=app_id,
-        platform__name=platform,
-        channel__name=channel)
-    if version:
-        version_qs = version_qs.filter(version__gt=version)
-    version_qs = version_qs.prefetch_related("actions", "partialupdate")
+    qs = Version.objects.select_related('app')
+    qs = qs.filter_by_enabled(app=app_id,
+                              platform__name=platform,
+                              channel__name=channel)
+    qs = qs.filter(version__gt=version) if version else qs
+    qs = qs.prefetch_related("actions", "partialupdate")
 
     if partialupdate:
         try:
-            new_version = version_qs.filter(partialupdate__is_enabled=True,
-                                            partialupdate__start_date__lte=date,
-                                            partialupdate__end_date__gte=date).cache().latest('version')
+            qs = qs.filter(partialupdate__is_enabled=True,
+                           partialupdate__start_date__lte=date,
+                           partialupdate__end_date__gte=date)
+            new_version = qs.cache().latest('version')
         except Version.DoesNotExist:
             return None
     else:
-        new_version = version_qs.filter(
-            Q(partialupdate__isnull=True)
-            | Q(partialupdate__is_enabled=False)).cache().latest('version')
+        qs = qs.filter(Q(partialupdate__isnull=True)
+                       | Q(partialupdate__is_enabled=False))
+        new_version = qs.cache().latest('version')
 
     return new_version
 
@@ -132,36 +132,38 @@ def on_app(apps_list, app, os, userid):
     channel = app.get('tag') or DEFAULT_CHANNEL
     ping = bool(app.findall('ping'))
     events = reduce(on_event, app.findall('event'), [])
-    AppPartial = partial(App, app_id, status='ok', ping=ping, events=events)
+    build_app = partial(App, app_id, status='ok', ping=ping, events=events)
+    updatecheck = app.findall('updatecheck')
 
     try:
         version = get_version(app_id, platform, channel, version, userid)
-        data_list = reduce(partial(on_data, version=version), app.findall('data'), [])
-        AppPartial = partial(AppPartial, data_list=data_list)
-
-        if app.findall('updatecheck'):
-            actions = reduce(on_action, version.actions.all(), [])
-            updatecheck = Updatecheck_positive(
-                urls=[version.file_url],
-                manifest=Manifest(
-                    version=str(version.version),
-                    packages=Packages([Package(
-                        name=version.file_package_name,
-                        required='true',
-                        size=str(version.file_size),
-                        hash=version.file_hash,
-                    )]),
-                    actions=Actions(actions) if actions else None,
-                )
-            )
-            apps_list.append(AppPartial(updatecheck=updatecheck))
-        else:
-            apps_list.append(AppPartial())
     except Version.DoesNotExist:
-        if app.findall('updatecheck'):
-            apps_list.append(AppPartial(updatecheck=Updatecheck_negative()))
-        else:
-            apps_list.append(AppPartial())
+        apps_list.append(
+            build_app(updatecheck=Updatecheck_negative() if updatecheck else None))
+        return apps_list
+
+    data_list = reduce(partial(on_data, version=version), app.findall('data'), [])
+    build_app = partial(build_app, data_list=data_list)
+
+    if updatecheck:
+        actions = reduce(on_action, version.actions.all(), [])
+        updatecheck = Updatecheck_positive(
+            urls=[version.file_url],
+            manifest=Manifest(
+                version=str(version.version),
+                packages=Packages([Package(
+                    name=version.file_package_name,
+                    required='true',
+                    size=str(version.file_size),
+                    hash=version.file_hash,
+                )]),
+                actions=Actions(actions) if actions else None,
+            )
+        )
+        apps_list.append(build_app(updatecheck=updatecheck))
+    else:
+        apps_list.append(build_app())
+
     return apps_list
 
 

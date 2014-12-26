@@ -41,6 +41,9 @@ class Crash(TimeStampedModel):
     stacktrace_json = JSONField(null=True, blank=True)
     signature = models.CharField(max_length=255, db_index=True, null=True, blank=True)
 
+    class Meta:
+        verbose_name_plural = 'Crashes'
+
 
 def symbols_upload_to(obj, filename):
     sym_filename = os.path.splitext(os.path.basename(obj.debug_file))[0]
