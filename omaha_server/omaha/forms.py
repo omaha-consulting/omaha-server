@@ -21,10 +21,11 @@ the License.
 from django import forms
 from django.forms import widgets
 
+from django_ace import AceWidget
 from suit.widgets import LinkedSelect
 from suit_redactor.widgets import RedactorWidget
 
-from models import Application, Version, Action
+from models import Application, Version, Action, Data
 
 
 __all__ = ['ApplicationAdminForm', 'VersionAdminForm', 'ActionAdminForm']
@@ -37,6 +38,15 @@ class ApplicationAdminForm(forms.ModelForm):
     class Meta:
         model = Application
         exclude = []
+
+
+class DataAdminForm(forms.ModelForm):
+    class Meta:
+        model = Data
+        exclude = []
+        widgets = {
+            'value': AceWidget(mode='json', theme='monokai', width='600px', height='300px'),
+        }
 
 
 class VersionAdminForm(forms.ModelForm):

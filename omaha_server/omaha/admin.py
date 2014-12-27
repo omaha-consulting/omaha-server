@@ -20,7 +20,7 @@ the License.
 
 from django.contrib import admin
 from models import Channel, Platform, Application, Version, Action, PartialUpdate, Data
-from forms import ApplicationAdminForm, VersionAdminForm, ActionAdminForm
+from forms import ApplicationAdminForm, VersionAdminForm, ActionAdminForm, DataAdminForm
 
 
 @admin.register(Platform)
@@ -36,6 +36,7 @@ class ChannelAdmin(admin.ModelAdmin):
 class DataInline(admin.StackedInline):
     model = Data
     extra = 0
+    form = DataAdminForm
 
 
 @admin.register(Application)

@@ -129,6 +129,10 @@ MEDIA_ROOT = os.path.join(STATIC_ROOT, 'media')
 STATIC_URL = '/static/'
 MEDIA_URL = '/static/media/'
 
+STATICFILES_DIRS = (
+    os.path.join(PROJECT_DIR, 'assets'),
+)
+
 REDIS_PORT = os.environ.get('REDIS_PORT', '6379')
 REDIS_HOST = os.environ.get('REDIS_HOST', '127.0.0.1')
 
