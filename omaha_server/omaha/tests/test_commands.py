@@ -1,5 +1,7 @@
 # coding: utf8
 
+import datetime
+
 from django.test import TestCase
 from django.core.management import call_command
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -66,6 +68,8 @@ class GenerateFakeStatisticsTest(TestCase):
             file=SimpleUploadedFile('./chrome_installer.exe', False))
 
     def test_command(self):
-        self.assertEqual(0, len(YearEvents('request', 2014)))
+        now = datetime.datetime.now()
+        year = now.year
+        self.assertEqual(0, len(YearEvents('request', year)))
         call_command('generate_fake_statistics', self.app.id, count=10)
-        self.assertEqual(10, len(YearEvents('request', 2014)))
+        self.assertEqual(10, len(YearEvents('request', year)))
