@@ -7,6 +7,6 @@ nose-progressive==1.5.1
 xmlunittest==0.3.0
 coverage==4.0a1
 coveralls
-freezegun==0.2.5
+freezegun==0.2.8
 factory-boy==2.4.1
 mock==1.0.1
