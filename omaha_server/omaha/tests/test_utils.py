@@ -29,6 +29,7 @@ from omaha.utils import (
     create_id,
     make_piechart,
     make_discrete_bar_chart,
+    get_sparkle_version,
 )
 
 
@@ -66,6 +67,12 @@ class UtilsTest(TestCase):
                                                          hour=16,
                                                          minute=23,
                                                          second=17)))
+
+    def test_get_sparkle_version(self):
+        shortVersionString = "13.0.782.112"
+        version = "782.112"
+        self.assertEqual(get_sparkle_version(shortVersionString), (version, shortVersionString,))
+        self.assertEqual(get_sparkle_version(version), (version, None,))
 
 
 class GetIdTest(TestCase):

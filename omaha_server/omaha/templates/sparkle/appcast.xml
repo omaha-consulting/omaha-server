@@ -8,7 +8,7 @@
         <link>{% absolute 'sparkle_appcast' app_name channel %}</link>
         <description>Most recent changes with links to updates.</description>
         <language>en</language>
-        {% for version in object_list %}
+        {% for version in object_list %}{% with ver=version.sparkle_version %}
             <item>
                 <title>{{ version }}</title>
                 <description><![CDATA[
@@ -17,10 +17,11 @@
                 </description>
                 <pubDate>{{ version.created|date:"r" }}</pubDate>
                 <enclosure url="{{ version.file.url }}"
-                           sparkle:version="{{ version.version }}"
+                           sparkle:version="{{ ver.0 }}"
+                           {% if ver.1 %}sparkle:shortVersionString="{{ version.version }}"{% endif %}
                            {% if version.dsa_signature %}sparkle:dsaSignature="{{ version.dsa_signature }}"{% endif %}
                            length="{{ version.file.size }}" type="application/octet-stream"/>
             </item>
-        {% endfor %}
+        {% endwith %}{% endfor %}
     </channel>
 </rss>

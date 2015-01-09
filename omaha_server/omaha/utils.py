@@ -139,3 +139,10 @@ def make_discrete_bar_chart(id, data):
         },
     }
     return data
+
+
+def get_sparkle_version(version):
+    _version = version.split('.')
+    if len(_version) < 4:
+        return version, None
+    return '.'.join(_version[-2:]), version
