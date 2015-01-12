@@ -21,8 +21,7 @@ the License.
 from django.core.urlresolvers import resolve, reverse
 from django.test import TestCase
 
-from omaha.views import UpdateView
-from omaha.views_admin import StatisticsView, StatisticsDetailView, RequestListView, AppRequestDetailView
+from sparkle.views import SparkleView
 
 
 class URLTestMixin(object):
@@ -51,26 +50,6 @@ class URLTestMixin(object):
 
 
 class Test(URLTestMixin, TestCase):
-    def test_UpdateView(self):
-        self.assert_url_matches_view(UpdateView, '/service/update2', 'update')
-
-    def test_StatisticsView(self):
-        self.assert_url_matches_view(StatisticsView, '/admin/statistics/', 'omaha_statistics')
-
-    def test_StatisticsDetailView(self):
-        self.assert_url_matches_view(StatisticsDetailView,
-                                     '/admin/statistics/appName/',
-                                     'omaha_statistics_detail',
-                                     url_args=('appName',))
-
-    def test_RequestListView(self):
-        self.assert_url_matches_view(RequestListView,
-                                     '/admin/statistics/appName/requests/',
-                                     'omaha_request_list',
-                                     url_args=('appName',))
-
-    def test_AppRequestDetailView(self):
-        self.assert_url_matches_view(AppRequestDetailView,
-                                     '/admin/statistics/requests/123/',
-                                     'omaha_request_detail',
-                                     url_args=(123,))
+    def test_SparkleView(self):
+        self.assert_url_matches_view(SparkleView, '/sparkle/SparkleTestApp/stable/appcast.xml', 'sparkle_appcast',
+                                     url_kwargs=dict(app_name='SparkleTestApp', channel='stable'))

@@ -33,7 +33,6 @@ from fields import PercentField
 from django_extensions.db.models import TimeStampedModel
 from jsonfield import JSONField
 from versionfield import VersionField
-from utils import get_sparkle_version
 
 
 __all__ = ['Application', 'Channel', 'Platform', 'Version',
@@ -87,9 +86,6 @@ class Version(TimeStampedModel):
     file = models.FileField(upload_to=lambda o, f: version_upload_to(o, f))
     file_hash = models.CharField(verbose_name='Hash', max_length=140, null=True, blank=True)
     file_size = models.PositiveIntegerField(null=True, blank=True)
-    dsa_signature = models.CharField(verbose_name='DSA signature',
-                                     help_text='Only for sparkle update', max_length=140,
-                                     null=True, blank=True)
 
     objects = VersionManager()
 
@@ -116,10 +112,6 @@ class Version(TimeStampedModel):
     @property
     def file_url(self):
         return '%s/' % os.path.dirname(self.file_absolute_url)
-
-    @property
-    def sparkle_version(self):
-        return get_sparkle_version(str(self.version))
 
 
 EVENT_DICT_CHOICES = dict(
