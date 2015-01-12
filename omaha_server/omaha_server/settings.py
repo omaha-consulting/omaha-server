@@ -26,6 +26,7 @@ SUIT_CONFIG = {
     'MENU': (
         'sites',
         {'app': 'omaha', 'label': 'Omaha', 'icon': 'icon-refresh'},
+        {'app': 'sparkle', 'label': 'Sparkle', 'icon': 'icon-circle-arrow-down'},
         {'app': 'crash', 'label': 'Crash reports', 'icon': 'icon-fire'},
         {'label': 'Statistics', 'url': 'omaha_statistics', 'icon': 'icon-star'},
     ),
@@ -74,6 +75,7 @@ INSTALLED_APPS = (
 
     'omaha',
     'crash',
+    'sparkle',
 )
 
 MIDDLEWARE_CLASSES = (
