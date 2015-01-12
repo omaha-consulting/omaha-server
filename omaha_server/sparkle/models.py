@@ -39,7 +39,7 @@ class SparkleVersion(TimeStampedModel):
     release_notes = models.TextField(blank=True, null=True)
     file = models.FileField(upload_to=version_upload_to)
     file_size = models.PositiveIntegerField(null=True, blank=True)
-    dsa_signature = models.CharField(verbose_name='DSA signature', max_length=140)
+    dsa_signature = models.CharField(verbose_name='DSA signature', max_length=140, null=True, blank=True)
 
     class Meta:
         index_together = (
