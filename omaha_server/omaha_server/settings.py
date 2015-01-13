@@ -72,6 +72,7 @@ INSTALLED_APPS = (
     'django_tables2',
     'django_select2',
     'django_ace',
+    'rest_framework',
 
     'omaha',
     'crash',
@@ -207,3 +208,15 @@ CACHEOPS = {
 
 CRASH_S3_MOUNT_PATH = os.environ.get('CRASH_S3_MOUNT_PATH', '/srv/omaha_s3')
 CRASH_SYMBOLS_PATH = os.path.join(CRASH_S3_MOUNT_PATH, 'symbols')
+
+# django-rest-framework
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    )
+}
