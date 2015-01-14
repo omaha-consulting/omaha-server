@@ -69,3 +69,21 @@ class VersionSerializerTest(TestCase):
             created=version.created.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
             modified=version.modified.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
         ))
+
+    @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
+    def test_auto_fill_file_size(self):
+        version = VersionFactory.create(file=SimpleUploadedFile('./chrome_installer.exe', b' ' * 10))
+        data = dict(
+            app=version.app.id,
+            platform=version.platform.id,
+            channel=version.channel.id,
+            version='4.3.2.1',
+            release_notes=version.release_notes,
+            file=version.file,
+            file_hash=version.file_hash,
+        )
+
+        new_version = VersionSerializer(data=data)
+        self.assertTrue(new_version.is_valid())
+        new_version_instance = new_version.save()
+        self.assertEqual(new_version_instance.file_size, 10)

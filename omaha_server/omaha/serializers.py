@@ -56,3 +56,9 @@ class VersionSerializer(serializers.HyperlinkedModelSerializer):
                   'version', 'release_notes', 'file', 'file_hash', 'file_size',
                   'created', 'modified')
         read_only_fields = ('created', 'modified')
+
+    def create(self, validated_data):
+        if not validated_data.get('file_size'):
+            file = validated_data['file']
+            validated_data['file_size'] = file.size
+        return super(VersionSerializer, self).create(validated_data)
