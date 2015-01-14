@@ -6,6 +6,7 @@ from rest_framework import routers
 
 import omaha.api
 import sparkle.api
+import crash.api
 
 
 router = routers.DefaultRouter()
@@ -14,6 +15,7 @@ router.register(r'platform', omaha.api.PlatformViewSet)
 router.register(r'channel', omaha.api.ChannelViewSet)
 router.register(r'omaha/version', omaha.api.VersionViewSet)
 router.register(r'sparkle/version', sparkle.api.SparkleVersionViewSet)
+router.register(r'symbols', crash.api.SymbolsViewSet)
 
 
 urlpatterns = patterns('',

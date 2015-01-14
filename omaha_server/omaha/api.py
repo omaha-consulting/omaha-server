@@ -35,19 +35,75 @@ class AppViewSet(BaseView):
     """
     API endpoint that allows applications to be viewed.
 
-    **Get applications list**:
+    ## Applications Collection
 
-    Example: ``GET http://example.com/api/app/``
+    ### List all Applications [GET]
 
-    **Add application:**
+    URL: `http://example.com/api/app/`
 
-    Example: ``POST http://example.com/api/app/``
+    Response:
+
+        [
+            {
+                "id": "{8A76FC95-0086-4BCE-9517-DC09DDB5652F}",
+                "name": "Chromium"
+            },
+            {
+                "id": "{430FD4D0-B729-4F61-AA34-91526481799D}",
+                "name": "Potato"
+            }
+        ]
+
+
+    ### Create a Application [POST]
+
+    URL: `http://example.com/api/app/`
+
+    Headers:
 
         Content-Type: application/json
+
+    Body:
+
         {
             "id": "{8A76FC95-0086-4BCE-9517-DC09DDB5652F}",
             "name": "Chromium",
         }
+
+    Response:
+
+        HTTP 201 CREATED
+        Content-Type: application/json
+
+        {
+            "id": "{8A76FC95-0086-4BCE-9517-DC09DDB5652F}",
+            "name": "Chromium",
+        }
+
+    ## Application
+
+    ### Retrieve a Application [GET]
+
+    URL: `http://example.com/api/app/[app_id]`
+
+    Response:
+
+        HTTP 201 CREATED
+        Content-Type: application/json
+
+        {
+            "id": "{8A76FC95-0086-4BCE-9517-DC09DDB5652F}",
+            "name": "Chromium",
+        }
+
+    ### Remove a Application [DELETE]
+
+    URL: `http://example.com/api/app/[app_id]`
+
+    Response:
+
+        HTTP 204 NO CONTENT
+        Content-Type: application/json
     """
     queryset = Application.objects.all()
     serializer_class = AppSerializer
