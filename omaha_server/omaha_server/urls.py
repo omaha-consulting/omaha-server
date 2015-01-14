@@ -5,13 +5,15 @@ from django.contrib import admin
 from rest_framework import routers
 
 import omaha.api
+import sparkle.api
 
 
 router = routers.DefaultRouter()
 router.register(r'app', omaha.api.AppViewSet)
 router.register(r'platform', omaha.api.PlatformViewSet)
 router.register(r'channel', omaha.api.ChannelViewSet)
-router.register(r'version', omaha.api.VersionViewSet)
+router.register(r'omaha/version', omaha.api.VersionViewSet)
+router.register(r'sparkle/version', sparkle.api.SparkleVersionViewSet)
 
 
 urlpatterns = patterns('',
