@@ -18,6 +18,8 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
+from django.core.files.uploadedfile import SimpleUploadedFile
+
 import factory
 
 
@@ -25,22 +27,22 @@ class ApplicationFactory(factory.DjangoModelFactory):
     class Meta:
         model = 'omaha.Application'
 
-    id = '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}'
-    name = 'chrome2'
+    id = factory.Sequence(lambda n: '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C%s}' % n)
+    name = factory.Sequence(lambda n: 'chrome%s' % n)
 
 
 class PlatformFactory(factory.DjangoModelFactory):
     class Meta:
         model = 'omaha.Platform'
 
-    name = 'win'
+    name = factory.Sequence(lambda n: 'platform_%s' % n)
 
 
 class ChannelFactory(factory.DjangoModelFactory):
     class Meta:
         model = 'omaha.Channel'
 
-    name = 'release'
+    name = factory.Sequence(lambda n: 'channel_%s' % n)
 
 
 class VersionFactory(factory.DjangoModelFactory):
@@ -51,3 +53,6 @@ class VersionFactory(factory.DjangoModelFactory):
     platform = factory.lazy_attribute(lambda x: PlatformFactory())
     channel = factory.lazy_attribute(lambda x: ChannelFactory())
     version = '37.0.2062.124'
+    file = SimpleUploadedFile('./chrome_installer.exe', b' ' * 123)
+    file_size = 123
+    file_hash = 'ojan8ermbNHlI5czkED+nc01rxk='
