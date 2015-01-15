@@ -1,0 +1,15 @@
+{
+  "name": "omaha-pages",
+  "dependencies": {},
+  "devDependencies": {
+    "aglio": "^1.17.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Crystalnix/omaha-server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Crystalnix/omaha-server/issues"
+  },
+  "homepage": "http://crystalnix.github.io/omaha-server/"
+}
