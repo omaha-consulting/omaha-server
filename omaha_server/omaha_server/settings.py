@@ -77,6 +77,7 @@ INSTALLED_APPS = (
     'omaha',
     'crash',
     'sparkle',
+    'downloads',
 )
 
 MIDDLEWARE_CLASSES = (

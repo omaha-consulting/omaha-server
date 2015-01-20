@@ -1,0 +1,15 @@
+{% extends 'downloads/base.html' %}
+
+{% block title %}Application List{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Application List</h1>
+    </div>
+
+    <ul class="list-group">
+        {% for app in object_list %}
+            <li class="list-group-item"><a href="{% url 'downloads-app' app.name %}">{{ app.name }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}

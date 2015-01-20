@@ -1,0 +1,57 @@
+{% extends 'downloads/base.html' %}
+
+{% block title %}List of {{ app.name }} versions{% endblock %}
+
+{% block content %}
+    <ol class="breadcrumb">
+        <li><a href="{% url 'downloads' %}">Downloads</a></li>
+        <li class="active">{{ app.name }}</li>
+    </ol>
+
+    <div class="page-header">
+        <h1>List of {{ app.name }} versions</h1>
+    </div>
+
+
+    {% if omaha_version_list %}
+        <h2>Omaha</h2>
+
+        {% regroup omaha_version_list by platform as version_list_by_platform %}
+
+        {% for platform in version_list_by_platform %}
+            <h3>{{ platform.grouper }}</h3>
+
+            {% regroup platform.list by channel as version_list %}
+            {% for version in version_list %}
+                <h4>{{ version.grouper }} <a
+                        href="{% url 'downloads-latest-omaha' app.name platform.grouper version.grouper %}"
+                        class="btn btn-primary btn-sm">Latest version</a></h4>
+
+                <ul class="list-group">
+                    {% for i in version.list %}
+                        <li class="list-group-item"><a href="{{ i.file.url }}">{{ i.version }}</a></li>
+                    {% endfor %}
+                </ul>
+            {% endfor %}
+
+        {% endfor %}
+    {% endif %}
+
+
+
+    {% if sparkle_version_list %}
+        <h2>Sparkle</h2>
+
+        {% regroup sparkle_version_list by channel as version_list %}
+
+        {% for version in version_list %}
+            <h3>{{ version.grouper }} <a href="{% url 'downloads-latest-sparkle' app.name version.grouper %}"
+                                         class="btn btn-primary btn-sm">Latest version</a></h3>
+            <ul class="list-group">
+                {% for i in version.list %}
+                    <li class="list-group-item"><a href="{{ i.file.url }}">{{ i.version }}</a></li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

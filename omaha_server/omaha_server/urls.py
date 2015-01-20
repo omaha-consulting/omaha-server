@@ -21,6 +21,7 @@ router.register(r'symbols', crash.api.SymbolsViewSet)
 urlpatterns = patterns('',
     url(r'', include('omaha.urls')),
     url(r'', include('crash.urls')),
+    url(r'', include('downloads.urls')),
     url(r'^sparkle/', include('sparkle.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include(router.urls)),
