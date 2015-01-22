@@ -68,7 +68,7 @@ app:
                                 owner: root
                                 group: root
                                 content: |
-                                    client_max_body_size 275M;
+                                    client_max_body_size 2048M;
 
                 - .ebextensions/02-commands.config:
                     yaml:
