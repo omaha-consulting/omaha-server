@@ -72,7 +72,7 @@ app:
 
                 - .ebextensions/02-commands.config:
                     yaml:
-                        container_commands:
+                        commands:
                             00001-docker-privileged:
                                 command: 'sed -i "s/docker run -d/docker run --privileged -d/" /opt/elasticbeanstalk/hooks/appdeploy/pre/04run.sh'
                             00002-add-swap:

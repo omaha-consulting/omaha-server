@@ -1,7 +1,7 @@
 {
   "AWSEBDockerrunVersion": "1",
   "Image": {
-    "Name": "crystalnix/omaha-server",
+    "Name": "crystalnix/omaha-server:master",
     "Update": "true"
   },
   "Ports": [
