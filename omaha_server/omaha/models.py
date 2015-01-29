@@ -73,7 +73,7 @@ class Channel(TimeStampedModel):
 
 def version_upload_to(obj, filename):
     return os.path.join('build', obj.app.name, obj.channel.name,
-                        obj.platform.name, filename)
+                        obj.platform.name, str(obj.version), filename)
 
 
 class Version(TimeStampedModel):

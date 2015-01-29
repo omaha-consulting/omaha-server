@@ -24,6 +24,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from mock import patch
 
 from omaha.models import Application, Channel, Platform, Version, Action, EVENT_DICT_CHOICES
+from omaha.models import version_upload_to
 from omaha.factories import ApplicationFactory, ChannelFactory, PlatformFactory, VersionFactory
 from omaha.tests.utils import temporary_media_root
 
@@ -47,6 +48,19 @@ class PlatformModelTest(test.TestCase):
 
 
 class VersionModelTest(test.TestCase):
+    @temporary_media_root()
+    def test_version_upload_to(self):
+        version = VersionFactory.create(file=SimpleUploadedFile('./chrome_installer.exe', False))
+        self.assertEqual(version_upload_to(version, 'chrome_installer.exe'),
+                         'build/{}/{}/{}/{}/chrome_installer.exe'.format(
+                             version.app.name,
+                             version.channel.name,
+                             version.platform.name,
+                             version.version,
+                             version.file.name,
+                         ))
+
+
     @temporary_media_root()
     def test_factory(self):
         version = VersionFactory.create(file=SimpleUploadedFile('./chrome_installer.exe', False))
