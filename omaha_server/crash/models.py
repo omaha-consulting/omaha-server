@@ -19,10 +19,12 @@ the License.
 """
 
 import os
+import uuid
 
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils import timezone
 
 from celery import signature
 from django_extensions.db.models import TimeStampedModel
@@ -31,9 +33,21 @@ from jsonfield import JSONField
 from omaha.models import Version
 
 
+def crash_upload_to(obj, filename):
+    now = timezone.now()
+    return os.path.join(*map(str, ['minidump', now.year, now.month,
+                                   now.day, uuid.uuid4(), filename]))
+
+
+def crash_archive_upload_to(obj, filename):
+    now = timezone.now()
+    return os.path.join(*map(str, ['minidump_archive', now.year, now.month,
+                                   now.day, uuid.uuid4(), filename]))
+
+
 class Crash(TimeStampedModel):
-    upload_file_minidump = models.FileField(upload_to='minidump/%Y/%m/%d')
-    archive = models.FileField(upload_to='minidump_archive/%Y/%m/%d', blank=True, null=True)
+    upload_file_minidump = models.FileField(upload_to=crash_upload_to)
+    archive = models.FileField(upload_to=crash_archive_upload_to, blank=True, null=True)
     appid = models.CharField(max_length=38, null=True, blank=True)
     userid = models.CharField(max_length=38, null=True, blank=True)
     meta = JSONField(verbose_name='Meta-information', help_text='JSON format', null=True, blank=True)

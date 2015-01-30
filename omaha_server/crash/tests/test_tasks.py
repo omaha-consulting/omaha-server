@@ -48,6 +48,7 @@ class CrashModelTest(test.TestCase):
     @freeze_time("2014-12-11")
     @patch('crash.utils.send_stacktrace_sentry')
     @patch('crash.utils.client')
+    @patch('uuid.uuid4', lambda: '92d51f8b-f67a-4d80-ac7f-9ab8018297d9')
     def test_model(self, mock_send_stacktrace_sentry, mock_client):
         meta = dict(
             lang='en',
