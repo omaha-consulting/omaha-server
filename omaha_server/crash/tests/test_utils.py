@@ -53,7 +53,7 @@ class ShTest(test.TestCase):
 
         rezult, stderr = get_stacktrace(CRASH_DUMP_PATH)
 
-        self.assertEqual(rezult, stacktrace)
+        self.assertEqual(rezult.stdout, stacktrace)
 
 
 class SignatureTest(test.TestCase):

@@ -28,13 +28,13 @@ Module|kernel32.dll|6.1.7600.16385|wkernel32.pdb|247C9009E69B43AB95E8DDA34622320
 Module|ntdll.dll|6.1.7600.16559|wntdll.pdb|ACE318E6A2F44F23A6CC5628F10A7DDC2|0x77d10000|0x77e8ffff|0
 
 0|0|BreakpadTestApp.exe|crashedFunc()|c:\work\breakpadtestapp\breakpadtestapp\breakpadtestapp.cpp|34|0x3
-0|1|BreakpadTestApp.exe|deeperFunc()|c:\work\breakpadtestapp\breakpadtestapp\breakpadtestapp.cpp|39|0x4
-0|2|BreakpadTestApp.exe|deepFunc()|c:\work\breakpadtestapp\breakpadtestapp\breakpadtestapp.cpp|44|0x4
-0|3|BreakpadTestApp.exe|anotherFunc()|c:\work\breakpadtestapp\breakpadtestapp\breakpadtestapp.cpp|49|0x4
-0|4|BreakpadTestApp.exe|someFunc()|c:\work\breakpadtestapp\breakpadtestapp\breakpadtestapp.cpp|54|0x4
-0|5|BreakpadTestApp.exe|func()|c:\work\breakpadtestapp\breakpadtestapp\breakpadtestapp.cpp|59|0x4
-0|6|BreakpadTestApp.exe|wmain|c:\work\breakpadtestapp\breakpadtestapp\breakpadtestapp.cpp|84|0x4
-0|7|BreakpadTestApp.exe|__tmainCRTStartup|f:\dd\vctools\crt_bld\self_x86\crt\src\crtexe.c|579|0x16
-0|8|kernel32.dll||||0x13676
-0|9|ntdll.dll||||0x39d41
-0|10|ntdll.dll||||0x39d14
+0|1|BreakpadTestApp.exe|deeperFunc()|c:\work\breakpadtestapp\breakpadtestapp\breakpadtestapp.cpp|39|0x5
+0|2|BreakpadTestApp.exe|deepFunc()|c:\work\breakpadtestapp\breakpadtestapp\breakpadtestapp.cpp|44|0x5
+0|3|BreakpadTestApp.exe|anotherFunc()|c:\work\breakpadtestapp\breakpadtestapp\breakpadtestapp.cpp|49|0x5
+0|4|BreakpadTestApp.exe|someFunc()|c:\work\breakpadtestapp\breakpadtestapp\breakpadtestapp.cpp|54|0x5
+0|5|BreakpadTestApp.exe|func()|c:\work\breakpadtestapp\breakpadtestapp\breakpadtestapp.cpp|59|0x5
+0|6|BreakpadTestApp.exe|wmain|c:\work\breakpadtestapp\breakpadtestapp\breakpadtestapp.cpp|84|0x5
+0|7|BreakpadTestApp.exe|__tmainCRTStartup|f:\dd\vctools\crt_bld\self_x86\crt\src\crtexe.c|579|0x17
+0|8|kernel32.dll||||0x13677
+0|9|ntdll.dll||||0x39d42
+0|10|ntdll.dll||||0x39d15
