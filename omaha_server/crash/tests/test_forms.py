@@ -33,13 +33,6 @@ TAR_FILE = os.path.join(TEST_DATA_DIR, 'foo.tar')
 
 
 class SymbolsAdminFormTest(TestCase):
-    def test_parse_debug_meta_info(self):
-        head = 'MODULE windows x86 C1C0FA629EAA4B4D9DD2ADE270A231CC1 BreakpadTestApp.pdb'
-        form = SymbolsAdminForm()
-        self.assertDictEqual(form._parse_debug_meta_info(head),
-                             dict(debug_id='C1C0FA629EAA4B4D9DD2ADE270A231CC1',
-                                  debug_file='BreakpadTestApp.pdb'))
-
     def test_form(self):
         form_data = {}
 

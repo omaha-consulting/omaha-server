@@ -32,6 +32,7 @@ from crash.utils import (
     parse_stacktrace,
     get_signature,
     send_stacktrace_sentry,
+    parse_debug_meta_info,
 )
 
 from crash.models import Crash
@@ -227,3 +228,16 @@ class SendStackTraceTest(test.TestCase):
             data=data,
             tags=tags,
         )
+
+
+class UtilsTest(test.TestCase):
+    def test_parse_debug_meta_info(self):
+        head = 'MODULE windows x86 C1C0FA629EAA4B4D9DD2ADE270A231CC1 BreakpadTestApp.pdb'
+        self.assertDictEqual(parse_debug_meta_info(head),
+                             dict(debug_id='C1C0FA629EAA4B4D9DD2ADE270A231CC1',
+                                  debug_file='BreakpadTestApp.pdb'))
+
+        head = 'MODULE mac x86_64 476350E1D4033CF180A2A7E388A7B6E40 Chromium Framework'
+        self.assertDictEqual(parse_debug_meta_info(head),
+                             dict(debug_id='476350E1D4033CF180A2A7E388A7B6E40',
+                                  debug_file='Chromium Framework'))
