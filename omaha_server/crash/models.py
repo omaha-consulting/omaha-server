@@ -46,8 +46,8 @@ def crash_archive_upload_to(obj, filename):
 
 
 class Crash(TimeStampedModel):
-    upload_file_minidump = models.FileField(upload_to=crash_upload_to)
-    archive = models.FileField(upload_to=crash_archive_upload_to, blank=True, null=True)
+    upload_file_minidump = models.FileField(upload_to=crash_upload_to, max_length=255)
+    archive = models.FileField(upload_to=crash_archive_upload_to, blank=True, null=True, max_length=255)
     appid = models.CharField(max_length=38, null=True, blank=True)
     userid = models.CharField(max_length=38, null=True, blank=True)
     meta = JSONField(verbose_name='Meta-information', help_text='JSON format', null=True, blank=True)
