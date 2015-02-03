@@ -20,7 +20,7 @@ the License.
 
 from rest_framework import serializers
 
-from models import Application, Platform, Channel, Version
+from models import Application, Platform, Channel, Version, Action
 
 
 __all__ = ['AppSerializer', 'PlatformSerializer', 'ChannelSerializer', 'VersionSerializer']
@@ -42,6 +42,15 @@ class ChannelSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Channel
         fields = ('id', 'name')
+
+
+class ActionSerializer(serializers.HyperlinkedModelSerializer):
+    version = serializers.PrimaryKeyRelatedField(queryset=Version.objects.all())
+
+    class Meta:
+        model = Action
+        fields = ('id', 'version', 'event', 'run', 'arguments', 'successurl',
+                  'terminateallbrowsers', 'successsaction', 'other')
 
 
 class VersionSerializer(serializers.HyperlinkedModelSerializer):

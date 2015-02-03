@@ -14,6 +14,7 @@ router.register(r'app', omaha.api.AppViewSet)
 router.register(r'platform', omaha.api.PlatformViewSet)
 router.register(r'channel', omaha.api.ChannelViewSet)
 router.register(r'omaha/version', omaha.api.VersionViewSet)
+router.register(r'action', omaha.api.ActionViewSet)
 router.register(r'sparkle/version', sparkle.api.SparkleVersionViewSet)
 router.register(r'symbols', crash.api.SymbolsViewSet)
 

@@ -21,8 +21,20 @@ the License.
 from rest_framework import viewsets
 from rest_framework import mixins
 
-from serializers import AppSerializer, PlatformSerializer, ChannelSerializer, VersionSerializer
-from models import Application, Platform, Channel, Version
+from serializers import (
+    AppSerializer,
+    PlatformSerializer,
+    ChannelSerializer,
+    VersionSerializer,
+    ActionSerializer,
+)
+from models import (
+    Application,
+    Platform,
+    Channel,
+    Version,
+    Action,
+)
 
 
 class BaseView(mixins.ListModelMixin, mixins.CreateModelMixin,
@@ -122,3 +134,8 @@ class ChannelViewSet(viewsets.ModelViewSet):
 class VersionViewSet(BaseView):
     queryset = Version.objects.all()
     serializer_class = VersionSerializer
+
+
+class ActionViewSet(BaseView):
+    queryset = Action.objects.all()
+    serializer_class = ActionSerializer

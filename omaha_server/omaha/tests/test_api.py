@@ -27,9 +27,9 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 
-from omaha.serializers import AppSerializer, PlatformSerializer, ChannelSerializer, VersionSerializer
-from omaha.factories import ApplicationFactory, PlatformFactory, ChannelFactory, VersionFactory
-from omaha.models import Application, Channel, Platform, Version
+from omaha.serializers import AppSerializer, PlatformSerializer, ChannelSerializer, VersionSerializer, ActionSerializer
+from omaha.factories import ApplicationFactory, PlatformFactory, ChannelFactory, VersionFactory, ActionFactory
+from omaha.models import Application, Channel, Platform, Version, Action
 
 from utils import temporary_media_root
 
@@ -139,3 +139,18 @@ class VersionTest(BaseTest, APITestCase):
         version = Version.objects.get(id=response.data['id'])
         self.assertEqual(response.data, self.serializer(version).data)
         self.assertEqual(version.file_size, len(b'content'))
+
+
+class ActionTest(BaseTest, APITestCase):
+    url = reverse('action-list')
+    url_detail = 'action-detail'
+    factory = ActionFactory
+    serializer = ActionSerializer
+
+    def test_create(self):
+        version = VersionFactory.create()
+        data = dict(event=1, version=version.pk)
+        response = self.client.post(self.url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        obj = Action.objects.get(id=response.data['id'])
+        self.assertEqual(response.data, self.serializer(obj).data)

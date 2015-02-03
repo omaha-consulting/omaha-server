@@ -56,3 +56,11 @@ class VersionFactory(factory.DjangoModelFactory):
     file = SimpleUploadedFile('./chrome_installer.exe', b' ' * 123)
     file_size = 123
     file_hash = 'ojan8ermbNHlI5czkED+nc01rxk='
+
+
+class ActionFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = 'omaha.Action'
+
+    version = factory.lazy_attribute(lambda x: VersionFactory())
+    event = 1
