@@ -394,6 +394,120 @@ If you need to you may construct and send basic auth headers yourself. To do thi
 
 + Response 204
 
+# Group Action
+
+## Actions Collection [/api/action]
+
+### List all Actions [GET]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
++ Response 200 (application/json)
+    + Body
+
+            [
+                {
+                    "id": 1, 
+                    "version": 6, 
+                    "event": 1, 
+                    "run": "", 
+                    "arguments": "--do-not-launch-chrome", 
+                    "successurl": "", 
+                    "terminateallbrowsers": false, 
+                    "successsaction": "default", 
+                    "other": null
+                }, 
+                {
+                    "id": 3, 
+                    "version": 8, 
+                    "event": 1, 
+                    "run": "", 
+                    "arguments": "--do-not-launch-chrome", 
+                    "successurl": "", 
+                    "terminateallbrowsers": false, 
+                    "successsaction": "default", 
+                    "other": null
+                }
+            ]
+
+### Create a Action [POST]
+
++ Parameters
+    * id (required, string, `{8A76FC95-0086-4BCE-9517-DC09DDB5652F}`)
+    * version (required, number, `12`) ... Version ID
+    * event (required, number, `1`) ... Contains a fixed string denoting when this action should be run. preinstall=0, install=1, postinstall=2, update=3
+    * run (optional, string) The name of an installer binary to run.
+    * arguments = `--do-not-launch-chrome` (optional, string) Arguments to be passed to that installer binary.
+    * successurl (optional, string) A URL to be opened using the system's default web browser on a successful install.
+    * terminateallbrowsers = `false` (optional, boolean, `true`) If "true", close all browser windows before starting the installer binary.
+    * successsaction = `default` (optional, string) Contains a fixed string denoting some action to take in response to a successful install.
+    * other (optional, dict) Other attributes
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+
+            {
+                "version": 7,
+                "event": 1
+            }
+
++ Response 201
+
+        {
+            "id": 11, 
+            "version": 7, 
+            "event": 1, 
+            "run": "", 
+            "arguments": "--do-not-launch-chrome", 
+            "successurl": "", 
+            "terminateallbrowsers": false, 
+            "successsaction": "default", 
+            "other": null
+        }
+
+## Action [/api/action/{id}]
+
+### Retrieve a Action [GET]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
++ Response 200 (application/json)
+
+        {
+            "id": 11, 
+            "version": 7, 
+            "event": 1, 
+            "run": "", 
+            "arguments": "--do-not-launch-chrome", 
+            "successurl": "", 
+            "terminateallbrowsers": false, 
+            "successsaction": "default", 
+            "other": null
+        }
+
+### Remove a Action [DELETE]
+
++ Request
+
+    + Headers
+
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
++ Response 204
+
 # Group Sparkle Version
 
 ## Version List [/api/sparkle/version{?app,channel,release_notes,file,dsa_signature,version,short_version}]
