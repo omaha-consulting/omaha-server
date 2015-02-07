@@ -76,6 +76,10 @@ def version_upload_to(obj, filename):
                         obj.platform.name, str(obj.version), filename)
 
 
+def _version_upload_to(*args, **kwargs):
+    return version_upload_to(*args, **kwargs)
+
+
 class Version(TimeStampedModel):
     is_enabled = models.BooleanField(default=True)
     app = models.ForeignKey(Application)
@@ -83,7 +87,7 @@ class Version(TimeStampedModel):
     channel = models.ForeignKey(Channel, db_index=True)
     version = VersionField(help_text='Format: 255.255.65535.65535', number_bits=(8, 8, 16, 16), db_index=True)
     release_notes = models.TextField(blank=True, null=True)
-    file = models.FileField(upload_to=lambda o, f: version_upload_to(o, f))
+    file = models.FileField(upload_to=_version_upload_to)
     file_hash = models.CharField(verbose_name='Hash', max_length=140, null=True, blank=True)
     file_size = models.PositiveIntegerField(null=True, blank=True)
 

@@ -18,13 +18,21 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
-from django.contrib import admin
-from models import SparkleVersion
-from forms import SparkleVersionAdminForm
+from django.db.models.query import QuerySet
+from django.db import models
 
 
-@admin.register(SparkleVersion)
-class VersionAdmin(admin.ModelAdmin):
-    list_display = ('app', 'version', 'short_version', 'channel', 'is_enabled',)
-    list_filter = ('channel__name', 'app__name', 'is_enabled',)
-    form = SparkleVersionAdminForm
+class VersionQuerySet(QuerySet):
+    def filter_by_enabled(self, *args, **kwargs):
+        return self.filter(is_enabled=True, *args, **kwargs)
+
+
+class VersionManager(models.Manager):
+    def get_queryset(self):
+        return VersionQuerySet(self.model, using=self._db)
+
+    def __getattr__(self, name):
+        if name.startswith('_'):
+            raise AttributeError
+        else:
+            return getattr(self.get_queryset(), name)

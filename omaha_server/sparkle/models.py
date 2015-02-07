@@ -25,6 +25,7 @@ from django.db import models
 from django_extensions.db.models import TimeStampedModel
 
 from omaha.models import Application, Channel
+from managers import VersionManager
 
 
 def version_upload_to(obj, filename):
@@ -32,6 +33,7 @@ def version_upload_to(obj, filename):
 
 
 class SparkleVersion(TimeStampedModel):
+    is_enabled = models.BooleanField(default=True)
     app = models.ForeignKey(Application)
     channel = models.ForeignKey(Channel, db_index=True)
     version = models.CharField(max_length=32)
@@ -40,6 +42,8 @@ class SparkleVersion(TimeStampedModel):
     file = models.FileField(upload_to=version_upload_to)
     file_size = models.PositiveIntegerField(null=True, blank=True)
     dsa_signature = models.CharField(verbose_name='DSA signature', max_length=140, null=True, blank=True)
+
+    objects = VersionManager()
 
     class Meta:
         index_together = (

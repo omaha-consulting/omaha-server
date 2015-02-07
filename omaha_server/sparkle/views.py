@@ -27,10 +27,9 @@ from models import SparkleVersion
 logger = logging.getLogger(__name__)
 
 
-
 class SparkleView(ListView):
     http_method_names = ['get']
-    queryset = SparkleVersion.objects.all()
+    queryset = SparkleVersion.objects.filter_by_enabled()
     template_name = 'sparkle/appcast.xml'
 
     def get_queryset(self):
