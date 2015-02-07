@@ -1,9 +1,9 @@
 six==1.9.0
 Django==1.7.4
-django-extensions==1.4.9
+django-extensions==1.5.0
 django-suit==0.2.12
 django-suit-redactor==0.0.2
-jsonfield==1.0.0
+jsonfield==1.0.1
 boto==2.36.0
 django-storages==1.1.8
 django-absolute==0.3

@@ -39,7 +39,7 @@ SUIT_CONFIG = {
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'qicy(##kk%%2%#5zyoz)&0*@2wlfis+6s*al2q3t!+#++(0%23'
 
-HOST_NAME = os.environ['HOST_NAME']
+HOST_NAME = os.environ.get('HOST_NAME')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

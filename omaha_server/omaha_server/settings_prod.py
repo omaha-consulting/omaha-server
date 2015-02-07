@@ -2,12 +2,13 @@
 
 import os
 
+from django.utils import crypto
 from settings import *
 
 DEBUG = False
 
-ALLOWED_HOSTS = (os.environ['HOST_NAME'], '*')
-SECRET_KEY = os.environ['SECRET_KEY']
+ALLOWED_HOSTS = (os.environ.get('HOST_NAME'), '*')
+SECRET_KEY = os.environ.get('SECRET_KEY') or crypto.get_random_string(50)
 
 STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
