@@ -203,6 +203,8 @@ CACHEOPS_REDIS = {
 
 CACHEOPS = {
     'omaha.*': {'ops': (), 'timeout': 10},
+    'sparkle.*': {'ops': (), 'timeout': 10},
+    'crash.*': {'ops': (), 'timeout': 10},
 }
 
 # Crash
