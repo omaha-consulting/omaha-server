@@ -20,6 +20,7 @@ the License.
 
 from django import forms
 from django.forms import widgets
+from django.core.files.uploadedfile import UploadedFile
 
 
 from suit.widgets import LinkedSelect
@@ -44,4 +45,6 @@ class SparkleVersionAdminForm(forms.ModelForm):
 
     def clean_file_size(self):
         file = self.cleaned_data["file"]
-        return file.size
+        if isinstance(file, UploadedFile):
+            return file.size
+        return self.initial["file_size"]
