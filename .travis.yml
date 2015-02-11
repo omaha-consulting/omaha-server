@@ -17,7 +17,7 @@ services:
 before_install:
   - sudo apt-get install -qq python-lxml python-psycopg2
 
-install: "pip install -r requirements-test.txt --use-mirrors"
+install: "pip install -r requirements-test.txt --extra-index-url https://pypi.gocept.com/simple/"
 
 script: paver test
 
