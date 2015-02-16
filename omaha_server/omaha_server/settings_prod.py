@@ -35,6 +35,8 @@ INSTALLED_APPS = INSTALLED_APPS + (
     'raven.contrib.django.raven_compat',
 )
 
+CELERYD_HIJACK_ROOT_LOGGER = False
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,

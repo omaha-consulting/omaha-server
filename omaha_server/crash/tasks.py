@@ -22,6 +22,7 @@ import os
 import logging
 
 from furl import furl
+from clom.shell import CommandError
 
 from omaha_server.celery import app
 from models import Crash
@@ -57,3 +58,9 @@ def processing_crash_dump(self, crash_pk):
                      extra=dict(crash_pk=crash_pk,
                                 crash_dump_path=crash_dump_path))
         raise self.retry(exc=exc, countdown=2 ** processing_crash_dump.request.retries)
+    except CommandError as exc:
+        logger.error('Failed processing_crash_dump',
+                     exc_info=True,
+                     extra=dict(crash_pk=crash_pk,
+                                crash_dump_path=crash_dump_path))
+        raise exc
