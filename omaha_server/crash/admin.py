@@ -24,13 +24,35 @@ from crash.forms import SymbolsAdminForm, CrashFrom
 from models import Crash, Symbols
 
 
+class CrashArchiveFilter(admin.SimpleListFilter):
+    title = 'Instrumental file'
+    parameter_name = 'instrumental_file'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('yes', 'Yes'),
+            ('no', 'No'),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == 'yes':
+            return queryset.exclude(archive='')
+        if self.value() == 'no':
+            return queryset.filter(archive='')
+
+
 @admin.register(Crash)
 class CrashAdmin(admin.ModelAdmin):
-    list_display = ('appid', 'userid', 'created', 'modified',)
-    list_display_links = ('appid', 'userid', 'created', 'modified',)
-    list_filter = ('created',)
+    list_display = ('created', 'modified', 'archive_field', 'signature', 'appid', 'userid',)
+    list_display_links = ('created', 'modified', 'signature', 'appid', 'userid',)
+    list_filter = ('created', CrashArchiveFilter,)
     search_fields = ('appid', 'userid',)
     form = CrashFrom
+
+    def archive_field(self, obj):
+        return bool(obj.archive)
+
+    archive_field.short_description = 'Instrumental file'
 
 
 @admin.register(Symbols)

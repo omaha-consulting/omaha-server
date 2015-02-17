@@ -54,7 +54,7 @@ class CrashFrom(forms.ModelForm):
                 file = t_file.extractfile(dump_name[0])
                 file = SimpleUploadedFile(file.name, file.read())
             else:
-                raise forms.ValidationError(u"The archive does not contain a valid crash dump file.")
+                return None
 
         return file
 

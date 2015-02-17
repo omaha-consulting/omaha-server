@@ -46,7 +46,7 @@ def crash_archive_upload_to(obj, filename):
 
 
 class Crash(TimeStampedModel):
-    upload_file_minidump = models.FileField(upload_to=crash_upload_to, max_length=255)
+    upload_file_minidump = models.FileField(upload_to=crash_upload_to, blank=True, null=True, max_length=255)
     archive = models.FileField(upload_to=crash_archive_upload_to, blank=True, null=True, max_length=255)
     appid = models.CharField(max_length=38, null=True, blank=True)
     userid = models.CharField(max_length=38, null=True, blank=True)
@@ -76,5 +76,5 @@ class Symbols(TimeStampedModel):
 
 @receiver(post_save, sender=Crash)
 def crash_post_save(sender, instance, created, *args, **kwargs):
-    if created:
+    if created and instance.upload_file_minidump:
         signature("tasks.processing_crash_dump", args=(instance.pk,)).apply_async(queue='default')
