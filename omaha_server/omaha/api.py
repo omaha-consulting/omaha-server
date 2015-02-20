@@ -20,13 +20,18 @@ the License.
 
 from rest_framework import viewsets
 from rest_framework import mixins
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
+
+from statistics import get_users_statistics_months
 from serializers import (
     AppSerializer,
     PlatformSerializer,
     ChannelSerializer,
     VersionSerializer,
     ActionSerializer,
+    StatisticsMonthsSerializer,
 )
 from models import (
     Application,
@@ -139,3 +144,10 @@ class VersionViewSet(BaseView):
 class ActionViewSet(BaseView):
     queryset = Action.objects.all()
     serializer_class = ActionSerializer
+
+
+class StatisticsMonthsAllListView(APIView):
+    def get(self, request, format=None):
+        data = get_users_statistics_months()
+        serializer = StatisticsMonthsSerializer(dict(data=dict(data)))
+        return Response(serializer.data)
