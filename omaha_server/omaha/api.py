@@ -18,6 +18,8 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
+from django.http import Http404
+
 from rest_framework import viewsets
 from rest_framework import mixins
 from rest_framework.views import APIView
@@ -146,8 +148,22 @@ class ActionViewSet(BaseView):
     serializer_class = ActionSerializer
 
 
-class StatisticsMonthsAllListView(APIView):
+class StatisticsMonthsListView(APIView):
     def get(self, request, format=None):
         data = get_users_statistics_months()
+        serializer = StatisticsMonthsSerializer(dict(data=dict(data)))
+        return Response(serializer.data)
+
+
+class StatisticsMonthsDetailView(APIView):
+    def get_object(self, name):
+        try:
+            return Application.objects.get(name=name)
+        except Application.DoesNotExist:
+            raise Http404
+
+    def get(self, request, app_name, format=None):
+        app = self.get_object(app_name)
+        data = get_users_statistics_months(app_id=app.id)
         serializer = StatisticsMonthsSerializer(dict(data=dict(data)))
         return Response(serializer.data)

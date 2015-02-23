@@ -168,9 +168,9 @@ class ActionTest(BaseTest, APITestCase):
         self.assertEqual(response.data, self.serializer(obj).data)
 
 
-class StatisticsAllMonthsTest(APITestCase):
-    url = reverse('api-statistics-all-months-list')
-    serializer = StatisticsMonthsSerializer
+class StatisticsMonthsMixin(object):
+    url = None
+    serializer = None
 
     def _generate_fake_statistics(self):
         now = datetime.now()
@@ -229,3 +229,13 @@ class StatisticsAllMonthsTest(APITestCase):
         response = self.client.get(self.url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(self.serializer(self.data).data, response.data)
+
+
+class StatisticsMonthsListTest(StatisticsMonthsMixin, APITestCase):
+    url = reverse('api-statistics-months-list')
+    serializer = StatisticsMonthsSerializer
+
+
+class StatisticsMonthsDetailTest(StatisticsMonthsMixin, APITestCase):
+    url = reverse('api-statistics-months-detail', args=('app',))
+    serializer = StatisticsMonthsSerializer

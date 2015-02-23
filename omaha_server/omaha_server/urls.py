@@ -17,7 +17,7 @@ router.register(r'omaha/version', omaha.api.VersionViewSet)
 router.register(r'action', omaha.api.ActionViewSet)
 router.register(r'sparkle/version', sparkle.api.SparkleVersionViewSet)
 router.register(r'symbols', crash.api.SymbolsViewSet)
-router.register(r'statistics/all/months', omaha.api.StatisticsMonthsAllListView, 'api-statistics-all-months')
+router.register(r'statistics/months', omaha.api.StatisticsMonthsListView, 'api-statistics-months')
 
 
 urlpatterns = patterns('',
@@ -26,7 +26,8 @@ urlpatterns = patterns('',
     url(r'', include('downloads.urls')),
     url(r'^sparkle/', include('sparkle.urls')),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^api/statistics/all/months/$', omaha.api.StatisticsMonthsAllListView.as_view(), name="api-statistics-all-months-list"),
+    url(r'^api/statistics/months/(?P<app_name>[\w-]+)/$', omaha.api.StatisticsMonthsDetailView.as_view(), name="api-statistics-months-detail"),
+    url(r'^api/statistics/months/$', omaha.api.StatisticsMonthsListView.as_view(), name="api-statistics-months-list"),
     url(r'^api/', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 )
