@@ -19,6 +19,8 @@ the License.
 """
 
 import base64
+from datetime import datetime
+from uuid import UUID
 
 from django.core.urlresolvers import reverse
 from django.contrib.auth import get_user_model
@@ -27,7 +29,17 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 
-from omaha.serializers import AppSerializer, PlatformSerializer, ChannelSerializer, VersionSerializer, ActionSerializer
+from omaha.statistics import userid_counting
+from omaha.utils import redis
+
+from omaha.serializers import (
+    AppSerializer,
+    PlatformSerializer,
+    ChannelSerializer,
+    VersionSerializer,
+    ActionSerializer,
+    StatisticsMonthsSerializer,
+)
 from omaha.factories import ApplicationFactory, PlatformFactory, ChannelFactory, VersionFactory, ActionFactory
 from omaha.models import Application, Channel, Platform, Version, Action
 
@@ -154,3 +166,66 @@ class ActionTest(BaseTest, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         obj = Action.objects.get(id=response.data['id'])
         self.assertEqual(response.data, self.serializer(obj).data)
+
+
+class StatisticsAllMonthsTest(APITestCase):
+    url = reverse('api-statistics-all-months-list')
+    serializer = StatisticsMonthsSerializer
+
+    def _generate_fake_statistics(self):
+        now = datetime.now()
+        year = now.year
+
+        for i in xrange(1, 13):
+            date = datetime(year=year, month=i, day=1)
+            for id in xrange(1, i + 1):
+                user_id = UUID(int=id)
+                userid_counting(user_id, self.app_list, self.platform.name, now=date)
+
+    @temporary_media_root()
+    def setUp(self):
+        self.user = User.objects.create_user(username='test', password='secret', email='test@example.com')
+        self.client.credentials(HTTP_AUTHORIZATION='Basic %s' % base64.b64encode('{}:{}'.format('test', 'secret')))
+
+        redis.flushdb()
+        self.app = Application.objects.create(id='app', name='app')
+        self.channel = Channel.objects.create(name='stable')
+        self.platform = Platform.objects.create(name='win')
+        self.version1 = Version.objects.create(
+            app=self.app,
+            platform=self.platform,
+            channel=self.channel,
+            version='1.0.0.0',
+            file=SimpleUploadedFile('./chrome_installer.exe', False))
+        self.version2 = Version.objects.create(
+            app=self.app,
+            platform=self.platform,
+            channel=self.channel,
+            version='2.0.0.0',
+            file=SimpleUploadedFile('./chrome_installer.exe', False))
+        self.app_list = [dict(appid=self.app.id, version=str(self.version1.version))]
+
+        self._generate_fake_statistics()
+        self.users_statistics = [('January', 1),
+                                 ('February', 2),
+                                 ('March', 3),
+                                 ('April', 4),
+                                 ('May', 5),
+                                 ('June', 6),
+                                 ('July', 7),
+                                 ('August', 8),
+                                 ('September', 9),
+                                 ('October', 10),
+                                 ('November', 11),
+                                 ('December', 12)]
+        self.data = dict(data=dict(self.users_statistics))
+
+    def test_unauthorized(self):
+        client = APIClient()
+        response = client.get(self.url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_list(self):
+        response = self.client.get(self.url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.serializer(self.data).data, response.data)
