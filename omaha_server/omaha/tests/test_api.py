@@ -29,7 +29,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 
-from omaha.statistics import userid_counting
+from omaha.statistics import userid_counting, get_users_versions, get_channel_statistics
 from omaha.utils import redis
 
 from omaha.serializers import (
@@ -239,3 +239,23 @@ class StatisticsMonthsListTest(StatisticsMonthsMixin, APITestCase):
 class StatisticsMonthsDetailTest(StatisticsMonthsMixin, APITestCase):
     url = reverse('api-statistics-months-detail', args=('app',))
     serializer = StatisticsMonthsSerializer
+
+
+class StatisticsVersionsTest(StatisticsMonthsMixin, APITestCase):
+    url = reverse('api-statistics-versions', args=('app',))
+    serializer = StatisticsMonthsSerializer
+
+    def setUp(self):
+        super(StatisticsVersionsTest, self).setUp()
+        data = get_users_versions(self.app.id)
+        self.data = dict(data=dict(data))
+
+
+class StatisticsChannelsTest(StatisticsMonthsMixin, APITestCase):
+    url = reverse('api-statistics-channels', args=('app',))
+    serializer = StatisticsMonthsSerializer
+
+    def setUp(self):
+        super(StatisticsChannelsTest, self).setUp()
+        data = get_channel_statistics(self.app.id)
+        self.data = dict(data=dict(data))

@@ -26,7 +26,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 
-from statistics import get_users_statistics_months
+from statistics import get_users_statistics_months, get_users_versions, get_channel_statistics
 from serializers import (
     AppSerializer,
     PlatformSerializer,
@@ -165,5 +165,32 @@ class StatisticsMonthsDetailView(APIView):
     def get(self, request, app_name, format=None):
         app = self.get_object(app_name)
         data = get_users_statistics_months(app_id=app.id)
+        serializer = StatisticsMonthsSerializer(dict(data=dict(data)))
+        return Response(serializer.data)
+
+
+class StatisticsVersionsView(APIView):
+    def get_object(self, name):
+        try:
+            return Application.objects.get(name=name)
+        except Application.DoesNotExist:
+            raise Http404
+
+    def get(self, request, app_name, format=None):
+        app = self.get_object(app_name)
+        data = get_users_versions(app.id)
+        serializer = StatisticsMonthsSerializer(dict(data=dict(data)))
+        return Response(serializer.data)
+
+class StatisticsChannelsView(APIView):
+    def get_object(self, name):
+        try:
+            return Application.objects.get(name=name)
+        except Application.DoesNotExist:
+            raise Http404
+
+    def get(self, request, app_name, format=None):
+        app = self.get_object(app_name)
+        data = get_channel_statistics(app.id)
         serializer = StatisticsMonthsSerializer(dict(data=dict(data)))
         return Response(serializer.data)
