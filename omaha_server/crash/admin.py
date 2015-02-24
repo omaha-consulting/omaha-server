@@ -20,6 +20,8 @@ the License.
 
 from django.contrib import admin
 
+from celery import signature
+
 from crash.forms import SymbolsAdminForm, CrashFrom
 from models import Crash, Symbols
 
@@ -48,11 +50,17 @@ class CrashAdmin(admin.ModelAdmin):
     list_filter = ('created', CrashArchiveFilter,)
     search_fields = ('appid', 'userid',)
     form = CrashFrom
+    actions = ('regenerate_stacktrace',)
 
     def archive_field(self, obj):
         return bool(obj.archive)
-
     archive_field.short_description = 'Instrumental file'
+
+    def regenerate_stacktrace(self, request, queryset):
+        for i in queryset:
+            signature("tasks.processing_crash_dump", args=(i.pk,)).apply_async(queue='default')
+    regenerate_stacktrace.short_description = 'Regenerate stacktrace'
+
 
 
 @admin.register(Symbols)
