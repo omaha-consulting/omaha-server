@@ -71,3 +71,7 @@ class VersionSerializer(serializers.HyperlinkedModelSerializer):
             file = validated_data['file']
             validated_data['file_size'] = file.size
         return super(VersionSerializer, self).create(validated_data)
+
+
+class StatisticsMonthsSerializer(serializers.Serializer):
+    data = serializers.DictField()

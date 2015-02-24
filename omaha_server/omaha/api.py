@@ -18,15 +18,22 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
+from django.http import Http404
+
 from rest_framework import viewsets
 from rest_framework import mixins
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
+
+from statistics import get_users_statistics_months, get_users_versions, get_channel_statistics
 from serializers import (
     AppSerializer,
     PlatformSerializer,
     ChannelSerializer,
     VersionSerializer,
     ActionSerializer,
+    StatisticsMonthsSerializer,
 )
 from models import (
     Application,
@@ -139,3 +146,51 @@ class VersionViewSet(BaseView):
 class ActionViewSet(BaseView):
     queryset = Action.objects.all()
     serializer_class = ActionSerializer
+
+
+class StatisticsMonthsListView(APIView):
+    def get(self, request, format=None):
+        data = get_users_statistics_months()
+        serializer = StatisticsMonthsSerializer(dict(data=dict(data)))
+        return Response(serializer.data)
+
+
+class StatisticsMonthsDetailView(APIView):
+    def get_object(self, name):
+        try:
+            return Application.objects.get(name=name)
+        except Application.DoesNotExist:
+            raise Http404
+
+    def get(self, request, app_name, format=None):
+        app = self.get_object(app_name)
+        data = get_users_statistics_months(app_id=app.id)
+        serializer = StatisticsMonthsSerializer(dict(data=dict(data)))
+        return Response(serializer.data)
+
+
+class StatisticsVersionsView(APIView):
+    def get_object(self, name):
+        try:
+            return Application.objects.get(name=name)
+        except Application.DoesNotExist:
+            raise Http404
+
+    def get(self, request, app_name, format=None):
+        app = self.get_object(app_name)
+        data = get_users_versions(app.id)
+        serializer = StatisticsMonthsSerializer(dict(data=dict(data)))
+        return Response(serializer.data)
+
+class StatisticsChannelsView(APIView):
+    def get_object(self, name):
+        try:
+            return Application.objects.get(name=name)
+        except Application.DoesNotExist:
+            raise Http404
+
+    def get(self, request, app_name, format=None):
+        app = self.get_object(app_name)
+        data = get_channel_statistics(app.id)
+        serializer = StatisticsMonthsSerializer(dict(data=dict(data)))
+        return Response(serializer.data)
