@@ -1,6 +1,6 @@
 -r requirements-test.txt
 
-psycopg2==2.5
+psycopg2==2.6
 lxml==3.4.2
 django-debug-toolbar==1.2.2
 django-debug-panel==0.8.0
