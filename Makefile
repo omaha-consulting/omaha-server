@@ -6,4 +6,4 @@ all:
 	aglio -i $(TARGET) -o $(OUTPUT) -t $(THEME)
 
 server:
-	aglio -i $(TARGET) -s -t $(THEME)
+	aglio -i $(TARGET) -s -t $(THEME) --host 0.0.0.0
