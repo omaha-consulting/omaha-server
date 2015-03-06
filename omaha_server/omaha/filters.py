@@ -20,7 +20,7 @@ the License.
 
 import django_filters
 
-from models import AppRequest
+from omaha.models import AppRequest
 
 
 EVENT_RESULT = {
@@ -69,12 +69,12 @@ EVENT_TYPE = {
 
 EVENT_RESULT_OPTIONS = dict([
     (k, (v.title(), (lambda k: lambda qs, name: qs.filter(events__eventresult=k+0))(k)))
-    for k, v in EVENT_RESULT.iteritems()
+    for k, v in EVENT_RESULT.items()
 ])
 
 EVENT_TYPE_OPTIONS = dict([
     (k, (v.title(), (lambda k: lambda qs, name: qs.filter(events__eventtype=k+0))(k)))
-    for k, v in EVENT_TYPE.iteritems()
+    for k, v in EVENT_TYPE.items()
 ])
 
 EVENT_RESULT_OPTIONS[''] = ('Any', lambda qs, name: qs.all())
@@ -87,7 +87,7 @@ class EventResultFilter(django_filters.ChoiceFilter):
 
     def __init__(self, *args, **kwargs):
         kwargs['choices'] = [
-            (key, value[0]) for key, value in self.options.iteritems()]
+            (key, value[0]) for key, value in self.options.items()]
         super(EventResultFilter, self).__init__(*args, **kwargs)
 
     def filter(self, qs, value):
@@ -103,7 +103,7 @@ class EventTypeFilter(django_filters.ChoiceFilter):
 
     def __init__(self, *args, **kwargs):
         kwargs['choices'] = [
-            (key, value[0]) for key, value in self.options.iteritems()]
+            (key, value[0]) for key, value in self.options.items()]
         super(EventTypeFilter, self).__init__(*args, **kwargs)
 
     def filter(self, qs, value):

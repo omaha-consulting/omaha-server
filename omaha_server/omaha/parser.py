@@ -36,7 +36,7 @@ parser = objectify.makeparser(schema=schema)
 
 def parse_request(request):
     """
-        >>> request = '''<?xml version="1.0" encoding="UTF-8"?>
+        >>> request = b'''<?xml version="1.0" encoding="UTF-8"?>
         ... <request protocol="3.0"
         ...          version="1.3.23.0"
         ...          ismachine="0"
@@ -65,7 +65,7 @@ def parse_request(request):
         >>> request_obj.app.get('appid')
         '{430FD4D0-B729-4F61-AA34-91526481799D}'
         >>> request_obj.app.find('updatecheck')
-        u''
+        ''
         >>> request_obj.keys()
         ['protocol', 'version', 'ismachine', 'sessionid', 'userid', 'installsource', 'testsource', 'requestid']
         >>> request_obj.values()

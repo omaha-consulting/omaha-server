@@ -26,10 +26,10 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from xmlunittest import XmlTestMixin
 from freezegun import freeze_time
 
-import fixtures
 from omaha.tests.utils import temporary_media_root
 from omaha.factories import ApplicationFactory, ChannelFactory
 
+from sparkle.tests import fixtures
 from sparkle.factories import SparkleVersionFactory
 
 
@@ -48,7 +48,7 @@ class SparkleViewTest(TestCase, XmlTestMixin):
             channel=channel,
             version='782.112',
             short_version='13.0.782.112',
-            file=SimpleUploadedFile('./chrome.dmg', 'b' * 23963192),
+            file=SimpleUploadedFile('./chrome.dmg', b'_' * 23963192),
             file_size=23963192)
         obj.save()
 
@@ -72,7 +72,7 @@ class SparkleViewTest(TestCase, XmlTestMixin):
             version='782.112',
             short_version='13.0.782.112',
             dsa_signature='MCwCFCdoW13VBGJWIfIklKxQVyetgxE7AhQTVuY9uQT0KOV1UEk21epBsGZMPg==',
-            file=SimpleUploadedFile('./chrome.dmg', 'b' * 23963192),
+            file=SimpleUploadedFile('./chrome.dmg', b'_' * 23963192),
             file_size=23963192)
         obj.save()
 

@@ -25,7 +25,7 @@ from bitmapist import mark_event
 from django.test import TestCase
 from django.core.files.uploadedfile import SimpleUploadedFile
 
-from utils import temporary_media_root
+from omaha.tests.utils import temporary_media_root
 
 from omaha.factories import VersionFactory
 from omaha.builder import get_version

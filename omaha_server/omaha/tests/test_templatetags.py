@@ -29,4 +29,4 @@ class UrlReplaceTagTest(TestCase):
         rf = RequestFactory()
         request = rf.get('/', {'param': 'value'})
         res = url_replace(request, 'page', 10)
-        self.assertEqual(res, 'page=10&param=value')
+        self.assertSetEqual(set(res.split('&')), set('page=10&param=value'.split('&')))

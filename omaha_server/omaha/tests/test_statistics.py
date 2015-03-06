@@ -18,6 +18,8 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
+from builtins import range
+
 from datetime import datetime
 from uuid import UUID
 
@@ -28,8 +30,7 @@ from mock import patch
 from freezegun import freeze_time
 from bitmapist import DayEvents, mark_event
 
-import fixtures
-
+from omaha.tests import fixtures
 from omaha.parser import parse_request
 from omaha.statistics import (
     userid_counting,
@@ -321,9 +322,9 @@ class GetStatisticsTest(TestCase):
         now = datetime.now()
         year = now.year
 
-        for i in xrange(1, 13):
+        for i in range(1, 13):
             date = datetime(year=year, month=i, day=1)
-            for id in xrange(1, i + 1):
+            for id in range(1, i + 1):
                 user_id = UUID(int=id)
                 userid_counting(user_id, self.app_list, self.platform.name, now=date)
 

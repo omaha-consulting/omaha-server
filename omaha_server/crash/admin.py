@@ -23,7 +23,7 @@ from django.contrib import admin
 from celery import signature
 
 from crash.forms import SymbolsAdminForm, CrashFrom
-from models import Crash, Symbols
+from crash.models import Crash, Symbols
 
 
 class CrashArchiveFilter(admin.SimpleListFilter):

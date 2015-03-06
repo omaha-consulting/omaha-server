@@ -21,7 +21,7 @@ the License.
 import django_tables2 as tables
 from django_tables2 import A
 
-from models import AppRequest
+from omaha.models import AppRequest
 
 
 class AppRequestTable(tables.Table):

@@ -20,8 +20,8 @@ the License.
 
 from django.conf.urls import patterns, url
 
-from views import UpdateView
-from views_admin import StatisticsView, StatisticsDetailView, RequestListView, AppRequestDetailView
+from omaha.views import UpdateView
+from omaha.views_admin import StatisticsView, StatisticsDetailView, RequestListView, AppRequestDetailView
 
 
 urlpatterns = patterns('',

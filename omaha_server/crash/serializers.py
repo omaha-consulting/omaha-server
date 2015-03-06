@@ -20,8 +20,8 @@ the License.
 
 from rest_framework import serializers
 
-from models import Symbols
-from utils import parse_debug_meta_info
+from crash.models import Symbols
+from crash.utils import parse_debug_meta_info
 
 
 __all__ = ['SymbolsSerializer']

@@ -40,7 +40,7 @@ def up_local_dev_server():
     """
     sh('fig -f fig-dev.yml up -d db')
     sh('fig -f fig-dev.yml up -d web')
-    print """Open http://{DOCKER_HOST}:9090/admin/\n username: admin\n password: admin"""
+    print("""Open http://{DOCKER_HOST}:9090/admin/\n username: admin\n password: admin""")
 
 
 @task

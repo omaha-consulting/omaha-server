@@ -20,8 +20,8 @@ the License.
 
 from omaha.api import BaseView
 
-from serializers import SparkleVersionSerializer
-from models import SparkleVersion
+from sparkle.serializers import SparkleVersionSerializer
+from sparkle.models import SparkleVersion
 
 
 class SparkleVersionViewSet(BaseView):

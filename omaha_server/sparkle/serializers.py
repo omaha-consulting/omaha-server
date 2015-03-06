@@ -22,7 +22,7 @@ from rest_framework import serializers
 
 from omaha.models import Application, Channel
 
-from models import SparkleVersion
+from sparkle.models import SparkleVersion
 
 
 __all__ = ['SparkleVersionSerializer']

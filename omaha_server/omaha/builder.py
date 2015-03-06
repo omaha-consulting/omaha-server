@@ -18,7 +18,8 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
-from functools import partial
+from builtins import filter
+from functools import partial, reduce
 from uuid import UUID
 
 from django.utils.timezone import now
@@ -27,12 +28,12 @@ from django.db.models import Q
 from lxml import etree
 from cacheops import cached_as
 
-import tasks
-from models import Version
-from parser import parse_request
-from statistics import is_user_active
-from settings import DEFAULT_CHANNEL
-from core import (Response, App, Updatecheck_negative, Manifest, Updatecheck_positive,
+from omaha import tasks
+from omaha.models import Version
+from omaha.parser import parse_request
+from omaha.statistics import is_user_active
+from omaha.settings import DEFAULT_CHANNEL
+from omaha.core import (Response, App, Updatecheck_negative, Manifest, Updatecheck_positive,
                   Packages, Package, Actions, Action, Event, Data)
 
 
@@ -51,9 +52,9 @@ def on_data(data_list, data, version):
     elif name == 'install':
         index = data.get('index')
         data_obj_list = filter(lambda d: d.index == index, version.app.data_set.all())
-        if data_obj_list:
-            _data = Data('install', index=index, text=data_obj_list[0].value)
-        else:
+        try:
+            _data = Data('install', index=index, text=next(data_obj_list).value)
+        except StopIteration:
             _data = Data('install', index=index, status='error-nodata')
 
     data_list.append(_data)

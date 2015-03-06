@@ -34,10 +34,10 @@ from omaha.statistics import (
     get_channel_statistics,
 )
 from omaha.models import Application, AppRequest
-from filters import AppRequestFilter
+from omaha.filters import AppRequestFilter
 from omaha.utils import make_piechart, make_discrete_bar_chart
 from omaha.filters import EVENT_RESULT, EVENT_TYPE
-from tables import AppRequestTable
+from omaha.tables import AppRequestTable
 
 
 logger = logging.getLogger(__name__)

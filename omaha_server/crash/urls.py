@@ -20,7 +20,7 @@ the License.
 
 from django.conf.urls import patterns, url
 
-from views import CrashFormView
+from crash.views import CrashFormView
 
 
 urlpatterns = patterns('',

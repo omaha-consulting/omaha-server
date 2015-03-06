@@ -19,8 +19,8 @@ the License.
 """
 
 from omaha_server.celery import app
-import statistics
-from parser import parse_request
+from omaha import statistics
+from omaha.parser import parse_request
 
 
 @app.task(ignore_result=True)

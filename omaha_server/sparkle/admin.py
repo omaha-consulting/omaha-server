@@ -19,8 +19,8 @@ the License.
 """
 
 from django.contrib import admin
-from models import SparkleVersion
-from forms import SparkleVersionAdminForm
+from sparkle.models import SparkleVersion
+from sparkle.forms import SparkleVersionAdminForm
 
 
 @admin.register(SparkleVersion)

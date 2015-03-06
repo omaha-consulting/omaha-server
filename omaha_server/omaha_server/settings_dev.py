@@ -1,6 +1,6 @@
 # coding: utf8
 
-from settings_prod import *
+from .settings_prod import *
 
 
 INSTALLED_APPS += (

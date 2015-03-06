@@ -21,7 +21,7 @@ the License.
 import logging
 
 from django.views.generic import ListView
-from models import SparkleVersion
+from sparkle.models import SparkleVersion
 
 
 logger = logging.getLogger(__name__)

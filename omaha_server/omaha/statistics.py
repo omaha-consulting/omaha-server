@@ -18,6 +18,8 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
+from builtins import range
+
 from functools import partial
 from datetime import datetime, timedelta
 
@@ -26,9 +28,9 @@ from django.db import transaction
 from django.utils import timezone
 from bitmapist import setup_redis, mark_event, WeekEvents, MonthEvents, DayEvents
 
-from utils import get_id, valuedispatch
-from settings import DEFAULT_CHANNEL
-from models import ACTIVE_USERS_DICT_CHOICES, Request, AppRequest, Os, Hw, Event, Version, Channel
+from omaha.utils import get_id, valuedispatch
+from omaha.settings import DEFAULT_CHANNEL
+from omaha.models import ACTIVE_USERS_DICT_CHOICES, Request, AppRequest, Os, Hw, Event, Version, Channel
 
 __all__ = ['userid_counting', 'is_user_active']
 
@@ -39,7 +41,7 @@ setup_redis('default', host, port, db=db)
 def userid_counting(userid, apps_list, platform, now=None):
     id = get_id(userid)
     mark_event('request', id, now=now)
-    map(partial(add_app_statistics, id, platform, now=now), apps_list or [])
+    list(map(partial(add_app_statistics, id, platform, now=now), apps_list or []))
 
 
 def add_app_statistics(userid, platform, app, now=None):
@@ -60,7 +62,7 @@ def get_users_statistics_months(app_id=None):
     event_name = 'request:%s' % app_id if app_id else 'request'
 
     months = []
-    for m in xrange(1, 13):
+    for m in range(1, 13):
         months.append(MonthEvents(event_name, year, m))
     data = [(datetime(year, i+1, 1).strftime("%B"), len(e)) for i, e in enumerate(months)]
     return data

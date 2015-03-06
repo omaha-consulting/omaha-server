@@ -23,7 +23,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 
 from omaha.models import Version
 from omaha.factories import VersionFactory
-from utils import temporary_media_root
+from omaha.tests.utils import temporary_media_root
 
 
 class VersionManagerTest(TestCase):

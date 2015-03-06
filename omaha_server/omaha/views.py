@@ -20,14 +20,13 @@ the License.
 
 import logging
 
-from django.views.generic import View, ListView
+from django.views.generic import View
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 
 from lxml.etree import XMLSyntaxError
 
-from builder import build_response
-from models import Version
+from omaha.builder import build_response
 
 
 logger = logging.getLogger(__name__)
@@ -45,5 +44,11 @@ class UpdateView(View):
             response = build_response(request.body)
         except XMLSyntaxError:
             logger.error('UpdateView', exc_info=True, extra=dict(request=request))
-            return HttpResponse('bad request', status=400, content_type="text/html; charset=utf-8")
+            msg = b"""<?xml version="1.0" encoding="utf-8"?>
+<data>
+    <message>
+        Bad Request
+    </message>
+</data>"""
+            return HttpResponse(msg, status=400, content_type="text/html; charset=utf-8")
         return HttpResponse(response, content_type="text/xml; charset=utf-8")

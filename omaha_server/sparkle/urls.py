@@ -20,7 +20,7 @@ the License.
 
 from django.conf.urls import patterns, url
 
-from views import SparkleView
+from sparkle.views import SparkleView
 
 
 urlpatterns = patterns('',

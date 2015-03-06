@@ -20,7 +20,7 @@ the License.
 
 from django.conf.urls import patterns, url
 
-from views import (
+from downloads.views import (
     AppListView,
     VersionListView,
     OmahaLatestVersionRedirectView,

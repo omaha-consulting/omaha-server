@@ -18,6 +18,9 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
+from __future__ import unicode_literals
+from django.utils.encoding import python_2_unicode_compatible
+
 import os
 import hashlib
 import base64
@@ -27,8 +30,8 @@ from django.dispatch import receiver
 from django.db.models.signals import pre_save
 from django.utils.timezone import now as datetime_now
 
-from managers import VersionManager
-from fields import PercentField
+from omaha.managers import VersionManager
+from omaha.fields import PercentField
 
 from django_extensions.db.models import TimeStampedModel
 from jsonfield import JSONField
@@ -40,6 +43,7 @@ __all__ = ['Application', 'Channel', 'Platform', 'Version',
            'Data']
 
 
+@python_2_unicode_compatible
 class Application(TimeStampedModel):
     id = models.CharField(max_length=38, primary_key=True)
     name = models.CharField(verbose_name='App', max_length=30, unique=True)
@@ -47,27 +51,29 @@ class Application(TimeStampedModel):
     class Meta:
         db_table = 'applications'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
+@python_2_unicode_compatible
 class Platform(TimeStampedModel):
     name = models.CharField(verbose_name='Platform', max_length=10, unique=True, db_index=True)
 
     class Meta:
         db_table = 'platforms'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
+@python_2_unicode_compatible
 class Channel(TimeStampedModel):
     name = models.CharField(verbose_name='Channel', max_length=10, unique=True, db_index=True)
 
     class Meta:
         db_table = 'channels'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -80,6 +86,7 @@ def _version_upload_to(*args, **kwargs):
     return version_upload_to(*args, **kwargs)
 
 
+@python_2_unicode_compatible
 class Version(TimeStampedModel):
     is_enabled = models.BooleanField(default=True)
     app = models.ForeignKey(Application)
@@ -102,8 +109,8 @@ class Version(TimeStampedModel):
             ('app', 'platform', 'channel', 'version'),
         )
 
-    def __unicode__(self):
-        return u"{app} {version}".format(app=self.app, version=self.version)
+    def __str__(self):
+        return "{app} {version}".format(app=self.app, version=self.version)
 
     @property
     def file_absolute_url(self):
@@ -286,4 +293,4 @@ def pre_version_save(sender, instance, *args, **kwargs):
     sha1 = hashlib.sha1()
     for chunk in instance.file.chunks():
         sha1.update(chunk)
-    instance.file_hash = base64.b64encode(sha1.digest())
+    instance.file_hash = base64.b64encode(sha1.digest()).decode()

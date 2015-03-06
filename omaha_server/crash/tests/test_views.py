@@ -43,7 +43,7 @@ class CrashViewTest(test.TestCase):
             lang='en',
             version='1.0.0.1',
         )
-        mini_dump_file = SimpleUploadedFile("minidump.dat", "content")
+        mini_dump_file = SimpleUploadedFile("minidump.dat", b"content")
         form_data = dict(
             appid='{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}',
             userid='{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}',
@@ -57,7 +57,7 @@ class CrashViewTest(test.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Crash.objects.all().count(), 1)
         obj = Crash.objects.get()
-        self.assertEqual(response.content, str(obj.pk))
+        self.assertEqual(response.content.decode(), str(obj.pk))
         self.assertDictEqual(obj.meta, meta)
         self.assertEqual(obj.appid, form_data['appid'])
         self.assertEqual(obj.userid, form_data['userid'])
@@ -89,7 +89,7 @@ class CrashViewTest(test.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Crash.objects.all().count(), 1)
         obj = Crash.objects.get()
-        self.assertEqual(response.content, str(obj.pk))
+        self.assertEqual(response.content.decode(), str(obj.pk))
         self.assertDictEqual(obj.meta, meta)
         self.assertEqual(obj.appid, form_data['appid'])
         self.assertEqual(obj.userid, form_data['userid'])
@@ -122,7 +122,7 @@ class CrashViewTest(test.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Crash.objects.all().count(), 1)
         obj = Crash.objects.get()
-        self.assertEqual(response.content, str(obj.pk))
+        self.assertEqual(response.content.decode(), str(obj.pk))
         self.assertDictEqual(obj.meta, meta)
         self.assertEqual(obj.appid, form_data['appid'])
         self.assertEqual(obj.userid, form_data['userid'])

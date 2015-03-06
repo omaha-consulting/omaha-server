@@ -23,7 +23,7 @@ import json
 from django.views.generic import FormView
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
-from forms import CrashFrom
+from crash.forms import CrashFrom
 
 
 class CrashFormView(FormView):

@@ -18,6 +18,9 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
+from __future__ import unicode_literals
+from django.utils.encoding import python_2_unicode_compatible
+
 import os
 
 from django.db import models
@@ -25,13 +28,14 @@ from django.db import models
 from django_extensions.db.models import TimeStampedModel
 
 from omaha.models import Application, Channel
-from managers import VersionManager
+from sparkle.managers import VersionManager
 
 
 def version_upload_to(obj, filename):
     return os.path.join('sparkle', obj.app.name, obj.channel.name, filename)
 
 
+@python_2_unicode_compatible
 class SparkleVersion(TimeStampedModel):
     is_enabled = models.BooleanField(default=True)
     app = models.ForeignKey(Application)
@@ -50,8 +54,8 @@ class SparkleVersion(TimeStampedModel):
             ('app', 'channel'),
         )
 
-    def __unicode__(self):
-        return u"{app} {version}".format(app=self.app, version=self.version)
+    def __str__(self):
+        return "{app} {version}".format(app=self.app, version=self.version)
 
     @property
     def file_absolute_url(self):

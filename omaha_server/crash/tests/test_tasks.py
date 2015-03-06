@@ -58,7 +58,7 @@ class CrashModelTest(test.TestCase):
         )
         app_id = '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}',
         user_id = '{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}',
-        with open(CRASH_DUMP_FILE) as f:
+        with open(CRASH_DUMP_FILE, 'rb') as f:
             obj = Crash.objects.create(
                 appid=app_id,
                 userid=user_id,
@@ -73,7 +73,7 @@ class CrashModelTest(test.TestCase):
             stacktrace = f.read()
 
         crash = Crash.objects.get(pk=obj.pk)
-        self.assertEqual(crash.stacktrace, stacktrace)
+        self.assertEqual(crash.stacktrace, stacktrace.decode())
         self.assertIsNotNone(crash.stacktrace_json)
         self.assertEqual(crash.stacktrace_json['crash_info']['type'], 'EXCEPTION_ACCESS_VIOLATION_WRITE')
         self.assertEqual(crash.signature, 'crashedFunc()')
@@ -94,7 +94,7 @@ class CrashModelTest(test.TestCase):
         )
         app_id = '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}',
         user_id = '{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}',
-        with open(INCORRECT_CRASH_DUMP_FILE) as f:
+        with open(INCORRECT_CRASH_DUMP_FILE, 'rb') as f:
             obj = dict(
                 appid=app_id,
                 userid=user_id,

@@ -30,8 +30,8 @@ from freezegun import freeze_time
 from mock import patch
 from bitmapist import DayEvents
 
-import fixtures
-from utils import temporary_media_root
+from omaha.tests import fixtures
+from omaha.tests.utils import temporary_media_root
 
 from omaha.factories import ApplicationFactory, ChannelFactory, PlatformFactory, VersionFactory
 from omaha.models import Action, EVENT_DICT_CHOICES, Data, NAME_DATA_DICT_CHOICES
@@ -69,7 +69,7 @@ class UpdateViewTest(TestCase, XmlTestMixin):
             platform=platform,
             channel=channel,
             version='13.0.782.112',
-            file=SimpleUploadedFile('./chrome_installer.exe', 'b' * 23963192),
+            file=SimpleUploadedFile('./chrome_installer.exe', b'_' * 23963192),
             file_size=23963192)
         obj.file_hash = 'VXriGUVI0TNqfLlU02vBel4Q3Zo='
         obj.save()
@@ -126,7 +126,7 @@ class UpdateViewTest(TestCase, XmlTestMixin):
             platform=platform,
             channel=channel,
             version='13.0.782.112',
-            file=SimpleUploadedFile('./chrome_installer.exe', 'b' * 23963192))
+            file=SimpleUploadedFile('./chrome_installer.exe', b'_' * 23963192))
         obj.file_hash = 'VXriGUVI0TNqfLlU02vBel4Q3Zo='
         obj.save()
 
@@ -179,7 +179,7 @@ class UpdateViewTest(TestCase, XmlTestMixin):
             platform=platform,
             channel=channel,
             version='13.0.782.112',
-            file=SimpleUploadedFile('./chrome_installer.exe', 'b' * 23963192),
+            file=SimpleUploadedFile('./chrome_installer.exe', b'_' * 23963192),
             file_size=23963192)
         obj.file_hash = 'VXriGUVI0TNqfLlU02vBel4Q3Zo='
         obj.save()
@@ -206,5 +206,11 @@ class UpdateViewTest(TestCase, XmlTestMixin):
     def test_bad_request(self):
         response = self.client.post(reverse('update'))
 
+        msg = b"""<?xml version="1.0" encoding="utf-8"?>
+<data>
+    <message>
+        Bad Request
+    </message>
+</data>"""
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.content, 'bad request')
+        self.assertEqual(response.content, msg)

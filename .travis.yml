@@ -1,8 +1,5 @@
 language: python
 
-python:
-  - "2.7"
-
 virtualenv:
   system_site_packages: true
 
@@ -10,6 +7,10 @@ env:
   global:
     - HOST_NAME: 'travis-ci'
     - SECRET_KEY: 'SECRET_KEY'
+  matrix:
+    - TOX_ENV=py27
+    - TOX_ENV=py34
+    - TOX_ENV=coverage
 
 services:
   - redis-server
@@ -17,9 +18,8 @@ services:
 before_install:
   - sudo apt-get install -qq python-lxml python-psycopg2
 
-install: "pip install -r requirements-test.txt --extra-index-url https://pypi.gocept.com/simple/"
+install:
+  - pip install tox
 
-script: paver test
-
-after_success:
-  - coveralls --verbose
+script:
+  - tox -e $TOX_ENV

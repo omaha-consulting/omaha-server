@@ -49,7 +49,7 @@ class SymbolsAdminFormTest(TestCase):
 class CrashFormTest(TestCase):
     def test_form(self):
         form_file_data = dict(upload_file_minidump=SimpleUploadedFile(
-            "7b05e196-7e23-416b-bd13-99287924e214.dmp", "content"))
+            "7b05e196-7e23-416b-bd13-99287924e214.dmp", b"content"))
         form_data = dict(
             appid='{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}',
             userid='{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}',
