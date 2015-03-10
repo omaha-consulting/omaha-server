@@ -28,11 +28,20 @@ __all__ = ['SymbolsSerializer']
 
 
 class SymbolsSerializer(serializers.HyperlinkedModelSerializer):
+    debug_id = serializers.CharField(default='', required=False, allow_blank=True)
+    debug_file = serializers.CharField(default='', required=False, allow_blank=True)
+
     class Meta:
         model = Symbols
         fields = ('id', 'file', 'debug_id', 'debug_file',
                   'created', 'modified')
         read_only_fields = ('created', 'modified')
+        validators = [
+            serializers.UniqueTogetherValidator(
+                queryset=Symbols.objects.all(),
+                fields=('debug_id', 'debug_file')
+            )
+        ]
 
     def create(self, validated_data):
         if not validated_data.get('debug_id') or \

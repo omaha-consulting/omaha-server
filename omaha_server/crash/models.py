@@ -72,6 +72,9 @@ class Symbols(TimeStampedModel):
 
     class Meta:
         verbose_name_plural = 'Symbols'
+        unique_together = (
+            ('debug_id', 'debug_file'),
+        )
 
 
 @receiver(post_save, sender=Crash)

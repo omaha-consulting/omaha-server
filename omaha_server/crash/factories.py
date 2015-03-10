@@ -28,5 +28,5 @@ class SymbolsFactory(factory.DjangoModelFactory):
         model = 'crash.Symbols'
 
     file = SimpleUploadedFile('./fake.sym', b' ' * 123)
-    debug_id = 'C1C0FA629EAA4B4D9DD2ADE270A231CC1'
-    debug_file = 'BreakpadTestApp.pdb'
+    debug_id = factory.Sequence(lambda n: 'C1C0FA629EAA4B4D9DD2ADE270A231C%s' % n)
+    debug_file = factory.Sequence(lambda n: 'BreakpadTestApp_%s.pdb' % n)
