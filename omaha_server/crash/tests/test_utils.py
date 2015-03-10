@@ -18,6 +18,8 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
+from builtins import bytes
+
 import os
 
 from mock import patch
@@ -36,7 +38,7 @@ from crash.utils import (
 )
 
 from crash.models import Crash
-from test_stacktrace_to_json import stacktrace
+from crash.tests.test_stacktrace_to_json import stacktrace
 
 
 BASE_DIR = os.path.dirname(__file__)
@@ -53,7 +55,7 @@ class ShTest(test.TestCase):
 
         rezult, stderr = get_stacktrace(CRASH_DUMP_PATH)
 
-        self.assertEqual(rezult.stdout, stacktrace)
+        self.assertEqual(bytes(rezult.stdout, 'utf8'), stacktrace)
 
 
 class SignatureTest(test.TestCase):
@@ -70,12 +72,12 @@ class SignatureTest(test.TestCase):
           'frame': 0,
           'signature': 'Func(A* a, B b)',
           'module': 'bad.dll'}),
-        ({'file': 'c:\\work\x08reakpadtestapp\x08reakpadtestapp\x08reakpadtestapp.cpp',
+        ({'file': r'c:\work\breakpadtestapp\breakpadtestapp\breakpadtestapp.cpp',
           'frame': 0,
           'function': 'crashedFunc()',
           'line': 34,
           'module': 'BreakpadTestApp.exe'},
-         {'file': 'c:\\work\x08reakpadtestapp\x08reakpadtestapp\x08reakpadtestapp.cpp',
+         {'file': r'c:\work\breakpadtestapp\breakpadtestapp\breakpadtestapp.cpp',
           'frame': 0,
           'function': 'crashedFunc()',
           'line': 34,
@@ -91,7 +93,7 @@ class SignatureTest(test.TestCase):
     def test_parse_stacktrace(self):
         stacktrace_dict = parse_stacktrace(stacktrace)
         self.assertDictEqual(stacktrace_dict['crashing_thread']['frames'][0],
-                             {'abs_path': 'c:\\work\x08reakpadtestapp\x08reakpadtestapp\x08reakpadtestapp.cpp',
+                             {'abs_path': r'c:\work\breakpadtestapp\breakpadtestapp\breakpadtestapp.cpp',
                               'frame': 0,
                               'function': 'crashedFunc()',
                               'lineno': 34,
@@ -141,56 +143,56 @@ class SendStackTraceTest(test.TestCase):
                     {'stacktrace': {
                         'frames': [
                             {'function': 'crashedFunc()',
-                             'abs_path': 'c:\\work\x08reakpadtestapp\x08reakpadtestapp\x08reakpadtestapp.cpp',
+                             'abs_path': r'c:\work\breakpadtestapp\breakpadtestapp\breakpadtestapp.cpp',
                              'short_signature': 'crashedFunc',
                              'frame': 0,
                              'filename': 'BreakpadTestApp.exe',
                              'lineno': 34,
                              'signature': 'crashedFunc()'},
                             {'function': 'deeperFunc()',
-                             'abs_path': 'c:\\work\x08reakpadtestapp\x08reakpadtestapp\x08reakpadtestapp.cpp',
+                             'abs_path': r'c:\work\breakpadtestapp\breakpadtestapp\breakpadtestapp.cpp',
                              'short_signature': 'deeperFunc',
                              'frame': 1,
                              'filename': 'BreakpadTestApp.exe',
                              'lineno': 39,
                              'signature': 'deeperFunc()'},
                             {'function': 'deepFunc()',
-                             'abs_path': 'c:\\work\x08reakpadtestapp\x08reakpadtestapp\x08reakpadtestapp.cpp',
+                             'abs_path': r'c:\work\breakpadtestapp\breakpadtestapp\breakpadtestapp.cpp',
                              'short_signature': 'deepFunc',
                              'frame': 2,
                              'filename': 'BreakpadTestApp.exe',
                              'lineno': 44,
                              'signature': 'deepFunc()'},
                             {'function': 'anotherFunc()',
-                             'abs_path': 'c:\\work\x08reakpadtestapp\x08reakpadtestapp\x08reakpadtestapp.cpp',
+                             'abs_path': r'c:\work\breakpadtestapp\breakpadtestapp\breakpadtestapp.cpp',
                              'short_signature': 'anotherFunc',
                              'frame': 3,
                              'filename': 'BreakpadTestApp.exe',
                              'lineno': 49,
                              'signature': 'anotherFunc()'},
                             {'function': 'someFunc()',
-                             'abs_path': 'c:\\work\x08reakpadtestapp\x08reakpadtestapp\x08reakpadtestapp.cpp',
+                             'abs_path': r'c:\work\breakpadtestapp\breakpadtestapp\breakpadtestapp.cpp',
                              'short_signature': 'someFunc',
                              'frame': 4,
                              'filename': 'BreakpadTestApp.exe',
                              'lineno': 54,
                              'signature': 'someFunc()'}, {
                                 'function': 'func()',
-                                'abs_path': 'c:\\work\x08reakpadtestapp\x08reakpadtestapp\x08reakpadtestapp.cpp',
+                                'abs_path': r'c:\work\breakpadtestapp\breakpadtestapp\breakpadtestapp.cpp',
                                 'short_signature': 'func',
                                 'frame': 5,
                                 'filename': 'BreakpadTestApp.exe',
                                 'lineno': 59,
                                 'signature': 'func()'},
                             {'function': 'wmain',
-                             'abs_path': 'c:\\work\x08reakpadtestapp\x08reakpadtestapp\x08reakpadtestapp.cpp',
+                             'abs_path': r'c:\work\breakpadtestapp\breakpadtestapp\breakpadtestapp.cpp',
                              'short_signature': 'wmain',
                              'frame': 6,
                              'filename': 'BreakpadTestApp.exe',
                              'lineno': 84,
                              'signature': 'wmain'}, {
                                 'function': '__tmainCRTStartup',
-                                'abs_path': 'f:\\dd\x0bctools\\crt_bld\\self_x86\\crt\\src\\crtexe.c',
+                                'abs_path': r'f:\dd\vctools\crt_bld\self_x86\crt\src\crtexe.c',
                                 'short_signature': '__tmainCRTStartup',
                                 'frame': 7,
                                 'filename': 'BreakpadTestApp.exe',
@@ -232,12 +234,12 @@ class SendStackTraceTest(test.TestCase):
 
 class UtilsTest(test.TestCase):
     def test_parse_debug_meta_info(self):
-        head = 'MODULE windows x86 C1C0FA629EAA4B4D9DD2ADE270A231CC1 BreakpadTestApp.pdb'
+        head = b'MODULE windows x86 C1C0FA629EAA4B4D9DD2ADE270A231CC1 BreakpadTestApp.pdb'
         self.assertDictEqual(parse_debug_meta_info(head),
                              dict(debug_id='C1C0FA629EAA4B4D9DD2ADE270A231CC1',
                                   debug_file='BreakpadTestApp.pdb'))
 
-        head = 'MODULE mac x86_64 476350E1D4033CF180A2A7E388A7B6E40 Chromium Framework'
+        head = b'MODULE mac x86_64 476350E1D4033CF180A2A7E388A7B6E40 Chromium Framework'
         self.assertDictEqual(parse_debug_meta_info(head),
                              dict(debug_id='476350E1D4033CF180A2A7E388A7B6E40',
                                   debug_file='Chromium Framework'))

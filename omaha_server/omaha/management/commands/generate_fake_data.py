@@ -18,6 +18,9 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
+from __future__ import print_function
+from builtins import range, bytes
+
 import random
 from datetime import datetime
 from uuid import uuid4
@@ -89,12 +92,12 @@ def get_random_date():
 def generate_events(app_id, **options):
     versions = Version.objects.filter_by_enabled(app__id=app_id)
 
-    userid_list = map(lambda x: get_random_uuid(), xrange(1, 25))
-    sessionid_list = map(lambda x: get_random_uuid(), xrange(1, 50))
+    userid_list = list(map(lambda x: get_random_uuid(), range(1, 25)))
+    sessionid_list = list(map(lambda x: get_random_uuid(), range(1, 50)))
 
-    for i in xrange(1, options['count'] + 1):
+    for i in range(1, options['count'] + 1):
         if i % 10 == 0:
-            print '=> ', i
+            print('=> ', i)
 
         version = random.choice(versions)
         request = request_tml.format(
@@ -109,6 +112,8 @@ def generate_events(app_id, **options):
             nextversion='',
             events=random.choice(event_list)
         )
+
+        request = bytes(request, 'utf8')
 
         request_obj = parse_request(request)
 

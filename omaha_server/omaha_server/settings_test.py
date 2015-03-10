@@ -15,7 +15,7 @@ NOSE_ARGS = [
     '--with-coverage',
     '--cover-package=omaha_server,omaha,crash,sparkle',
     '--cover-inclusive',
-    '--with-doctest',
+    # '--with-doctest',
 ]
 
 # Tricks to speed up Django tests

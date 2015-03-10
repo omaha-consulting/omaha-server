@@ -3,7 +3,7 @@
 import os
 
 from django.utils import crypto
-from settings import *
+from .settings import *
 
 DEBUG = False
 

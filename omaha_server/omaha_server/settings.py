@@ -70,7 +70,6 @@ INSTALLED_APPS = (
     'djangobower',
     'django_filters',
     'django_tables2',
-    'django_select2',
     'django_ace',
     'rest_framework',
 

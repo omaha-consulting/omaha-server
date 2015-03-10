@@ -18,6 +18,8 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
+from builtins import str
+
 import os
 import re
 
@@ -27,8 +29,8 @@ from django.core.urlresolvers import reverse
 from clom import clom
 from raven import Client
 
-from settings import MINIDUMP_STACKWALK_PATH, SYMBOLS_PATH
-from stacktrace_to_json import pipe_dump_to_json_dump
+from crash.settings import MINIDUMP_STACKWALK_PATH, SYMBOLS_PATH
+from crash.stacktrace_to_json import pipe_dump_to_json_dump
 
 
 client = Client(getattr(settings, 'RAVEN_DSN_STACKTRACE', None))
@@ -71,16 +73,17 @@ def add_signature_to_frame(frame):
 
 def parse_stacktrace(stacktrace):
     stacktrace_dict = pipe_dump_to_json_dump(str(stacktrace).splitlines())
-    stacktrace_dict['crashing_thread']['frames'] = map(add_signature_to_frame,
-                                                       stacktrace_dict['crashing_thread']['frames'])
-    return stacktrace_dict
+    stacktrace_dict['crashing_thread']['frames'] = list(
+        map(add_signature_to_frame,
+            stacktrace_dict['crashing_thread']['frames']))
+    return dict(stacktrace_dict)
 
 
 def get_signature(stacktrace):
     try:
         frame = stacktrace['crashing_thread']['frames'][0]
         signature = frame['signature']
-    except KeyError, IndexError:
+    except (KeyError, IndexError):
         signature = 'EMPTY: no frame data available'
     return signature
 
@@ -132,6 +135,7 @@ def send_stacktrace_sentry(crash):
 
 
 def parse_debug_meta_info(head, exception=Exception):
+    head = head.decode()
     head_list = head.split(' ', 4)
     if head_list[0] != 'MODULE':
         raise exception(u"The file contains invalid data.")

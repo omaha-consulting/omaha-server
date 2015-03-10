@@ -25,9 +25,9 @@ from furl import furl
 from clom.shell import CommandError
 
 from omaha_server.celery import app
-from models import Crash
-from settings import S3_MOUNT_PATH
-from utils import (
+from crash.models import Crash
+from crash.settings import S3_MOUNT_PATH
+from crash.utils import (
     get_stacktrace,
     FileNotFoundError,
     parse_stacktrace,

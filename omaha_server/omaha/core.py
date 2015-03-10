@@ -18,11 +18,13 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
+from __future__ import unicode_literals
+
 from datetime import datetime
 
 from lxml.builder import E
 
-from utils import get_sec_since_midnight
+from omaha.utils import get_sec_since_midnight
 
 
 __all__ = [
@@ -38,7 +40,7 @@ def Response(apps_list, protocol='3.0', date=None, server='prod'):
         dict(protocol=protocol, server=server),
         E.daystart(elapsed_seconds=str(elapsed_seconds)),
     )
-    map(resp.append, apps_list)
+    list(map(resp.append, apps_list))
     return resp
 
 
@@ -46,7 +48,7 @@ def Ping(status='ok'):
     """
         >>> from lxml import etree as ET
         >>> ET.tostring(Ping())
-        '<ping status="ok"/>'
+        b'<ping status="ok"/>'
     """
     return E.ping(dict(status=status))
 
@@ -55,7 +57,7 @@ def Event(status='ok'):
     """
         >>> from lxml import etree as ET
         >>> ET.tostring(Event())
-        '<event status="ok"/>'
+        b'<event status="ok"/>'
     """
     return E.event(dict(status=status))
 
@@ -64,9 +66,9 @@ def Data(name, status='ok', index=None, text=None):
     """
         >>> from lxml import etree as ET
         >>> ET.tostring(Data('untrusted'))
-        '<data status="ok" name="untrusted"/>'
+        b'<data status="ok" name="untrusted"/>'
         >>> ET.tostring(Data('install', index='verboselogging', text='app-specific values here'))
-        '<data status="ok" index="verboselogging" name="install">app-specific values here</data>'
+        b'<data status="ok" index="verboselogging" name="install">app-specific values here</data>'
     """
     attrs = dict(
         name=name,
@@ -83,7 +85,7 @@ def Url(url):
     """
         >>> from lxml import etree as ET
         >>> ET.tostring(Url('http://cache.pack.google.com/edgedl/chrome/install/782.112/'))
-        '<url codebase="http://cache.pack.google.com/edgedl/chrome/install/782.112/"/>'
+        b'<url codebase="http://cache.pack.google.com/edgedl/chrome/install/782.112/"/>'
     """
     return E.url(dict(codebase=url))
 
@@ -91,28 +93,27 @@ def Url(url):
 def Urls(urls_list):
     """
         >>> from lxml import etree as ET
-        >>> print ET.tostring(Urls(['http://cache.pack.google.com/edgedl/chrome/install/782.112/',
-        ...                         'http://cdn.pack.google.com/edgedl/chrome/install/782.112/']), pretty_print=True)
+        >>> print(ET.tostring(Urls(['http://cache.pack.google.com/edgedl/chrome/install/782.112/',
+        ...                   'http://cdn.pack.google.com/edgedl/chrome/install/782.112/']), pretty_print=True))
         <urls>
           <url codebase="http://cache.pack.google.com/edgedl/chrome/install/782.112/"/>
           <url codebase="http://cdn.pack.google.com/edgedl/chrome/install/782.112/"/>
         </urls>
-        <BLANKLINE>
     """
     urls = E.urls()
-    map(lambda url: urls.append(Url(url)), urls_list)
+    list(map(lambda url: urls.append(Url(url)), urls_list))
     return urls
 
 
 def Package(name, required, size, hash, fp=None):
     """
         >>> from lxml import etree as ET
-        >>> print ET.tostring(Package(
+        >>> print(ET.tostring(Package(
         ... 'chrome_installer.exe',
         ... required='true',
         ... size='23963192',
-        ... hash='VXriGUVI0TNqfLlU02vBel4Q3Zo='))
-        <package required="true" hash="VXriGUVI0TNqfLlU02vBel4Q3Zo=" name="chrome_installer.exe" size="23963192"/>
+        ... hash='VXriGUVI0TNqfLlU02vBel4Q3Zo=')))
+        b'<package required="true" hash="VXriGUVI0TNqfLlU02vBel4Q3Zo=" name="chrome_installer.exe" size="23963192"/>'
     """
     attrs = dict(
         name=name,
@@ -129,18 +130,17 @@ def Package(name, required, size, hash, fp=None):
 def Packages(packages_list):
     """
         >>> from lxml import etree as ET
-        >>> print ET.tostring(Packages([Package(
+        >>> print(ET.tostring(Packages([Package(
         ... 'chrome_installer.exe',
         ... required='true',
         ... size='23963192',
-        ... hash='VXriGUVI0TNqfLlU02vBel4Q3Zo=')]), pretty_print=True)
-        <packages>
+        ... hash='VXriGUVI0TNqfLlU02vBel4Q3Zo=')]), pretty_print=True))
+        b'<packages>
           <package required="true" hash="VXriGUVI0TNqfLlU02vBel4Q3Zo=" name="chrome_installer.exe" size="23963192"/>
-        </packages>
-        <BLANKLINE>
+        </packages>'
     """
     packages = E.packages()
-    map(packages.append, packages_list)
+    list(map(packages.append, packages_list))
     return packages
 
 
@@ -148,7 +148,7 @@ def Action(event, **kwargs):
     """
         >>> from lxml import etree as ET
         >>> ET.tostring(Action('install', run='chrome_installer.exe', arguments='--do-not-launch-chrome'))
-        '<action run="chrome_installer.exe" event="install" arguments="--do-not-launch-chrome"/>'
+        b'<action run="chrome_installer.exe" event="install" arguments="--do-not-launch-chrome"/>'
     """
     attrs = dict(event=event)
     attrs.update(
@@ -161,30 +161,29 @@ def Actions(actions_list):
     """
         >>> from lxml import etree as ET
         >>> ET.tostring(Actions([Action('install', run='chrome_installer.exe', arguments='--do-not-launch-chrome')]))
-        '<actions><action run="chrome_installer.exe" event="install" arguments="--do-not-launch-chrome"/></actions>'
+        b'<actions><action run="chrome_installer.exe" event="install" arguments="--do-not-launch-chrome"/></actions>'
     """
     actions = E.actions()
-    map(actions.append, actions_list)
+    list(map(actions.append, actions_list))
     return actions
 
 
 def Manifest(version, packages, actions=None):
     """
         >>> from lxml import etree as ET
-        >>> print ET.tostring(Manifest(
+        >>> print(ET.tostring(Manifest(
         ... "13.0.782.112",
         ... packages=Packages([Package(
         ...     'chrome_installer.exe',
         ...     required='true',
         ...     size='23963192',
         ...     hash='VXriGUVI0TNqfLlU02vBel4Q3Zo=')])
-        ... ), pretty_print=True)
-        <manifest version="13.0.782.112">
+        ... ), pretty_print=True))
+        b'<manifest version="13.0.782.112">
           <packages>
             <package required="true" hash="VXriGUVI0TNqfLlU02vBel4Q3Zo=" name="chrome_installer.exe" size="23963192"/>
           </packages>
-        </manifest>
-        <BLANKLINE>
+        </manifest>'
     """
     manifest = E.manifest(
         dict(version=version),
@@ -210,7 +209,7 @@ def Updatecheck_negative():
     """
         >>> from lxml import etree as ET
         >>> ET.tostring(Updatecheck_negative())
-        '<updatecheck status="noupdate"/>'
+        b'<updatecheck status="noupdate"/>'
     """
     return Updatecheck()
 
@@ -232,8 +231,8 @@ def Updatecheck_positive(urls, manifest):
         ...     ])
         ... )
         >>> urls=['http://cache.pack.google.com/edgedl/chrome/install/782.112/']
-        >>> print ET.tostring(Updatecheck_positive(urls, manifest), pretty_print=True)
-        <updatecheck status="ok">
+        >>> print(ET.tostring(Updatecheck_positive(urls, manifest), pretty_print=True))
+        b'<updatecheck status="ok">
           <urls>
             <url codebase="http://cache.pack.google.com/edgedl/chrome/install/782.112/"/>
           </urls>
@@ -246,8 +245,7 @@ def Updatecheck_positive(urls, manifest):
               <action version="13.0.782.112" event="postinstall" onsuccess="exitsilentlyonlaunchcmd"/>
             </actions>
           </manifest>
-        </updatecheck>
-        <BLANKLINE>
+        </updatecheck>'
     """
     return Updatecheck(status='ok', urls=Urls(urls), manifest=manifest)
 
@@ -258,8 +256,8 @@ def App(app_id, status='ok', experiments='', updatecheck=None, ping=False,
     if experiments:
         attrs['experiments'] = experiments
     app = E.app(attrs)
-    map(app.append, events or [])
-    map(app.append, data_list or [])
+    list(map(app.append, events or []))
+    list(map(app.append, data_list or []))
     if updatecheck is not None:
         app.append(updatecheck)
     if ping:

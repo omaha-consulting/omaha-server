@@ -26,7 +26,7 @@ from django.core.files.uploadedfile import UploadedFile
 from suit.widgets import LinkedSelect
 from suit_redactor.widgets import RedactorWidget
 
-from models import SparkleVersion
+from sparkle.models import SparkleVersion
 
 
 __all__ = ['SparkleVersionAdminForm']

@@ -23,7 +23,7 @@ import os
 from unittest import TestCase
 from xmlunittest import XmlTestMixin
 
-import fixtures
+from omaha.tests import fixtures
 
 
 BASE_DIR = os.path.dirname(__file__)

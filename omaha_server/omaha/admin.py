@@ -19,8 +19,8 @@ the License.
 """
 
 from django.contrib import admin
-from models import Channel, Platform, Application, Version, Action, PartialUpdate, Data
-from forms import ApplicationAdminForm, VersionAdminForm, ActionAdminForm, DataAdminForm
+from omaha.models import Channel, Platform, Application, Version, Action, PartialUpdate, Data
+from omaha.forms import ApplicationAdminForm, VersionAdminForm, ActionAdminForm, DataAdminForm
 
 
 @admin.register(Platform)

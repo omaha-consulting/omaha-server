@@ -47,7 +47,7 @@ class CrashModelTest(test.TestCase):
         obj = Crash.objects.create(
             appid=app_id,
             userid=user_id,
-            upload_file_minidump=SimpleUploadedFile('./dump.dat', False),
+            upload_file_minidump=SimpleUploadedFile('./dump.dat', b''),
             meta=meta,
         )
 

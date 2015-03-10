@@ -26,8 +26,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 
-from statistics import get_users_statistics_months, get_users_versions, get_channel_statistics
-from serializers import (
+from omaha.statistics import get_users_statistics_months, get_users_versions, get_channel_statistics
+from omaha.serializers import (
     AppSerializer,
     PlatformSerializer,
     ChannelSerializer,
@@ -35,7 +35,7 @@ from serializers import (
     ActionSerializer,
     StatisticsMonthsSerializer,
 )
-from models import (
+from omaha.models import (
     Application,
     Platform,
     Channel,

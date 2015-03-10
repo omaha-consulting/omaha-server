@@ -18,16 +18,18 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
+from builtins import filter
+
 import tarfile
+from io import BytesIO
 
 from django import forms
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.forms import widgets
 
 from django_ace import AceWidget
-from crash.models import Symbols
-from models import Crash
-from utils import parse_debug_meta_info
+from crash.models import Symbols, Crash
+from crash.utils import parse_debug_meta_info
 
 
 class CrashFrom(forms.ModelForm):
@@ -47,13 +49,15 @@ class CrashFrom(forms.ModelForm):
         file = self.cleaned_data["upload_file_minidump"]
 
         if file.name.endswith('.tar'):
-            t_file = tarfile.open(fileobj=file, mode='r')
+            t_file = BytesIO(file.read())
+            t_file = tarfile.open(fileobj=t_file, mode='r')
             self.cleaned_data['archive_file'] = file
             dump_name = filter(lambda i: i.endswith('.dmp'), t_file.getnames())
-            if dump_name:
-                file = t_file.extractfile(dump_name[0])
-                file = SimpleUploadedFile(file.name, file.read())
-            else:
+            try:
+                file_name = next(dump_name)
+                file = t_file.extractfile(file_name)
+                file = SimpleUploadedFile(file_name, file.read())
+            except StopIteration:
                 return None
 
         return file

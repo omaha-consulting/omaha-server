@@ -20,7 +20,7 @@ the License.
 
 from rest_framework import serializers
 
-from models import Application, Platform, Channel, Version, Action
+from omaha.models import Application, Platform, Channel, Version, Action
 
 
 __all__ = ['AppSerializer', 'PlatformSerializer', 'ChannelSerializer', 'VersionSerializer']

@@ -20,8 +20,8 @@ the License.
 
 from omaha.api import BaseView
 
-from serializers import SymbolsSerializer
-from models import Symbols
+from crash.serializers import SymbolsSerializer
+from crash.models import Symbols
 
 
 class SymbolsViewSet(BaseView):

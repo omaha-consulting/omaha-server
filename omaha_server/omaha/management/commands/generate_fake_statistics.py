@@ -38,7 +38,7 @@ def generate_statistics(i, versions):
     year = now.year
 
     if i % 100 == 0:
-        print '=> %s' % i
+        print('=> %s' % i)
     version = random.choice(versions)
     platform = version.platform.name
     app_list = [dict(
@@ -74,7 +74,7 @@ class Command(BaseCommand):
         users = range(1, user_count)
         versions = list(Version.objects.select_related('app', 'platform').filter_by_enabled())
 
-        job_size = (user_count / (cpu_count() or 1 * 2)) or 1
+        job_size = int(user_count / (cpu_count() or 1 * 2)) or 1
         job_data = [users[i:i + job_size] for i in range(0, len(users), job_size)]
 
         pool = Pool()

@@ -18,7 +18,7 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
-response_sparkle = """<?xml version="1.0" encoding="utf-8"?>
+response_sparkle = b"""<?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
     <channel>
         <title>chrome</title>
@@ -42,7 +42,7 @@ response_sparkle = """<?xml version="1.0" encoding="utf-8"?>
     </channel>
 </rss>"""
 
-response_sparkle_with_dsa = """<?xml version="1.0" encoding="utf-8"?>
+response_sparkle_with_dsa = b"""<?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
     <channel>
         <title>chrome_dsa</title>
