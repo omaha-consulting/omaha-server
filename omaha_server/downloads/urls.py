@@ -30,9 +30,9 @@ from downloads.views import (
 
 urlpatterns = patterns('',
     url(r'^downloads/$', AppListView.as_view(), name='downloads'),
-    url(r'^downloads/(?P<name>[\w-]+)/$', VersionListView.as_view(), name='downloads-app'),
-    url(r'^downloads/latest/omaha/(?P<app>[\w-]+)/(?P<platform>[\w-]+)/(?P<channel>[\w-]+)/$',
+    url(r'^downloads/(?P<name>[a-zA-Z0-9_ ]+)/$', VersionListView.as_view(), name='downloads-app'),
+    url(r'^downloads/latest/omaha/(?P<app>[a-zA-Z0-9_ ]+)/(?P<platform>[\w-]+)/(?P<channel>[\w-]+)/$',
         OmahaLatestVersionRedirectView.as_view(), name='downloads-latest-omaha'),
-    url(r'^downloads/latest/sparkle/(?P<app>[\w-]+)/(?P<channel>[\w-]+)/$',
+    url(r'^downloads/latest/sparkle/(?P<app>[a-zA-Z0-9_ ]+)/(?P<channel>[\w-]+)/$',
         SparkleLatestVersionRedirectView.as_view(), name='downloads-latest-sparkle'),
 )
