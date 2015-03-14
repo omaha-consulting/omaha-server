@@ -28,7 +28,7 @@ urlpatterns = patterns('',
     url(r'^service/update2$', UpdateView.as_view(), name='update'),
 
     url(r'^admin/statistics/$', StatisticsView.as_view(), name='omaha_statistics'),
-    url(r'^admin/statistics/(?P<name>[\w-]+)/$', StatisticsDetailView.as_view(), name='omaha_statistics_detail'),
-    url(r'^admin/statistics/(?P<name>[\w-]+)/requests/$', RequestListView.as_view(), name='omaha_request_list'),
+    url(r'^admin/statistics/(?P<name>[a-zA-Z0-9_ ]+)/$', StatisticsDetailView.as_view(), name='omaha_statistics_detail'),
+    url(r'^admin/statistics/(?P<name>[a-zA-Z0-9_ ]+)/requests/$', RequestListView.as_view(), name='omaha_request_list'),
     url(r'^admin/statistics/requests/(?P<pk>\d+)/$', AppRequestDetailView.as_view(), name='omaha_request_detail'),
 )
