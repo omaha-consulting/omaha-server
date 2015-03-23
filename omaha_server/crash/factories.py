@@ -30,3 +30,13 @@ class SymbolsFactory(factory.DjangoModelFactory):
     file = SimpleUploadedFile('./fake.sym', b' ' * 123)
     debug_id = factory.Sequence(lambda n: 'C1C0FA629EAA4B4D9DD2ADE270A231C%s' % n)
     debug_file = factory.Sequence(lambda n: 'BreakpadTestApp_%s.pdb' % n)
+
+
+class CrashFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = 'crash.Crash'
+
+    appid = factory.Sequence(lambda n: '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C%s}' % n)
+    userid = factory.Sequence(lambda n: '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C%s}' % n)
+    meta = {'lang': 'en'}
+    signature = factory.Sequence(lambda n: 'signature_%s' % n)

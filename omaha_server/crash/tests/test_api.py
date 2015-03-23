@@ -26,9 +26,9 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from crash.serializers import SymbolsSerializer
-from crash.models import Symbols
-from crash.factories import SymbolsFactory
+from crash.serializers import SymbolsSerializer, CrashSerializer
+from crash.models import Symbols, Crash
+from crash.factories import SymbolsFactory, CrashFactory
 
 from omaha.tests.utils import temporary_media_root
 from omaha.tests.test_api import BaseTest
@@ -39,7 +39,7 @@ TEST_DATA_DIR = os.path.join(BASE_DIR, 'testdata')
 SYM_FILE = os.path.join(TEST_DATA_DIR, 'BreakpadTestApp.sym')
 
 
-class VersionTest(BaseTest, APITestCase):
+class SymbolsTest(BaseTest, APITestCase):
     url = reverse('symbols-list')
     url_detail = 'symbols-detail'
     factory = SymbolsFactory
@@ -47,11 +47,11 @@ class VersionTest(BaseTest, APITestCase):
 
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
     def test_detail(self):
-        super(VersionTest, self).test_detail()
+        super(SymbolsTest, self).test_detail()
 
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
     def test_list(self):
-        super(VersionTest, self).test_list()
+        super(SymbolsTest, self).test_list()
 
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
     def test_create(self):
@@ -63,3 +63,14 @@ class VersionTest(BaseTest, APITestCase):
         self.assertEqual(response.data, self.serializer(symbols).data)
         self.assertEqual(symbols.debug_id, 'C1C0FA629EAA4B4D9DD2ADE270A231CC1')
         self.assertEqual(symbols.debug_file, 'BreakpadTestApp.pdb')
+
+
+class CrashTest(BaseTest, APITestCase):
+    url = reverse('crash-list')
+    url_detail = 'crash-detail'
+    factory = CrashFactory
+    serializer = CrashSerializer
+
+    def test_create(self):
+        response = self.client.post(self.url, {})
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)

@@ -17,6 +17,7 @@ router.register(r'omaha/version', omaha.api.VersionViewSet)
 router.register(r'action', omaha.api.ActionViewSet)
 router.register(r'sparkle/version', sparkle.api.SparkleVersionViewSet)
 router.register(r'symbols', crash.api.SymbolsViewSet)
+router.register(r'crash_report', crash.api.CrashViewSet)
 router.register(r'statistics/months', omaha.api.StatisticsMonthsListView, 'api-statistics-months')
 
 
