@@ -71,6 +71,12 @@ class CrashTest(BaseTest, APITestCase):
     factory = CrashFactory
     serializer = CrashSerializer
 
+    def test_list(self):
+        response = self.client.get(self.url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['count'], 10)
+        self.assertEqual(self.serializer(self.objects, many=True).data, response.data['results'])
+
     def test_create(self):
         response = self.client.post(self.url, {})
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
