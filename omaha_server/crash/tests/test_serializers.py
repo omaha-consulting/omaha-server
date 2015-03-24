@@ -18,6 +18,8 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
+from builtins import str
+
 import os
 
 from django.test import TestCase
@@ -25,8 +27,8 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 
 from omaha.tests.utils import temporary_media_root
 
-from crash.models import Symbols
-from crash.serializers import SymbolsSerializer
+from crash.models import Symbols, Crash
+from crash.serializers import SymbolsSerializer, CrashSerializer
 
 
 BASE_DIR = os.path.dirname(__file__)
@@ -34,7 +36,7 @@ TEST_DATA_DIR = os.path.join(BASE_DIR, 'testdata')
 SYM_FILE = os.path.join(TEST_DATA_DIR, 'BreakpadTestApp.sym')
 
 
-class AppSerializerTest(TestCase):
+class SymbolsSerializerTest(TestCase):
     def test_serializer(self):
         data = dict(file=SimpleUploadedFile('./test.pdb', False),
                     debug_id='C1C0FA629EAA4B4D9DD2ADE270A231CC1',
@@ -58,3 +60,35 @@ class AppSerializerTest(TestCase):
         symbols_instance = symbols.save()
         self.assertEqual(symbols_instance.debug_id, 'C1C0FA629EAA4B4D9DD2ADE270A231CC1')
         self.assertEqual(symbols_instance.debug_file, 'BreakpadTestApp.pdb')
+
+
+class CrashSerializerTest(TestCase):
+    maxDiff = None
+
+    @temporary_media_root(
+        CELERY_ALWAYS_EAGER=False,
+        CELERY_EAGER_PROPAGATES_EXCEPTIONS=False,
+    )
+    def test_serializer(self):
+        meta = dict(
+            lang='en',
+            version='1.0.0.1',
+        )
+        app_id = '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}',
+        user_id = '{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}',
+        crash = Crash.objects.create(
+            appid=app_id,
+            userid=user_id,
+            upload_file_minidump=SimpleUploadedFile('./dump.dat', b''),
+            meta=meta,
+        )
+        self.assertDictEqual(CrashSerializer(crash).data,
+                             dict(id=crash.id,
+                                  upload_file_minidump=crash.upload_file_minidump.url,
+                                  archive=None,
+                                  appid=str(crash.appid),
+                                  userid=str(crash.userid),
+                                  meta=meta,
+                                  signature=crash.signature,
+                                  created=crash.created.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
+                                  modified=crash.modified.strftime('%Y-%m-%dT%H:%M:%S.%fZ')))

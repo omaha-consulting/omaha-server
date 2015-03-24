@@ -18,12 +18,22 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
+from rest_framework import viewsets
+from rest_framework import mixins
+
 from omaha.api import BaseView
 
-from crash.serializers import SymbolsSerializer
-from crash.models import Symbols
+from crash.serializers import SymbolsSerializer, CrashSerializer
+from crash.models import Symbols, Crash
 
 
 class SymbolsViewSet(BaseView):
     queryset = Symbols.objects.all()
     serializer_class = SymbolsSerializer
+
+
+class CrashViewSet(mixins.ListModelMixin,
+                   mixins.RetrieveModelMixin,
+                   viewsets.GenericViewSet):
+    queryset = Crash.objects.all()
+    serializer_class = CrashSerializer

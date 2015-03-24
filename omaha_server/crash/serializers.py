@@ -20,7 +20,7 @@ the License.
 
 from rest_framework import serializers
 
-from crash.models import Symbols
+from crash.models import Symbols, Crash
 from crash.utils import parse_debug_meta_info
 
 
@@ -54,3 +54,12 @@ class SymbolsSerializer(serializers.HyperlinkedModelSerializer):
             except:
                 raise serializers.ValidationError(u"The file contains invalid data.")
         return super(SymbolsSerializer, self).create(validated_data)
+
+
+class CrashSerializer(serializers.HyperlinkedModelSerializer):
+    meta = serializers.DictField()
+
+    class Meta:
+        model = Crash
+        fields = ('id', 'upload_file_minidump', 'archive', 'appid', 'userid',
+                  'meta', 'signature', 'created', 'modified',)
