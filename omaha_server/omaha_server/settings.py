@@ -21,8 +21,10 @@ TEMPLATE_CONTEXT_PROCESSORS = TCP + (
     'absolute.context_processors.absolute',
 )
 
+APP_VERSION = "0.0.1"
+
 SUIT_CONFIG = {
-    'ADMIN_NAME': 'Omaha Server',
+    'ADMIN_NAME': 'Omaha Server [{}]'.format(APP_VERSION),
     'MENU': (
         'sites',
         {'app': 'omaha', 'label': 'Omaha', 'icon': 'icon-refresh'},
