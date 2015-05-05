@@ -5,3 +5,4 @@ lxml==3.4.2
 django-debug-toolbar==1.3.0
 django-debug-panel==0.8.0
 ebs-deploy==1.7
+bumpversion==0.5.3
