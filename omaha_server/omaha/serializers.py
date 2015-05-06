@@ -17,7 +17,6 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
 """
-
 from rest_framework import serializers
 
 from omaha.models import Application, Platform, Channel, Version, Action
@@ -75,3 +74,7 @@ class VersionSerializer(serializers.HyperlinkedModelSerializer):
 
 class StatisticsMonthsSerializer(serializers.Serializer):
     data = serializers.DictField()
+
+
+class ServerVersionSerializer(serializers.Serializer):
+    version = serializers.CharField()

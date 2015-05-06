@@ -19,6 +19,7 @@ the License.
 """
 
 from django.http import Http404
+from django.conf import settings
 
 from rest_framework import viewsets
 from rest_framework import mixins
@@ -34,6 +35,7 @@ from omaha.serializers import (
     VersionSerializer,
     ActionSerializer,
     StatisticsMonthsSerializer,
+    ServerVersionSerializer,
 )
 from omaha.models import (
     Application,
@@ -193,4 +195,11 @@ class StatisticsChannelsView(APIView):
         app = self.get_object(app_name)
         data = get_channel_statistics(app.id)
         serializer = StatisticsMonthsSerializer(dict(data=dict(data)))
+        return Response(serializer.data)
+
+
+class ServerVersionView(APIView):
+    def get(self, request, format=None):
+        version = settings.APP_VERSION
+        serializer = ServerVersionSerializer(dict(version=version))
         return Response(serializer.data)
