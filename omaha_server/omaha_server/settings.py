@@ -21,6 +21,10 @@ TEMPLATE_CONTEXT_PROCESSORS = TCP + (
     'absolute.context_processors.absolute',
 )
 
+TEMPLATE_DIRS = (
+    os.path.join(BASE_DIR,  'templates'),
+)
+
 SUIT_CONFIG = {
     'ADMIN_NAME': 'Omaha Server',
     'MENU': (
@@ -87,6 +91,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'omaha_server.middlewares.TimezoneMiddleware',
 )
 
 ROOT_URLCONF = 'omaha_server.urls'
