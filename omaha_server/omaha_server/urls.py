@@ -21,7 +21,6 @@ router.register(r'crash_report', crash.api.CrashViewSet)
 router.register(r'statistics/months', omaha.api.StatisticsMonthsListView, 'api-statistics-months')
 
 
-
 urlpatterns = patterns('',
     url(r'', include('omaha.urls')),
     url(r'', include('crash.urls')),
