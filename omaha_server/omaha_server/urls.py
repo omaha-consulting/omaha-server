@@ -31,6 +31,7 @@ urlpatterns = patterns('',
     url(r'^api/statistics/versions/(?P<app_name>[a-zA-Z0-9_ ]+)/$', omaha.api.StatisticsVersionsView.as_view(), name="api-statistics-versions"),
     url(r'^api/statistics/months/(?P<app_name>[a-zA-Z0-9_ ]+)/$', omaha.api.StatisticsMonthsDetailView.as_view(), name="api-statistics-months-detail"),
     url(r'^api/statistics/months/$', omaha.api.StatisticsMonthsListView.as_view(), name="api-statistics-months-list"),
+    url(r'^api/version', omaha.api.ServerVersionView.as_view(), name='api-version'),
     url(r'^api/', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 )

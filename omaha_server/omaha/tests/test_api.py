@@ -28,6 +28,7 @@ from uuid import UUID
 from django.core.urlresolvers import reverse
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.conf import settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
@@ -42,6 +43,7 @@ from omaha.serializers import (
     VersionSerializer,
     ActionSerializer,
     StatisticsMonthsSerializer,
+    ServerVersionSerializer,
 )
 from omaha.factories import ApplicationFactory, PlatformFactory, ChannelFactory, VersionFactory, ActionFactory
 from omaha.models import Application, Channel, Platform, Version, Action
@@ -264,3 +266,18 @@ class StatisticsChannelsTest(StatisticsMonthsMixin, APITestCase):
         super(StatisticsChannelsTest, self).setUp()
         data = get_channel_statistics(self.app.id)
         self.data = dict(data=dict(data))
+
+class ServerVersionTest(APITestCase):
+    url = reverse('api-version')
+    serializer = ServerVersionSerializer
+
+    def setUp(self):
+        self.user = User.objects.create_user(username='test', password='secret', email='test@example.com')
+        self.client.credentials(
+            HTTP_AUTHORIZATION='Basic %s' % base64.b64encode(bytes('{}:{}'.format('test', 'secret'), 'utf8')).decode())
+        self.data = dict(version=settings.APP_VERSION)
+
+    def test(self):
+        response = self.client.get(self.url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.serializer(self.data).data, response.data)
