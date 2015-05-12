@@ -33,6 +33,7 @@ SUIT_CONFIG = {
         {'app': 'sparkle', 'label': 'Sparkle', 'icon': 'icon-circle-arrow-down'},
         {'app': 'crash', 'label': 'Crash reports', 'icon': 'icon-fire'},
         {'label': 'Statistics', 'url': 'omaha_statistics', 'icon': 'icon-star'},
+        {'label': 'Set timezone', 'url': 'set_timezone', 'icon': 'glyphicons-clock'},
     ),
 }
 
