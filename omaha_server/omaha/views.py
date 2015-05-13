@@ -24,12 +24,12 @@ from django.views.generic import View
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
+from django.conf import settings
 
-import pytz
 from lxml.etree import XMLSyntaxError
 
 from omaha.builder import build_response
-
+from forms import TimezoneForm
 
 logger = logging.getLogger(__name__)
 
@@ -60,12 +60,9 @@ def set_timezone(request):
     print request.method
     if request.method == 'POST':
         request.session['django_timezone'] = request.POST['timezone']
-        # print request.META.get('HTTP_REFERER', '/admin/')
-        prev_page = request.session['prev_page']
-        del request.session['prev_page']
-        return redirect(prev_page)
-    else:
-        if 'prev_page' not in request.session:
-            prev_page = request.META.get('HTTP_REFERER', '/admin/')
-            request.session['prev_page'] = prev_page
-        return render(request, 'admin/set_timezone.html', {'timezones': pytz.common_timezones})
+    try:
+        cur_timezone = request.session['django_timezone']
+    except IndexError:
+        cur_timezone = settings.timezone
+    form = TimezoneForm({'timezone': cur_timezone})
+    return render(request, 'admin/set_timezone.html', {'form': form})

@@ -33,7 +33,7 @@ SUIT_CONFIG = {
         {'app': 'sparkle', 'label': 'Sparkle', 'icon': 'icon-circle-arrow-down'},
         {'app': 'crash', 'label': 'Crash reports', 'icon': 'icon-fire'},
         {'label': 'Statistics', 'url': 'omaha_statistics', 'icon': 'icon-star'},
-        {'label': 'Set timezone', 'url': 'set_timezone', 'icon': 'glyphicons-clock'},
+        {'label': 'Set timezone', 'url': 'set_timezone', 'icon': 'icon-time'},
     ),
 }
 
@@ -77,6 +77,7 @@ INSTALLED_APPS = (
     'django_tables2',
     'django_ace',
     'rest_framework',
+    'django_select2',
 
     'omaha',
     'crash',
@@ -229,3 +230,7 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
 }
+
+# django_select2
+
+AUTO_RENDER_SELECT2_STATICS = False
