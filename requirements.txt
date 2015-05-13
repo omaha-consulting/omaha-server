@@ -25,6 +25,8 @@ furl==0.4.4
 django-ace==1.0.2
 djangorestframework==3.1.0
 Markdown==2.5.2
+pytz==2015.2
+Django-Select2==4.3.1
 
 # Only dev
 django-httplog==0.2.3

@@ -23,11 +23,13 @@ import logging
 from django.views.generic import View
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
+from django.shortcuts import redirect, render
+from django.conf import settings
 
 from lxml.etree import XMLSyntaxError
 
 from omaha.builder import build_response
-
+from forms import TimezoneForm
 
 logger = logging.getLogger(__name__)
 
@@ -52,3 +54,15 @@ class UpdateView(View):
 </data>"""
             return HttpResponse(msg, status=400, content_type="text/html; charset=utf-8")
         return HttpResponse(response, content_type="text/xml; charset=utf-8")
+
+
+def set_timezone(request):
+    print request.method
+    if request.method == 'POST':
+        request.session['django_timezone'] = request.POST['timezone']
+    try:
+        cur_timezone = request.session['django_timezone']
+    except IndexError:
+        cur_timezone = settings.timezone
+    form = TimezoneForm({'timezone': cur_timezone})
+    return render(request, 'admin/set_timezone.html', {'form': form})

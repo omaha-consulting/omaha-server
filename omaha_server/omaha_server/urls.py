@@ -4,6 +4,7 @@ from django.contrib import admin
 
 from rest_framework import routers
 
+import omaha.views
 import omaha.api
 import sparkle.api
 import crash.api
@@ -26,6 +27,7 @@ urlpatterns = patterns('',
     url(r'', include('crash.urls')),
     url(r'', include('downloads.urls')),
     url(r'^sparkle/', include('sparkle.urls')),
+    url(r'^admin/set_timezone/$', omaha.views.set_timezone, name='set_timezone'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/statistics/channels/(?P<app_name>[a-zA-Z0-9_ ]+)/$', omaha.api.StatisticsChannelsView.as_view(), name="api-statistics-channels"),
     url(r'^api/statistics/versions/(?P<app_name>[a-zA-Z0-9_ ]+)/$', omaha.api.StatisticsVersionsView.as_view(), name="api-statistics-versions"),
@@ -34,6 +36,7 @@ urlpatterns = patterns('',
     url(r'^api/version', omaha.api.ServerVersionView.as_view(), name='api-version'),
     url(r'^api/', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r"^select2/", include("django_select2.urls")),
 )
 
 if settings.DEBUG:
