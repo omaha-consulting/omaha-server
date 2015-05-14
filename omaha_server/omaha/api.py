@@ -18,8 +18,11 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
+import datetime
+
 from django.http import Http404
 from django.conf import settings
+from django.utils import timezone
 
 from rest_framework import viewsets
 from rest_framework import mixins
@@ -43,6 +46,7 @@ from omaha.models import (
     Channel,
     Version,
     Action,
+    AppRequest,
 )
 
 
@@ -166,7 +170,16 @@ class StatisticsMonthsDetailView(APIView):
 
     def get(self, request, app_name, format=None):
         app = self.get_object(app_name)
+
+        now = timezone.now()
+        last_week = now - datetime.timedelta(days=7)
+
+        qs = AppRequest.objects.filter(appid=app.id,
+                                       request__created__range=[last_week, now])
+
         data = get_users_statistics_months(app_id=app.id)
+        data.append(('install_count', qs.filter(events__eventtype=2).count()))
+        data.append(('update_count', qs.filter(events__eventtype=3).count()))
         serializer = StatisticsMonthsSerializer(dict(data=dict(data)))
         return Response(serializer.data)
 
