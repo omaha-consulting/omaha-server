@@ -21,7 +21,7 @@ TEMPLATE_CONTEXT_PROCESSORS = TCP + (
     'absolute.context_processors.absolute',
 )
 
-APP_VERSION = "0.0.7"
+APP_VERSION = "0.0.8"
 
 SUIT_CONFIG = {
     'ADMIN_NAME': 'Omaha Server [{}]'.format(APP_VERSION),
