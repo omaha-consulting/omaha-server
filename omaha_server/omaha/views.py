@@ -21,10 +21,12 @@ the License.
 import logging
 
 from django.views.generic import View
+from django.views.generic.edit import FormView
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.conf import settings
+from django.core.urlresolvers import reverse_lazy
 
 from lxml.etree import XMLSyntaxError
 
@@ -56,13 +58,20 @@ class UpdateView(View):
         return HttpResponse(response, content_type="text/xml; charset=utf-8")
 
 
-def set_timezone(request):
-    print request.method
-    if request.method == 'POST':
-        request.session['django_timezone'] = request.POST['timezone']
-    try:
-        cur_timezone = request.session['django_timezone']
-    except IndexError:
-        cur_timezone = settings.timezone
-    form = TimezoneForm({'timezone': cur_timezone})
-    return render(request, 'admin/set_timezone.html', {'form': form})
+class TimezoneView(FormView):
+    template_name = 'admin/set_timezone.html'
+    form_class = TimezoneForm
+    success_url = reverse_lazy('set_timezone')
+
+    def get_initial(self):
+        try:
+            cur_timezone = self.request.session['django_timezone']
+        except IndexError:
+            cur_timezone = settings.timezone
+        return dict(timezone=cur_timezone)
+
+    def post(self, request, *args, **kwargs):
+        if request.method == 'POST':
+            request.session['django_timezone'] = request.POST['timezone']
+        return super(TimezoneView, self).post(request, *args, **kwargs)
+

@@ -98,10 +98,5 @@ class TimezoneField(AutoSelect2Field):
         return unicode(value)
 
 
-class CountryChoices(AutoModelSelect2Field):
-    queryset = Platform.objects
-    search_fields = ['name__icontains', ]
-
-
 class TimezoneForm(forms.Form):
     timezone = TimezoneField()
