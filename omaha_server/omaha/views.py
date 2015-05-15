@@ -70,8 +70,6 @@ class TimezoneView(FormView):
             cur_timezone = settings.timezone
         return dict(timezone=cur_timezone)
 
-    def post(self, request, *args, **kwargs):
-        if request.method == 'POST':
-            request.session['django_timezone'] = request.POST['timezone']
-        return super(TimezoneView, self).post(request, *args, **kwargs)
-
+    def form_valid(self, *args, **kwargs):
+        self.request.session['django_timezone'] = args[0].cleaned_data['timezone']
+        return super(TimezoneView, self).form_valid(*args, **kwargs)
