@@ -21,7 +21,7 @@ TEMPLATE_CONTEXT_PROCESSORS = TCP + (
     'absolute.context_processors.absolute',
 )
 
-APP_VERSION = "0.0.7"
+APP_VERSION = "0.0.8"
 
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR,  'templates'),
@@ -150,23 +150,23 @@ REDIS_HOST = os.environ.get('REDIS_HOST', '127.0.0.1')
 
 CACHES = {
     'default': {
-        'BACKEND': 'redis_cache.cache.RedisCache',
+        'BACKEND': 'django_redis.cache.RedisCache',
         'LOCATION': '{REDIS_HOST}:{REDIS_PORT}:{REDIS_DB}'.format(
             REDIS_PORT=REDIS_PORT,
             REDIS_HOST=REDIS_HOST,
             REDIS_DB=os.environ.get('REDIS_DB', 1)),
         'OPTIONS': {
-            'CLIENT_CLASS': 'redis_cache.client.DefaultClient',
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
     },
     'statistics': {
-        'BACKEND': 'redis_cache.cache.RedisCache',
+        'BACKEND': 'django_redis.cache.RedisCache',
         'LOCATION': '{REDIS_HOST}:{REDIS_PORT}:{REDIS_DB}'.format(
             REDIS_PORT=os.environ.get('REDIS_STAT_PORT', REDIS_PORT),
             REDIS_HOST=os.environ.get('REDIS_STAT_HOST', REDIS_HOST),
             REDIS_DB=os.environ.get('REDIS_STAT_DB', 15)),
         'OPTIONS': {
-            'CLIENT_CLASS': 'redis_cache.client.DefaultClient',
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
     }
 }

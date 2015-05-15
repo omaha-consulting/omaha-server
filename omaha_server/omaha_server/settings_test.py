@@ -41,13 +41,13 @@ CACHES['default'] = {
 }
 
 CACHES['statistics'] = {
-    'BACKEND': 'redis_cache.cache.RedisCache',
+    'BACKEND': 'django_redis.cache.RedisCache',
     'LOCATION': '{REDIS_HOST}:{REDIS_PORT}:{REDIS_DB}'.format(
         REDIS_PORT=os.environ.get('REDIS_STAT_PORT', REDIS_PORT),
         REDIS_HOST=os.environ.get('REDIS_STAT_HOST', REDIS_HOST),
         REDIS_DB=os.environ.get('REDIS_STAT_DB', 13)),
     'OPTIONS': {
-        'CLIENT_CLASS': 'redis_cache.client.DefaultClient',
+        'CLIENT_CLASS': 'django_redis.client.DefaultClient',
     }
 }
 

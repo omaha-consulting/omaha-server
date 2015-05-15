@@ -247,6 +247,14 @@ class StatisticsMonthsDetailTest(StatisticsMonthsMixin, APITestCase):
     url = reverse('api-statistics-months-detail', args=('app',))
     serializer = StatisticsMonthsSerializer
 
+    def test_list(self):
+        data_detail = self.data.copy()
+        data_detail['data']['install_count'] = 0
+        data_detail['data']['update_count'] = 0
+        response = self.client.get(self.url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.serializer(data_detail).data, response.data)
+
 
 class StatisticsVersionsTest(StatisticsMonthsMixin, APITestCase):
     url = reverse('api-statistics-versions', args=('app',))

@@ -21,7 +21,7 @@ the License.
 from functools import wraps
 
 from singledispatch import singledispatch
-from redis_cache import get_redis_connection
+from django_redis import get_redis_connection
 from redis.exceptions import WatchError
 from omaha.settings import KEY_PREFIX, KEY_LAST_ID
 
