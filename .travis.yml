@@ -19,7 +19,7 @@ before_install:
   - sudo apt-get install -qq python-lxml python-psycopg2
 
 install:
-  - pip install tox
+  - pip install tox==1.9.2
 
 script:
   - tox -e $TOX_ENV
