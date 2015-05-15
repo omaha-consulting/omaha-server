@@ -18,11 +18,11 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
 from crash.views import CrashFormView
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^service/crash_report/$', CrashFormView.as_view(), name='crash'),
-)
+]
