@@ -91,7 +91,7 @@ class TimezoneField(AutoSelect2Field):
         return (NO_ERR_RESP, False, res)
 
     def get_val_txt(self, value):
-        return unicode(value)
+        return value
 
 
 class TimezoneForm(forms.Form):
