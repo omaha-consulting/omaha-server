@@ -91,7 +91,7 @@ class AdminViewTimezoneTest(TestCase):
 
     def test_set_timezone(self):
         url = reverse('set_timezone')
-        timezone = 'Asia/Omsk +0600'
+        timezone = 'Asia/Omsk'
         self.client.post(url, dict(timezone=timezone), follow=True)
         response = self.client.get(url)
         self.assertEqual(self.client.session["django_timezone"], timezone)
