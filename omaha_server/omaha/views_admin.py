@@ -24,8 +24,11 @@ import datetime
 from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, ListView
+from django.views.generic.edit import FormView
 from django.utils import timezone
 from django_tables2 import SingleTableView
+from django.conf import settings
+from django.core.urlresolvers import reverse_lazy
 
 from omaha.statistics import (
     get_users_statistics_months,
@@ -38,6 +41,7 @@ from omaha.filters import AppRequestFilter
 from omaha.utils import make_piechart, make_discrete_bar_chart
 from omaha.filters import EVENT_RESULT, EVENT_TYPE
 from omaha.tables import AppRequestTable
+from omaha.forms import TimezoneForm
 
 
 logger = logging.getLogger(__name__)
@@ -167,3 +171,20 @@ class AppRequestDetailView(StaffMemberRequiredMixin, DetailView):
         context['EVENT_TYPE'] = EVENT_TYPE
         context['STATE_CANCELLED'] = STATE_CANCELLED
         return context
+
+
+class TimezoneView(StaffMemberRequiredMixin, FormView):
+    template_name = 'admin/set_timezone.html'
+    form_class = TimezoneForm
+    success_url = reverse_lazy('set_timezone')
+
+    def get_initial(self):
+        try:
+            cur_timezone = self.request.session['django_timezone']
+        except KeyError:
+            cur_timezone = settings.TIME_ZONE
+        return dict(timezone=cur_timezone)
+
+    def form_valid(self, *args, **kwargs):
+        self.request.session['django_timezone'] = args[0].cleaned_data['timezone']
+        return super(TimezoneView, self).form_valid(*args, **kwargs)

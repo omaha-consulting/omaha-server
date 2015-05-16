@@ -24,10 +24,9 @@ from django.forms import widgets
 from django_ace import AceWidget
 from suit.widgets import LinkedSelect
 from suit_redactor.widgets import RedactorWidget
+from django_select2.fields import AutoSelect2Field
 from django_select2.widgets import AutoHeavySelect2Widget
-from django_select2.fields import AutoSelect2Field, HeavySelect2ChoiceField, AutoModelSelect2Field
 from django_select2.views import NO_ERR_RESP
-from models import Platform
 import pytz
 
 from omaha.models import Application, Version, Action, Data
@@ -84,9 +83,6 @@ class ActionAdminForm(forms.ModelForm):
 
 
 class TimezoneField(AutoSelect2Field):
-    def security_check(self, request, *args, **kwargs):
-        return True
-
     def get_results(self, request, term, page, context):
         get_offset = lambda tz: datetime.now(pytz.timezone(tz)).strftime('%z')
         res = [(tz, ' '.join([tz, get_offset(tz)]))
@@ -99,4 +95,8 @@ class TimezoneField(AutoSelect2Field):
 
 
 class TimezoneForm(forms.Form):
-    timezone = TimezoneField()
+    timezone = TimezoneField(widget=AutoHeavySelect2Widget(
+        select2_options={
+            'width': '20em',
+            'minimumInputLength': 0
+        }))
