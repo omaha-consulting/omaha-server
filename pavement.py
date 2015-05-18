@@ -35,11 +35,11 @@ def up_local_dev_server():
     Requirements:
 
     - [docker](docker.com) or [boot2docker](https://github.com/boot2docker/boot2docker) for OS X or Windows
-    - [fig](fig.sh)
+    - [docker-compose](https://docs.docker.com/compose/install/)
 
     """
-    sh('fig -f fig-dev.yml up -d db')
-    sh('fig -f fig-dev.yml up -d web')
+    sh('docker-compose -f docker-compose.dev.yml -p dev up -d db')
+    sh('docker-compose -f docker-compose.dev.yml -p dev up -d web')
     print("""Open http://{DOCKER_HOST}:9090/admin/\n username: admin\n password: admin""")
 
 
@@ -97,4 +97,4 @@ def docker_run_test():
 
 @task
 def run_test_in_docker():
-    sh('fig -f fig-dev.yml run --rm --entrypoint paver web docker_run_test')
+    sh('docker-compose -f docker-compose.dev.yml -p dev run --rm --entrypoint paver web docker_run_test')

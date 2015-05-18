@@ -18,12 +18,12 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
 from sparkle.views import SparkleView
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^(?P<app_name>[a-zA-Z0-9_ ]+)/(?P<channel>[\w-]+)/appcast.xml$',
         SparkleView.as_view(), name='sparkle_appcast'),
-)
+]
