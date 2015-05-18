@@ -16,16 +16,23 @@ from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_DIR = BASE_DIR
 
-TEMPLATE_CONTEXT_PROCESSORS = TCP + (
-    'django.core.context_processors.request',
-    'absolute.context_processors.absolute',
-)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': TCP + (
+                'django.core.context_processors.request',
+                'absolute.context_processors.absolute',
+            ),
+        },
+    },
+]
 
 APP_VERSION = "0.0.8"
-
-TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR, 'templates'),
-)
 
 SUIT_CONFIG = {
     'ADMIN_NAME': 'Omaha Server [{}]'.format(APP_VERSION),
@@ -181,8 +188,8 @@ STATICFILES_FINDERS = ("django.contrib.staticfiles.finders.FileSystemFinder",
 BOWER_COMPONENTS_ROOT = os.path.join(PROJECT_DIR, 'assets', 'components')
 
 BOWER_INSTALLED_APPS = (
-    'd3#3.3.6',
-    'nvd3#1.1.12-beta',
+    'd3#3.3.13',
+    'nvd3#1.7.1',
 )
 
 
