@@ -13,19 +13,19 @@ Google Omaha server implementation + added Sparkle (mac) feed management
 - Ubuntu Trusty 14.04 (LTS) (64-bit)
 - [paver](http://paver.github.io/paver/)
 - [docker](docker.com) or [boot2docker](https://github.com/boot2docker/boot2docker) for OS X & Windows
-- [fig](fig.sh)
+- [docker-compose](https://docs.docker.com/compose/install/)
 
 ```shell
 $ sudo apt-get update
 $ sudo apt-get install docker.io
 $ sudo apt-get install python-paver python-pip
-$ sudo pip install -U fig
+$ sudo pip install -U docker-compose
 $ git clone https://github.com/Crystalnix/omaha-server.git
 $ cd omaha-server
 $ sudo paver up_local_dev_server
 
 # Stop server
-$ sudo fig stop
+$ sudo docker-compose stop
 ```
 
 Open `http://{DOCKER_HOST}:9090/admin/`
