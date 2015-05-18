@@ -94,4 +94,4 @@ class AdminViewTimezoneTest(TestCase):
         self.client.post(url, dict(timezone=timezone), follow=True)
         response = self.client.get(url)
         self.assertEqual(self.client.session["django_timezone"], timezone)
-        self.assertContains(response, 'value="Asia/Omsk"')
+        self.assertContains(response, '<option value="Asia/Omsk" selected="selected">Asia/Omsk +0600</option>')

@@ -37,7 +37,6 @@ urlpatterns = [
     url(r'^api/version', omaha.api.ServerVersionView.as_view(), name='api-version'),
     url(r'^api/', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r"^select2/", include("django_select2.urls")),
 ]
 
 if settings.DEBUG:

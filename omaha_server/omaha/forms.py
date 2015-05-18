@@ -24,9 +24,7 @@ from django.forms import widgets
 from django_ace import AceWidget
 from suit.widgets import LinkedSelect
 from suit_redactor.widgets import RedactorWidget
-from django_select2.fields import AutoSelect2Field
-from django_select2.widgets import AutoHeavySelect2Widget
-from django_select2.views import NO_ERR_RESP
+from django_select2.fields import Select2ChoiceField
 import pytz
 
 from omaha.models import Application, Version, Action, Data
@@ -82,21 +80,9 @@ class ActionAdminForm(forms.ModelForm):
         exclude = []
 
 
-class TimezoneField(AutoSelect2Field):
-    def get_results(self, request, term, page, context):
-        get_offset = lambda tz: datetime.now(pytz.timezone(tz)).strftime('%z')
-        res = [(tz, ' '.join([tz, get_offset(tz)]))
-               for tz in pytz.common_timezones
-               if term.lower() in tz.lower() or term in get_offset(tz)]
-        return (NO_ERR_RESP, False, res)
-
-    def get_val_txt(self, value):
-        return value
+TZ_CHOICES = [(tz, ' '.join([tz, datetime.now(pytz.timezone(tz)).strftime('%z')]))
+              for tz in pytz.common_timezones]
 
 
 class TimezoneForm(forms.Form):
-    timezone = TimezoneField(widget=AutoHeavySelect2Widget(
-        select2_options={
-            'width': '20em',
-            'minimumInputLength': 0
-        }))
+    timezone = Select2ChoiceField(choices=TZ_CHOICES)
