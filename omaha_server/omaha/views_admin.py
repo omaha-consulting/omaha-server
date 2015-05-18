@@ -185,6 +185,6 @@ class TimezoneView(StaffMemberRequiredMixin, FormView):
             cur_timezone = settings.TIME_ZONE
         return dict(timezone=cur_timezone)
 
-    def form_valid(self, *args, **kwargs):
-        self.request.session['django_timezone'] = args[0].cleaned_data['timezone']
-        return super(TimezoneView, self).form_valid(*args, **kwargs)
+    def form_valid(self, form):
+        self.request.session['django_timezone'] = form.cleaned_data['timezone']
+        return super(TimezoneView, self).form_valid(form)

@@ -24,7 +24,7 @@ TEMPLATE_CONTEXT_PROCESSORS = TCP + (
 APP_VERSION = "0.0.8"
 
 TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR,  'templates'),
+    os.path.join(BASE_DIR, 'templates'),
 )
 
 SUIT_CONFIG = {

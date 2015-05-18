@@ -23,13 +23,11 @@ from django.test.client import Client
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 
-
 from omaha.factories import ApplicationFactory
 from omaha.models import Request, AppRequest
 from omaha.views_admin import (
     StatisticsView,
 )
-
 
 User = get_user_model()
 
@@ -81,6 +79,7 @@ class ViewsStaffMemberRequiredTest(TestCase):
         url = reverse('set_timezone')
         response = self.client.get(url)
         self.assertRedirects(response, '/admin/login/?next=%s' % url)
+
 
 class AdminViewTimezoneTest(TestCase):
     def setUp(self):
