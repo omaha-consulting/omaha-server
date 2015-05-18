@@ -28,7 +28,6 @@ from lxml.etree import XMLSyntaxError
 
 from omaha.builder import build_response
 
-
 logger = logging.getLogger(__name__)
 
 

@@ -17,13 +17,17 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
 """
-
+from datetime import datetime
 from django import forms
 from django.forms import widgets
 
 from django_ace import AceWidget
 from suit.widgets import LinkedSelect
 from suit_redactor.widgets import RedactorWidget
+from django_select2.fields import AutoSelect2Field
+from django_select2.widgets import AutoHeavySelect2Widget
+from django_select2.views import NO_ERR_RESP
+import pytz
 
 from omaha.models import Application, Version, Action, Data
 
@@ -76,3 +80,23 @@ class ActionAdminForm(forms.ModelForm):
     class Meta:
         model = Action
         exclude = []
+
+
+class TimezoneField(AutoSelect2Field):
+    def get_results(self, request, term, page, context):
+        get_offset = lambda tz: datetime.now(pytz.timezone(tz)).strftime('%z')
+        res = [(tz, ' '.join([tz, get_offset(tz)]))
+               for tz in pytz.common_timezones
+               if term.lower() in tz.lower() or term in get_offset(tz)]
+        return (NO_ERR_RESP, False, res)
+
+    def get_val_txt(self, value):
+        return value
+
+
+class TimezoneForm(forms.Form):
+    timezone = TimezoneField(widget=AutoHeavySelect2Widget(
+        select2_options={
+            'width': '20em',
+            'minimumInputLength': 0
+        }))

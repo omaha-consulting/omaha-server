@@ -21,7 +21,7 @@ the License.
 from django.conf.urls import patterns, url
 
 from omaha.views import UpdateView
-from omaha.views_admin import StatisticsView, StatisticsDetailView, RequestListView, AppRequestDetailView
+from omaha.views_admin import StatisticsView, StatisticsDetailView, RequestListView, AppRequestDetailView, TimezoneView
 
 
 urlpatterns = patterns('',
@@ -31,4 +31,5 @@ urlpatterns = patterns('',
     url(r'^admin/statistics/(?P<name>[a-zA-Z0-9_ ]+)/$', StatisticsDetailView.as_view(), name='omaha_statistics_detail'),
     url(r'^admin/statistics/(?P<name>[a-zA-Z0-9_ ]+)/requests/$', RequestListView.as_view(), name='omaha_request_list'),
     url(r'^admin/statistics/requests/(?P<pk>\d+)/$', AppRequestDetailView.as_view(), name='omaha_request_detail'),
+    url(r'^admin/set_timezone/$', TimezoneView.as_view(), name='set_timezone'),
 )

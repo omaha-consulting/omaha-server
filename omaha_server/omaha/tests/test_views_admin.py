@@ -23,13 +23,11 @@ from django.test.client import Client
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 
-
 from omaha.factories import ApplicationFactory
 from omaha.models import Request, AppRequest
 from omaha.views_admin import (
     StatisticsView,
 )
-
 
 User = get_user_model()
 
@@ -76,3 +74,24 @@ class ViewsStaffMemberRequiredTest(TestCase):
         url = reverse('omaha_request_detail', kwargs=dict(pk=self.app_request.pk))
         response = self.client.get(url)
         self.assertRedirects(response, '/admin/login/?next=%s' % url)
+
+    def test_omaha_set_timezone(self):
+        url = reverse('set_timezone')
+        response = self.client.get(url)
+        self.assertRedirects(response, '/admin/login/?next=%s' % url)
+
+
+class AdminViewTimezoneTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_superuser(
+            username='test', email='test@example.com', password='test')
+        self.client.login(username='test', password='test')
+
+    def test_set_timezone(self):
+        url = reverse('set_timezone')
+        timezone = 'Asia/Omsk'
+        self.client.post(url, dict(timezone=timezone), follow=True)
+        response = self.client.get(url)
+        self.assertEqual(self.client.session["django_timezone"], timezone)
+        self.assertContains(response, 'value="Asia/Omsk"')
