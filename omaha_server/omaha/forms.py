@@ -81,9 +81,9 @@ class ActionAdminForm(forms.ModelForm):
         exclude = []
 
 
-TZ_CHOICE = [(tz, ' '.join([tz, datetime.now(pytz.timezone(tz)).strftime('%z')]))
+TZ_CHOICES = [(tz, ' '.join([tz, datetime.now(pytz.timezone(tz)).strftime('%z')]))
              for tz in pytz.common_timezones]
 
 
 class TimezoneForm(forms.Form):
-    timezone = Select2ChoiceField(choices=TZ_CHOICE)
+    timezone = Select2ChoiceField(choices=TZ_CHOICES)
