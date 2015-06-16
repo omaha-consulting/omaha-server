@@ -19,9 +19,11 @@ the License.
 """
 
 import django_filters
+from django_select2.fields import AutoModelSelect2Field
+from django_select2.widgets import AutoHeavySelect2Widget
+from django_select2 import NO_ERR_RESP
 
-from omaha.models import AppRequest
-
+from omaha.models import AppRequest, Request
 
 EVENT_RESULT = {
     0: 'error',
@@ -114,11 +116,47 @@ class EventTypeFilter(django_filters.ChoiceFilter):
         return self.options[value][1](qs, self.name)
 
 
+class FilterByUserIdWidget(AutoHeavySelect2Widget):
+
+    def init_options(self):
+        super(FilterByUserIdWidget, self).init_options()
+        self.options['ajax']['data'] = '*START*select2_add_appid*END*'
+        self.options['width'] = '220px'
+
+
+class FilterByUserIdField(AutoModelSelect2Field):
+    widget = FilterByUserIdWidget
+    queryset = Request.objects
+
+    def get_results(self, request, term, page, context):
+        queryset = Request.objects.filter(apprequest__appid=request.GET['app'], userid__contains=term).distinct("userid")
+        results = [(request.userid, request.userid) for request in queryset]
+        results += [('', '')]
+        return NO_ERR_RESP, False, results
+
+    def label_from_instance(self, obj):
+        return obj.userid
+
+    def clean(self, value):
+        return value
+
+
+class UserIdFilter(django_filters.Filter):
+    field = FilterByUserIdField(to_field_name='userid')
+
+    def filter(self, qs, value):
+        if value == '':
+            return qs.all()
+        else:
+            return qs.filter(request__userid=value)
+
+
 class AppRequestFilter(django_filters.FilterSet):
     request__created = django_filters.DateRangeFilter()
     event_type = EventTypeFilter()
     event_result = EventResultFilter()
+    request__userid = UserIdFilter()
 
     class Meta:
         model = AppRequest
-        fields = ('request__created',)
+        fields = ('request__created', 'request__userid')

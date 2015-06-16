@@ -56,6 +56,7 @@ class Crash(TimeStampedModel):
     signature = models.CharField(max_length=255, db_index=True, null=True, blank=True)
 
     class Meta:
+        ordering = ['id']
         verbose_name_plural = 'Crashes'
 
 
@@ -71,6 +72,7 @@ class Symbols(TimeStampedModel):
     file = models.FileField(upload_to=symbols_upload_to)
 
     class Meta:
+        ordering = ['id']
         verbose_name_plural = 'Symbols'
         unique_together = (
             ('debug_id', 'debug_file'),

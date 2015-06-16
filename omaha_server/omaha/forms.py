@@ -20,14 +20,16 @@ the License.
 from datetime import datetime
 from django import forms
 from django.forms import widgets
+from django.shortcuts import get_object_or_404
 
 from django_ace import AceWidget
 from suit.widgets import LinkedSelect
 from suit_redactor.widgets import RedactorWidget
-from django_select2.fields import Select2ChoiceField
+from django_select2.fields import Select2ChoiceField, AutoModelSelect2Field
+from django_select2 import AutoHeavySelect2Widget, NO_ERR_RESP
 import pytz
 
-from omaha.models import Application, Version, Action, Data
+from omaha.models import Application, Version, Action, Data, Request
 
 
 __all__ = ['ApplicationAdminForm', 'VersionAdminForm', 'ActionAdminForm']

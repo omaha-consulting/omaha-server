@@ -49,6 +49,7 @@ class Application(TimeStampedModel):
     name = models.CharField(verbose_name='App', max_length=30, unique=True)
 
     class Meta:
+        ordering = ['id']
         db_table = 'applications'
 
     def __str__(self):
@@ -60,6 +61,7 @@ class Platform(TimeStampedModel):
     name = models.CharField(verbose_name='Platform', max_length=10, unique=True, db_index=True)
 
     class Meta:
+        ordering = ['id']
         db_table = 'platforms'
 
     def __str__(self):
@@ -71,6 +73,7 @@ class Channel(TimeStampedModel):
     name = models.CharField(verbose_name='Channel', max_length=10, unique=True, db_index=True)
 
     class Meta:
+        ordering = ['id']
         db_table = 'channels'
 
     def __str__(self):
@@ -101,6 +104,7 @@ class Version(TimeStampedModel):
     objects = VersionManager()
 
     class Meta:
+        ordering = ['id']
         db_table = 'versions'
         unique_together = (
             ('app', 'platform', 'channel', 'version'),
@@ -160,6 +164,7 @@ class Action(TimeStampedModel):
     other = JSONField(verbose_name='Other attributes', help_text='JSON format', null=True, blank=True,)
 
     class Meta:
+        ordering = ['id']
         db_table = 'actions'
 
     def get_attributes(self):
@@ -235,7 +240,7 @@ class Request(models.Model):
     version = VersionField(help_text='Format: 255.255.65535.65535', number_bits=(8, 8, 16, 16))
     ismachine = models.PositiveSmallIntegerField(null=True, blank=True)
     sessionid = models.CharField(max_length=40, null=True, blank=True)
-    userid = models.CharField(max_length=40, null=True, blank=True)
+    userid = models.CharField(max_length=40, null=True, blank=True, db_index=True)
     installsource = models.CharField(max_length=40, null=True, blank=True)
     originurl = models.URLField(null=True, blank=True)
     testsource = models.CharField(max_length=40, null=True, blank=True)
