@@ -50,6 +50,7 @@ class SparkleVersion(TimeStampedModel):
     objects = VersionManager()
 
     class Meta:
+        ordering = ['id']
         index_together = (
             ('app', 'channel'),
         )

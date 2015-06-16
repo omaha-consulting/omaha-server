@@ -49,6 +49,7 @@ class Application(TimeStampedModel):
     name = models.CharField(verbose_name='App', max_length=30, unique=True)
 
     class Meta:
+        ordering = ['id']
         db_table = 'applications'
 
     def __str__(self):
@@ -60,6 +61,7 @@ class Platform(TimeStampedModel):
     name = models.CharField(verbose_name='Platform', max_length=10, unique=True, db_index=True)
 
     class Meta:
+        ordering = ['id']
         db_table = 'platforms'
 
     def __str__(self):
@@ -71,6 +73,7 @@ class Channel(TimeStampedModel):
     name = models.CharField(verbose_name='Channel', max_length=10, unique=True, db_index=True)
 
     class Meta:
+        ordering = ['id']
         db_table = 'channels'
 
     def __str__(self):
@@ -101,6 +104,7 @@ class Version(TimeStampedModel):
     objects = VersionManager()
 
     class Meta:
+        ordering = ['id']
         db_table = 'versions'
         unique_together = (
             ('app', 'platform', 'channel', 'version'),
@@ -160,6 +164,7 @@ class Action(TimeStampedModel):
     other = JSONField(verbose_name='Other attributes', help_text='JSON format', null=True, blank=True,)
 
     class Meta:
+        ordering = ['id']
         db_table = 'actions'
 
     def get_attributes(self):
