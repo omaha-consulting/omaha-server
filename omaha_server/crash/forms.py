@@ -28,7 +28,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.forms import widgets
 
 from django_ace import AceWidget
-from crash.models import Symbols, Crash
+from crash.models import Symbols, Crash, CrashDescription
 from crash.utils import parse_debug_meta_info
 
 
@@ -61,6 +61,12 @@ class CrashFrom(forms.ModelForm):
                 return None
 
         return file
+
+
+class CrashDescriptionForm(forms.ModelForm):
+    class Meta:
+        model = CrashDescription
+        fields = ['summary', 'description']
 
 
 class SymbolsFileInput(forms.ClearableFileInput):

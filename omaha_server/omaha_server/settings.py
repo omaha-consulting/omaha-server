@@ -87,6 +87,7 @@ INSTALLED_APPS = (
     'django_ace',
     'rest_framework',
     'django_select2',
+    'bootstrap3',
 
     'omaha',
     'crash',
@@ -190,6 +191,7 @@ BOWER_COMPONENTS_ROOT = os.path.join(PROJECT_DIR, 'assets', 'components')
 BOWER_INSTALLED_APPS = (
     'd3#3.3.13',
     'nvd3#1.7.1',
+    'bootstrap#3.3.5',
 )
 
 

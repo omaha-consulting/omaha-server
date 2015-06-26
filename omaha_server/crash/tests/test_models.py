@@ -23,7 +23,8 @@ import os
 from django import test
 from django.core.files.uploadedfile import SimpleUploadedFile
 
-from crash.models import Crash, Symbols, symbols_upload_to
+from crash.models import Crash, CrashDescription, Symbols, symbols_upload_to
+from crash.factories import CrashFactory
 from omaha.tests.utils import temporary_media_root
 
 
@@ -55,6 +56,24 @@ class CrashModelTest(test.TestCase):
         self.assertDictEqual(obj.meta, meta)
         self.assertEqual(obj.appid, app_id)
         self.assertEqual(obj.userid, user_id)
+
+
+class CrashDescriptionModelTest(test.TestCase):
+    def test_model(self):
+        crash = CrashFactory()
+        summary = "Test summary"
+        description = "Test description"
+
+        obj = CrashDescription.objects.create(
+            crash=crash,
+            summary=summary,
+            description=description
+        )
+
+        self.assertTrue(obj)
+        self.assertEqual(obj.crash, crash)
+        self.assertEqual(obj.summary, summary)
+        self.assertEqual(obj.description, description)
 
 
 class SymbolsModelTest(test.TestCase):

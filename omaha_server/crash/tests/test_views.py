@@ -24,7 +24,8 @@ from django import test
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.urlresolvers import reverse
 
-from crash.models import Crash
+from crash.models import Crash, CrashDescription
+from crash.factories import CrashFactory, CrashDescriptionFactory
 
 
 BASE_DIR = os.path.dirname(__file__)
@@ -128,3 +129,78 @@ class CrashViewTest(test.TestCase):
         self.assertEqual(obj.userid, form_data['userid'])
         self.assertFalse(obj.upload_file_minidump.name)
         self.assertIsNotNone(obj.archive)
+
+
+class CrashDescriptionViewTest(test.TestCase):
+    def test_get_bad(self):
+        # no crash with such id
+        response = self.client.get(
+            reverse('crash_description', kwargs=dict(pk=10))
+        )
+        self.assertEquals(response.status_code, 400)
+
+        # crash with description added
+        description = CrashDescriptionFactory()
+        response = self.client.get(
+            reverse('crash_description', kwargs=dict(pk=description.crash.pk))
+        )
+        self.assertEquals(response.status_code, 400)
+
+    def test_get_good(self):
+        crash = CrashFactory()
+        comment = 'Crash comment'
+        data = dict(
+            comment=comment
+        )
+        response = self.client.get(
+            reverse('crash_description', kwargs=dict(pk=crash.pk)),
+            data
+        )
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(response.context['form'].initial['description'], comment)
+
+    def test_post_bad(self):
+        summary = 'Test summary'
+        description = 'Test Description'
+        form_data = dict(
+            summary=summary,
+            description=description
+        )
+
+        # no crash with such id
+        response = self.client.post(
+            reverse('crash_description', kwargs=dict(pk=10)),
+            form_data
+        )
+        self.assertEquals(response.status_code, 400)
+
+        # crash with description added
+        description = CrashDescriptionFactory()
+        response = self.client.get(
+            reverse('crash_description', kwargs=dict(pk=description.crash.pk)),
+            form_data
+        )
+        self.assertEquals(response.status_code, 400)
+
+    def test_post_good(self):
+        crash = CrashFactory()
+        summary = 'Test summary'
+        description = 'Test Description'
+        form_data = dict(
+            summary=summary,
+            description=description
+        )
+
+        self.assertEqual(CrashDescription.objects.all().count(), 0)
+        response = self.client.post(
+            reverse('crash_description', kwargs=dict(pk=crash.pk)),
+            form_data,
+            follow=True
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('crash/crash_description_submitted.html', response.template_name)
+        self.assertEqual(CrashDescription.objects.all().count(), 1)
+        obj = CrashDescription.objects.get()
+        self.assertEquals(obj.crash, crash)
+        self.assertEquals(obj.summary, summary)
+        self.assertEquals(obj.description, description)

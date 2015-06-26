@@ -40,3 +40,11 @@ class CrashFactory(factory.DjangoModelFactory):
     userid = factory.Sequence(lambda n: '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C%s}' % n)
     meta = {'lang': 'en'}
     signature = factory.Sequence(lambda n: 'signature_%s' % n)
+
+class CrashDescriptionFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = 'crash.CrashDescription'
+
+    crash = factory.lazy_attribute(lambda x: CrashFactory())
+    summary = 'Test Summary'
+    description = 'Test Description'

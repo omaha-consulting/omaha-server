@@ -59,6 +59,12 @@ class Crash(BaseModel, TimeStampedModel):
         verbose_name_plural = 'Crashes'
 
 
+class CrashDescription(BaseModel, TimeStampedModel):
+    crash = models.OneToOneField(Crash, related_name='crash_description')
+    summary = models.CharField(max_length=500)
+    description = models.TextField(null=True, blank=True)
+
+
 def symbols_upload_to(obj, filename):
     sym_filename = os.path.splitext(os.path.basename(obj.debug_file))[0]
     sym_filename = '%s.sym' % sym_filename
