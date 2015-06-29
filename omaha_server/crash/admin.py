@@ -49,6 +49,7 @@ class CrashDescriptionAdmin(admin.ModelAdmin):
     readonly_fields = ('created', 'modified')
     list_display = ('created', 'modified', 'summary')
     list_display_links = ('created', 'modified', 'summary')
+    ordering = ('-id',)
 
 
 class CrashDescriptionInline(admin.StackedInline):
@@ -60,6 +61,7 @@ class CrashAdmin(admin.ModelAdmin):
     list_display = ('created', 'modified', 'archive_field', 'signature', 'appid', 'userid', 'summary_field')
     list_display_links = ('created', 'modified', 'signature', 'appid', 'userid',)
     list_filter = ('created', CrashArchiveFilter,)
+    ordering = ('-id',)
     search_fields = ('appid', 'userid',)
     form = CrashFrom
     actions = ('regenerate_stacktrace',)
@@ -88,4 +90,5 @@ class SymbolsAdmin(admin.ModelAdmin):
     readonly_fields = ('created', 'modified', )
     list_display = ('created', 'modified', 'debug_file', 'debug_id',)
     list_display_links = ('created', 'modified', 'debug_file', 'debug_id',)
+    ordering = ('-id',)
     form = SymbolsAdminForm
