@@ -34,5 +34,6 @@ class AppRequestTable(tables.Table):
 
     class Meta:
         model = AppRequest
-        attrs = {'class': 'paleblue table table-striped table-bordered table-hover table-condensed'}
+        attrs = {'class': 'paleblue table table-striped table-bordered table-hover table-condensed',
+                 'id': 'apprequest-table'}
         fields = ('id', 'version', 'platform', 'os', 'sp', 'arch', 'date',)

@@ -17,15 +17,13 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
 """
-import django
-django.setup()
 from uuid import UUID
-import re
 
 from django.test import TestCase
 from django.test.client import Client
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
+from pyquery import PyQuery as pq
 
 from omaha.factories import ApplicationFactory, RequestFactory, AppRequestFactory
 from omaha.models import Request, AppRequest
@@ -123,14 +121,14 @@ class FilteringAppRequestsByUserIdTest(TestCase):
                 'event_type': '',
                 'event_result': ''}
         resp = self.client.get(url, data)
-        res = re.findall(b'(\d+) app requests', resp.content)
-        self.assertEqual(1, len(res))
-        self.assertEqual(3, int(res[0]))
+        d = pq(resp.content)
+        res = d('#apprequest-table tbody tr')
+        self.assertEqual(len(res), 3)
         data = {'request__userid': self.userid1,
                 'request__created': '',
                 'event_type': '',
                 'event_result': ''}
         resp = self.client.get(url, data)
-        res = re.findall(b'(\d+) app requests', resp.content)
-        self.assertEqual(1, len(res))
-        self.assertEqual(2, int(res[0]))
+        d = pq(resp.content)
+        res = d('#apprequest-table tbody tr')
+        self.assertEqual(len(res), 2)

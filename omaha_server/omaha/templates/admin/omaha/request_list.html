@@ -47,7 +47,7 @@
     <script>
         function select2_add_appid(term, page) {
             var proxFunc = $.proxy(django_select2.get_url_params, this);
-            results = proxFunc(term, page);
+            var results = proxFunc(term, page);
             results.app = $('#app-id').val();
             return results;
         }
