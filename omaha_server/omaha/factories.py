@@ -18,6 +18,7 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
+from uuid import UUID
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 import factory
@@ -56,6 +57,22 @@ class VersionFactory(factory.DjangoModelFactory):
     file = SimpleUploadedFile('./chrome_installer.exe', b' ' * 123)
     file_size = 123
     file_hash = 'ojan8ermbNHlI5czkED+nc01rxk='
+
+
+class RequestFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = 'omaha.Request'
+
+    version = "1.0.0.0"
+    userid = UUID(int=0)
+
+
+class AppRequestFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = 'omaha.AppRequest'
+
+    request = factory.LazyAttribute(lambda x: RequestFactory())
+    appid = '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C0}'
 
 
 class ActionFactory(factory.DjangoModelFactory):

@@ -189,3 +189,4 @@ def collect_statistics(request):
     req.save()
 
     parse_apps(apps, req)
+

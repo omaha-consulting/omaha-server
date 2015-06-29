@@ -11,3 +11,4 @@ freezegun==0.3.3
 factory-boy==2.5.2
 mock==1.0.1
 tox==1.9.2
+pyquery==1.2.9

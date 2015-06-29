@@ -129,10 +129,12 @@ class RequestListView(StaffMemberRequiredMixin, SingleTableView):
         qs = super(RequestListView, self).get_queryset()
         qs = qs.select_related('request', 'request__os',)
         qs = qs.order_by('-request__created')
+        self.appid = None
 
         try:
             app = Application.objects.get(name=self.kwargs.get('name'))
             qs = qs.filter(appid=app.id)
+            self.appid = app.id
         except Application.DoesNotExist:
             logger.error('RequestListView DoesNotExist', exc_info=True, extra=dict(request=self.request))
 
@@ -144,6 +146,7 @@ class RequestListView(StaffMemberRequiredMixin, SingleTableView):
         context = super(RequestListView, self).get_context_data(**kwargs)
         context['filter'] = self.filter
         context['app_name'] = self.kwargs.get('name')
+        context['app_id'] = self.appid
         return context
 
 
