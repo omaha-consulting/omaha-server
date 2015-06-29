@@ -1,0 +1,18 @@
+{% extends 'crash/base.html' %}
+
+{% load bootstrap3 %}
+
+{% block title %}Crash report{% endblock %}
+
+{% block content %}
+    <h1 class="text-center">Please fill the form</h1>
+    <form method="post" class="form">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {% buttons %}
+        <button type="submit" class="btn btn-primary">
+            {% bootstrap_icon "star" %} Submit
+        </button>
+    {% endbuttons %}
+    </form>
+{% endblock %}

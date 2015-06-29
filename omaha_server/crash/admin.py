@@ -19,11 +19,12 @@ the License.
 """
 
 from django.contrib import admin
+from django.core.exceptions import ObjectDoesNotExist
 
 from celery import signature
 
 from crash.forms import SymbolsAdminForm, CrashFrom
-from crash.models import Crash, Symbols
+from crash.models import Crash, CrashDescription, Symbols
 
 
 class CrashArchiveFilter(admin.SimpleListFilter):
@@ -43,18 +44,37 @@ class CrashArchiveFilter(admin.SimpleListFilter):
             return queryset.filter(archive='')
 
 
+@admin.register(CrashDescription)
+class CrashDescriptionAdmin(admin.ModelAdmin):
+    readonly_fields = ('created', 'modified')
+    list_display = ('created', 'modified', 'summary')
+    list_display_links = ('created', 'modified', 'summary')
+
+
+class CrashDescriptionInline(admin.StackedInline):
+    model = CrashDescription
+
+
 @admin.register(Crash)
 class CrashAdmin(admin.ModelAdmin):
-    list_display = ('created', 'modified', 'archive_field', 'signature', 'appid', 'userid',)
+    list_display = ('created', 'modified', 'archive_field', 'signature', 'appid', 'userid', 'summary_field')
     list_display_links = ('created', 'modified', 'signature', 'appid', 'userid',)
     list_filter = ('created', CrashArchiveFilter,)
     search_fields = ('appid', 'userid',)
     form = CrashFrom
     actions = ('regenerate_stacktrace',)
+    inlines = [CrashDescriptionInline]
 
     def archive_field(self, obj):
         return bool(obj.archive)
     archive_field.short_description = 'Instrumental file'
+
+    def summary_field(self, obj):
+        try:
+            return obj.crash_description.summary
+        except ObjectDoesNotExist:
+            return None
+    summary_field.short_description = 'Summary'
 
     def regenerate_stacktrace(self, request, queryset):
         for i in queryset:

@@ -19,10 +19,14 @@ the License.
 """
 
 from django.conf.urls import url
-
-from crash.views import CrashFormView
+from django.views.generic.base import TemplateView
+from crash.views import CrashFormView, CrashDescriptionFormView
 
 
 urlpatterns = [
     url(r'^service/crash_report/$', CrashFormView.as_view(), name='crash'),
+    url(r'^service/crash_details/(?P<pk>\d+)$', CrashDescriptionFormView.as_view(), name='crash_description'),
+    url(r'^service/crash_details/thanks$',
+        TemplateView.as_view(template_name="crash/crash_description_submitted.html"),
+        name='crash_description_submitted'),
 ]
