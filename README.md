@@ -121,7 +121,7 @@ app:
     description: 'Omaha Server'
 
     all_environments:
-        solution_stack_name: '64bit Amazon Linux 2014.09 v1.0.9 running Docker 1.2.0'
+        solution_stack_name: '64bit Amazon Linux 2015.03 v1.4.3 running Docker 1.6.2'
         tier_name: 'WebServer'
         tier_type: 'Standard'
         tier_version: '1.0'
@@ -168,7 +168,7 @@ app:
                     yaml:
                         container_commands:
                             00001-docker-privileged:
-                                command: 'sed -i "s/docker run -d/docker run --privileged -d/" /opt/elasticbeanstalk/hooks/appdeploy/pre/04run.sh'
+                                command: 'sed -i "s/docker run -d/docker run --privileged -d/" /opt/elasticbeanstalk/hooks/appdeploy/enact/00run.sh'
 
             includes:
                 - 'Dockerrun.aws.json'

@@ -20,10 +20,13 @@ the License.
 
 import json
 
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.urlresolvers import reverse_lazy
 from django.views.generic import FormView
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse
-from crash.forms import CrashFrom
+from django.http import HttpResponse, HttpResponseBadRequest
+from crash.forms import CrashFrom, CrashDescriptionForm
+from crash.models import Crash
 
 
 class CrashFormView(FormView):
@@ -46,3 +49,36 @@ class CrashFormView(FormView):
 
     def form_invalid(self, form):
         return HttpResponse(json.dumps(form.errors), status=400, content_type='application/json')
+
+
+class CrashDescriptionFormView(FormView):
+    form_class = CrashDescriptionForm
+    template_name = 'crash/crash_description.html'
+    success_url = reverse_lazy('crash_description_submitted')
+
+    def dispatch(self, request, *args, **kwargs):
+        # verify crash_id refers to valid crash object
+        try:
+            self.crash = Crash.objects.select_related('crash_description').get(pk=self.kwargs.get('pk'))
+        except Crash.DoesNotExist:
+            return HttpResponseBadRequest('no such crash')
+
+        # verify there is no crash description for that object yet
+        try:
+            desc = self.crash.crash_description
+            return HttpResponseBadRequest('already reported as \"%s\"' % desc.summary)
+        except ObjectDoesNotExist:
+            pass
+
+        return super(CrashDescriptionFormView, self).dispatch(request, *args, **kwargs)
+
+    def get_initial(self):
+        data = super(CrashDescriptionFormView, self).get_initial()
+        data['description'] = self.request.GET.get('comment')
+        return data
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.crash = self.crash
+        obj.save()
+        return super(CrashDescriptionFormView, self).form_valid(form)

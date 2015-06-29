@@ -42,14 +42,19 @@ __all__ = ['Application', 'Channel', 'Platform', 'Version',
            'Action', 'EVENT_DICT_CHOICES', 'EVENT_CHOICES',
            'Data']
 
+class BaseModel(models.Model):
+
+    class Meta:
+        abstract = True
+        ordering = ('id', )
+
 
 @python_2_unicode_compatible
-class Application(TimeStampedModel):
+class Application(BaseModel, TimeStampedModel):
     id = models.CharField(max_length=38, primary_key=True)
     name = models.CharField(verbose_name='App', max_length=30, unique=True)
 
-    class Meta:
-        ordering = ['id']
+    class Meta(BaseModel.Meta):
         db_table = 'applications'
 
     def __str__(self):
@@ -57,11 +62,10 @@ class Application(TimeStampedModel):
 
 
 @python_2_unicode_compatible
-class Platform(TimeStampedModel):
+class Platform(BaseModel, TimeStampedModel):
     name = models.CharField(verbose_name='Platform', max_length=10, unique=True, db_index=True)
 
-    class Meta:
-        ordering = ['id']
+    class Meta(BaseModel.Meta):
         db_table = 'platforms'
 
     def __str__(self):
@@ -69,11 +73,10 @@ class Platform(TimeStampedModel):
 
 
 @python_2_unicode_compatible
-class Channel(TimeStampedModel):
+class Channel(BaseModel, TimeStampedModel):
     name = models.CharField(verbose_name='Channel', max_length=10, unique=True, db_index=True)
 
-    class Meta:
-        ordering = ['id']
+    class Meta(BaseModel.Meta):
         db_table = 'channels'
 
     def __str__(self):
@@ -90,7 +93,7 @@ def _version_upload_to(*args, **kwargs):
 
 
 @python_2_unicode_compatible
-class Version(TimeStampedModel):
+class Version(BaseModel, TimeStampedModel):
     is_enabled = models.BooleanField(default=True)
     app = models.ForeignKey(Application)
     platform = models.ForeignKey(Platform, db_index=True)
@@ -103,8 +106,7 @@ class Version(TimeStampedModel):
 
     objects = VersionManager()
 
-    class Meta:
-        ordering = ['id']
+    class Meta(BaseModel.Meta):
         db_table = 'versions'
         unique_together = (
             ('app', 'platform', 'channel', 'version'),
@@ -139,7 +141,7 @@ EVENT_DICT_CHOICES = dict(
 EVENT_CHOICES = zip(EVENT_DICT_CHOICES.values(), EVENT_DICT_CHOICES.keys())
 
 
-class Action(TimeStampedModel):
+class Action(BaseModel, TimeStampedModel):
     version = models.ForeignKey(Version, db_index=True, related_name='actions')
     event = models.PositiveSmallIntegerField(
         choices=EVENT_CHOICES,
@@ -163,8 +165,7 @@ class Action(TimeStampedModel):
                   'in response to a successful install')
     other = JSONField(verbose_name='Other attributes', help_text='JSON format', null=True, blank=True,)
 
-    class Meta:
-        ordering = ['id']
+    class Meta(BaseModel.Meta):
         db_table = 'actions'
 
     def get_attributes(self):
