@@ -123,14 +123,14 @@ class FilteringAppRequestsByUserIdTest(TestCase):
                 'event_type': '',
                 'event_result': ''}
         resp = self.client.get(url, data)
-        res = re.findall('(\d+) app requests', resp.content)
+        res = re.findall(b'(\d+) app requests', resp.content)
         self.assertEqual(1, len(res))
-        self.assertEqual('3', res[0])
+        self.assertEqual(3, int(res[0]))
         data = {'request__userid': self.userid1,
                 'request__created': '',
                 'event_type': '',
                 'event_result': ''}
         resp = self.client.get(url, data)
-        res = re.findall('(\d+) app requests', resp.content)
+        res = re.findall(b'(\d+) app requests', resp.content)
         self.assertEqual(1, len(res))
-        self.assertEqual('2', res[0])
+        self.assertEqual(2, int(res[0]))

@@ -21,7 +21,7 @@ the License.
 import django_tables2 as tables
 from django_tables2 import A
 
-from omaha.models import AppRequest, Event
+from omaha.models import AppRequest
 
 
 class AppRequestTable(tables.Table):
@@ -36,10 +36,3 @@ class AppRequestTable(tables.Table):
         model = AppRequest
         attrs = {'class': 'paleblue table table-striped table-bordered table-hover table-condensed'}
         fields = ('id', 'version', 'platform', 'os', 'sp', 'arch', 'date',)
-
-class EventTable(tables.Table):
-
-    class Meta:
-        model = Event
-        attrs = {'class': 'paleblue table table-striped table-bordered table-hover table-condensed'}
-        fields = ('id', 'eventtype', 'eventresult', 'errorcode', 'errorcode1')

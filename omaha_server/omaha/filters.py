@@ -130,7 +130,7 @@ class FilterByUserIdField(AutoModelSelect2Field):
 
     def get_results(self, request, term, page, context):
         queryset = Request.objects.filter(apprequest__appid=request.GET['app'], userid__contains=term).distinct("userid")
-        results = [(request.userid, request.userid) for request in queryset]
+        results = [(_request.userid, _request.userid) for _request in queryset]
         results += [('', '')]
         return NO_ERR_RESP, False, results
 
@@ -143,12 +143,6 @@ class FilterByUserIdField(AutoModelSelect2Field):
 
 class UserIdFilter(django_filters.Filter):
     field = FilterByUserIdField(to_field_name='userid')
-
-    def filter(self, qs, value):
-        if value == '':
-            return qs.all()
-        else:
-            return qs.filter(request__userid=value)
 
 
 class AppRequestFilter(django_filters.FilterSet):
