@@ -127,10 +127,15 @@ class FilterByUserIdWidget(AutoHeavySelect2Widget):
 class FilterByUserIdField(AutoModelSelect2Field):
     widget = FilterByUserIdWidget
     queryset = Request.objects
+    max_results = 10
 
     def get_results(self, request, term, page, context):
-        queryset = Request.objects.filter(apprequest__appid=request.GET['app'], userid__contains=term).distinct("userid")
-        results = [(_request.userid, _request.userid) for _request in queryset]
+        if not term.startswith('{'):
+            term = '{' + term
+        term = term.lower()
+        requests = Request.objects.filter(apprequest__appid=request.GET['app'], userid__startswith=term).values('userid').distinct()
+        requests = requests[:self.max_results]
+        results = [(_request['userid'], _request['userid']) for _request in requests]
         results += [('', '')]
         return NO_ERR_RESP, False, results
 

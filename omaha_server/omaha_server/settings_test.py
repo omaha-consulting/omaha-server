@@ -2,6 +2,16 @@
 
 from .settings import *
 
+
+class DisableMigrations(object):
+
+    def __contains__(self, item):
+        return True
+
+    def __getitem__(self, item):
+        return "notmigrations"
+
+
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
@@ -18,6 +28,7 @@ NOSE_ARGS = [
     # '--with-doctest',
 ]
 
+MIGRATION_MODULES = DisableMigrations()
 # Tricks to speed up Django tests
 
 DEBUG = False

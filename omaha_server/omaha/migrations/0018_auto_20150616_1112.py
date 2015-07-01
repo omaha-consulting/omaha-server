@@ -11,9 +11,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='request',
-            name='userid',
-            field=models.CharField(db_index=True, max_length=40, null=True, blank=True),
-        ),
+        migrations.RunSQL('CREATE INDEX omaha_request_userid_like ON omaha_request (userid varchar_pattern_ops);',
+                          reverse_sql='Drop index omaha_request_userid_like;')
     ]
