@@ -145,7 +145,7 @@ class ChannelViewSet(viewsets.ModelViewSet):
 
 
 class VersionViewSet(BaseView):
-    queryset = Version.objects.all()
+    queryset = Version.objects.all().order_by('-id')
     serializer_class = VersionSerializer
 
 
