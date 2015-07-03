@@ -244,7 +244,7 @@ class Request(models.Model):
     version = VersionField(help_text='Format: 255.255.65535.65535', number_bits=(8, 8, 16, 16))
     ismachine = models.PositiveSmallIntegerField(null=True, blank=True)
     sessionid = models.CharField(max_length=40, null=True, blank=True)
-    userid = models.CharField(max_length=40, null=True, blank=True, db_index=True)
+    userid = models.CharField(max_length=40, null=True, blank=True)
     installsource = models.CharField(max_length=40, null=True, blank=True)
     originurl = models.URLField(null=True, blank=True)
     testsource = models.CharField(max_length=40, null=True, blank=True)
