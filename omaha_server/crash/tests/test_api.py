@@ -75,7 +75,7 @@ class CrashTest(BaseTest, APITestCase):
         response = self.client.get(self.url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['count'], 10)
-        self.assertEqual(self.serializer(self.objects, many=True).data, response.data['results'])
+        self.assertEqual(self.serializer(self.objects, many=True).data, response.data['results'][::-1])
 
     def test_create(self):
         response = self.client.post(self.url, {})

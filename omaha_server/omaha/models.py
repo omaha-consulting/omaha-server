@@ -33,7 +33,9 @@ from django.utils.timezone import now as datetime_now
 from omaha.managers import VersionManager
 from omaha.fields import PercentField
 
-from django_extensions.db.models import TimeStampedModel
+from django_extensions.db.fields import (
+    CreationDateTimeField, ModificationDateTimeField,
+)
 from jsonfield import JSONField
 from versionfield import VersionField
 
@@ -43,18 +45,19 @@ __all__ = ['Application', 'Channel', 'Platform', 'Version',
            'Data']
 
 class BaseModel(models.Model):
+    created = CreationDateTimeField('created')
+    modified = ModificationDateTimeField('modified')
 
     class Meta:
         abstract = True
-        ordering = ('id', )
 
 
 @python_2_unicode_compatible
-class Application(BaseModel, TimeStampedModel):
+class Application(BaseModel):
     id = models.CharField(max_length=38, primary_key=True)
     name = models.CharField(verbose_name='App', max_length=30, unique=True)
 
-    class Meta(BaseModel.Meta):
+    class Meta:
         db_table = 'applications'
 
     def __str__(self):
@@ -62,10 +65,10 @@ class Application(BaseModel, TimeStampedModel):
 
 
 @python_2_unicode_compatible
-class Platform(BaseModel, TimeStampedModel):
+class Platform(BaseModel):
     name = models.CharField(verbose_name='Platform', max_length=10, unique=True, db_index=True)
 
-    class Meta(BaseModel.Meta):
+    class Meta:
         db_table = 'platforms'
 
     def __str__(self):
@@ -73,10 +76,10 @@ class Platform(BaseModel, TimeStampedModel):
 
 
 @python_2_unicode_compatible
-class Channel(BaseModel, TimeStampedModel):
+class Channel(BaseModel):
     name = models.CharField(verbose_name='Channel', max_length=10, unique=True, db_index=True)
 
-    class Meta(BaseModel.Meta):
+    class Meta:
         db_table = 'channels'
 
     def __str__(self):
@@ -93,7 +96,7 @@ def _version_upload_to(*args, **kwargs):
 
 
 @python_2_unicode_compatible
-class Version(BaseModel, TimeStampedModel):
+class Version(BaseModel):
     is_enabled = models.BooleanField(default=True)
     app = models.ForeignKey(Application)
     platform = models.ForeignKey(Platform, db_index=True)
@@ -106,7 +109,7 @@ class Version(BaseModel, TimeStampedModel):
 
     objects = VersionManager()
 
-    class Meta(BaseModel.Meta):
+    class Meta:
         db_table = 'versions'
         unique_together = (
             ('app', 'platform', 'channel', 'version'),
@@ -141,7 +144,7 @@ EVENT_DICT_CHOICES = dict(
 EVENT_CHOICES = zip(EVENT_DICT_CHOICES.values(), EVENT_DICT_CHOICES.keys())
 
 
-class Action(BaseModel, TimeStampedModel):
+class Action(BaseModel):
     version = models.ForeignKey(Version, db_index=True, related_name='actions')
     event = models.PositiveSmallIntegerField(
         choices=EVENT_CHOICES,
@@ -165,7 +168,7 @@ class Action(BaseModel, TimeStampedModel):
                   'in response to a successful install')
     other = JSONField(verbose_name='Other attributes', help_text='JSON format', null=True, blank=True,)
 
-    class Meta(BaseModel.Meta):
+    class Meta:
         db_table = 'actions'
 
     def get_attributes(self):

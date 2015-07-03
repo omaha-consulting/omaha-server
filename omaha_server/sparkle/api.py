@@ -25,5 +25,5 @@ from sparkle.models import SparkleVersion
 
 
 class SparkleVersionViewSet(BaseView):
-    queryset = SparkleVersion.objects.all()
+    queryset = SparkleVersion.objects.all().order_by('-id')
     serializer_class = SparkleVersionSerializer
