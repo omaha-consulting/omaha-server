@@ -25,5 +25,9 @@ omaha_server/media
 *.zip
 ebs.config
 
+deploy/*.zip
+deploy/ebs.config
+deploy/settings.yml
+
 ### Vagrant ###
 .vagrant/

@@ -1,0 +1,26 @@
+deploy:
+  aws_access_key: **********
+  aws_secret_key: **********
+  bucket: example-ebs-archives
+  region: us-east-1
+
+app:
+  name: omaha-server
+  description: Omaha Server
+
+  security_groups:
+    - omaha_server
+  key_name: omaha_server
+
+  environments:
+    omaha-server-dev:
+      environment:
+        SECRET_KEY: **********
+        DB_HOST: postgres.example.com
+        DB_USER: omaha
+        DB_NAME: omaha
+        DB_PASSWORD: omaha
+        AWS_STORAGE_BUCKET_NAME: omaha-server
+        RAVEN_DNS: http://b3615b99118949dbae3c7d06e93fa74c:b8f1c35d08ef4bcaa6810b4d4cdd6fc0@sentry.example.com/2
+        RAVEN_DSN_STACKTRACE: http://637c17c832f44663b381916d4e0cb34d:9df83034cdfb400f9ce7d47ae4a0cc0b@sentry.example.com/5
+        REDIS_HOST: redis.example.com
