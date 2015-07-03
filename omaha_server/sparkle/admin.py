@@ -27,4 +27,5 @@ from sparkle.forms import SparkleVersionAdminForm
 class VersionAdmin(admin.ModelAdmin):
     list_display = ('app', 'version', 'short_version', 'channel', 'is_enabled',)
     list_filter = ('channel__name', 'app__name', 'is_enabled',)
+    ordering = ('-id',)
     form = SparkleVersionAdminForm
