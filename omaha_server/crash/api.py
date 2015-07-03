@@ -35,13 +35,13 @@ class StandardResultsSetPagination(pagination.PageNumberPagination):
 
 
 class SymbolsViewSet(BaseView):
-    queryset = Symbols.objects.all()
+    queryset = Symbols.objects.all().order_by('-id')
     serializer_class = SymbolsSerializer
 
 
 class CrashViewSet(mixins.ListModelMixin,
                    mixins.RetrieveModelMixin,
                    viewsets.GenericViewSet):
-    queryset = Crash.objects.all()
+    queryset = Crash.objects.all().order_by('-id')
     serializer_class = CrashSerializer
     pagination_class = StandardResultsSetPagination

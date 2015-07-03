@@ -130,27 +130,27 @@ class AppViewSet(BaseView):
         HTTP 204 NO CONTENT
         Content-Type: application/json
     """
-    queryset = Application.objects.all()
+    queryset = Application.objects.all().order_by('-id')
     serializer_class = AppSerializer
 
 
 class PlatformViewSet(BaseView):
-    queryset = Platform.objects.all()
+    queryset = Platform.objects.all().order_by('-id')
     serializer_class = PlatformSerializer
 
 
 class ChannelViewSet(viewsets.ModelViewSet):
-    queryset = Channel.objects.all()
+    queryset = Channel.objects.all().order_by('-id')
     serializer_class = ChannelSerializer
 
 
 class VersionViewSet(BaseView):
-    queryset = Version.objects.all()
+    queryset = Version.objects.all().order_by('-id')
     serializer_class = VersionSerializer
 
 
 class ActionViewSet(BaseView):
-    queryset = Action.objects.all()
+    queryset = Action.objects.all().order_by('-id')
     serializer_class = ActionSerializer
 
 

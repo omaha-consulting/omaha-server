@@ -36,7 +36,7 @@ def version_upload_to(obj, filename):
 
 
 @python_2_unicode_compatible
-class SparkleVersion(BaseModel, TimeStampedModel):
+class SparkleVersion(BaseModel):
     is_enabled = models.BooleanField(default=True)
     app = models.ForeignKey(Application)
     channel = models.ForeignKey(Channel, db_index=True)
@@ -49,7 +49,7 @@ class SparkleVersion(BaseModel, TimeStampedModel):
 
     objects = VersionManager()
 
-    class Meta(BaseModel.Meta):
+    class Meta:
         index_together = (
             ('app', 'channel'),
         )

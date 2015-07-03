@@ -45,7 +45,7 @@ def crash_archive_upload_to(obj, filename):
                                    now.day, uuid.uuid4(), filename]))
 
 
-class Crash(BaseModel, TimeStampedModel):
+class Crash(BaseModel):
     upload_file_minidump = models.FileField(upload_to=crash_upload_to, blank=True, null=True, max_length=255)
     archive = models.FileField(upload_to=crash_archive_upload_to, blank=True, null=True, max_length=255)
     appid = models.CharField(max_length=38, null=True, blank=True)
@@ -59,7 +59,7 @@ class Crash(BaseModel, TimeStampedModel):
         verbose_name_plural = 'Crashes'
 
 
-class CrashDescription(BaseModel, TimeStampedModel):
+class CrashDescription(BaseModel):
     crash = models.OneToOneField(Crash, related_name='crash_description')
     summary = models.CharField(max_length=500)
     description = models.TextField(null=True, blank=True)
@@ -71,12 +71,12 @@ def symbols_upload_to(obj, filename):
     return os.path.join('symbols', obj.debug_file, obj.debug_id, sym_filename)
 
 
-class Symbols(BaseModel, TimeStampedModel):
+class Symbols(BaseModel):
     debug_id = models.CharField(verbose_name='Debug ID', max_length=255, db_index=True, null=True, blank=True)
     debug_file = models.CharField(verbose_name='Debug file name', max_length=140, null=True, blank=True)
     file = models.FileField(upload_to=symbols_upload_to)
 
-    class Meta(BaseModel.Meta):
+    class Meta:
         verbose_name_plural = 'Symbols'
         unique_together = (
             ('debug_id', 'debug_file'),

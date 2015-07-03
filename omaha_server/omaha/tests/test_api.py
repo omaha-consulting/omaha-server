@@ -17,7 +17,6 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
 """
-
 from __future__ import unicode_literals
 from builtins import bytes, range
 
@@ -76,7 +75,7 @@ class BaseTest(object):
         response = self.client.get(self.url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 10)
-        self.assertEqual(self.serializer(self.objects, many=True).data, response.data)
+        self.assertEqual(self.serializer(self.objects, many=True).data, response.data[::-1])
 
     def test_detail(self):
         obj = self.objects[0]
@@ -106,6 +105,9 @@ class PlatformTest(BaseTest, APITestCase):
     url_detail = 'platform-detail'
     factory = PlatformFactory
     serializer = PlatformSerializer
+
+    def test_list(self):
+        super(PlatformTest, self).test_list()
 
     def test_create(self):
         data = dict(name='test_name')
