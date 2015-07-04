@@ -128,6 +128,7 @@ class RequestListView(StaffMemberRequiredMixin, SingleTableView):
     def get_queryset(self):
         qs = super(RequestListView, self).get_queryset()
         qs = qs.select_related('request', 'request__os',)
+        qs = qs.prefetch_related('events')
         qs = qs.order_by('-request__created')
         self.appid = None
 
