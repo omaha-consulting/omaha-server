@@ -50,7 +50,7 @@ If you need to you may construct and send basic auth headers yourself. To do thi
                 }
             ]
 
-### Create a Application [POST]
+### Create an Application [POST]
 
 + Parameters
     * id (required, string, `{8A76FC95-0086-4BCE-9517-DC09DDB5652F}`)
@@ -78,7 +78,7 @@ If you need to you may construct and send basic auth headers yourself. To do thi
 
 ## Application [/api/app/{id}]
 
-### Retrieve a Application [GET]
+### Retrieve an Application [GET]
 
 + Request (application/json)
 
@@ -93,7 +93,7 @@ If you need to you may construct and send basic auth headers yourself. To do thi
             "name": "Chromium",
         }
 
-### Remove a Application [DELETE]
+### Remove an Application [DELETE]
 
 + Request
 
@@ -434,7 +434,7 @@ If you need to you may construct and send basic auth headers yourself. To do thi
                 }
             ]
 
-### Create a Action [POST]
+### Create an Action [POST]
 
 + Parameters
     * id (required, string, `{8A76FC95-0086-4BCE-9517-DC09DDB5652F}`)
@@ -476,7 +476,7 @@ If you need to you may construct and send basic auth headers yourself. To do thi
 
 ## Action [/api/action/{id}]
 
-### Retrieve a Action [GET]
+### Retrieve an Action [GET]
 
 + Request (application/json)
 
@@ -498,7 +498,7 @@ If you need to you may construct and send basic auth headers yourself. To do thi
             "other": null
         }
 
-### Remove a Action [DELETE]
+### Remove an Action [DELETE]
 
 + Request
 
@@ -899,7 +899,7 @@ If you need to you may construct and send basic auth headers yourself. To do thi
                 ]
             }
 
-## Crash report [/api/crash_report/{id}]
+## Crash report [/api/crash_report/{id}/]
 
 ### Retrieve a Crash Report [GET]
 
@@ -922,14 +922,3 @@ If you need to you may construct and send basic auth headers yourself. To do thi
             "created": "2014-12-15T11:40:28.981640Z",
             "modified": "2014-12-15T11:40:31.176896Z"
         }
-
-### Remove a Crash Report [DELETE]
-
-+ Request
-
-    + Headers
-
-            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
-
-+ Response 204
-            
