@@ -53,6 +53,9 @@ class SparkleVersion(BaseModel):
         index_together = (
             ('app', 'channel'),
         )
+        unique_together = (
+            ('app', 'channel', 'version'),
+        )
 
     def __str__(self):
         return "{app} {version}".format(app=self.app, version=self.version)
