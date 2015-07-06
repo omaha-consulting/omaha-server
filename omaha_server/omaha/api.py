@@ -26,6 +26,7 @@ from django.utils import timezone
 
 from rest_framework import viewsets
 from rest_framework import mixins
+from rest_framework import pagination
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -54,6 +55,12 @@ class BaseView(mixins.ListModelMixin, mixins.CreateModelMixin,
                mixins.DestroyModelMixin, mixins.RetrieveModelMixin,
                viewsets.GenericViewSet):
     pass
+
+
+class StandardResultsSetPagination(pagination.PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 100
 
 
 class AppViewSet(BaseView):

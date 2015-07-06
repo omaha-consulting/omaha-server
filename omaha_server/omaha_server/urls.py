@@ -8,6 +8,7 @@ import omaha.views
 import omaha.api
 import sparkle.api
 import crash.api
+import feedback.api
 
 
 router = routers.DefaultRouter()
@@ -19,11 +20,13 @@ router.register(r'action', omaha.api.ActionViewSet)
 router.register(r'sparkle/version', sparkle.api.SparkleVersionViewSet)
 router.register(r'symbols', crash.api.SymbolsViewSet)
 router.register(r'crash_report', crash.api.CrashViewSet)
+router.register(r'feedback', feedback.api.FeedbackViewSet)
 router.register(r'statistics/months', omaha.api.StatisticsMonthsListView, 'api-statistics-months')
 
 urlpatterns = [
     url(r'', include('omaha.urls')),
     url(r'', include('crash.urls')),
+    url(r'', include('feedback.urls')),
     url(r'', include('downloads.urls')),
     url(r'^sparkle/', include('sparkle.urls')),
     url(r'^admin/', include(admin.site.urls)),

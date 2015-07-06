@@ -22,19 +22,12 @@ from django.db.utils import IntegrityError
 
 from rest_framework import viewsets
 from rest_framework import mixins
-from rest_framework import pagination
 from rest_framework import status
 from rest_framework.response import Response
 
-from omaha.api import BaseView
+from omaha.api import BaseView, StandardResultsSetPagination
 from crash.serializers import SymbolsSerializer, CrashSerializer
 from crash.models import Symbols, Crash
-
-
-class StandardResultsSetPagination(pagination.PageNumberPagination):
-    page_size = 10
-    page_size_query_param = 'page_size'
-    max_page_size = 100
 
 
 class SymbolsViewSet(BaseView):
