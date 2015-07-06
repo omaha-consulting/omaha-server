@@ -18,12 +18,15 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
+from django.db.utils import IntegrityError
+
 from rest_framework import viewsets
 from rest_framework import mixins
 from rest_framework import pagination
+from rest_framework import status
+from rest_framework.response import Response
 
 from omaha.api import BaseView
-
 from crash.serializers import SymbolsSerializer, CrashSerializer
 from crash.models import Symbols, Crash
 
@@ -37,6 +40,13 @@ class StandardResultsSetPagination(pagination.PageNumberPagination):
 class SymbolsViewSet(BaseView):
     queryset = Symbols.objects.all().order_by('-id')
     serializer_class = SymbolsSerializer
+
+    def create(self, request, *args, **kwargs):
+        try:
+            return super(SymbolsViewSet, self).create(request, *args, **kwargs)
+        except IntegrityError:
+            res = {"message": "Duplicate symbol"}
+            return Response(data=res, status=status.HTTP_409_CONFLICT)
 
 
 class CrashViewSet(mixins.ListModelMixin,

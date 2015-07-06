@@ -64,6 +64,16 @@ class SymbolsTest(BaseTest, APITestCase):
         self.assertEqual(symbols.debug_id, 'C1C0FA629EAA4B4D9DD2ADE270A231CC1')
         self.assertEqual(symbols.debug_file, 'BreakpadTestApp.pdb')
 
+    def test_duplicate(self):
+        with open(SYM_FILE, 'rb') as f:
+            data = dict(file=SimpleUploadedFile('./BreakpadTestApp.sym', f.read()))
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        with open(SYM_FILE, 'rb') as f:
+            data = dict(file=SimpleUploadedFile('./BreakpadTestApp.sym', f.read()))
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+        self.assertEqual(response.data['message'], 'Duplicate symbol')
 
 class CrashTest(BaseTest, APITestCase):
     url = reverse('crash-list')
