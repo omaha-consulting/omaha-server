@@ -47,9 +47,10 @@ class FeedbackViewTest(test.TestCase):
             data=body,
             content_type='application/x-protobuf'
         )
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(Feedback.objects.all().count(), 1)
         obj = Feedback.objects.get()
+        self.assertEqual(response.content.decode(), str(obj.pk))
         self.assertEqual(obj.description, description)
         self.assertEqual(obj.email, email)
         self.assertEqual(obj.page_url, page_url)
@@ -70,9 +71,10 @@ class FeedbackViewTest(test.TestCase):
             data=body,
             content_type='application/x-protobuf'
         )
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(Feedback.objects.all().count(), 1)
         obj = Feedback.objects.get()
+        self.assertEqual(response.content.decode(), str(obj.pk))
         self.assertEqual(obj.description, description)
         self.assertEqual(obj.email, '')
         self.assertEqual(obj.page_url, '')

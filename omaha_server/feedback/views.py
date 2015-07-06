@@ -75,8 +75,8 @@ class FeedbackFormView(FormView):
         return kwargs
 
     def form_valid(self, form):
-        form.save()
-        return HttpResponse(status=204)
+        obj = form.save()
+        return HttpResponse(obj.pk, status=200)
 
     def form_invalid(self, form):
         # We're not expecting to end up here in case of correct request
