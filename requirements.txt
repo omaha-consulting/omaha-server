@@ -28,6 +28,9 @@ Markdown==2.6.2
 pytz==2015.4
 Django-Select2==4.3.1
 django-bootstrap3==6.1.0
+Pillow==2.9.0
+protobuf==2.6.1
+protobuf-to-dict==0.1.0
 
 # Only dev
 django-httplog==0.2.3

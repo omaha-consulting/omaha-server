@@ -41,6 +41,7 @@ SUIT_CONFIG = {
         {'app': 'omaha', 'label': 'Omaha', 'icon': 'icon-refresh'},
         {'app': 'sparkle', 'label': 'Sparkle', 'icon': 'icon-circle-arrow-down'},
         {'app': 'crash', 'label': 'Crash reports', 'icon': 'icon-fire'},
+        {'app': 'feedback', 'label': 'Feedbacks', 'icon': 'icon-comment'},
         {'label': 'Statistics', 'url': 'omaha_statistics', 'icon': 'icon-star'},
         {'label': 'Set timezone', 'url': 'set_timezone', 'icon': 'icon-time'},
     ),
@@ -91,6 +92,7 @@ INSTALLED_APPS = (
 
     'omaha',
     'crash',
+    'feedback',
     'sparkle',
     'downloads',
 )
