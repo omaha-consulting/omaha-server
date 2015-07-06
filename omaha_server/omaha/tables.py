@@ -22,6 +22,25 @@ import django_tables2 as tables
 from django_tables2 import A
 
 from omaha.models import AppRequest
+from omaha.filters import EVENT_TYPE, EVENT_RESULT
+from django.utils.html import format_html
+
+
+def get_badge(event):
+    name = EVENT_TYPE[event.eventtype]
+    result = EVENT_RESULT[event.eventresult]
+    badge = 'info'
+    if 'success' in result:
+        badge = 'success'
+    if 'error' in result:
+        badge = 'important'
+    return '<p class="badge badge-%s">%s</p>' % (badge, name)
+
+
+class EventsColumn(tables.Column):
+    def render(self, record):
+        res = map(get_badge, record.events.all())
+        return format_html(' '.join(res))
 
 
 class AppRequestTable(tables.Table):
@@ -31,9 +50,10 @@ class AppRequestTable(tables.Table):
     platform = tables.Column(accessor='request.os.platform')
     os = tables.Column(accessor='request.os.version', verbose_name='OS')
     sp = tables.Column(accessor='request.os.sp', verbose_name='Service pack')
+    events = EventsColumn(empty_values=())
 
     class Meta:
         model = AppRequest
         attrs = {'class': 'paleblue table table-striped table-bordered table-hover table-condensed',
                  'id': 'apprequest-table'}
-        fields = ('id', 'version', 'platform', 'os', 'sp', 'arch', 'date',)
+        fields = ('id', 'version', 'platform', 'os', 'sp', 'arch', 'date', 'events',)
