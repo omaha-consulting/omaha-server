@@ -1,10 +1,13 @@
 FROM ubuntu:14.04.1
 
+ENV omaha /srv/omaha
+
 RUN apt-get update
 RUN apt-get upgrade -y
 RUN apt-get install -y python-pip python-lxml python-psycopg2 uwsgi supervisor
 RUN apt-get install -y uwsgi-plugin-python
 RUN apt-get install -y nginx
+RUN apt-get install -y libtiff5-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev python-pil
 
 
 # install s3fs
@@ -27,7 +30,7 @@ RUN cd /usr/src/s3fs-fuse-1.78 && ./autogen.sh && ./configure --prefix=/usr && m
 RUN mkdir /srv/omaha_s3
 
 
-ADD . /srv/omaha
+ADD . $omaha
 
 # setup all the configfiles
 RUN rm /etc/nginx/sites-enabled/default
@@ -36,10 +39,10 @@ RUN ln -s /srv/omaha/conf/nginx.conf /etc/nginx/
 RUN ln -s /srv/omaha/conf/nginx-app.conf /etc/nginx/sites-enabled/
 RUN ln -s /srv/omaha/conf/supervisord.conf /etc/supervisor/conf.d/
 
-WORKDIR /srv/omaha
+WORKDIR ${omaha}
 
 RUN pip install paver --use-mirrors
 RUN pip install -r requirements.txt --use-mirrors
 
 EXPOSE 80
-ENTRYPOINT ["paver", "docker_run"]
+CMD ["paver", "docker_run"]

@@ -4,8 +4,6 @@ redis:
   image: redis
 web:
   image: crystalnix/omaha-server
-  command: paver docker_run
-  working_dir: /srv/omaha
   privileged: true
   links:
    - db

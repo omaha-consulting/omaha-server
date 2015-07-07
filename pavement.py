@@ -97,4 +97,4 @@ def docker_run_test():
 
 @task
 def run_test_in_docker():
-    sh('docker-compose -f docker-compose.dev.yml -p dev run --rm --entrypoint paver web docker_run_test')
+    sh('docker-compose -f docker-compose.dev.yml -p dev run --rm web paver docker_run_test')
