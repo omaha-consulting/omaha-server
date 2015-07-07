@@ -20,11 +20,17 @@ the License.
 
 from django.contrib import admin
 
+from crash.admin import TextInputFilter
+
 from feedback.models import Feedback
 from feedback.forms import FeedbackForm
+
+
+
 
 @admin.register(Feedback)
 class FeedbackAdmin(admin.ModelAdmin):
     list_display = ('id', 'description', 'email', 'page_url')
     list_display_links = ('id', 'description')
+    list_filter = (('id', TextInputFilter,),)
     form = FeedbackForm
