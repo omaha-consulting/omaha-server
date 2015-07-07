@@ -19,7 +19,7 @@ the License.
 """
 
 from django import forms
-from django.forms import widgets
+from django.forms import widgets, ValidationError
 from django.core.files.uploadedfile import UploadedFile
 
 
@@ -44,7 +44,9 @@ class SparkleVersionAdminForm(forms.ModelForm):
         }
 
     def clean_file_size(self):
-        file = self.cleaned_data["file"]
-        if isinstance(file, UploadedFile):
-            return file.size
+        if 'file' not in self.cleaned_data:
+            raise ValidationError('')
+        _file = self.cleaned_data["file"]
+        if isinstance(_file, UploadedFile):
+            return _file.size
         return self.initial["file_size"]

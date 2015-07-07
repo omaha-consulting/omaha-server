@@ -19,7 +19,7 @@ the License.
 """
 from datetime import datetime
 from django import forms
-from django.forms import widgets
+from django.forms import widgets, ValidationError
 
 from django_ace import AceWidget
 from suit.widgets import LinkedSelect
@@ -63,8 +63,10 @@ class VersionAdminForm(forms.ModelForm):
         }
 
     def clean_file_size(self):
-        file = self.cleaned_data["file"]
-        return file.size
+        if 'file' not in self.cleaned_data:
+            raise ValidationError('')
+        _file = self.cleaned_data["file"]
+        return _file.size
 
 
 class ActionAdminForm(forms.ModelForm):
