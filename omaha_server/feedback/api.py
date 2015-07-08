@@ -30,6 +30,6 @@ from feedback.models import Feedback
 class FeedbackViewSet(mixins.ListModelMixin,
                       mixins.RetrieveModelMixin,
                       viewsets.GenericViewSet):
-    queryset = Feedback.objects.all()
+    queryset = Feedback.objects.all().order_by('-id')
     serializer_class = FeedbackSerializer
     pagination_class = StandardResultsSetPagination
