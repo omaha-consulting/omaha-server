@@ -20,11 +20,35 @@ the License.
 
 from django.contrib import admin
 
+from crash.admin import TextInputFilter, BooleanFilter
+
 from feedback.models import Feedback
 from feedback.forms import FeedbackForm
+
+
+class ScreenshotFilter(BooleanFilter):
+    title = 'Screenshot'
+    parameter_name = 'screenshot'
+
+
+class BlackboxFilter(BooleanFilter):
+    title = 'Blackbox'
+    parameter_name = 'blackbox'
+
+
+class SystemLogsFilter(BooleanFilter):
+    title = 'System Logs'
+    parameter_name = 'system_logs'
+
+
+class AttachedFileFilter(BooleanFilter):
+    title = 'Attached File'
+    parameter_name = 'attached_file'
+
 
 @admin.register(Feedback)
 class FeedbackAdmin(admin.ModelAdmin):
     list_display = ('id', 'description', 'email', 'page_url')
     list_display_links = ('id', 'description')
+    list_filter = (('id', TextInputFilter,), ScreenshotFilter, BlackboxFilter, SystemLogsFilter, AttachedFileFilter)
     form = FeedbackForm

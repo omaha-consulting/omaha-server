@@ -25,11 +25,12 @@ from celery import signature
 
 from crash.forms import SymbolsAdminForm, CrashFrom
 from crash.models import Crash, CrashDescription, Symbols
+from crash.forms import TextInputForm
 
 
-class CrashArchiveFilter(admin.SimpleListFilter):
-    title = 'Instrumental file'
-    parameter_name = 'instrumental_file'
+class BooleanFilter(admin.SimpleListFilter):
+    title = None
+    parameter_name = None
 
     def lookups(self, request, model_admin):
         return (
@@ -38,10 +39,44 @@ class CrashArchiveFilter(admin.SimpleListFilter):
         )
 
     def queryset(self, request, queryset):
+        d = {self.parameter_name: ''}
         if self.value() == 'yes':
-            return queryset.exclude(archive='')
+            return queryset.exclude(**d)
         if self.value() == 'no':
-            return queryset.filter(archive='')
+            return queryset.filter(**d)
+
+
+class TextInputFilter(admin.filters.FieldListFilter):
+    template = 'admin/textinput_filter.html'
+
+    def __init__(self, field, request, params, model, model_admin, field_path):
+        self.lookup_kwarg_equal = '%s' % field_path
+        super(TextInputFilter, self).__init__(
+            field, request, params, model, model_admin, field_path)
+        self.form = self.get_form()
+
+    def choices(self, cl):
+        return []
+
+    def expected_parameters(self):
+        return [self.lookup_kwarg_equal]
+
+    def get_form(self):
+        return TextInputForm(data=self.used_parameters,
+                             field_name=self.field_path)
+
+    def queryset(self, request, queryset):
+        if self.form.is_valid():
+            filter_params = dict(filter(lambda x: bool(x[1]),
+                                        self.form.cleaned_data.items()))
+            return queryset.filter(**filter_params)
+        else:
+            return queryset
+
+
+class CrashArchiveFilter(BooleanFilter):
+    title = 'Instrumental file'
+    parameter_name = 'archive'
 
 
 @admin.register(CrashDescription)
@@ -59,7 +94,7 @@ class CrashDescriptionInline(admin.StackedInline):
 class CrashAdmin(admin.ModelAdmin):
     list_display = ('created', 'modified', 'archive_field', 'signature', 'appid', 'userid', 'summary_field')
     list_display_links = ('created', 'modified', 'signature', 'appid', 'userid',)
-    list_filter = ('created', CrashArchiveFilter,)
+    list_filter = (('id', TextInputFilter,), 'created', CrashArchiveFilter)
     search_fields = ('appid', 'userid',)
     form = CrashFrom
     actions = ('regenerate_stacktrace',)
@@ -89,3 +124,4 @@ class SymbolsAdmin(admin.ModelAdmin):
     list_display = ('created', 'modified', 'debug_file', 'debug_id',)
     list_display_links = ('created', 'modified', 'debug_file', 'debug_id',)
     form = SymbolsAdminForm
+
