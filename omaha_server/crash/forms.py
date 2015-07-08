@@ -26,6 +26,7 @@ from io import BytesIO
 from django import forms
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.forms import widgets
+from django.forms.widgets import TextInput
 
 from django_ace import AceWidget
 from crash.models import Symbols, Crash, CrashDescription
@@ -97,3 +98,23 @@ class SymbolsAdminForm(forms.ModelForm):
         except:
             raise forms.ValidationError(u"The file contains invalid data.")
         return file
+
+
+class TextInputForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        field_name = kwargs.pop('field_name')
+        super(TextInputForm, self).__init__(*args, **kwargs)
+        self.fields[field_name] = forms.CharField(
+            widget=TextInput(attrs={'placeholder': 'Filter by ID'}),
+            label='',
+            required=False)
+
+    def is_valid(self):
+        valid = super(TextInputForm, self).is_valid()
+        if not valid:
+            return valid
+        _id = self.cleaned_data['id']
+        if not _id.isdigit():
+            self.add_error('id', 'ID should be integer')
+            return False
+        return True

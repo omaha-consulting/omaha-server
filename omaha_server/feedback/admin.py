@@ -20,75 +20,31 @@ the License.
 
 from django.contrib import admin
 
-from crash.admin import TextInputFilter
+from crash.admin import TextInputFilter, BooleanFilter
 
 from feedback.models import Feedback
 from feedback.forms import FeedbackForm
 
 
-class ScreenshotFilter(admin.SimpleListFilter):
+class ScreenshotFilter(BooleanFilter):
     title = 'Screenshot'
     parameter_name = 'screenshot'
 
-    def lookups(self, request, model_admin):
-        return (
-            ('yes', 'Yes'),
-            ('no', 'No'),
-        )
 
-    def queryset(self, request, queryset):
-        if self.value() == 'yes':
-            return queryset.exclude(screenshot='')
-        if self.value() == 'no':
-            return queryset.filter(screenshot='')
-
-class BlackboxFilter(admin.SimpleListFilter):
+class BlackboxFilter(BooleanFilter):
     title = 'Blackbox'
-    parameter_name = 'Blackbox'
+    parameter_name = 'blackbox'
 
-    def lookups(self, request, model_admin):
-        return (
-            ('yes', 'Yes'),
-            ('no', 'No'),
-        )
 
-    def queryset(self, request, queryset):
-        if self.value() == 'yes':
-            return queryset.exclude(blackbox='')
-        if self.value() == 'no':
-            return queryset.filter(blackbox='')
-
-class SystemLogsFilter(admin.SimpleListFilter):
+class SystemLogsFilter(BooleanFilter):
     title = 'System Logs'
     parameter_name = 'system_logs'
 
-    def lookups(self, request, model_admin):
-        return (
-            ('yes', 'Yes'),
-            ('no', 'No'),
-        )
 
-    def queryset(self, request, queryset):
-        if self.value() == 'yes':
-            return queryset.exclude(system_logs='')
-        if self.value() == 'no':
-            return queryset.filter(system_logs='')
-
-class AttachedFileFilter(admin.SimpleListFilter):
+class AttachedFileFilter(BooleanFilter):
     title = 'Attached File'
     parameter_name = 'attached_file'
 
-    def lookups(self, request, model_admin):
-        return (
-            ('yes', 'Yes'),
-            ('no', 'No'),
-        )
-
-    def queryset(self, request, queryset):
-        if self.value() == 'yes':
-            return queryset.exclude(attached_file='')
-        if self.value() == 'no':
-            return queryset.filter(attached_file='')
 
 @admin.register(Feedback)
 class FeedbackAdmin(admin.ModelAdmin):

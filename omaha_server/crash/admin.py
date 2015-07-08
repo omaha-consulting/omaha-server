@@ -18,38 +18,32 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
-from django.core.exceptions import ObjectDoesNotExist
-from django import forms
 from django.contrib import admin
-from django.forms.widgets import TextInput
+from django.core.exceptions import ObjectDoesNotExist
+
 from celery import signature
 
 from crash.forms import SymbolsAdminForm, CrashFrom
 from crash.models import Crash, CrashDescription, Symbols
+from crash.forms import TextInputForm
 
 
-class TextInputForm(forms.Form):
+class BooleanFilter(admin.SimpleListFilter):
+    title = None
+    parameter_name = None
 
-    def __init__(self, *args, **kwargs):
-        field_name = kwargs.pop('field_name')
-        super(TextInputForm, self).__init__(*args, **kwargs)
-        self.fields[field_name] = forms.CharField(
-            widget=TextInput(attrs={'placeholder': 'Filter by ID'}),
-            label='',
-            required=False)
+    def lookups(self, request, model_admin):
+        return (
+            ('yes', 'Yes'),
+            ('no', 'No'),
+        )
 
-    def is_valid(self):
-        valid = super(TextInputForm, self).is_valid()
-        if not valid:
-            return valid
-        try:
-            _id = self.cleaned_data['id']
-            if _id != '':
-                _ = int(_id)
-        except ValueError:
-            self.add_error('id', 'ID should be integer')
-            return False
-        return True
+    def queryset(self, request, queryset):
+        d = {self.parameter_name: ''}
+        if self.value() == 'yes':
+            return queryset.exclude(**d)
+        if self.value() == 'no':
+            return queryset.filter(**d)
 
 
 class TextInputFilter(admin.filters.FieldListFilter):
@@ -59,7 +53,7 @@ class TextInputFilter(admin.filters.FieldListFilter):
         self.lookup_kwarg_equal = '%s' % field_path
         super(TextInputFilter, self).__init__(
             field, request, params, model, model_admin, field_path)
-        self.form = self.get_form(request)
+        self.form = self.get_form()
 
     def choices(self, cl):
         return []
@@ -67,13 +61,12 @@ class TextInputFilter(admin.filters.FieldListFilter):
     def expected_parameters(self):
         return [self.lookup_kwarg_equal]
 
-    def get_form(self, request):
+    def get_form(self):
         return TextInputForm(data=self.used_parameters,
                              field_name=self.field_path)
 
     def queryset(self, request, queryset):
         if self.form.is_valid():
-            # get no null params
             filter_params = dict(filter(lambda x: bool(x[1]),
                                         self.form.cleaned_data.items()))
             return queryset.filter(**filter_params)
@@ -81,21 +74,9 @@ class TextInputFilter(admin.filters.FieldListFilter):
             return queryset
 
 
-class CrashArchiveFilter(admin.SimpleListFilter):
+class CrashArchiveFilter(BooleanFilter):
     title = 'Instrumental file'
-    parameter_name = 'instrumental_file'
-
-    def lookups(self, request, model_admin):
-        return (
-            ('yes', 'Yes'),
-            ('no', 'No'),
-        )
-
-    def queryset(self, request, queryset):
-        if self.value() == 'yes':
-            return queryset.exclude(archive='')
-        if self.value() == 'no':
-            return queryset.filter(archive='')
+    parameter_name = 'archive'
 
 
 @admin.register(CrashDescription)
