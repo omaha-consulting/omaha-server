@@ -1,0 +1,9 @@
+max-line-length: 100
+uses:
+  - django
+  - celery
+autodetect: yes
+ignore-patterns:
+  - (^|/)migrations(/|$)
+ignore-paths:
+  - omaha_server/feedback/proto_gen/
