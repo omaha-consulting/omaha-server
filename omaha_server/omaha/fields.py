@@ -26,6 +26,11 @@ class PercentField(models.FloatField):
     """
     Float field that ensures field value is in the range 0-100.
     """
+    def formfield(self, **kwargs):
+        defaults = {'min_value': 0, 'max_value': 100}
+        defaults.update(kwargs)
+        return super(PercentField, self).formfield(**defaults)
+
     default_validators = [
         MinValueValidator(0),
         MaxValueValidator(100),
