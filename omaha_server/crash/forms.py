@@ -114,7 +114,7 @@ class TextInputForm(forms.Form):
         if not valid:
             return valid
         _id = self.cleaned_data['id']
-        if not _id.isdigit():
+        if _id and not _id.isdigit():
             self.add_error('id', 'ID should be integer')
             return False
         return True
