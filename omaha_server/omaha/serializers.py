@@ -34,10 +34,11 @@ class DataSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class AppSerializer(serializers.HyperlinkedModelSerializer):
+    data_set = DataSerializer(many=True, required=False)
 
     class Meta:
         model = Application
-        fields = ('id', 'name')
+        fields = ('id', 'name', 'data_set')
 
 
 class PlatformSerializer(serializers.HyperlinkedModelSerializer):

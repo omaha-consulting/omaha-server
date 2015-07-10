@@ -32,6 +32,7 @@ class AppSerializerTest(TestCase):
         data = dict(id='{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}',
                     name='chrome2')
         app = ApplicationFactory(**data)
+        data.update(dict(data_set=[]))
         self.assertDictEqual(AppSerializer(app).data, data)
 
 
