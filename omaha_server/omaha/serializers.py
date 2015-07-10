@@ -19,13 +19,22 @@ the License.
 """
 from rest_framework import serializers
 
-from omaha.models import Application, Platform, Channel, Version, Action
+from omaha.models import Application, Platform, Channel, Version, Action, Data
 
 
 __all__ = ['AppSerializer', 'PlatformSerializer', 'ChannelSerializer', 'VersionSerializer']
 
 
+class DataSerializer(serializers.HyperlinkedModelSerializer):
+    app = serializers.PrimaryKeyRelatedField(queryset=Application.objects.all())
+
+    class Meta:
+        model = Data
+        fields = ('id', 'app', 'index', 'name', 'value')
+
+
 class AppSerializer(serializers.HyperlinkedModelSerializer):
+
     class Meta:
         model = Application
         fields = ('id', 'name')
