@@ -1,6 +1,6 @@
 six==1.9.0
 future==0.14.3
-Django==1.8.2
+Django==1.8.3
 django-extensions==1.5.5
 django-suit==0.2.12
 django-suit-redactor==0.0.2
@@ -9,8 +9,8 @@ boto==2.38.0
 django-storages==1.1.8
 django-absolute==0.3
 django-versionfield3==0.1.1
-raven==5.3.1
-django-redis==4.1.0
+raven==5.4.1
+django-redis==4.2.0
 bitmapist==3.9
 singledispatch==3.4.0.3
 django-bower==5.0.4
@@ -28,7 +28,7 @@ Markdown==2.6.2
 pytz==2015.4
 Django-Select2==4.3.1
 django-bootstrap3==6.1.0
-protobuf==2.6.1
+protobuf==3.0.0a3
 protobuf-to-dict==0.1.0
 
 # Only dev
