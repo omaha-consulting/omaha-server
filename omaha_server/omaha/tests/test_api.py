@@ -37,6 +37,7 @@ from omaha.utils import redis
 
 from omaha.serializers import (
     AppSerializer,
+    DataSerializer,
     PlatformSerializer,
     ChannelSerializer,
     VersionSerializer,
@@ -44,8 +45,8 @@ from omaha.serializers import (
     StatisticsMonthsSerializer,
     ServerVersionSerializer,
 )
-from omaha.factories import ApplicationFactory, PlatformFactory, ChannelFactory, VersionFactory, ActionFactory
-from omaha.models import Application, Channel, Platform, Version, Action
+from omaha.factories import ApplicationFactory, DataFactory, PlatformFactory, ChannelFactory, VersionFactory, ActionFactory
+from omaha.models import Application, Data, Channel, Platform, Version, Action
 
 from omaha.tests.utils import temporary_media_root
 
@@ -97,6 +98,21 @@ class AppTest(BaseTest, APITestCase):
         response = self.client.post(self.url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         obj = Application.objects.get(id=response.data['id'])
+        self.assertEqual(response.data, self.serializer(obj).data)
+
+
+class DataTest(BaseTest, APITestCase):
+    url = reverse('data-list')
+    url_detail = 'data-detail'
+    factory = DataFactory
+    serializer = DataSerializer
+
+    def test_create(self):
+        app = ApplicationFactory.create()
+        data = dict(name=0, app=app.pk)
+        response = self.client.post(self.url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        obj = Data.objects.get(id=response.data['id'])
         self.assertEqual(response.data, self.serializer(obj).data)
 
 

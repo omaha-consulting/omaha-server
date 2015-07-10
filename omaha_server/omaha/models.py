@@ -213,7 +213,7 @@ NAME_DATA_DICT_CHOICES = dict(
 NAME_DATA_CHOICES = zip(NAME_DATA_DICT_CHOICES.values(), NAME_DATA_DICT_CHOICES.keys())
 
 
-class Data(models.Model):
+class Data(BaseModel):
     app = models.ForeignKey(Application, db_index=True)
     name = models.PositiveSmallIntegerField(choices=NAME_DATA_CHOICES)
     index = models.CharField(max_length=255, null=True, blank=True)

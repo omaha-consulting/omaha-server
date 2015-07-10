@@ -23,8 +23,8 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 
 from omaha.tests.utils import temporary_media_root
 
-from omaha.factories import ApplicationFactory, PlatformFactory, ChannelFactory, VersionFactory, ActionFactory
-from omaha.serializers import AppSerializer, PlatformSerializer, ChannelSerializer, VersionSerializer, ActionSerializer
+from omaha.factories import ApplicationFactory, DataFactory, PlatformFactory, ChannelFactory, VersionFactory, ActionFactory
+from omaha.serializers import AppSerializer, DataSerializer, PlatformSerializer, ChannelSerializer, VersionSerializer, ActionSerializer
 
 
 class AppSerializerTest(TestCase):
@@ -63,6 +63,18 @@ class ActionSerializerTest(TestCase):
                                   successurl=action.successurl,
                                   arguments=action.arguments,
                                   **data))
+
+
+class DataSerializerTest(TestCase):
+    def test_serializer(self):
+        _data = DataFactory()
+        self.assertDictEqual(DataSerializer(_data).data,
+                             dict(id=1,
+                                  app=_data.app.pk,
+                                  name=_data.name,
+                                  index=_data.index,
+                                  value=_data.value,
+                                  ))
 
 
 class VersionSerializerTest(TestCase):
