@@ -2,14 +2,15 @@ deploy:
   aws_access_key: **********
   aws_secret_key: **********
   bucket: example-ebs-archives
-  region: us-east-1
+  region: us-east-1 # http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region
 
 app:
   name: omaha-server
   description: Omaha Server
 
   security_groups:
-    - omaha_server
+    - omaha-server
+    - omaha-server-public
   key_name: omaha_server
 
   environments:

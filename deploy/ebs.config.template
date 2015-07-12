@@ -35,7 +35,7 @@ app:
     option_settings:
       'aws:autoscaling:launchconfiguration':
         InstanceType: {{ app.InstanceType }}
-        {% set security = ','.join(app.security_groups) %}
+        {% set security = ','.join(app.security_groups) -%}
         SecurityGroups: {{ security }}
         EC2KeyName: {{ app.key_name }}
 
