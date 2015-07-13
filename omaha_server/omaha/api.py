@@ -34,6 +34,7 @@ from rest_framework.response import Response
 from omaha.statistics import get_users_statistics_months, get_users_versions, get_channel_statistics
 from omaha.serializers import (
     AppSerializer,
+    DataSerializer,
     PlatformSerializer,
     ChannelSerializer,
     VersionSerializer,
@@ -43,6 +44,7 @@ from omaha.serializers import (
 )
 from omaha.models import (
     Application,
+    Data,
     Platform,
     Channel,
     Version,
@@ -139,6 +141,11 @@ class AppViewSet(BaseView):
     """
     queryset = Application.objects.all().order_by('-id')
     serializer_class = AppSerializer
+
+
+class DataViewSet(BaseView):
+    queryset = Data.objects.all().order_by('-id')
+    serializer_class = DataSerializer
 
 
 class PlatformViewSet(BaseView):

@@ -32,6 +32,16 @@ class ApplicationFactory(factory.DjangoModelFactory):
     name = factory.Sequence(lambda n: 'chrome%s' % n)
 
 
+class DataFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = 'omaha.Data'
+
+    app = factory.lazy_attribute(lambda x: ApplicationFactory())
+    name = 0
+    index = factory.Sequence(lambda n: 'indext_test%s' % n)
+    value = factory.Sequence(lambda n: 'test%s' % n)
+
+
 class PlatformFactory(factory.DjangoModelFactory):
     class Meta:
         model = 'omaha.Platform'
