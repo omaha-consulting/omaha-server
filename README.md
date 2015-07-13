@@ -91,9 +91,111 @@ If you need to you may construct and send basic auth headers yourself. To do thi
         {
             "id": "{8A76FC95-0086-4BCE-9517-DC09DDB5652F}",
             "name": "Chromium",
+            "data_set": [
+                {
+                    "id": 5,
+                    "app": "{8A76FC95-0086-4BCE-9517-DC09DDB5652F}",
+                    "index": "Test",
+                    "name": 0,
+                    "value": "",
+                }
+            ]
         }
 
 ### Remove an Application [DELETE]
+
++ Request
+
+    + Headers
+
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
++ Response 204
+
+# Group Data
+
+## Data Collection [/api/data{?id,app,index,name,value}]
+
+### List all Data [GET]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
++ Response 200 (application/json)
+    + Body
+
+            [
+                {
+                    "id": 2,
+                    "app": "{DB77BFF7-8C02-4D31-A103-5FDE27CF6B3C}",
+                    "index": "",
+                    "name": 0,
+                    "value": "Test",
+                },
+                {
+                    "id": 1,
+                    "app": "{DB77BFF7-8C02-4D31-A103-5FDE27CF6B3C}",
+                    "index": "qwerty",
+                    "name": 1,
+                    "value": "",
+                }
+            ]
+
+### Create an Data [POST]
+
++ Parameters
+    * app (required, string, `{DB77BFF7-8C02-4D31-A103-5FDE27CF6B3C}`) ... App ID
+    * name (required, number, `1`) ... Type of data. install=0, untrusted=1
+    * index (optional, string, ``) 
+    * value (optional, string, ``) 
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+
+            {
+                "app": {DB77BFF7-8C02-4D31-A103-5FDE27CF6B3C},
+                "name": 1
+            }
+
++ Response 201
+
+        {
+            "id": 9,
+            "app": "{DB77BFF7-8C02-4D31-A103-5FDE27CF6B3C}",
+            "index": "",
+            "name": 1,
+            "value": "",
+        }
+
+## Data [/api/data/{id}]
+
+### Retrieve a Data [GET]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
++ Response 200 (application/json)
+
+        {
+            "id": 9,
+            "app": "{DB77BFF7-8C02-4D31-A103-5FDE27CF6B3C}",
+            "index": null,
+            "name": 1,
+            "value": "",
+        }
+
+### Remove a Data [DELETE]
 
 + Request
 
@@ -437,15 +539,14 @@ If you need to you may construct and send basic auth headers yourself. To do thi
 ### Create an Action [POST]
 
 + Parameters
-    * id (required, string, `{8A76FC95-0086-4BCE-9517-DC09DDB5652F}`)
     * version (required, number, `12`) ... Version ID
     * event (required, number, `1`) ... Contains a fixed string denoting when this action should be run. preinstall=0, install=1, postinstall=2, update=3
-    * run (optional, string) The name of an installer binary to run.
-    * arguments = `--do-not-launch-chrome` (optional, string) Arguments to be passed to that installer binary.
-    * successurl (optional, string) A URL to be opened using the system's default web browser on a successful install.
-    * terminateallbrowsers = `false` (optional, boolean, `true`) If "true", close all browser windows before starting the installer binary.
-    * successsaction = `default` (optional, string) Contains a fixed string denoting some action to take in response to a successful install.
-    * other (optional, dict) Other attributes
+    * run (optional, string, ``) ... The name of an installer binary to run.
+    * arguments = `--do-not-launch-chrome` (optional, string) ... Arguments to be passed to that installer binary.
+    * successurl (optional, string, ``) ... A URL to be opened using the system's default web browser on a successful install.
+    * terminateallbrowsers = `false` (optional, boolean, `true`) ... If "true", close all browser windows before starting the installer binary.
+    * successsaction = `default` (optional, string) ... Contains a fixed string denoting some action to take in response to a successful install.
+    * other (optional, dict, ``) ... Other attributes
 
 + Request (application/json)
 
