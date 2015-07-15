@@ -1,28 +1,34 @@
 language: python
+matrix:
+  allow_failures:
+    - env: TOX_ENV=py34
+  include:
+    - python: "2.7"
+      env: TOX_ENV=py27
+    - python: "3.4"
+      env: TOX_ENV=py34
+    - python: "2.7"
+      env: TOX_ENV=coverage
+
+cache: pip
+sudo: false
 
 virtualenv:
   system_site_packages: true
+
+addons:
+  apt:
+    packages:
+    - python-lxml
+    - python-psycopg2
 
 env:
   global:
     - HOST_NAME: 'travis-ci'
     - SECRET_KEY: 'SECRET_KEY'
-  matrix:
-    - TOX_ENV=py27
-    - TOX_ENV=py34
-    - TOX_ENV=coverage
-
-matrix:
-  allow_failures:
-    - env: TOX_ENV=py34
 
 services:
   - redis-server
-
-before_install:
-  - sudo add-apt-repository ppa:chris-lea/python-pil -y
-  - sudo apt-get update -q
-  - sudo apt-get install -qq python-lxml python-psycopg2 python-pil
 
 install:
   - pip install tox==1.9.2
