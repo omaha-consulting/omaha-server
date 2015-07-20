@@ -85,7 +85,7 @@ def docker_run():
     loaddata()
     create_admin()
     collectstatic()
-    mount_s3()
+    # mount_s3()
     sh('/usr/bin/supervisord')
 
 
