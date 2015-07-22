@@ -30,6 +30,7 @@ Django-Select2==4.3.1
 django-bootstrap3==6.2.2
 protobuf==3.0.0a3
 protobuf-to-dict==0.1.0
+django-dynamic-preferences==0.5.1
 
 # Only dev
 #django-httplog==0.2.3

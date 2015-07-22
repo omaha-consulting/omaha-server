@@ -1,0 +1,63 @@
+{% extends "admin/base_site.html" %}
+{% load suit_tags %}
+{% load nvd3_tags %}
+{% load staticfiles %}
+
+{% block title %}Storage monitoring | {{ 'ADMIN_NAME'|suit_conf }}{% endblock %}
+
+{% block breadcrumbs %}
+    <ul class="breadcrumb">
+        <li><a href="{% url 'admin:index' %}">Home</a>
+            <span class="divider">&raquo;</span>
+        </li>
+        <li class="active">
+            <a href="#">Storage monitoring</a>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block extrahead %}
+    {% include_chart_jscss %}
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+{% endblock %}
+
+{% block content %}
+    <h1> Used Space / Limit: </h1>
+    <p {% if omaha_version.percent > 100 %} style="color:red" {% endif %}>
+        Omaha versions space usage {{ omaha_version.size|floatformat:-2 }} / {{ omaha_version.limit }} Gb<br>
+        <div class="progress progress-striped" style="width: 60%;">
+            <div class="bar" style="width:{{ omaha_version.percent }}%;"></div>
+        </div>
+    </p>
+    <p {% if sparkle_version.percent > 100 %} style="color:red" {% endif %}>
+        Sparkle version space usage {{ sparkle_version.size|floatformat:-2 }} / {{ sparkle_version.limit }} Gb<br>
+        <div class="progress progress-striped" style="width: 60%;">
+            <div class="bar" style="width:{{ sparkle_version.percent }}%;"></div>
+        </div>
+    </p>
+    <p {% if feedbacks.percent > 100 %} style="color:red" {% endif %}>
+        Feedbacks space usage {{ feedbacks.size|floatformat:-2 }} / {{ feedbacks.limit }} Gb<br>
+        <div class="progress progress-striped" style="width: 60%;">
+            <div class="bar" style="width:{{ feedbacks.percent }}%;"></div>
+        </div>
+    </p>
+    <p {% if crashes.percent > 100 %} style="color:red" {% endif %}>
+        Crashes space usage {{ crashes.size|floatformat:-2 }} / {{ crashes.limit }} Gb<br>
+        <div class="progress progress-striped" style="width: 60%;">
+            <div class="bar" style="width:{{ crashes.percent }}%;"></div>
+        </div>
+    </p>
+    <p {% if symbols.percent > 100 %} style="color:red" {% endif %}>
+        Symbols space usage {{ symbols.size|floatformat:-2 }} / {{ symbols.limit }} Gb<br>
+        <div class="progress progress-striped" style="width: 60%;">
+            <div class="bar" style="width:{{ symbols.percent }}%;"></div>
+        </div>
+    </p>
+
+    <h1>Percentage chart:</h1>
+    {% include_container used_space.chartcontainer 400 600 %}
+
+    <a href="{%  url 'manual_cleanup' 'crash__Crash' %}"><button class='btn btn-primary'>Manual Cleanup</button></a>
+
+    {% load_chart used_space.charttype used_space.chartdata used_space.chartcontainer used_space.extra %}
+{% endblock %}

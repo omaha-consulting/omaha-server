@@ -21,32 +21,31 @@ the License.
 from django.test import TestCase
 from django.core.files.uploadedfile import SimpleUploadedFile
 
-from omaha.models import Version
-from omaha.factories import VersionFactory
+from sparkle.models import SparkleVersion
+from sparkle.factories import SparkleVersionFactory
 from omaha.tests.utils import temporary_media_root
 
 
 class VersionManagerTest(TestCase):
     @temporary_media_root()
     def test_filter_by_enabled(self):
-        version = VersionFactory.create(
+        version = SparkleVersionFactory.create(
             version='37.0.2062.125',
             file=SimpleUploadedFile('./chrome_installer.exe', False))
-        version_disabled = VersionFactory.create(
+        version_disabled = SparkleVersionFactory.create(
             app=version.app,
-            platform=version.platform,
             channel=version.channel,
             is_enabled=False,
             version='38.0.2062.125',
             file=SimpleUploadedFile('./chrome_installer2.exe', False))
 
-        self.assertEqual(Version.objects.all().count(), 2)
-        self.assertEqual(Version.objects.filter_by_enabled().count(), 1)
-        self.assertIn(version, Version.objects.filter_by_enabled())
-        self.assertNotIn(version_disabled, Version.objects.filter_by_enabled())
+        self.assertEqual(SparkleVersion.objects.all().count(), 2)
+        self.assertEqual(SparkleVersion.objects.filter_by_enabled().count(), 1)
+        self.assertIn(version, SparkleVersion.objects.filter_by_enabled())
+        self.assertNotIn(version_disabled, SparkleVersion.objects.filter_by_enabled())
 
     def test_get_size(self):
         file_size = 42
-        VersionFactory.create_batch(10, file_size=file_size)
-        size = Version.objects.get_size()
+        SparkleVersionFactory.create_batch(10, file_size=file_size)
+        size = SparkleVersion.objects.get_size()
         self.assertEqual(size, file_size*10)

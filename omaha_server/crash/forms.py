@@ -27,6 +27,7 @@ from django import forms
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.forms import widgets
 from django.forms.widgets import TextInput
+from django.core.files.uploadedfile import UploadedFile
 
 from django_ace import AceWidget
 from crash.models import Symbols, Crash, CrashDescription
@@ -41,6 +42,8 @@ class CrashFrom(forms.ModelForm):
             'stacktrace_json': AceWidget(mode='json', theme='monokai', width='600px', height='300px'),
             'stacktrace': AceWidget(theme='monokai', width='600px', height='300px'),
             'meta': AceWidget(mode='json', theme='monokai', width='600px', height='300px'),
+            'archive_size': widgets.TextInput(attrs=dict(disabled='disabled')),
+            'minidump_size': widgets.TextInput(attrs=dict(disabled='disabled')),
         }
 
     def clean_archive(self):
@@ -60,8 +63,23 @@ class CrashFrom(forms.ModelForm):
                 file = SimpleUploadedFile(file_name, file.read())
             except StopIteration:
                 return None
-
         return file
+
+    def clean_minidump_size(self):
+        if 'upload_file_minidump' not in self.cleaned_data:
+            raise forms.ValidationError('')
+        _file = self.cleaned_data.get('upload_file_minidump')
+        if isinstance(_file, UploadedFile):
+            return _file.size
+        return self.initial.get("minidump_size")
+
+    def clean_archive_size(self):
+        if 'archive_file' not in self.cleaned_data:
+            return 0
+        _file = self.cleaned_data.get('archive_file', 0)
+        if isinstance(_file, UploadedFile):
+            return _file.size
+        return self.initial.get("archive_size", 0)
 
 
 class CrashDescriptionForm(forms.ModelForm):
@@ -87,6 +105,7 @@ class SymbolsAdminForm(forms.ModelForm):
         widgets = {
             'debug_id': widgets.TextInput(attrs=dict(disabled='disabled')),
             'debug_file': widgets.TextInput(attrs=dict(disabled='disabled')),
+            'file_size': widgets.TextInput(attrs=dict(disabled='disabled')),
         }
 
     def clean_file(self):
@@ -99,6 +118,13 @@ class SymbolsAdminForm(forms.ModelForm):
             raise forms.ValidationError(u"The file contains invalid data.")
         return file
 
+    def clean_file_size(self):
+        if 'file' not in self.cleaned_data:
+            raise forms.ValidationError('')
+        _file = self.cleaned_data["file"]
+        if isinstance(_file, UploadedFile):
+            return _file.size
+        return self.initial["file_size"]
 
 class TextInputForm(forms.Form):
     def __init__(self, *args, **kwargs):

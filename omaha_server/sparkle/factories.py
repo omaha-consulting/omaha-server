@@ -31,3 +31,5 @@ class SparkleVersionFactory(factory.DjangoModelFactory):
     channel = factory.lazy_attribute(lambda x: ChannelFactory())
     version = '2062.124'
     short_version = '37.0.2062.124'
+    file = factory.django.FileField(filename='the_file.dat')
+    file_size = 123

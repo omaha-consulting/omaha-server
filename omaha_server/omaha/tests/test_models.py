@@ -95,6 +95,7 @@ class VersionModelTest(test.TestCase):
         self.assertEqual(version.file_package_name, 'chrome_installer.exe')
         self.assertEqual(version.file_url,
                          'http://cache.pack.google.com/edgedl/chrome/install/782.112/')
+        self.assertEqual(version.size, 123)
 
     @temporary_media_root()
     def test_pre_save_callbac(self):

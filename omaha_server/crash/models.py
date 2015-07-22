@@ -22,15 +22,15 @@ import os
 import uuid
 
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from django.utils import timezone
 
 from celery import signature
-from django_extensions.db.models import TimeStampedModel
 from jsonfield import JSONField
 
 from omaha.models import BaseModel, Version
+from crash.managers import CrashManager, SymbolsManager
 
 
 def crash_upload_to(obj, filename):
@@ -47,7 +47,9 @@ def crash_archive_upload_to(obj, filename):
 
 class Crash(BaseModel):
     upload_file_minidump = models.FileField(upload_to=crash_upload_to, blank=True, null=True, max_length=255)
+    minidump_size = models.PositiveIntegerField(null=True, blank=True)
     archive = models.FileField(upload_to=crash_archive_upload_to, blank=True, null=True, max_length=255)
+    archive_size = models.PositiveIntegerField(null=True, blank=True)
     appid = models.CharField(max_length=38, null=True, blank=True)
     userid = models.CharField(max_length=38, null=True, blank=True)
     meta = JSONField(verbose_name='Meta-information', help_text='JSON format', null=True, blank=True)
@@ -56,15 +58,19 @@ class Crash(BaseModel):
     signature = models.CharField(max_length=255, db_index=True, null=True, blank=True)
     ip = models.GenericIPAddressField(blank=True, null=True, protocol="ipv4")
 
+    objects = CrashManager()
+
     class Meta(BaseModel.Meta):
         verbose_name_plural = 'Crashes'
 
+    @property
+    def size(self):
+         return self.archive_size + self.minidump_size
 
 class CrashDescription(BaseModel):
     crash = models.OneToOneField(Crash, related_name='crash_description')
     summary = models.CharField(max_length=500)
     description = models.TextField(null=True, blank=True)
-
 
 def symbols_upload_to(obj, filename):
     sym_filename = os.path.splitext(os.path.basename(obj.debug_file))[0]
@@ -75,7 +81,10 @@ def symbols_upload_to(obj, filename):
 class Symbols(BaseModel):
     debug_id = models.CharField(verbose_name='Debug ID', max_length=255, db_index=True, null=True, blank=True)
     debug_file = models.CharField(verbose_name='Debug file name', max_length=140, null=True, blank=True)
-    file = models.FileField(upload_to=symbols_upload_to)
+    file = models.FileField(upload_to=symbols_upload_to, null=True)
+    file_size = models.PositiveIntegerField(null=True, blank=True)
+
+    objects = SymbolsManager()
 
     class Meta:
         verbose_name_plural = 'Symbols'
@@ -83,8 +92,27 @@ class Symbols(BaseModel):
             ('debug_id', 'debug_file'),
         )
 
+    @property
+    def size(self):
+         return self.file_size
 
 @receiver(post_save, sender=Crash)
 def crash_post_save(sender, instance, created, *args, **kwargs):
     if created and instance.upload_file_minidump:
-        signature("tasks.processing_crash_dump", args=(instance.pk,)).apply_async(queue='default')
+        signature("tasks.processing_crash_dump", args=(instance.pk,)).apply_async(queue='default', countdown=1)
+
+
+@receiver(pre_delete, sender=Crash)
+def pre_crash_delete(sender, instance, **kwargs):
+    file_fields = [instance.archive, instance.upload_file_minidump]
+    for field in file_fields:
+        storage, name = field.storage, field.name
+        if name:
+            storage.delete(name)
+
+
+@receiver(pre_delete, sender=Symbols)
+def pre_symbol_delete(sender, instance, **kwargs):
+    storage, name = instance.file.storage, instance.file.name
+    if name:
+        storage.delete(name)

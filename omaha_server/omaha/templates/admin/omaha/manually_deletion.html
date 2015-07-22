@@ -1,0 +1,41 @@
+{% extends "admin/base_site.html" %}
+{% load suit_tags %}
+{% load nvd3_tags %}
+{% load staticfiles %}
+
+{% block title %}Manual Cleanup | {{ 'ADMIN_NAME'|suit_conf }}{% endblock %}
+
+{% block breadcrumbs %}
+    <ul class="breadcrumb">
+        <li><a href="{% url 'admin:index' %}">Home</a>
+            <span class="divider">&raquo;</span>
+        </li>
+        <li><a href="{% url 'monitoring' %}">Storage monitoring</a>
+            <span class="divider">&raquo;</span>
+        </li>
+        <li class="active">
+            <a href="#">Manual Cleanup</a>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block extrahead %}
+    {% include_chart_jscss %}
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+{% endblock %}
+
+
+{% block content %}
+    <ul class="nav nav-pills">
+
+        {% for tab in tabs %}
+            <li class = "{% if tab.0 == cur_tab %}active{% endif %}"><a href="{{ tab.0 }}">{{ tab.1 }}</a></li>
+        {% endfor %}
+    </ul>
+    <form action="" method="POST" style="">
+        {% csrf_token %}
+            {{ form.as_p }}
+        <input class="btn btn-primary" type="submit" value="Delete" />
+    </form>
+
+{% endblock %}

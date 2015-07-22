@@ -24,8 +24,8 @@ from django.utils.encoding import python_2_unicode_compatible
 import os
 
 from django.db import models
-
-from django_extensions.db.models import TimeStampedModel
+from django.dispatch import receiver
+from django.db.models.signals import pre_delete
 
 from omaha.models import BaseModel, Application, Channel
 from sparkle.managers import VersionManager
@@ -43,7 +43,7 @@ class SparkleVersion(BaseModel):
     version = models.CharField(max_length=32)
     short_version = models.CharField(max_length=32, blank=True, null=True)
     release_notes = models.TextField(blank=True, null=True)
-    file = models.FileField(upload_to=version_upload_to)
+    file = models.FileField(upload_to=version_upload_to, null=True)
     file_size = models.PositiveIntegerField(null=True, blank=True)
     dsa_signature = models.CharField(verbose_name='DSA signature', max_length=140, null=True, blank=True)
 
@@ -71,3 +71,13 @@ class SparkleVersion(BaseModel):
     @property
     def file_url(self):
         return '%s/' % os.path.dirname(self.file_absolute_url)
+
+    @property
+    def size(self):
+        return self.file_size
+
+@receiver(pre_delete, sender=SparkleVersion)
+def pre_version_delete(sender, instance, **kwargs):
+    storage, name = instance.file.storage, instance.file.name
+    if name:
+        storage.delete(name)

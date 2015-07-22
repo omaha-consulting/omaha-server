@@ -18,25 +18,38 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
+import os
 from django.test import TestCase
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 from feedback.forms import FeedbackForm
 
+import logging
+IMG_FILE = os.path.join(os.path.dirname(__file__), 'testdata', 'test_png.png')
 
 class FeedbackFormTest(TestCase):
     def test_form(self):
-        form_file_data = dict()
+        form_file_data = dict(
+            screenshot=SimpleUploadedFile('screenshot.png', content=open(IMG_FILE, 'rb').read()),
+            blackbox=SimpleUploadedFile('blackbox.tar', b' '),
+            system_logs=SimpleUploadedFile('system_logs.zip', b' '*2),
+            attached_file=SimpleUploadedFile('attach.zip', b' '*3),
+        )
         form_data = dict(
             description='Test description',
         )
 
         form = FeedbackForm(form_data, form_file_data)
         self.assertTrue(form.is_valid())
+        self.assertEqual(form.cleaned_data['screenshot_size'], 88)
+        self.assertEqual(form.cleaned_data['blackbox_size'], 1)
+        self.assertEqual(form.cleaned_data['system_logs_size'], 2)
+        self.assertEqual(form.cleaned_data['attached_file_size'], 3)
+
 
     def test_form_no_description(self):
         form_file_data = dict(
-            screenshot=SimpleUploadedFile('screenshot.png', b' '),
+            screenshot=SimpleUploadedFile('screenshot.png', content=open(IMG_FILE, 'rb').read()),
             blackbox=SimpleUploadedFile('blackbox.tar', b' '),
             system_logs=SimpleUploadedFile('system_logs.zip', b' '),
             attached_file=SimpleUploadedFile('attach.zip', b' '),

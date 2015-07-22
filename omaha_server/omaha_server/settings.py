@@ -10,7 +10,9 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+from datetime import timedelta
 
+from django.core.urlresolvers import reverse_lazy
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -45,7 +47,8 @@ SUIT_CONFIG = {
         {'app': 'crash', 'label': 'Crash reports', 'icon': 'icon-fire'},
         {'app': 'feedback', 'label': 'Feedbacks', 'icon': 'icon-comment'},
         {'label': 'Statistics', 'url': 'omaha_statistics', 'icon': 'icon-star'},
-        {'label': 'Set timezone', 'url': 'set_timezone', 'icon': 'icon-time'},
+        {'label': 'Preferences', 'url': reverse_lazy('set_preferences', args=['']), 'icon': 'icon-wrench'},
+        {'label': 'Storage monitoring', 'url': 'monitoring', 'icon': 'icon-hdd'},
     ),
 }
 
@@ -92,6 +95,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'django_select2',
     'bootstrap3',
+    'dynamic_preferences',
 
     'omaha',
     'crash',
@@ -222,6 +226,31 @@ CELERY_QUEUES = (
     Queue('default', routing_key='default'),
 )
 
+if IS_PRIVATE:
+    CELERY_QUEUES += (Queue('limitation', routing_key='limitation'),)
+
+    CELERYBEAT_SCHEDULE = {
+        'auto_delete_older_then': {
+            'task': 'tasks.auto_delete_older_then',
+            'schedule': timedelta(seconds=600),
+            'options': {'queue': 'limitation'},
+        },
+        'auto_delete_size_is_exceed': {
+            'task': 'tasks.auto_delete_size_is_exceeded',
+            'schedule': timedelta(seconds=600),
+            'options': {'queue': 'limitation'},
+        },
+        'auto_delete_duplicate_crashes': {
+            'task': 'tasks.auto_delete_duplicate_crashes',
+            'schedule': timedelta(seconds=600),
+            'options': {'queue': 'limitation'},
+        },
+        'auto_monitoring_size': {
+            'task': 'tasks.auto_monitoring_size',
+            'schedule': timedelta(seconds=60),
+            'options': {'queue': 'limitation'},
+        },
+    }
 
 # Cache
 

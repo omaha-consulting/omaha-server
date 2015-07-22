@@ -22,7 +22,7 @@ from django.conf import settings
 from django.conf.urls import url
 
 from omaha.views import UpdateView
-from omaha.views_admin import StatisticsView, StatisticsDetailView, RequestListView, AppRequestDetailView, TimezoneView
+from omaha.views_admin import StatisticsView, StatisticsDetailView, RequestListView, AppRequestDetailView, PreferenceFormView, MonitoringFormView, ManualCleanupFormView
 
 
 urlpatterns = [
@@ -37,5 +37,7 @@ if settings.IS_PRIVATE:
             name='omaha_statistics_detail'),
         url(r'^admin/statistics/(?P<name>[a-zA-Z0-9_ ]+)/requests/$', RequestListView.as_view(), name='omaha_request_list'),
         url(r'^admin/statistics/requests/(?P<pk>\d+)/$', AppRequestDetailView.as_view(), name='omaha_request_detail'),
-        url(r'^admin/set_timezone/$', TimezoneView.as_view(), name='set_timezone'),
+        url(r'^admin/preferences/(?P<section>[a-zA-Z0-9_ ]*)', PreferenceFormView.as_view(), name='set_preferences'),
+        url(r'^admin/monitoring/', MonitoringFormView.as_view(), name='monitoring'),
+        url(r'^admin/manual_cleanup/(?P<model>[a-zA-Z0-9_ ]*)', ManualCleanupFormView.as_view(), name='manual_cleanup'),
     ]

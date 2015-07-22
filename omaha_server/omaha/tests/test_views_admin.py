@@ -23,11 +23,14 @@ from django.test import TestCase
 from django.test.client import Client
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
+
+import mock
 from pyquery import PyQuery as pq
 
 from omaha_server.utils import is_private
 from omaha.factories import ApplicationFactory, RequestFactory, AppRequestFactory
 from omaha.models import Request, AppRequest
+from omaha.forms import ManualCleanupForm
 from omaha.views_admin import (
     StatisticsView,
     RequestListView,
@@ -85,13 +88,19 @@ class ViewsStaffMemberRequiredTest(TestCase):
         self.assertRedirects(response, '/admin/login/?next=%s' % url)
 
     @is_private()
-    def test_omaha_set_timezone(self):
-        url = reverse('set_timezone')
+    def test_omaha_preferences(self):
+        url = reverse('set_preferences', args=[''])
+        response = self.client.get(url)
+        self.assertRedirects(response, '/admin/login/?next=%s' % url)
+
+    @is_private()
+    def test_omaha_monitoring(self):
+        url = reverse('monitoring')
         response = self.client.get(url)
         self.assertRedirects(response, '/admin/login/?next=%s' % url)
 
 
-class AdminViewTimezoneTest(TestCase):
+class AdminViewPreferencesTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = User.objects.create_superuser(
@@ -100,9 +109,9 @@ class AdminViewTimezoneTest(TestCase):
 
     @is_private()
     def test_set_timezone(self):
-        url = reverse('set_timezone')
+        url = reverse('set_preferences', args=['Timezone'])
         timezone = 'Asia/Omsk'
-        self.client.post(url, dict(timezone=timezone), follow=True)
+        self.client.post(url, dict(Timezone__timezone=timezone), follow=True)
         response = self.client.get(url)
         self.assertEqual(self.client.session["django_timezone"], timezone)
         self.assertContains(response, '<option value="Asia/Omsk" selected="selected">Asia/Omsk +0600</option>')
@@ -141,3 +150,77 @@ class FilteringAppRequestsByUserIdTest(TestCase):
         d = pq(resp.content)
         res = d('#apprequest-table tbody tr')
         self.assertEqual(len(res), 2)
+
+
+class ManualCleanupView(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_superuser(
+            username='test', email='test@example.com', password='test')
+        self.client.login(username='test', password='test')
+
+    @is_private()
+    def test_limit_size_field(self):
+        data = dict(limit_size=10)
+        url = reverse('manual_cleanup', args=['feedback__Feedback'])
+        with mock.patch('omaha.tasks.deferred_manual_cleanup.apply_async') as mocked:
+            self.client.post(url, data=data)
+
+        mock_args, mock_kwargs = mocked.call_args
+        data.update(dict(limit_days=None))
+        self.assertTrue(mocked.called)
+        self.assertDictEqual(mock_args[1], data)
+
+    @is_private()
+    def test_limit_days_field(self):
+        data = dict(limit_days=10)
+        url = reverse('manual_cleanup', args=['feedback__Feedback'])
+        with mock.patch('omaha.tasks.deferred_manual_cleanup.apply_async') as mocked:
+            self.client.post(url, data=data)
+
+        mock_args, mock_kwargs = mocked.call_args
+        data.update(dict(limit_size=None))
+        self.assertTrue(mocked.called)
+        self.assertDictEqual(mock_args[1], data)
+
+    @is_private()
+    def test_all_fields(self):
+        data = dict(limit_size=40, limit_days=5)
+        url = reverse('manual_cleanup', args=['feedback__Feedback'])
+        with mock.patch('omaha.tasks.deferred_manual_cleanup.apply_async') as mocked:
+            self.client.post(url, data=data)
+
+        mock_args, mock_kwargs = mocked.call_args
+        self.assertTrue(mocked.called)
+        self.assertDictEqual(mock_args[1], data)
+
+
+class CrashManualCleanupView(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_superuser(
+            username='test', email='test@example.com', password='test')
+        self.client.login(username='test', password='test')
+
+    @is_private()
+    def test_limit_duplictated_field(self):
+        data = dict(limit_duplicated=10)
+        url = reverse('manual_cleanup', args=['crash__Crash'])
+        with mock.patch('omaha.tasks.deferred_manual_cleanup.apply_async') as mocked:
+            self.client.post(url, data=data)
+
+        mock_args, mock_kwargs = mocked.call_args
+        data.update(dict(limit_size=None, limit_days=None))
+        self.assertTrue(mocked.called)
+        self.assertDictEqual(mock_args[1], data)
+
+    @is_private()
+    def test_all_fields(self):
+        data = dict(limit_size=40, limit_days=5, limit_duplicated=73)
+        url = reverse('manual_cleanup', args=['crash__Crash'])
+        with mock.patch('omaha.tasks.deferred_manual_cleanup.apply_async') as mocked:
+            self.client.post(url, data=data)
+
+        mock_args, mock_kwargs = mocked.call_args
+        self.assertTrue(mocked.called)
+        self.assertDictEqual(mock_args[1], data)

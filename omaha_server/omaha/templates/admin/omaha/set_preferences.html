@@ -1,0 +1,44 @@
+{% extends "admin/base_site.html" %}
+{% load suit_tags %}
+{% load tz %}
+{% load django_select2_tags %}
+
+{% block title %}Preferences | {{ 'ADMIN_NAME'|suit_conf }}{% endblock %}
+
+{% block breadcrumbs %}
+    <ul class="breadcrumb">
+        <li><a href="{% url 'admin:index' %}">Home</a>
+            <span class="divider">&raquo;</span>
+        </li>
+        <li class="active">
+            <a href="#">Preferences</a>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    {% import_django_select2_css %}
+{% endblock %}
+
+{% block extrajs %}
+    {{ block.super }}
+    {% import_django_select2_js %}
+{% endblock %}
+
+
+{% block content %}
+
+    <ul class="nav nav-tabs">
+        <li role="presentation" class="{% if not cur_section  %}active{% endif %}"><a href=".">All</a></li>
+        {% for section in sections %}
+            <li role="presentation" class="{% if section == cur_section %}active{% endif %}"><a href="./{{ section }}">{{ section }}</a></li>
+        {% endfor %}
+    </ul>
+
+    <form action="" enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input class="btn btn-primary" type="submit" value="Save" />
+    </form>
+{% endblock %}
