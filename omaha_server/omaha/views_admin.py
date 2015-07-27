@@ -29,6 +29,7 @@ from django.utils import timezone
 from django_tables2 import SingleTableView
 from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
+from django.shortcuts import get_object_or_404
 
 from omaha.statistics import (
     get_users_statistics_months,
@@ -95,7 +96,7 @@ class StatisticsDetailView(StaffMemberRequiredMixin, DetailView):
     context_object_name = 'app'
 
     def get_object(self, queryset=None):
-        return Application.objects.get(name=self.kwargs.get('name'))
+        return get_object_or_404(Application, name=self.kwargs.get('name'))
 
     def get_context_data(self, **kwargs):
         context = super(StatisticsDetailView, self).get_context_data(**kwargs)
