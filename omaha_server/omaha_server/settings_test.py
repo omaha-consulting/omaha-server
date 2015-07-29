@@ -3,6 +3,9 @@
 from .settings import *
 
 
+IS_PRIVATE = True
+
+
 class DisableMigrations(object):
 
     def __contains__(self, item):
@@ -23,7 +26,7 @@ TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 NOSE_ARGS = [
     '--with-coverage',
-    '--cover-package=omaha_server,omaha,crash,feedback,sparkle',
+    '--cover-package=omaha_server,omaha,crash,feedback,sparkle,healthcheck',
     '--cover-inclusive',
     # '--with-doctest',
 ]

@@ -11,7 +11,7 @@ ALLOWED_HOSTS = (os.environ.get('HOST_NAME'), '*')
 SECRET_KEY = os.environ.get('SECRET_KEY') or crypto.get_random_string(50)
 
 STATICFILES_STORAGE = 'omaha_server.s3utils.StaticS3Storage'
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+DEFAULT_FILE_STORAGE = 'omaha_server.s3utils.S3Storage'
 
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')

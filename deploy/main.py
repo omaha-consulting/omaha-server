@@ -34,7 +34,7 @@ DEFAULT_SETTINGS = dict(
         solution_stack_name='64bit Amazon Linux 2015.03 v1.4.3 running Docker 1.6.2',
         InstanceType='t2.small',
         autoscaling=dict(min=1, max=10),
-        healthcheck_url='/admin/login/',
+        healthcheck_url='/healthcheck/status/',
     ),
     environment=dict(
         DJANGO_SETTINGS_MODULE='omaha_server.settings_dev',
@@ -48,11 +48,15 @@ def get_settings():
     with open(SETTINGS_PATH, 'r') as f:
         settings = yaml.load(f)
 
-    settings['app'].update(DEFAULT_SETTINGS['app'])
+    app_settings = DEFAULT_SETTINGS['app'].copy()
+    app_settings.update(settings['app'])
+    settings['app'] = app_settings
 
     environments = settings['app']['environments']
     for env in environments.keys():
-        environments[env]['environment'].update(DEFAULT_SETTINGS['environment'])
+        environment = DEFAULT_SETTINGS['environment'].copy()
+        environment.update(environments[env]['environment'])
+        environments[env]['environment'] = environment
 
     return settings
 

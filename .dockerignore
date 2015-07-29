@@ -1,6 +1,8 @@
 .git
 .dockerignore
 
+deploy/
+
 ### Python ###
 
 # Byte-compiled / optimized / DLL files

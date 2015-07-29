@@ -65,9 +65,9 @@
         module: iam_policy
         iam_name: omaha-server-s3-readonly
         iam_type: role
-        policy_name: s3-readonly
+        policy_name: s3-private
         state: present
-        policy_document: policies/s3_readonly.json
+        policy_document: policies/s3_private.json
 
 
     - name: create S3 bucket

@@ -74,6 +74,14 @@ class VersionModelTest(test.TestCase):
                          'http://cache.pack.google.com/edgedl/chrome/install/782.112/chrome_installer.exe')
         self.assertEqual(version.file_package_name, 'chrome_installer.exe')
         self.assertEqual(version.file_url,
+                         u'http://cache.pack.google.com/edgedl/chrome/install/782.112/')
+
+    @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
+    @patch('omaha.models.version_upload_to', lambda o, f: f)
+    def test_property_s3_meta_data(self):
+        version = VersionFactory.create(file=SimpleUploadedFile('./chrome_installer.exe', ''))
+        self.assertEqual(version.file_package_name, 'chrome_installer.exe')
+        self.assertEqual(version.file_url,
                          'http://cache.pack.google.com/edgedl/chrome/install/782.112/')
 
     @temporary_media_root()

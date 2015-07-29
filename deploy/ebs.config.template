@@ -28,15 +28,15 @@ app:
 
   all_environments:
     solution_stack_name: {{ app.solution_stack_name }}
-    #tier_name: 'WebServer'
-    #tier_type: 'Standard'
-    #tier_version: '1.0'
 
     option_settings:
       'aws:autoscaling:launchconfiguration':
         InstanceType: {{ app.InstanceType }}
         {% set security = ','.join(app.security_groups) -%}
         SecurityGroups: {{ security }}
+        {% if app.profile -%}
+        IamInstanceProfile: {{ app.profile }}
+        {% endif -%}
         EC2KeyName: {{ app.key_name }}
 
       'aws:autoscaling:asg':
@@ -53,10 +53,6 @@ app:
 
       'aws:elasticbeanstalk:application':
         Application Healthcheck URL: {{ app.healthcheck_url }}
-
-      'aws:elasticbeanstalk:application:environment':
-        AWS_ACCESS_KEY_ID: {{ deploy.aws_access_key }}
-        AWS_SECRET_KEY: {{ deploy.aws_secret_key }}
 
     archive:
       files:
@@ -82,15 +78,25 @@ app:
         - Dockerrun.aws.json
 
   environments:
-    {% for env_name in app.environments.keys() -%}
+    {% for env_name in app.environments.keys() %}
     {{ env_name }}:
         cname_prefix: {{ env_name }}
         {% set env = app.environments[env_name] -%}
-        {% if env.environment -%}
         option_settings:
+          {% if env.environment -%}
           'aws:elasticbeanstalk:application:environment':
-            {% for key, value in app.environments[env_name].environment.iteritems() -%}
+            HOST_NAME: {{ env_name }}.elasticbeanstalk.com
+            {% for key, value in env.environment.iteritems() -%}
             {{ key }}: {{ value }}
             {% endfor -%}
           {% endif -%}
-    {% endfor -%}
+
+          {% if env.option_settings %}
+          {% for key, value in env.option_settings.iteritems() -%}
+          '{{ key }}':
+            {% for k, v in value.iteritems() -%}
+            '{{ k }}': {{ v }}
+            {% endfor -%}
+          {% endfor -%}
+          {% endif -%}
+    {% endfor %}

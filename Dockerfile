@@ -30,6 +30,13 @@ RUN cd /usr/src/s3fs-fuse-1.78 && ./autogen.sh && ./configure --prefix=/usr && m
 RUN mkdir /srv/omaha_s3
 
 
+RUN mkdir $omaha
+WORKDIR ${omaha}
+
+ADD ./requirements.txt $omaha/requirements.txt
+RUN pip install paver --use-mirrors
+RUN pip install -r requirements.txt --use-mirrors
+
 ADD . $omaha
 
 # setup all the configfiles
@@ -38,11 +45,6 @@ RUN rm /etc/nginx/nginx.conf
 RUN ln -s /srv/omaha/conf/nginx.conf /etc/nginx/
 RUN ln -s /srv/omaha/conf/nginx-app.conf /etc/nginx/sites-enabled/
 RUN ln -s /srv/omaha/conf/supervisord.conf /etc/supervisor/conf.d/
-
-WORKDIR ${omaha}
-
-RUN pip install paver --use-mirrors
-RUN pip install -r requirements.txt --use-mirrors
 
 EXPOSE 80
 CMD ["paver", "docker_run"]

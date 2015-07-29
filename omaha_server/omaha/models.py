@@ -38,6 +38,7 @@ from django_extensions.db.fields import (
 )
 from jsonfield import JSONField
 from versionfield import VersionField
+from furl import furl
 
 
 __all__ = ['Application', 'Channel', 'Platform', 'Version',
@@ -127,11 +128,13 @@ class Version(BaseModel):
 
     @property
     def file_package_name(self):
-        return os.path.basename(self.file_absolute_url)
+        url = furl(self.file_absolute_url)
+        return os.path.basename(url.pathstr)
 
     @property
     def file_url(self):
-        return '%s/' % os.path.dirname(self.file_absolute_url)
+        url = furl(self.file_absolute_url)
+        return '%s://%s%s/' % (url.scheme, url.host, os.path.dirname(url.pathstr))
 
 
 EVENT_DICT_CHOICES = dict(

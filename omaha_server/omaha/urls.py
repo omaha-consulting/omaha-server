@@ -18,6 +18,7 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
+from django.conf import settings
 from django.conf.urls import url
 
 from omaha.views import UpdateView
@@ -26,11 +27,15 @@ from omaha.views_admin import StatisticsView, StatisticsDetailView, RequestListV
 
 urlpatterns = [
     url(r'^service/update2$', UpdateView.as_view(), name='update'),
-
-    url(r'^admin/statistics/$', StatisticsView.as_view(), name='omaha_statistics'),
-    url(r'^admin/statistics/(?P<name>[a-zA-Z0-9_ ]+)/$', StatisticsDetailView.as_view(),
-        name='omaha_statistics_detail'),
-    url(r'^admin/statistics/(?P<name>[a-zA-Z0-9_ ]+)/requests/$', RequestListView.as_view(), name='omaha_request_list'),
-    url(r'^admin/statistics/requests/(?P<pk>\d+)/$', AppRequestDetailView.as_view(), name='omaha_request_detail'),
-    url(r'^admin/set_timezone/$', TimezoneView.as_view(), name='set_timezone'),
 ]
+
+
+if settings.IS_PRIVATE:
+    urlpatterns += [
+        url(r'^admin/statistics/$', StatisticsView.as_view(), name='omaha_statistics'),
+        url(r'^admin/statistics/(?P<name>[a-zA-Z0-9_ ]+)/$', StatisticsDetailView.as_view(),
+            name='omaha_statistics_detail'),
+        url(r'^admin/statistics/(?P<name>[a-zA-Z0-9_ ]+)/requests/$', RequestListView.as_view(), name='omaha_request_list'),
+        url(r'^admin/statistics/requests/(?P<pk>\d+)/$', AppRequestDetailView.as_view(), name='omaha_request_detail'),
+        url(r'^admin/set_timezone/$', TimezoneView.as_view(), name='set_timezone'),
+    ]
