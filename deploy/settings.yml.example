@@ -8,13 +8,14 @@ app:
   name: omaha-server
   description: Omaha Server
 
-  security_groups:
-    - omaha-server
   key_name: omaha_server
-  profile: omaha-private
 
   environments:
     omaha-server-private:
+      option_settings:
+        'aws:autoscaling:launchconfiguration':
+          IamInstanceProfile: omaha-public
+          SecurityGroups: omaha-server,omaha-server-private
       environment:
         OMAHA_SERVER_PRIVATE: true
         SECRET_KEY: **********
@@ -34,6 +35,7 @@ app:
       option_settings:
         'aws:autoscaling:launchconfiguration':
           IamInstanceProfile: omaha-public
+          SecurityGroups: omaha-server,omaha-server-public
       environment:
         OMAHA_SERVER_PRIVATE: false
         SECRET_KEY: **********

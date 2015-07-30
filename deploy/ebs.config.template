@@ -32,8 +32,10 @@ app:
     option_settings:
       'aws:autoscaling:launchconfiguration':
         InstanceType: {{ app.InstanceType }}
+        {% if app.security_groups -%}
         {% set security = ','.join(app.security_groups) -%}
         SecurityGroups: {{ security }}
+        {% endif -%}
         {% if app.profile -%}
         IamInstanceProfile: {{ app.profile }}
         {% endif -%}
