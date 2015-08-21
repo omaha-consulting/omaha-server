@@ -2,6 +2,7 @@
 .dockerignore
 
 deploy/
+omaha_server/static
 
 ### Python ###
 
