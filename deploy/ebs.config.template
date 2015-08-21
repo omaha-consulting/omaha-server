@@ -98,7 +98,7 @@ app:
           '{{ key }}':
             {% for k, v in value.iteritems() -%}
             '{{ k }}': {{ v }}
-            {% endfor -%}
+            {% endfor %}
           {% endfor -%}
           {% endif -%}
     {% endfor %}

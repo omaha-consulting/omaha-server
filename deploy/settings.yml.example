@@ -10,12 +10,25 @@ app:
 
   key_name: omaha_server
 
+  solution_stack_name: '64bit Amazon Linux 2015.03 v1.4.3 running Docker 1.6.2' # optional default: '64bit Amazon Linux 2015.03 v1.4.3 running Docker 1.6.2'
+  InstanceType: t2.large # optional default: t2.small http://aws.amazon.com/ec2/instance-types/
+  autoscaling: # optional default: min=1 max=10
+    min: 4
+    max: 20
+  healthcheck_url: '/admin/' # optional default: '/healthcheck/status/'
+
   environments:
     omaha-server-private:
-      option_settings:
+      option_settings: # Configuration Options http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/command-options.html
         'aws:autoscaling:launchconfiguration':
           IamInstanceProfile: omaha-public
           SecurityGroups: omaha-server,omaha-server-private
+
+        'aws:ec2:vpc':
+          VPCId: vpc-bb6b9fdf
+          Subnets: subnet-e386d5ba
+          AssociatePublicIpAddress: 'true'
+      
       environment:
         OMAHA_SERVER_PRIVATE: true
         SECRET_KEY: **********
