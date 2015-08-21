@@ -28,6 +28,7 @@ from django import test
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.urlresolvers import reverse
 
+from omaha_server.utils import is_private
 from crash.utils import (
     get_stacktrace,
     add_signature_to_frame,
@@ -108,6 +109,7 @@ class SignatureTest(test.TestCase):
 class SendStackTraceTest(test.TestCase):
     @patch('crash.utils.client')
     @test.override_settings(HOST_NAME='example.com')
+    @is_private(False)
     def test_send_stacktrace_sentry(self, mock_client):
         meta = dict(
             lang='en',
@@ -129,7 +131,7 @@ class SendStackTraceTest(test.TestCase):
         extra = {
             'crash_admin_panel_url': 'http://{}{}'.format(
                 'example.com',
-                reverse('admin:crash_crash_change', args=(crash.pk,))),
+                '/admin/crash/crash/%s/' % crash.pk),
             'crashdump_url': crash.upload_file_minidump.url,
             'lang': 'en',
             'version': '1.0.0.1'}

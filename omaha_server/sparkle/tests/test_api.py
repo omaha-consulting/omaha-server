@@ -32,22 +32,26 @@ from sparkle.models import SparkleVersion
 
 from omaha.tests.utils import temporary_media_root
 from omaha.tests.test_api import BaseTest
+from omaha_server.utils import is_private
 
 
 class VersionTest(BaseTest, APITestCase):
-    url = reverse('sparkleversion-list')
+    url = 'sparkleversion-list'
     url_detail = 'sparkleversion-detail'
     factory = SparkleVersionFactory
     serializer = SparkleVersionSerializer
 
+    @is_private
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
     def test_detail(self):
         super(VersionTest, self).test_detail()
 
+    @is_private
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
     def test_list(self):
         super(VersionTest, self).test_list()
 
+    @is_private
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
     def test_create(self):
         data = dict(

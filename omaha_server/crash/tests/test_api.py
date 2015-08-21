@@ -32,6 +32,7 @@ from crash.factories import SymbolsFactory, CrashFactory
 
 from omaha.tests.utils import temporary_media_root
 from omaha.tests.test_api import BaseTest
+from omaha_server.utils import is_private
 
 
 BASE_DIR = os.path.dirname(__file__)
@@ -40,19 +41,22 @@ SYM_FILE = os.path.join(TEST_DATA_DIR, 'BreakpadTestApp.sym')
 
 
 class SymbolsTest(BaseTest, APITestCase):
-    url = reverse('symbols-list')
+    url = 'symbols-list'
     url_detail = 'symbols-detail'
     factory = SymbolsFactory
     serializer = SymbolsSerializer
 
+    @is_private
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
     def test_detail(self):
         super(SymbolsTest, self).test_detail()
 
+    @is_private
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
     def test_list(self):
         super(SymbolsTest, self).test_list()
 
+    @is_private
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
     def test_create(self):
         with open(SYM_FILE, 'rb') as f:
@@ -64,6 +68,7 @@ class SymbolsTest(BaseTest, APITestCase):
         self.assertEqual(symbols.debug_id, 'C1C0FA629EAA4B4D9DD2ADE270A231CC1')
         self.assertEqual(symbols.debug_file, 'BreakpadTestApp.pdb')
 
+    @is_private
     def test_duplicate(self):
         with open(SYM_FILE, 'rb') as f:
             data = dict(file=SimpleUploadedFile('./BreakpadTestApp.sym', f.read()))
@@ -76,17 +81,19 @@ class SymbolsTest(BaseTest, APITestCase):
         self.assertEqual(response.data['message'], 'Duplicate symbol')
 
 class CrashTest(BaseTest, APITestCase):
-    url = reverse('crash-list')
+    url = 'crash-list'
     url_detail = 'crash-detail'
     factory = CrashFactory
     serializer = CrashSerializer
 
+    @is_private
     def test_list(self):
         response = self.client.get(self.url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['count'], 10)
         self.assertEqual(self.serializer(self.objects, many=True).data, response.data['results'][::-1])
 
+    @is_private
     def test_create(self):
         response = self.client.post(self.url, {})
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)

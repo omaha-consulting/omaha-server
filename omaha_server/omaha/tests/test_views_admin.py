@@ -25,6 +25,7 @@ from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from pyquery import PyQuery as pq
 
+from omaha_server.utils import is_private
 from omaha.factories import ApplicationFactory, RequestFactory, AppRequestFactory
 from omaha.models import Request, AppRequest
 from omaha.views_admin import (
@@ -43,6 +44,7 @@ class AdminViewStatisticsTest(TestCase):
         self.user = User.objects.create_superuser(
             username='test', email='test@example.com', password='test')
 
+    @is_private
     def test_statistics_view(self):
         view = StatisticsView()
         self.assertListEqual(list(view.get_queryset()), self.apps)
@@ -58,26 +60,31 @@ class ViewsStaffMemberRequiredTest(TestCase):
             appid=self.app.id,
         )
 
+    @is_private
     def test_omaha_statistics(self):
         url = reverse('omaha_statistics')
         response = self.client.get(url)
         self.assertRedirects(response, '/admin/login/?next=%s' % url)
 
+    @is_private
     def test_omaha_statistics_detail(self):
         url = reverse('omaha_statistics_detail', kwargs=dict(name=self.app.name))
         response = self.client.get(url)
         self.assertRedirects(response, '/admin/login/?next=%s' % url)
 
+    @is_private
     def test_omaha_request_list(self):
         url = reverse('omaha_request_list', kwargs=dict(name=self.app.name))
         response = self.client.get(url)
         self.assertRedirects(response, '/admin/login/?next=%s' % url)
 
+    @is_private
     def test_omaha_request_detail(self):
         url = reverse('omaha_request_detail', kwargs=dict(pk=self.app_request.pk))
         response = self.client.get(url)
         self.assertRedirects(response, '/admin/login/?next=%s' % url)
 
+    @is_private
     def test_omaha_set_timezone(self):
         url = reverse('set_timezone')
         response = self.client.get(url)
@@ -91,6 +98,7 @@ class AdminViewTimezoneTest(TestCase):
             username='test', email='test@example.com', password='test')
         self.client.login(username='test', password='test')
 
+    @is_private
     def test_set_timezone(self):
         url = reverse('set_timezone')
         timezone = 'Asia/Omsk'
@@ -114,6 +122,7 @@ class FilteringAppRequestsByUserIdTest(TestCase):
             username='test', email='test@example.com', password='test')
         self.client.login(username='test', password='test')
 
+    @is_private
     def test_filtering(self):
         url = reverse('omaha_request_list', kwargs=dict(name=self.app.name))
         data = {'request__userid': '',

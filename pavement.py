@@ -30,7 +30,6 @@ client = Client(os.environ.get('RAVEN_DNS'))
 
 @task
 def test():
-    os.environ["OMAHA_SERVER_PRIVATE"] = 'True'
     sh('./manage.py test --settings=omaha_server.settings_test', cwd='omaha_server')
 
 

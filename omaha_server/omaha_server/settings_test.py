@@ -1,9 +1,10 @@
 # coding: utf8
 
+import os
+
+os.environ.setdefault('OMAHA_SERVER_PRIVATE', 'True')
+
 from .settings import *
-
-
-IS_PRIVATE = True
 
 
 class DisableMigrations(object):
@@ -28,7 +29,7 @@ NOSE_ARGS = [
     '--with-coverage',
     '--cover-package=omaha_server,omaha,crash,feedback,sparkle,healthcheck',
     '--cover-inclusive',
-    # '--with-doctest',
+    '--nologcapture',
 ]
 
 MIGRATION_MODULES = DisableMigrations()

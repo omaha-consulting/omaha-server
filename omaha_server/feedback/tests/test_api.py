@@ -30,18 +30,21 @@ from feedback.factories import FeedbackFactory
 
 from omaha.tests.utils import temporary_media_root
 from omaha.tests.test_api import BaseTest
+from omaha_server.utils import is_private
 
 
 class FeedbackTest(BaseTest, APITestCase):
-    url = reverse('feedback-list')
+    url = 'feedback-list'
     url_detail = 'feedback-detail'
     factory = FeedbackFactory
     serializer = FeedbackSerializer
 
+    @is_private
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
     def test_detail(self):
         super(FeedbackTest, self).test_detail()
 
+    @is_private
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
     def test_list(self):
         response = self.client.get(self.url, format='json')
@@ -49,6 +52,7 @@ class FeedbackTest(BaseTest, APITestCase):
         self.assertEqual(response.data['count'], 10)
         self.assertEqual(self.serializer(self.objects, many=True).data, response.data['results'][::-1])
 
+    @is_private
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
     def test_create(self):
         response = self.client.post(self.url, {})

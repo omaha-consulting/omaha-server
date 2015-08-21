@@ -109,7 +109,7 @@ def send_stacktrace_sentry(crash):
     extra = dict(
         crash_admin_panel_url='http://{}{}'.format(
             settings.HOST_NAME,
-            reverse('admin:crash_crash_change', args=(crash.pk,))),
+            '/admin/crash/crash/%s/' % crash.pk),
         crashdump_url=crash.upload_file_minidump.url,
     )
 
