@@ -102,98 +102,77 @@ $ ./manage.py generate_fake_statistics --count=3000
 ### Initializing the Configuration
 
 ```shell
-$ cp ebs.config.example ebs.config
+$ cd deploy
+$ cp settings.yml.example settings.yml
 ```
 
 To change Omaha-Server configuration, add the settings that you want to modify to the `ebs.config` file. For example:
 
 ```yml
-aws:
-    access_key: 'AWS Access Key'
-    secret_key: 'AWS Secret Key'
-    region: 'us-east-1'
-    bucket: 'the bucket that beanstalk apps will be stored in'
-    bucket_path: 'omaha-server'
+deploy:
+  aws_access_key: '**********'
+  aws_secret_key: '**********'
+  bucket: 'example-ebs-archives'
+  region: 'us-east-1' # http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region
 
 app:
-    versions_to_keep: 10
-    app_name: 'omaha-server'
-    description: 'Omaha Server'
+  name: 'omaha-server'
+  description: 'Omaha Server'
 
-    all_environments:
-        solution_stack_name: '64bit Amazon Linux 2015.03 v1.4.3 running Docker 1.6.2'
-        tier_name: 'WebServer'
-        tier_type: 'Standard'
-        tier_version: '1.0'
+  key_name: 'omaha_server'
 
-        option_settings:
+  solution_stack_name: '64bit Amazon Linux 2015.03 v1.4.3 running Docker 1.6.2' # optional default: '64bit Amazon Linux 2015.03 v1.4.3 running Docker 1.6.2'
+  InstanceType: 't2.large' # optional default: t2.small http://aws.amazon.com/ec2/instance-types/
+  autoscaling: # optional default: min=1 max=10
+    min: 4
+    max: 20
+  healthcheck_url: '/admin/' # optional default: '/healthcheck/status/'
 
-            'aws:autoscaling:launchconfiguration':
-                InstanceType: 't1.micro'
-                SecurityGroups: 'omaha_server_dev'
-                EC2KeyName: 'Key Name'
+  environments:
+    omaha-server-private:
+      option_settings: # Configuration Options http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/command-options.html
+        'aws:autoscaling:launchconfiguration':
+          IamInstanceProfile: 'omaha-public'
+          SecurityGroups: 'omaha-server,omaha-server-private' # If you use Amazon VPC with Elastic Beanstalk so that your instances are launched within a virtual private cloud (VPC), specify security group IDs instead of a security group name.
 
-            'aws:autoscaling:asg':
-                MinSize: 1
-                MaxSize: 10
+        'aws:ec2:vpc':
+          VPCId: 'vpc-bb6b9fdf'
+          Subnets: 'subnet-e386d5ba'
+          AssociatePublicIpAddress: 'true'
 
-            'aws:autoscaling:trigger':
-                BreachDuration: 300
-                MeasureName: 'CPUUtilization'
-                Unit: 'Percent'
-                LowerThreshold: 20
-                UpperThreshold: 70
-                UpperBreachScaleIncrement: 1
+      environment:
+        OMAHA_SERVER_PRIVATE: 'true'
+        SECRET_KEY: '**********'
+        DB_HOST: 'postgres.example.com'
+        DB_USER: 'omaha'
+        DB_NAME: 'omaha'
+        DB_PASSWORD: '**********'
+        AWS_STORAGE_BUCKET_NAME: 'omaha-server'
+        RAVEN_DNS: 'http://b3615b99118949dbae3c7d06e93fa74c:b8f1c35d08ef4bcaa6810b4d4cdd6fc0@sentry.example.com/2'
+        RAVEN_DSN_STACKTRACE: 'http://637c17c832f44663b381916d4e0cb34d:9df83034cdfb400f9ce7d47ae4a0cc0b@sentry.example.com/5'
+        REDIS_HOST: 'redis.example.com'
+        DB_PUBLIC_USER: 'omaha_public'
+        DB_PUBLIC_PASSWORD: 'omaha_public_password'
+        AWS_ROLE: 'omaha-private'
 
-            'aws:elasticbeanstalk:application':
-                Application Healthcheck URL: '/admin/login/'
-
-            'aws:elasticbeanstalk:application:environment':
-                AWS_ACCESS_KEY_ID: 'AWS Access Key'
-                AWS_SECRET_KEY: 'AWS Secret Key'
-
-        archive:
-            files:
-                - .ebextensions/01_nginx.config:
-                    yaml:
-                        files:
-                            "/etc/nginx/conf.d/proxy.conf":
-                                mode: "000755"
-                                owner: root
-                                group: root
-                                content: |
-                                    client_max_body_size 275M;
-
-                - .ebextensions/02-commands.config:
-                    yaml:
-                        container_commands:
-                            00001-docker-privileged:
-                                command: 'sed -i "s/docker run -d/docker run --privileged -d/" /opt/elasticbeanstalk/hooks/appdeploy/enact/00run.sh'
-
-            includes:
-                - 'Dockerrun.aws.json'
-
-    environments:
-
-        # the dev version of the app
-        'omaha-server-dev':
-            cname_prefix: 'your-domain-prefix'
-            option_settings:
-                'aws:elasticbeanstalk:application:environment':
-                    APP_VERSION: 'DEV'
-                    DJANGO_SETTINGS_MODULE: 'omaha_server.settings_prod'
-                    SECRET_KEY: 'Django SECRET_KEY'
-                    HOST_NAME: 'Eb app host name'
-                    DB_HOST: 'db host'
-                    DB_USER: 'db user'
-                    DB_NAME: 'db name'
-                    DB_PASSWORD: 'db password'
-                    AWS_ACCESS_KEY_ID: 'AWS Access Key'
-                    AWS_SECRET_ACCESS_KEY: 'AWS Secret Key'
-                    AWS_STORAGE_BUCKET_NAME: 'S3 storage bucket'
-                    RAVEN_DNS: 'Sentry url'
-                    REDIS_HOST: '127.0.0.1'
-
+    omaha-server-public:
+      option_settings:
+        'aws:autoscaling:launchconfiguration':
+          IamInstanceProfile: 'omaha-public'
+          SecurityGroups: 'omaha-server,omaha-server-public'
+      environment:
+        OMAHA_SERVER_PRIVATE: 'false'
+        SECRET_KEY: '**********'
+        DB_HOST: 'postgres.example.com'
+        DB_USER: 'omaha_public'
+        DB_NAME: 'omaha'
+        DB_PASSWORD: 'omaha_public_password'
+        AWS_STORAGE_BUCKET_NAME: 'omaha-server'
+        RAVEN_DNS: 'http://b3615b99118949dbae3c7d06e93fa74c:b8f1c35d08ef4bcaa6810b4d4cdd6fc0@sentry.example.com/2'
+        RAVEN_DSN_STACKTRACE: 'http://637c17c832f44663b381916d4e0cb34d:9df83034cdfb400f9ce7d47ae4a0cc0b@sentry.example.com/5'
+        REDIS_HOST: 'redis.example.com'
+        AWS_ROLE: 'omaha-public'
+        DJANGO_SETTINGS_MODULE: 'omaha_server.settings_prod'
 ```
 
 #### Environment variables
@@ -222,6 +201,10 @@ app:
 | REDIS_STAT_DB             |                   | 15                         |
 | UWSGI_PROCESSES           |                   |                            |
 | UWSGI_THREADS             |                   |                            |
+| OMAHA_SERVER_PRIVATE      | Is private server | False                      |
+| DB_PUBLIC_USER            |                   |                            |
+| DB_PUBLIC_PASSWORD        |                   |                            |
+| AWS_ROLE                  |                   |                            |
 
 - [uWSGI Options](http://uwsgi-docs.readthedocs.org/en/latest/Options.html) & [Environment variables](http://uwsgi-docs.readthedocs.org/en/latest/Configuration.html#environment-variables)
 - [Sentry](https://github.com/getsentry/sentry)
@@ -229,6 +212,8 @@ app:
 ### Initialize your ElasticBeanstalk application
 
 ```shell
+# generate config file
+$ python main.py
 $ ebs-deploy init
 ```
 
