@@ -1,6 +1,6 @@
 six==1.9.0
 future==0.14.3
-Django==1.8.3
+Django==1.8.4
 django-extensions==1.5.5
 django-suit==0.2.12
 django-suit-redactor==0.0.2
