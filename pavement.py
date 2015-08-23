@@ -124,7 +124,7 @@ def create_db_public_user():
 @task
 def docker_run():
     try:
-        is_private = True if os.environ.get('OMAHA_SERVER_PRIVATE') == 'True' else False
+        is_private = True if os.environ.get('OMAHA_SERVER_PRIVATE', '').title() == 'True' else False
 
         if is_private:
             migrate()

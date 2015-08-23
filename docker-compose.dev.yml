@@ -28,3 +28,7 @@ web:
     REDIS_PORT: 6379
     UWSGI_PROCESSES: 10
     UWSGI_THREADS: 8
+    OMAHA_SERVER_PRIVATE: 'True'
+    AWS_ROLE: 'omaha-private'
+    DB_PUBLIC_USER: 'omaha_public'
+    DB_PUBLIC_PASSWORD: 'omaha_public_password'

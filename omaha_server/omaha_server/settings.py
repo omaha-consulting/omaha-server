@@ -16,7 +16,7 @@ from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_DIR = BASE_DIR
 
-IS_PRIVATE = True if os.getenv('OMAHA_SERVER_PRIVATE') == 'True' else False
+IS_PRIVATE = True if os.getenv('OMAHA_SERVER_PRIVATE', '').title() == 'True' else False
 
 TEMPLATES = [
     {
