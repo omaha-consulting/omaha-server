@@ -205,6 +205,7 @@ app:
 | DB_PUBLIC_USER            |                   |                            |
 | DB_PUBLIC_PASSWORD        |                   |                            |
 | AWS_ROLE                  |                   |                            |
+| OMAHA_URL_PREFIX          | no trailing slash!|                            |
 
 - [uWSGI Options](http://uwsgi-docs.readthedocs.org/en/latest/Options.html) & [Environment variables](http://uwsgi-docs.readthedocs.org/en/latest/Configuration.html#environment-variables)
 - [Sentry](https://github.com/getsentry/sentry)

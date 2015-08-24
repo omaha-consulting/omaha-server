@@ -26,6 +26,7 @@ import hashlib
 import base64
 
 from django.db import models
+from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import pre_save
 from django.utils.timezone import now as datetime_now
@@ -124,7 +125,10 @@ class Version(BaseModel):
 
     @property
     def file_absolute_url(self):
-        return self.file.url
+        url = furl(self.file.url)
+        if not url.scheme:
+            url = '%s%s' % (settings.OMAHA_URL_PREFIX, url)
+        return str(url)
 
     @property
     def file_package_name(self):
