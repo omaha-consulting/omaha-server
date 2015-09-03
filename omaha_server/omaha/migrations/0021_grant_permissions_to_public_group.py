@@ -51,7 +51,7 @@ def grant_permissions(apps, schema_editor):
 
     # grant permissions to a user for all sequences in a schema
     cursor.execute('GRANT SELECT, USAGE ON ALL SEQUENCES IN SCHEMA public to %s;' % settings.DB_PUBLIC_ROLE)
-    cursor.execute('GRANT INSERT, USAGE ON ALL SEQUENCES IN SCHEMA public to %s;' % settings.DB_PUBLIC_ROLE)
+    cursor.execute('GRANT UPDATE, USAGE ON ALL SEQUENCES IN SCHEMA public to %s;' % settings.DB_PUBLIC_ROLE)
 
 class Migration(migrations.Migration):
     dependencies = [
