@@ -28,7 +28,7 @@ class ApplicationFactory(factory.DjangoModelFactory):
     class Meta:
         model = 'omaha.Application'
 
-    id = factory.Sequence(lambda n: '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C%s}' % n)
+    id = factory.Sequence(lambda n: '{D0AB2EBC-931B-4013-9FEB-C9C4C2225%s}' % n)
     name = factory.Sequence(lambda n: 'chrome%s' % n)
 
 
@@ -46,14 +46,14 @@ class PlatformFactory(factory.DjangoModelFactory):
     class Meta:
         model = 'omaha.Platform'
 
-    name = factory.Sequence(lambda n: 'platform_%s' % n)
+    name = factory.Sequence(lambda n: 'platform%s' % n)
 
 
 class ChannelFactory(factory.DjangoModelFactory):
     class Meta:
         model = 'omaha.Channel'
 
-    name = factory.Sequence(lambda n: 'channel_%s' % n)
+    name = factory.Sequence(lambda n: 'channel%s' % n)
 
 
 class VersionFactory(factory.DjangoModelFactory):

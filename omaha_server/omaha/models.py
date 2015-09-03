@@ -61,6 +61,7 @@ class Application(BaseModel):
 
     class Meta:
         db_table = 'applications'
+        ordering = ['id']
 
     def __str__(self):
         return self.name
@@ -119,6 +120,7 @@ class Version(BaseModel):
         index_together = (
             ('app', 'platform', 'channel', 'version'),
         )
+        ordering = ['id']
 
     def __str__(self):
         return "{app} {version}".format(app=self.app, version=self.version)
@@ -177,6 +179,7 @@ class Action(BaseModel):
 
     class Meta:
         db_table = 'actions'
+        ordering = ['id']
 
     def get_attributes(self):
         exclude_fields = ('id', 'version', 'event', 'other', 'created',

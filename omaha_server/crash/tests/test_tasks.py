@@ -56,8 +56,8 @@ class CrashModelTest(test.TestCase):
             lang='en',
             version='1.0.0.1',
         )
-        app_id = '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}',
-        user_id = '{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}',
+        app_id = '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}'
+        user_id = '{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}'
         with open(CRASH_DUMP_FILE, 'rb') as f:
             obj = Crash.objects.create(
                 appid=app_id,
@@ -92,8 +92,8 @@ class CrashModelTest(test.TestCase):
             lang='en',
             version='1.0.0.1',
         )
-        app_id = '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}',
-        user_id = '{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}',
+        app_id = '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}'
+        user_id = '{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}'
         with open(INCORRECT_CRASH_DUMP_FILE, 'rb') as f:
             obj = dict(
                 appid=app_id,

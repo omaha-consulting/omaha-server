@@ -40,14 +40,14 @@ class PlatformSerializerTest(TestCase):
     def test_serializer(self):
         data = dict(name='win')
         platform = PlatformFactory(**data)
-        self.assertDictEqual(PlatformSerializer(platform).data, dict(id=1, **data))
+        self.assertDictEqual(PlatformSerializer(platform).data, dict(id=platform.pk, **data))
 
 
 class ChannelSerializerTest(TestCase):
     def test_serializer(self):
         data = dict(name='stable')
         channel = ChannelFactory(**data)
-        self.assertDictEqual(ChannelSerializer(channel).data, dict(id=1, **data))
+        self.assertDictEqual(ChannelSerializer(channel).data, dict(id=channel.pk, **data))
 
 
 class ActionSerializerTest(TestCase):
@@ -55,7 +55,7 @@ class ActionSerializerTest(TestCase):
         data = dict(terminateallbrowsers=True)
         action = ActionFactory(**data)
         self.assertDictEqual(ActionSerializer(action).data,
-                             dict(id=1,
+                             dict(id=action.pk,
                                   successsaction=action.successsaction,
                                   run=action.run,
                                   event=action.event,
@@ -70,7 +70,7 @@ class DataSerializerTest(TestCase):
     def test_serializer(self):
         _data = DataFactory()
         self.assertDictEqual(DataSerializer(_data).data,
-                             dict(id=1,
+                             dict(id=_data.pk,
                                   app=_data.app.pk,
                                   name=_data.name,
                                   index=_data.index,

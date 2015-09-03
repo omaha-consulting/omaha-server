@@ -136,6 +136,10 @@ DATABASES = {
     }
 }
 
+DB_PUBLIC_ROLE = os.environ.get('DB_PUBLIC_ROLE', 'public_users')
+DB_PUBLIC_USER = os.environ.get('DB_PUBLIC_USER', 'omaha_public')
+DB_PUBLIC_PASSWORD = os.environ.get('DB_PUBLIC_PASSWORD', '')
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 

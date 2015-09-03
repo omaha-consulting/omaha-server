@@ -72,55 +72,6 @@ def migrate():
 def create_admin():
     sh('./createadmin.py', cwd='omaha_server')
 
-
-@task
-def create_db_public_user():
-    import psycopg2
-
-    db_public_user = os.environ['DB_PUBLIC_USER']
-    db_public_password = os.environ['DB_PUBLIC_PASSWORD']
-
-    conn = psycopg2.connect(host=os.environ['DB_HOST'],
-                          user=os.environ['DB_USER'],
-                          password=os.environ['DB_PASSWORD'],
-                          database=os.environ['DB_NAME'])
-    curs = conn.cursor()
-
-    try:
-        # user and group
-        curs.execute("CREATE USER %s WITH PASSWORD '%s';" % (db_public_user, db_public_password))
-        curs.execute('CREATE GROUP public_users WITH USER %s;' % db_public_user)
-
-        # versions
-        curs.execute('GRANT SELECT ON TABLE applications, platforms, platforms_id_seq, '
-                     'channels, channels_id_seq, versions, versions_id_seq, actions, '
-                     'actions_id_seq, omaha_data, omaha_data_id_seq, omaha_partialupdate, '
-                     'omaha_partialupdate_id_seq, sparkle_sparkleversion, '
-                     'sparkle_sparkleversion_id_seq TO GROUP public_users;')
-
-        # crash
-        curs.execute('GRANT SELECT, INSERT, UPDATE ON TABLE crash_crash, crash_crash_id_seq, '
-                     'crash_crashdescription, crash_crashdescription_id_seq TO GROUP public_users;')
-        curs.execute('GRANT SELECT ON TABLE crash_symbols, crash_symbols_id_seq TO GROUP public_users;')
-        curs.execute('GRANT INSERT ON TABLE feedback_feedback, feedback_feedback_id_seq TO GROUP public_users;')
-
-        # statistics
-        curs.execute('GRANT SELECT, INSERT, UPDATE ON TABLE omaha_apprequest, '
-                     'omaha_apprequest_id_seq, omaha_apprequest_events, '
-                     'omaha_apprequest_events_id_seq, omaha_event, omaha_event_id_seq, omaha_hw, '
-                     'omaha_hw_id_seq, omaha_os, omaha_os_id_seq, omaha_request, '
-                     'omaha_request_id_seq TO GROUP public_users;')
-
-        # dev
-        curs.execute('GRANT INSERT ON TABLE httplog_entry, httplog_entry_id_seq TO GROUP public_users;')
-        conn.commit()
-    except psycopg2.ProgrammingError:
-        pass
-    finally:
-        curs.close()
-        conn.close()
-
-
 @task
 def docker_run():
     try:
@@ -128,7 +79,6 @@ def docker_run():
 
         if is_private:
             migrate()
-            create_db_public_user()
             loaddata()
             create_admin()
             collectstatic()
