@@ -36,6 +36,13 @@
     ],
     "Effect": "Allow",
     "Resource": "arn:aws:s3:::omaha-server-pp/blackbox/*"
+  }, {
+    "Action": [
+      "s3:Get*",
+      "s3:Put*"
+    ],
+    "Effect": "Allow",
+    "Resource": "arn:aws:s3:::omaha-server-pp/system_logs/*"
   },{
     "Action": [
       "s3:Get*",
