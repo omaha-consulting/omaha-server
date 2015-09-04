@@ -46,37 +46,37 @@ class SymbolsTest(BaseTest, APITestCase):
     factory = SymbolsFactory
     serializer = SymbolsSerializer
 
-    @is_private
+    @is_private()
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
     def test_detail(self):
         super(SymbolsTest, self).test_detail()
 
-    @is_private
+    @is_private()
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
     def test_list(self):
         super(SymbolsTest, self).test_list()
 
-    @is_private
+    @is_private()
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
     def test_create(self):
         with open(SYM_FILE, 'rb') as f:
             data = dict(file=SimpleUploadedFile('./BreakpadTestApp.sym', f.read()))
-        response = self.client.post(self.url, data)
+        response = self.client.post(reverse(self.url), data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         symbols = Symbols.objects.get(id=response.data['id'])
         self.assertEqual(response.data, self.serializer(symbols).data)
         self.assertEqual(symbols.debug_id, 'C1C0FA629EAA4B4D9DD2ADE270A231CC1')
         self.assertEqual(symbols.debug_file, 'BreakpadTestApp.pdb')
 
-    @is_private
+    @is_private()
     def test_duplicate(self):
         with open(SYM_FILE, 'rb') as f:
             data = dict(file=SimpleUploadedFile('./BreakpadTestApp.sym', f.read()))
-        response = self.client.post(self.url, data)
+        response = self.client.post(reverse(self.url), data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         with open(SYM_FILE, 'rb') as f:
             data = dict(file=SimpleUploadedFile('./BreakpadTestApp.sym', f.read()))
-        response = self.client.post(self.url, data)
+        response = self.client.post(reverse(self.url), data)
         self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
         self.assertEqual(response.data['message'], 'Duplicate symbol')
 
@@ -86,14 +86,14 @@ class CrashTest(BaseTest, APITestCase):
     factory = CrashFactory
     serializer = CrashSerializer
 
-    @is_private
+    @is_private()
     def test_list(self):
-        response = self.client.get(self.url, format='json')
+        response = self.client.get(reverse(self.url), format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['count'], 10)
         self.assertEqual(self.serializer(self.objects, many=True).data, response.data['results'][::-1])
 
-    @is_private
+    @is_private()
     def test_create(self):
-        response = self.client.post(self.url, {})
+        response = self.client.post(reverse(self.url), {})
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)

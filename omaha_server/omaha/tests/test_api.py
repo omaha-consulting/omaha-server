@@ -110,7 +110,7 @@ class AppTest(BaseTest, APITestCase):
     factory = ApplicationFactory
     serializer = AppSerializer
 
-    @is_private
+    @is_private()
     def test_create(self):
         data = dict(id='test_id', name='test_name')
         response = self.client.post(reverse(self.url
@@ -126,7 +126,7 @@ class DataTest(BaseTest, APITestCase):
     factory = DataFactory
     serializer = DataSerializer
 
-    @is_private
+    @is_private()
     def test_create(self):
         app = ApplicationFactory.create()
         data = dict(name=0, app=app.pk)
@@ -142,11 +142,11 @@ class PlatformTest(BaseTest, APITestCase):
     factory = PlatformFactory
     serializer = PlatformSerializer
 
-    @is_private
+    @is_private()
     def test_list(self):
         super(PlatformTest, self).test_list()
 
-    @is_private
+    @is_private()
     def test_create(self):
         data = dict(name='test_name')
         response = self.client.post(reverse(self.url), data, format='json')
@@ -161,7 +161,7 @@ class ChannelTest(BaseTest, APITestCase):
     factory = ChannelFactory
     serializer = ChannelSerializer
 
-    @is_private
+    @is_private()
     def test_create(self):
         data = dict(name='test_name')
         response = self.client.post(reverse(self.url), data, format='json')
@@ -176,17 +176,17 @@ class VersionTest(BaseTest, APITestCase):
     factory = VersionFactory
     serializer = VersionSerializer
 
-    @is_private
+    @is_private()
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
     def test_detail(self):
         super(VersionTest, self).test_detail()
 
-    @is_private
+    @is_private()
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
     def test_list(self):
         super(VersionTest, self).test_list()
 
-    @is_private
+    @is_private()
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
     def test_create(self):
         data = dict(
@@ -201,6 +201,7 @@ class VersionTest(BaseTest, APITestCase):
         version = Version.objects.get(id=response.data['id'])
         self.assertEqual(response.data, self.serializer(version).data)
         self.assertEqual(version.file_size, len(b'content'))
+        self.assertTrue(version.is_enabled)
 
 
 class ActionTest(BaseTest, APITestCase):
@@ -209,7 +210,7 @@ class ActionTest(BaseTest, APITestCase):
     factory = ActionFactory
     serializer = ActionSerializer
 
-    @is_private
+    @is_private()
     def test_create(self):
         version = VersionFactory.create()
         data = dict(event=1, version=version.pk)
@@ -221,6 +222,7 @@ class ActionTest(BaseTest, APITestCase):
 
 class StatisticsMonthsMixin(object):
     url = None
+    url_args = ()
     serializer = None
 
     def _generate_fake_statistics(self):
@@ -272,15 +274,15 @@ class StatisticsMonthsMixin(object):
                                  ('December', 12)]
         self.data = dict(data=dict(self.users_statistics))
 
-    @is_private
+    @is_private()
     def test_unauthorized(self):
         client = APIClient()
-        response = client.get(reverse(self.url), format='json')
+        response = client.get(reverse(self.url, args=self.url_args), format='json')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    @is_private
+    @is_private()
     def test_list(self):
-        response = self.client.get(reverse(self.url), format='json')
+        response = self.client.get(reverse(self.url, args=self.url_args), format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(self.serializer(self.data).data, response.data)
 
@@ -295,7 +297,7 @@ class StatisticsMonthsDetailTest(StatisticsMonthsMixin, APITestCase):
     url_args = ('app',)
     serializer = StatisticsMonthsSerializer
 
-    @is_private
+    @is_private()
     def test_list(self):
         data_detail = self.data.copy()
         data_detail['data']['install_count'] = 0
@@ -336,7 +338,7 @@ class ServerVersionTest(APITestCase):
             HTTP_AUTHORIZATION='Basic %s' % base64.b64encode(bytes('{}:{}'.format('test', 'secret'), 'utf8')).decode())
         self.data = dict(version=settings.APP_VERSION)
 
-    @is_private
+    @is_private()
     def test(self):
         response = self.client.get(reverse(self.url), format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)

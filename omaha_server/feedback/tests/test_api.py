@@ -39,21 +39,21 @@ class FeedbackTest(BaseTest, APITestCase):
     factory = FeedbackFactory
     serializer = FeedbackSerializer
 
-    @is_private
+    @is_private()
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
     def test_detail(self):
         super(FeedbackTest, self).test_detail()
 
-    @is_private
+    @is_private()
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
     def test_list(self):
-        response = self.client.get(self.url, format='json')
+        response = self.client.get(reverse(self.url), format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['count'], 10)
         self.assertEqual(self.serializer(self.objects, many=True).data, response.data['results'][::-1])
 
-    @is_private
+    @is_private()
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
     def test_create(self):
-        response = self.client.post(self.url, {})
+        response = self.client.post(reverse(self.url), {})
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)

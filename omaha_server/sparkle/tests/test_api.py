@@ -41,17 +41,17 @@ class VersionTest(BaseTest, APITestCase):
     factory = SparkleVersionFactory
     serializer = SparkleVersionSerializer
 
-    @is_private
+    @is_private()
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
     def test_detail(self):
         super(VersionTest, self).test_detail()
 
-    @is_private
+    @is_private()
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
     def test_list(self):
         super(VersionTest, self).test_list()
 
-    @is_private
+    @is_private()
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
     def test_create(self):
         data = dict(
@@ -60,7 +60,7 @@ class VersionTest(BaseTest, APITestCase):
             version='1.2.3.4',
             file=SimpleUploadedFile("chrome.exe", b'content'),
         )
-        response = self.client.post(self.url, data)
+        response = self.client.post(reverse(self.url), data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         version = SparkleVersion.objects.get(id=response.data['id'])
         self.assertEqual(response.data, self.serializer(version).data)

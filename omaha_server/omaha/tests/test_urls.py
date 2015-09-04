@@ -55,25 +55,25 @@ class Test(URLTestMixin, TestCase):
     def test_UpdateView(self):
         self.assert_url_matches_view(UpdateView, '/service/update2', 'update')
 
-    @is_private
+    @is_private()
     def test_StatisticsView(self):
         self.assert_url_matches_view(StatisticsView, '/admin/statistics/', 'omaha_statistics')
 
-    @is_private
+    @is_private()
     def test_StatisticsDetailView(self):
         self.assert_url_matches_view(StatisticsDetailView,
                                      '/admin/statistics/appName/',
                                      'omaha_statistics_detail',
                                      url_args=('appName',))
 
-    @is_private
+    @is_private()
     def test_RequestListView(self):
         self.assert_url_matches_view(RequestListView,
                                      '/admin/statistics/appName/requests/',
                                      'omaha_request_list',
                                      url_args=('appName',))
 
-    @is_private
+    @is_private()
     def test_AppRequestDetailView(self):
         self.assert_url_matches_view(AppRequestDetailView,
                                      '/admin/statistics/requests/123/',
