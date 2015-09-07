@@ -35,6 +35,7 @@ class SparkleVersionSerializerTest(TestCase):
         version = SparkleVersionFactory.create(file=SimpleUploadedFile('./chrome_installer.exe', False))
         self.assertDictEqual(SparkleVersionSerializer(version).data, dict(
             id=version.id,
+            is_enabled=version.is_enabled,
             app=version.app.id,
             channel=version.channel.id,
             version=version.version,

@@ -63,6 +63,7 @@ class ActionSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class VersionSerializer(serializers.HyperlinkedModelSerializer):
+    is_enabled = serializers.BooleanField(default=True, required=False)
     app = serializers.PrimaryKeyRelatedField(queryset=Application.objects.all())
     platform = serializers.PrimaryKeyRelatedField(queryset=Platform.objects.all())
     channel = serializers.PrimaryKeyRelatedField(queryset=Channel.objects.all())

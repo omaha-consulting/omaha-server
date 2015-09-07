@@ -65,3 +65,4 @@ class VersionTest(BaseTest, APITestCase):
         version = SparkleVersion.objects.get(id=response.data['id'])
         self.assertEqual(response.data, self.serializer(version).data)
         self.assertEqual(version.file_size, len(b'content'))
+        self.assertTrue(version.is_enabled)
