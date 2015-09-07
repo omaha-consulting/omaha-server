@@ -19,6 +19,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('feedback', '0001_initial'),
+        ('omaha', '0021_grant_permissions_to_public_group'),
     ]
 
     operations = [

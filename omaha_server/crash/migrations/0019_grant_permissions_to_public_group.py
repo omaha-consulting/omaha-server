@@ -23,6 +23,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('crash', '0018_auto_20150707_0822'),
+        ('omaha', '0021_grant_permissions_to_public_group'),
     ]
 
     operations = [

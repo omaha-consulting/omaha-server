@@ -18,6 +18,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('sparkle', '0005_auto_20150707_0822'),
+        ('omaha', '0021_grant_permissions_to_public_group'),
     ]
 
     operations = [
