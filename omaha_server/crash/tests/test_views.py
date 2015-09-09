@@ -54,7 +54,7 @@ class CrashViewTest(test.TestCase):
         form_data.update(meta)
 
         self.assertEqual(Crash.objects.all().count(), 0)
-        response = self.client.post(reverse('crash'), form_data)
+        response = self.client.post(reverse('crash'), form_data, REMOTE_ADDR="8.8.8.8")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Crash.objects.all().count(), 1)
         obj = Crash.objects.get()
@@ -63,6 +63,7 @@ class CrashViewTest(test.TestCase):
         self.assertEqual(obj.appid, form_data['appid'])
         self.assertEqual(obj.userid, form_data['userid'])
         self.assertIsNotNone(obj.upload_file_minidump)
+        self.assertEquals(obj.ip, '8.8.8.8')
 
     @test.override_settings(
         CELERY_ALWAYS_EAGER=False,

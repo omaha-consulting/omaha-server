@@ -27,6 +27,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseBadRequest
 from crash.forms import CrashFrom, CrashDescriptionForm
 from crash.models import Crash
+from omaha_server.utils import get_client_ip
 
 
 class CrashFormView(FormView):
@@ -44,6 +45,7 @@ class CrashFormView(FormView):
         obj = form.save(commit=False)
         if meta:
             obj.meta = meta
+            obj.ip = get_client_ip(self.request)
         obj.save()
         return HttpResponse(obj.pk, status=200)
 
