@@ -32,6 +32,15 @@ from feedback.forms import FeedbackForm
 from feedback.proto_gen.extension_pb2 import ExtensionSubmit
 
 
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
+
 class FeedbackFormView(FormView):
     http_method_names = ('post',)
     form_class = FeedbackForm
@@ -58,6 +67,7 @@ class FeedbackFormView(FormView):
             email=submit.common_data.user_email,
             page_url=submit.web_data.url,
             feedback_data=pb_dict,
+            ip=get_client_ip(self.request)
         )
         files = dict()
         if submit.screenshot.binary_content:

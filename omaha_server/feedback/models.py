@@ -59,3 +59,7 @@ class Feedback(BaseModel):
     system_logs = models.FileField(upload_to=logs_upload_to, blank=True, null=True)
     attached_file = models.FileField(upload_to=attach_upload_to, blank=True, null=True)
     feedback_data = JSONField(verbose_name='Feedback data', help_text='JSON format', null=True, blank=True)
+    ip = models.IPAddressField(blank=True, null=True)
+
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    updated_at = models.DateTimeField(auto_now=True)

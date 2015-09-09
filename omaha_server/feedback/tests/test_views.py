@@ -45,7 +45,8 @@ class FeedbackViewTest(test.TestCase):
         response = self.client.post(
             reverse('feedback'),
             data=body,
-            content_type='application/x-protobuf'
+            content_type='application/x-protobuf',
+            REMOTE_ADDR="8.8.8.8"
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Feedback.objects.all().count(), 1)
@@ -59,6 +60,7 @@ class FeedbackViewTest(test.TestCase):
         self.assertTrue(obj.system_logs)
         self.assertTrue(obj.attached_file)
         self.assertTrue(obj.feedback_data)
+        self.assertEqual(obj.ip, "8.8.8.8")
 
     def test_view_desc_only(self):
         with open(DESC_ONLY_FILE, 'rb') as f:
