@@ -92,8 +92,8 @@ class CrashDescriptionInline(admin.StackedInline):
 
 @admin.register(Crash)
 class CrashAdmin(admin.ModelAdmin):
-    list_display = ('id', 'created', 'modified', 'archive_field', 'signature', 'appid', 'userid', 'summary_field')
-    list_display_links = ('id', 'created', 'modified', 'signature', 'appid', 'userid',)
+    list_display = ('id', 'created', 'modified', 'archive_field', 'signature', 'appid', 'userid', 'summary_field', 'ip',)
+    list_display_links = ('id', 'created', 'modified', 'signature', 'appid', 'userid', 'ip',)
     list_filter = (('id', TextInputFilter,), 'created', CrashArchiveFilter)
     search_fields = ('appid', 'userid',)
     form = CrashFrom

@@ -48,7 +48,7 @@ class AttachedFileFilter(BooleanFilter):
 
 @admin.register(Feedback)
 class FeedbackAdmin(admin.ModelAdmin):
-    list_display = ('id', 'description', 'email', 'page_url', 'created_at',)
+    list_display = ('id', 'description', 'email', 'page_url', 'created_at', 'ip',)
     list_display_links = ('id', 'description')
     list_filter = (('id', TextInputFilter,), ScreenshotFilter, BlackboxFilter, SystemLogsFilter, AttachedFileFilter, 'created_at',)
     form = FeedbackForm
