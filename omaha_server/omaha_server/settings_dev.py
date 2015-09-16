@@ -12,7 +12,7 @@ MIDDLEWARE_CLASSES += (
 )
 
 HTTPLOG_URLNAMES = ['update', 'sparkle_appcast', 'crash']
-HTTPLOG_APPS = ['omaha', 'crash', 'sparkle', None]
+HTTPLOG_APPS = ['omaha', 'crash', 'sparkle']
 
 SUIT_CONFIG['MENU'] = SUIT_CONFIG['MENU'] + (
     {'app': 'httplog', 'label': 'httplog', 'icon': 'icon-search'},
