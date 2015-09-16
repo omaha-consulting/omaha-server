@@ -46,7 +46,7 @@ class PlatformFactory(factory.DjangoModelFactory):
     class Meta:
         model = 'omaha.Platform'
 
-    name = factory.Sequence(lambda n: 'platform%s' % n)
+    name = factory.Sequence(lambda n: 'p_%s' % n)
 
 
 class ChannelFactory(factory.DjangoModelFactory):

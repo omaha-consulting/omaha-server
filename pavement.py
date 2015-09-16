@@ -34,6 +34,11 @@ def test():
 
 
 @task
+def test_postgres():
+    sh('./manage.py test --settings=omaha_server.settings_test_postgres', cwd='omaha_server')
+
+
+@task
 def up_local_dev_server():
     """
     Requirements:
