@@ -51,6 +51,7 @@ class AppRequestTable(tables.Table):
     os = tables.Column(accessor='request.os.version', verbose_name='OS')
     sp = tables.Column(accessor='request.os.sp', verbose_name='Service pack')
     events = EventsColumn(empty_values=())
+    userid = tables.Column(accessor='request.userid', verbose_name='User ID')
 
     class Meta:
         model = AppRequest
