@@ -23,6 +23,8 @@ import os
 from django import test
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.urlresolvers import reverse
+from django.conf import settings
+from django.db import DataError
 
 from crash.models import Crash, CrashDescription
 from crash.factories import CrashFactory, CrashDescriptionFactory
@@ -64,6 +66,33 @@ class CrashViewTest(test.TestCase):
         self.assertEqual(obj.userid, form_data['userid'])
         self.assertIsNotNone(obj.upload_file_minidump)
         self.assertEquals(obj.ip, '8.8.8.8')
+
+    def test_view_empty_ip(self):
+        if settings.DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql_psycopg2':
+            meta = dict(
+                lang='en',
+                version='1.0.0.1',
+            )
+            mini_dump_file = SimpleUploadedFile("minidump.dat", b"content")
+            form_data = dict(
+                appid='{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}',
+                userid='{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}',
+                upload_file_minidump=mini_dump_file,
+            )
+
+            form_data.update(meta)
+
+            self.assertEqual(Crash.objects.all().count(), 0)
+            response = self.client.post(reverse('crash'), form_data, REMOTE_ADDR="")
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(Crash.objects.all().count(), 1)
+            obj = Crash.objects.get()
+            self.assertEqual(response.content.decode(), str(obj.pk))
+            self.assertDictEqual(obj.meta, meta)
+            self.assertEqual(obj.appid, form_data['appid'])
+            self.assertEqual(obj.userid, form_data['userid'])
+            self.assertIsNotNone(obj.upload_file_minidump)
+            self.assertEquals(obj.ip, None)
 
     @test.override_settings(
         CELERY_ALWAYS_EAGER=False,

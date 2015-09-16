@@ -54,7 +54,7 @@ class Crash(BaseModel):
     stacktrace = models.TextField(null=True, blank=True)
     stacktrace_json = JSONField(null=True, blank=True)
     signature = models.CharField(max_length=255, db_index=True, null=True, blank=True)
-    ip = models.IPAddressField(blank=True, null=True)
+    ip = models.GenericIPAddressField(blank=True, null=True, protocol="ipv4")
 
     class Meta(BaseModel.Meta):
         verbose_name_plural = 'Crashes'
