@@ -30,7 +30,8 @@ client = Client(os.environ.get('RAVEN_DNS'))
 
 @task
 def test():
-    sh('./manage.py test --settings=omaha_server.settings_test', cwd='omaha_server')
+    settings = os.getenv("DJANGO_SETTINGS_MODULE", 'omaha_server.settings_test')
+    sh('./manage.py test --settings=%s' % settings, cwd='omaha_server')
 
 
 @task
