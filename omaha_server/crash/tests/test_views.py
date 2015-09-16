@@ -67,6 +67,10 @@ class CrashViewTest(test.TestCase):
         self.assertIsNotNone(obj.upload_file_minidump)
         self.assertEquals(obj.ip, '8.8.8.8')
 
+    @test.override_settings(
+        CELERY_ALWAYS_EAGER=False,
+        CELERY_EAGER_PROPAGATES_EXCEPTIONS=False,
+    )
     def test_view_empty_ip(self):
         if settings.DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql_psycopg2':
             meta = dict(
