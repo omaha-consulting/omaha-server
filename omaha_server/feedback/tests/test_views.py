@@ -22,6 +22,7 @@ import os
 
 from django import test
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
 from feedback.models import Feedback
 
@@ -61,6 +62,35 @@ class FeedbackViewTest(test.TestCase):
         self.assertTrue(obj.attached_file)
         self.assertTrue(obj.feedback_data)
         self.assertEqual(obj.ip, "8.8.8.8")
+
+    def test_view_empty_ip(self):
+        if settings.DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql_psycopg2':
+            with open(PB_FILE, 'rb') as f:
+                body = f.read()
+            description = 'Testable issue\nwith multiple lines\nof code'
+            email = 'user@example.com'
+            page_url = 'chrome://newtab/'
+
+            self.assertEqual(Feedback.objects.all().count(), 0)
+            response = self.client.post(
+                reverse('feedback'),
+                data=body,
+                content_type='application/x-protobuf',
+                REMOTE_ADDR=""
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(Feedback.objects.all().count(), 1)
+            obj = Feedback.objects.get()
+            self.assertEqual(response.content.decode(), str(obj.pk))
+            self.assertEqual(obj.description, description)
+            self.assertEqual(obj.email, email)
+            self.assertEqual(obj.page_url, page_url)
+            self.assertTrue(obj.screenshot)
+            self.assertTrue(obj.blackbox)
+            self.assertTrue(obj.system_logs)
+            self.assertTrue(obj.attached_file)
+            self.assertTrue(obj.feedback_data)
+            self.assertEqual(obj.ip, None)
 
     def test_view_desc_only(self):
         with open(DESC_ONLY_FILE, 'rb') as f:
