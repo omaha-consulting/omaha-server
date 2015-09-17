@@ -92,8 +92,9 @@ class CrashDescriptionInline(admin.StackedInline):
 
 @admin.register(Crash)
 class CrashAdmin(admin.ModelAdmin):
-    list_display = ('id', 'created', 'modified', 'archive_field', 'signature', 'appid', 'userid', 'summary_field', 'ip',)
-    list_display_links = ('id', 'created', 'modified', 'signature', 'appid', 'userid', 'ip',)
+    list_display = ('id', 'created', 'modified', 'archive_field', 'signature', 'appid', 'userid', 'summary_field', 'os_field', 'cpu_architecture_field',)
+    list_select_related = ['crash_description']
+    list_display_links = ('id', 'created', 'modified', 'signature', 'appid', 'userid', 'os_field', 'cpu_architecture_field',)
     list_filter = (('id', TextInputFilter,), 'created', CrashArchiveFilter)
     search_fields = ('appid', 'userid',)
     form = CrashFrom
@@ -103,6 +104,14 @@ class CrashAdmin(admin.ModelAdmin):
     def archive_field(self, obj):
         return bool(obj.archive)
     archive_field.short_description = 'Instrumental file'
+
+    def os_field(self, obj):
+        return obj.stacktrace_json['system_info']['os'] if obj.stacktrace_json else ''
+    os_field.short_description = 'OS'
+
+    def cpu_architecture_field(self, obj):
+        return obj.stacktrace_json['system_info']['cpu_arch'] if obj.stacktrace_json else ''
+    cpu_architecture_field.short_description = "CPU Architecture"
 
     def summary_field(self, obj):
         try:
