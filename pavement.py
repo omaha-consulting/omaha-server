@@ -97,11 +97,14 @@ def docker_run():
 
 @task
 def docker_run_test():
-    sh('apt-get install -y python-dev libxslt-dev')
+    sh('apt-get install -y python-dev libxslt-dev libpq-dev')
     sh('pip install -r requirements-test.txt --use-mirrors')
     test()
+    test_postgres()
 
 
 @task
 def run_test_in_docker():
-    sh('docker-compose -f docker-compose.dev.yml -p dev run --rm web paver docker_run_test')
+    sh('docker-compose -f docker-compose.test.yml -p dev run --rm web paver docker_run_test')
+    sh('docker-compose -f docker-compose.test.yml -p dev stop')
+    sh('docker-compose -f docker-compose.test.yml -p dev rm --force')
