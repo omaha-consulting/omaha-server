@@ -33,4 +33,4 @@ protobuf-to-dict==0.1.0
 
 # Only dev
 #django-httplog==0.2.3
-https://github.com/Crystalnix/django-httplog/archive/perf-optimization.zip
+https://github.com/Crystalnix/django-httplog/archive/5a148dae1d6608aeccb90f77aa7a2b4a2015f52f.zip
