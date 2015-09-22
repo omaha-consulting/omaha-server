@@ -260,6 +260,7 @@ class Request(models.Model):
     testsource = models.CharField(max_length=40, null=True, blank=True)
     updaterchannel = models.CharField(max_length=10, null=True, blank=True)
     created = models.DateTimeField(db_index=True, default=datetime_now, editable=False, blank=True)
+    ip = models.GenericIPAddressField(blank=True, null=True)
 
 
 class Event(models.Model):

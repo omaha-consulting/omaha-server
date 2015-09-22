@@ -34,7 +34,7 @@ from omaha.tests import fixtures
 from omaha.tests.utils import temporary_media_root
 
 from omaha.factories import ApplicationFactory, ChannelFactory, PlatformFactory, VersionFactory
-from omaha.models import Action, EVENT_DICT_CHOICES, Data, NAME_DATA_DICT_CHOICES
+from omaha.models import Action, Request, EVENT_DICT_CHOICES, Data, NAME_DATA_DICT_CHOICES
 from omaha.utils import redis, get_id
 
 
@@ -159,13 +159,18 @@ class UpdateViewTest(TestCase, XmlTestMixin):
     @freeze_time('2014-01-01 15:45:54')  # 56754 sec
     def test_event(self):
         response = self.client.post(reverse('update'),
-                                    fixtures.request_event, content_type='text/xml')
+                                    fixtures.request_event,
+                                    REMOTE_ADDR="8.8.8.8",
+                                    content_type='text/xml')
 
         self.assertEqual(response.status_code, 200)
 
         self.assertXmlDocument(response.content)
         self.assertXmlEquivalentOutputs(response.content,
                                         fixtures.response_event)
+
+        request = Request.objects.get()
+        self.assertEqual(request.ip, '8.8.8.8')
 
     @freeze_time('2014-01-01 15:45:54')  # 56754 sec
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')

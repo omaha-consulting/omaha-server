@@ -27,6 +27,7 @@ from django.http import HttpResponse
 from lxml.etree import XMLSyntaxError
 
 from omaha.builder import build_response
+from omaha_server.utils import get_client_ip
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +41,7 @@ class UpdateView(View):
 
     def post(self, request):
         try:
-            response = build_response(request.body)
+            response = build_response(request.body, ip=get_client_ip(request))
         except XMLSyntaxError:
             logger.error('UpdateView', exc_info=True, extra=dict(request=request))
             msg = b"""<?xml version="1.0" encoding="utf-8"?>

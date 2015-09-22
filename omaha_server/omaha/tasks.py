@@ -24,5 +24,5 @@ from omaha.parser import parse_request
 
 
 @app.task(ignore_result=True)
-def collect_statistics(request):
-    statistics.collect_statistics(parse_request(request))
+def collect_statistics(request, ip=None):
+    statistics.collect_statistics(parse_request(request), ip=ip)

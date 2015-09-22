@@ -141,8 +141,9 @@ def parse_hw(hw):
     return obj
 
 
-def parse_req(request):
+def parse_req(request, ip=None):
     kwargs = get_kwargs_for_model(Request, request, exclude=['os', 'hw', 'created', 'id'])
+    kwargs['ip'] = ip
     return Request(**kwargs)
 
 
@@ -173,7 +174,7 @@ def parse_events(events):
 
 
 @transaction.atomic
-def collect_statistics(request):
+def collect_statistics(request, ip=None):
     userid = request.get('userid')
     apps = request.findall('app')
 
@@ -183,7 +184,7 @@ def collect_statistics(request):
     if not filter(lambda app: bool(app.findall('event')), apps):
         return
 
-    req = parse_req(request)
+    req = parse_req(request, ip)
     req.os = parse_os(request.os)
     req.hw = parse_hw(request.hw) if request.get('hw') else None
     req.save()

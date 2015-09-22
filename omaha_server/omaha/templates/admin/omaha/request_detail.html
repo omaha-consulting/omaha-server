@@ -49,6 +49,10 @@
             <td>{{ object.request.version|default_if_none:'Unknown' }}</td>
         </tr>
         <tr>
+            <td>IP</td>
+            <td>{{ object.request.ip|default_if_none:'Unknown' }}</td>
+        </tr>
+        <tr>
             <td><a href="#" rel="tooltip" title="Yes or No, depending on whether the Omaha client is a per-user or per-machine instance">Is machine</a></td>
             <td>{% if object.request.ismachine %}Yes{% else %}No{% endif %}</td>
         </tr>

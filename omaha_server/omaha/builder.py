@@ -168,9 +168,9 @@ def on_app(apps_list, app, os, userid):
     return apps_list
 
 
-def build_response(request, pretty_print=True):
+def build_response(request, pretty_print=True, ip=None):
     obj = parse_request(request)
-    tasks.collect_statistics.apply_async(args=(request,), queue='transient')
+    tasks.collect_statistics.apply_async(args=(request, ip), queue='transient')
     userid = obj.get('userid')
     apps = obj.findall('app')
     apps_list = reduce(partial(on_app, os=obj.os, userid=userid), apps, [])
