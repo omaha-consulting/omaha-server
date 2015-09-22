@@ -34,7 +34,7 @@ TEMPLATES = [
     },
 ]
 
-APP_VERSION = "0.1.6"
+APP_VERSION = "0.1.7"
 
 SUIT_CONFIG = {
     'ADMIN_NAME': 'Omaha Server [{}]'.format(APP_VERSION),
