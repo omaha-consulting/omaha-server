@@ -21,7 +21,7 @@ the License.
 import os
 
 from raven import Client
-from paver.easy import task
+from paver.easy import task, needs
 from paver.easy import sh
 
 
@@ -30,6 +30,11 @@ client = Client(os.environ.get('RAVEN_DNS'))
 
 @task
 def test():
+    sh('./manage.py test --settings=omaha_server.settings_test', cwd='omaha_server')
+
+
+@task
+def test_tox():
     settings = os.getenv("DJANGO_SETTINGS_MODULE", 'omaha_server.settings_test')
     sh('./manage.py test --settings=%s' % settings, cwd='omaha_server')
 
@@ -37,6 +42,12 @@ def test():
 @task
 def test_postgres():
     sh('./manage.py test --settings=omaha_server.settings_test_postgres', cwd='omaha_server')
+
+
+@task
+@needs('test', 'test_postgres')
+def test_all():
+    pass
 
 
 @task
