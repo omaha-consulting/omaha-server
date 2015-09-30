@@ -29,11 +29,11 @@ from functools import partial
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from omaha.models import Version
+from omaha.models import Version, Channel
 from omaha.statistics import userid_counting
 
 
-def generate_statistics(i, versions):
+def generate_statistics(i, versions, channels):
     now = timezone.now()
     year = now.year
 
@@ -41,9 +41,11 @@ def generate_statistics(i, versions):
         print('=> %s' % i)
     version = random.choice(versions)
     platform = version.platform.name
+    channel = random.choice(channels)
     app_list = [dict(
         appid=version.app.id,
         version=str(version.version),
+        tag=channel,
     )]
     month = random.choice(range(1, 13))
     day = random.choice(range(1, 28))
@@ -52,9 +54,11 @@ def generate_statistics(i, versions):
     userid_counting(userid, app_list, platform, now=date)
 
 
-def run_worker(data, versions):
+def run_worker(data, versions, channels):
     t_pool = ThreadPool()
-    t_pool.imap_unordered(partial(generate_statistics, versions=versions), data)
+    t_pool.imap_unordered(partial(generate_statistics,
+                                  versions=versions,
+                                  channels=channels), data)
     t_pool.close()
     t_pool.join()
 
@@ -73,11 +77,12 @@ class Command(BaseCommand):
         user_count = options['count'] + 1
         users = range(1, user_count)
         versions = list(Version.objects.select_related('app', 'platform').filter_by_enabled())
+        channels = list(Channel.objects.all())
 
         job_size = int(user_count / (cpu_count() or 1 * 2)) or 1
         job_data = [users[i:i + job_size] for i in range(0, len(users), job_size)]
 
         pool = Pool()
-        pool.imap_unordered(partial(run_worker, versions=versions), job_data)
+        pool.imap_unordered(partial(run_worker, versions=versions, channels=channels), job_data)
         pool.close()
         pool.join()

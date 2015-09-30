@@ -118,7 +118,7 @@ def generate_events(app_id, **options):
         request_obj = parse_request(request)
 
         with freeze_time(get_random_date()):
-            collect_statistics(request_obj)
+            collect_statistics(request_obj, ip='8.8.8.8')
 
 
 class Command(BaseCommand):
