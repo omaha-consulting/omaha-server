@@ -29,7 +29,7 @@ def grant_permissions(apps, schema_editor):
 
     cursor.execute("select * from pg_catalog.pg_user where usename=%s;", [settings.DB_PUBLIC_USER])
     if not cursor.fetchall():
-        cursor.execute("CREATE USER %s WITH PASSWORD '%s;'" % (settings.DB_PUBLIC_USER, settings.DB_PUBLIC_PASSWORD))
+        cursor.execute("CREATE USER %s WITH PASSWORD '%s';" % (settings.DB_PUBLIC_USER, settings.DB_PUBLIC_PASSWORD))
 
     cursor.execute("select * from pg_catalog.pg_group where groname=%s;", [settings.DB_PUBLIC_ROLE])
     if not cursor.fetchall():
