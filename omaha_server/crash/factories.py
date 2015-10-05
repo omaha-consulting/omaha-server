@@ -37,8 +37,8 @@ class CrashFactory(factory.DjangoModelFactory):
     class Meta:
         model = 'crash.Crash'
 
-    appid = factory.Sequence(lambda n: '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C%s}' % n)
-    userid = factory.Sequence(lambda n: '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C%s}' % n)
+    appid = factory.Sequence(lambda n: '{D0AB2EBC-931B-4013-9FEB-C9C4C2225%s}' % n)
+    userid = factory.Sequence(lambda n: '{D0AB2EBC-931B-4013-9FEB-C9C4C2225%s}' % n)
     meta = {'lang': 'en'}
     signature = factory.Sequence(lambda n: 'signature_%s' % n)
 

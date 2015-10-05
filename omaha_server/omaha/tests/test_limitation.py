@@ -37,30 +37,28 @@ from omaha.factories import VersionFactory
 from sparkle.factories import SparkleVersionFactory
 
 class DeleteOldTest(TestCase):
-
-    @moto.mock_s3
     @is_private()
     def test_crashes(self):
         old_date = timezone.now() - timezone.timedelta(days=5)
         gpm['Crash__limit_storage_days'] = 2
         CrashFactory.create_batch(10, created=old_date)
+        Crash.objects.update(created=old_date)
         self.assertEqual(Crash.objects.all().count(), 10)
         delete_older_than('crash', 'Crash')
         self.assertEqual(Crash.objects.all().count(), 0)
 
-    @moto.mock_s3
     @is_private()
     def test_feedbacks(self):
         old_date = timezone.now() - timezone.timedelta(days=5)
         gpm['Feedback__limit_storage_days'] = 2
         FeedbackFactory.create_batch(10, created=old_date)
+        Feedback.objects.update(created=old_date)
         self.assertEqual(Feedback.objects.all().count(), 10)
         delete_older_than('feedback', 'Feedback')
         self.assertEqual(Feedback.objects.all().count(), 0)
 
 
 class SizeExceedTest(TestCase):
-    @moto.mock_s3
     @is_private()
     def test_crashes(self):
         gpm['Crash__limit_size'] = 1
@@ -69,18 +67,16 @@ class SizeExceedTest(TestCase):
         delete_size_is_exceeded('crash', 'Crash')
         self.assertEqual(Crash.objects.all().count(), 102)
 
-    @moto.mock_s3
     @is_private()
     def test_feedbacks(self):
         gpm['Feedback__limit_size'] = 1
-        FeedbackFactory.create_batch(1000, screenshot_size=10*1024*1023, system_logs_size=0, attached_file_size=0, blackbox_size=0)
-        self.assertEqual(Feedback.objects.all().count(), 1000)
+        FeedbackFactory.create_batch(500, screenshot_size=10*1024*1023, system_logs_size=0, attached_file_size=0, blackbox_size=0)
+        self.assertEqual(Feedback.objects.all().count(), 500)
         delete_size_is_exceeded('feedback', 'Feedback')
         self.assertEqual(Feedback.objects.all().count(), 102)
 
 
 class DeleteDuplicateTest(TestCase):
-    @moto.mock_s3
     @is_private()
     def test_crashes(self):
         gpm['Crash__duplicate_number'] = 10

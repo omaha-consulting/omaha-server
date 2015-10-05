@@ -45,8 +45,6 @@ class ManualCleanupFormTest(TestCase):
         self.assertTrue(form.is_valid())
         self.assertEqual(form.cleaned_data['limit_days'], 10)
         self.assertEqual(form.cleaned_data['limit_size'], 10)
-        # logging.error(type(form.fields))
-        # logging.error(mock)
         self.assertEqual(type(form.fields), OrderedDict)
         self.assertEqual(form.fields.keys(), ['limit_days', 'limit_size'])
 
@@ -62,7 +60,7 @@ class ManualCleanupFormTest(TestCase):
         form = ManualCleanupForm(data=data, initial=dict(type='feedback__Feedback'))
 
         self.assertFalse(form.is_valid())
-        self.assertEqual(form.errors.keys(), ['limit_size', 'limit_days'])
+        self.assertItemsEqual(form.errors.keys(), ['limit_size', 'limit_days'])
 
 
 class CrashManualCleanupFormTest(TestCase):
@@ -85,7 +83,7 @@ class CrashManualCleanupFormTest(TestCase):
 
     def test_negative_fields(self):
         data = dict(limit_days=-1, limit_size=-1, limit_duplicated=-1)
-        form = CrashManualCleanupForm(data=data, initial=dict(type='feedback__Feedback'))
+        form = CrashManualCleanupForm(data=data, initial=dict(type='crash__Crash'))
 
         self.assertFalse(form.is_valid())
-        self.assertEqual(form.errors.keys(), ['limit_duplicated', 'limit_size', 'limit_days'])
+        self.assertItemsEqual(form.errors.keys(), ['limit_duplicated', 'limit_days', 'limit_size'])
