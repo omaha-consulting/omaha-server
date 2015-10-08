@@ -84,9 +84,9 @@ class ActionAdminForm(forms.ModelForm):
 
 
 class ManualCleanupForm(forms.Form):
-    limit_days = forms.IntegerField(min_value=1, required=False, label='Maximum age(days)',
+    limit_days = forms.IntegerField(min_value=1, required=False, label='Maximum age (days)',
                                     help_text=' - remove objects older than X days')
-    limit_size = forms.IntegerField(min_value=1, required=False, label='Maximum storage size(GB)',
+    limit_size = forms.IntegerField(min_value=1, required=False, label='Purge used space (Gb)',
                                     help_text=" - remove old objects until total size won't reach X GB")
 
     def cleanup(self):
@@ -103,7 +103,7 @@ class ManualCleanupForm(forms.Form):
 
 
 class CrashManualCleanupForm(ManualCleanupForm):
-    limit_duplicated = forms.IntegerField(min_value=1, required=False, label='Maximum duplicate number',
+    limit_duplicated = forms.IntegerField(min_value=1, required=False, label='Maximum amount of duplicates',
                                           help_text=" - remove old duplicate crashes until their number won't equal X ")
 
     def __init__(self, *args, **kwargs):
