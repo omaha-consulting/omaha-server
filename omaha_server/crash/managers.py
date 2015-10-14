@@ -20,19 +20,35 @@ the License.
 
 from django.db.models.query import QuerySet
 from django.db import models
-from django.db.models import Sum
+from django.db.models import F, Sum
 
-class VersionQuerySet(QuerySet):
+class CrashQuerySet(QuerySet):
+    def filter_by_enabled(self, *args, **kwargs):
+        return self.filter(is_enabled=True, *args, **kwargs)
+
+    def get_size(self):
+        return self.aggregate(size=Sum(F('archive_size') + F('minidump_size')))['size'] or 0
+
+class CrashManager(models.Manager):
+    def get_queryset(self):
+        return CrashQuerySet(self.model, using=self._db)
+
+    def __getattr__(self, name):
+        if name.startswith('_'):
+            raise AttributeError
+        else:
+            return getattr(self.get_queryset(), name)
+
+class SymbolsQuerySet(QuerySet):
     def filter_by_enabled(self, *args, **kwargs):
         return self.filter(is_enabled=True, *args, **kwargs)
 
     def get_size(self):
         return self.aggregate(size=Sum('file_size'))['size'] or 0
 
-
-class VersionManager(models.Manager):
+class SymbolsManager(models.Manager):
     def get_queryset(self):
-        return VersionQuerySet(self.model, using=self._db)
+        return SymbolsQuerySet(self.model, using=self._db)
 
     def __getattr__(self, name):
         if name.startswith('_'):

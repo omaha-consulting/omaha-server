@@ -52,7 +52,7 @@ CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
 BROKER_BACKEND = 'memory'
 
 CACHES['default'] = {
-    'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    'BACKEND': 'django.core.cache.backends.dummy.DummyCache'
 }
 
 CACHES['statistics'] = {
@@ -73,3 +73,6 @@ CRASH_SYMBOLS_PATH = os.path.join(BASE_DIR, 'crash', 'tests', 'testdata', 'symbo
 CRASH_S3_MOUNT_PATH = os.path.join(BASE_DIR, 'crash', 'tests', 'testdata')
 
 RAVEN_DSN_STACKTRACE = 'http://c5dc6f5ab74b4ab8a567f545b00cb138:c57ee00766cf497da102b7a83d731840@127.0.0.1/1'
+AWS_STORAGE_BUCKET_NAME = 'test'
+AWS_ACCESS_KEY_ID = ''
+AWS_SECRET_ACCESS_KEY = ''

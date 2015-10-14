@@ -20,16 +20,24 @@ the License.
 
 import logging
 import datetime
+from collections import OrderedDict
 
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib import messages
+from django.http.response import HttpResponse
 from django.utils.decorators import method_decorator
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView, ListView, TemplateView
 from django.views.generic.edit import FormView
-from django.utils import timezone
 from django_tables2 import SingleTableView
 from django.conf import settings
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse_lazy, reverse
 from django.shortcuts import get_object_or_404
+from django.http import Http404
+from django.utils import timezone
+from django.core.cache import cache
+
+from dynamic_preferences.forms import global_preference_form_builder
+from dynamic_preferences_registry import global_preferences_manager as gpm
 
 from omaha.statistics import (
     get_users_statistics_months,
@@ -42,8 +50,8 @@ from omaha.filters import AppRequestFilter
 from omaha.utils import make_piechart, make_discrete_bar_chart
 from omaha.filters import EVENT_RESULT, EVENT_TYPE
 from omaha.tables import AppRequestTable
-from omaha.forms import TimezoneForm
-
+from omaha.forms import CrashManualCleanupForm, ManualCleanupForm
+from omaha.dynamic_preferences_registry import global_preferences
 
 logger = logging.getLogger(__name__)
 
@@ -178,18 +186,101 @@ class AppRequestDetailView(StaffMemberRequiredMixin, DetailView):
         return context
 
 
-class TimezoneView(StaffMemberRequiredMixin, FormView):
-    template_name = 'admin/set_timezone.html'
-    form_class = TimezoneForm
-    success_url = reverse_lazy('set_timezone')
+class PreferenceFormView(StaffMemberRequiredMixin, FormView):
+    template_name = 'admin/omaha/set_preferences.html'
+    registry = global_preferences
 
-    def get_initial(self):
-        try:
-            cur_timezone = self.request.session['django_timezone']
-        except KeyError:
-            cur_timezone = settings.TIME_ZONE
-        return dict(timezone=cur_timezone)
+    def get_success_url(self):
+        return self.request.path
+
+    def get_form_class(self, *args, **kwargs):
+        section = self.kwargs.get('section', None)
+        form_class = global_preference_form_builder(section=section)
+        return form_class
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(PreferenceFormView, self).get_context_data(*args, **kwargs)
+        context['sections'] = self.registry.sections()
+        context['sections'].sort()
+        context['cur_section'] = self.kwargs.get('section')
+        form = context['form']
+        order_fields = ['Crash__limit_size', 'Crash__limit_storage_days', 'Crash__duplicate_number',
+                        'Feedback__limit_size', 'Feedback__limit_storage_days', 'SparkleVersion__limit_size',
+                        'Symbols__limit_size', 'Version__limit_size', 'Timezone__timezone']
+        form.fields = OrderedDict((k, form.fields[k]) for k in order_fields if k in form.fields.keys())
+        return context
 
     def form_valid(self, form):
-        self.request.session['django_timezone'] = form.cleaned_data['timezone']
-        return super(TimezoneView, self).form_valid(form)
+        form.update_preferences()
+        try:
+            self.request.session['django_timezone'] = form.cleaned_data['Timezone__timezone']
+        except KeyError:
+            pass
+        messages.add_message(self.request, messages.INFO, 'Preferences were updated')
+        return super(PreferenceFormView, self).form_valid(form)
+
+
+class MonitoringFormView(StaffMemberRequiredMixin, TemplateView):
+    template_name = 'admin/omaha/monitoring.html'
+    form_class = ManualCleanupForm
+    success_url = reverse_lazy('monitoring')
+
+    def get_context_data(self, **kwargs):
+        context = super(MonitoringFormView, self).get_context_data(**kwargs)
+        omaha_version_size = float(cache.get('omaha_version_size') or 0)/1073741824
+        sparkle_version_size = float(cache.get('sparkle_version_size') or 0)/1073741824
+        feedbacks_size = float(cache.get('feedbacks_size') or 0)/1073741824
+        crashes_size = float(cache.get('crashes_size') or 0)/1073741824
+        symbols_size = float(cache.get('symbols_size') or 0)/1073741824
+
+        data = dict(
+            omaha_version=dict(label='Omaha Versions', size=omaha_version_size, limit=gpm['Version__limit_size'], percent=omaha_version_size/gpm['Version__limit_size']*100),
+            sparkle_version=dict(label='Sparkle Versions', size=sparkle_version_size, limit=gpm['SparkleVersion__limit_size'], percent=sparkle_version_size/gpm['SparkleVersion__limit_size']*100),
+            feedbacks=dict(label='Feedbacks', size=feedbacks_size, limit=gpm['Feedback__limit_size'], percent=feedbacks_size/gpm['Feedback__limit_size']*100),
+            crashes=dict(label='Crashes',  size=crashes_size, limit=gpm['Crash__limit_size'], percent=crashes_size/gpm['Crash__limit_size']*100),
+            symbols=dict(label='Symbols',  size=symbols_size, limit=gpm['Symbols__limit_size'], percent=symbols_size/gpm['Symbols__limit_size']*100),
+        )
+        full_size = reduce(lambda res, x: res + x['size'], data.values(), 0)
+        context.update(data)
+        piechart = None
+        if full_size:
+            pie_data = [(x['label'], x['size']/full_size * 100) for x in data.values()]
+            piechart = make_piechart('used_space', pie_data, unit="%")
+        context.update({'used_space': piechart})
+        return context
+
+
+class ManualCleanupFormView(StaffMemberRequiredMixin, FormView):
+    template_name = 'admin/omaha/manually_deletion.html'
+    form_class = CrashManualCleanupForm
+
+    def get_context_data(self, **kwargs):
+        context = super(ManualCleanupFormView, self).get_context_data(**kwargs)
+        context['tabs'] = (
+            ('crash__Crash', 'Crash'),
+            ('feedback__Feedback', 'Feedback'),
+            ('omaha__Version', 'Omaha Version'),
+            ('sparkle__SparkleVersion', 'Sparkle Version'),
+            ('crash__Symbols', 'Symbols')
+        )
+        context['cur_tab'] = self.kwargs.get('model')
+        return context
+
+    def get_success_url(self):
+        return reverse('monitoring')
+
+    def get_initial(self):
+        return {'type': self.kwargs.get('model')}
+
+    def get_form_class(self):
+        cur_tab = self.kwargs.get('model')
+        if cur_tab == 'crash__Crash':
+            return CrashManualCleanupForm
+        if cur_tab in ('feedback__Feedback', 'omaha__Version', 'sparkle__SparkleVersion', 'crash__Symbols'):
+            return ManualCleanupForm
+        raise Http404
+
+    def form_valid(self, form):
+        form.cleanup()
+        messages.add_message(self.request, messages.INFO, 'Task was added in queue. Execution can take a long time. Check results on Sentry after a while.')
+        return super(ManualCleanupFormView, self).form_valid(form)

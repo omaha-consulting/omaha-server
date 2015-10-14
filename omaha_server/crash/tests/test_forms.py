@@ -44,6 +44,7 @@ class SymbolsAdminFormTest(TestCase):
         self.assertTrue(form.is_valid())
         self.assertEqual(form.cleaned_data['debug_id'], 'C1C0FA629EAA4B4D9DD2ADE270A231CC1')
         self.assertEqual(form.cleaned_data['debug_file'], 'BreakpadTestApp.pdb')
+        self.assertEqual(form.cleaned_data['file_size'], 68149)
 
 
 class CrashFormTest(TestCase):
@@ -59,6 +60,8 @@ class CrashFormTest(TestCase):
 
         self.assertTrue(form.is_valid())
         self.assertEqual(form.cleaned_data['upload_file_minidump'].name, '7b05e196-7e23-416b-bd13-99287924e214.dmp')
+        self.assertEqual(form.cleaned_data['archive_size'], 0)
+        self.assertEqual(form.cleaned_data['minidump_size'], 7)
 
     def test_form_tar_file(self):
         with open(TAR_FILE, 'rb') as f:
@@ -74,3 +77,5 @@ class CrashFormTest(TestCase):
         self.assertTrue(form.is_valid())
         self.assertEqual(form.cleaned_data['upload_file_minidump'].name, '7b05e196-7e23-416b-bd13-99287924e214.dmp')
         self.assertEqual(form.cleaned_data['archive'].name, 'foo.tar')
+        self.assertEqual(form.cleaned_data['archive_size'], 85504)
+        self.assertEqual(form.cleaned_data['minidump_size'], 14606)

@@ -57,6 +57,21 @@ class CrashModelTest(test.TestCase):
         self.assertEqual(obj.appid, app_id)
         self.assertEqual(obj.userid, user_id)
 
+    @temporary_media_root(
+        CELERY_ALWAYS_EAGER=False,
+        CELERY_EAGER_PROPAGATES_EXCEPTIONS=False,
+    )
+    def test_propertiy(self):
+        app_id = '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}'
+        user_id = '{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}'
+        obj = Crash.objects.create(
+            appid=app_id,
+            userid=user_id,
+            upload_file_minidump=SimpleUploadedFile('./dump.tar', b' '),
+            minidump_size=123,
+            archive_size=1234,
+        )
+        self.assertEqual(obj.size, 123+1234)
 
 class CrashDescriptionModelTest(test.TestCase):
     def test_model(self):
@@ -86,6 +101,17 @@ class SymbolsModelTest(test.TestCase):
                 file=SimpleUploadedFile(f.name, f.read()),
             )
         self.assertTrue(obj)
+
+    @temporary_media_root()
+    def test_propertiy(self):
+        with open(SYM_FILE, 'rb') as f:
+            obj = Symbols.objects.create(
+                debug_file='BreakpadTestApp.pdb',
+                debug_id='C1C0FA629EAA4B4D9DD2ADE270A231CC1',
+                file=SimpleUploadedFile(f.name, f.read()),
+                file_size=123
+            )
+        self.assertEqual(obj.size, 123)
 
     @temporary_media_root()
     def test_symbols_upload_to(self):

@@ -19,7 +19,8 @@ the License.
 """
 
 from django import forms
-
+from django.core.files.uploadedfile import UploadedFile
+from django.forms import widgets
 from django_ace import AceWidget
 
 from feedback.models import Feedback
@@ -30,4 +31,28 @@ class FeedbackForm(forms.ModelForm):
         exclude = []
         widgets = {
             'feedback_data': AceWidget(mode='json', theme='monokai', width='600px', height='300px'),
+            'screenshot_size': widgets.TextInput(attrs=dict(disabled='disabled')),
+            'system_logs_size': widgets.TextInput(attrs=dict(disabled='disabled')),
+            'blackbox_size': widgets.TextInput(attrs=dict(disabled='disabled')),
+            'attached_file_size': widgets.TextInput(attrs=dict(disabled='disabled')),
         }
+
+    def clean_screenshot_size(self):
+        return self._clean_file_size('screenshot')
+
+    def clean_blackbox_size(self):
+        return self._clean_file_size('blackbox')
+
+    def clean_system_logs_size(self):
+        return self._clean_file_size('system_logs')
+
+    def clean_attached_file_size(self):
+        return self._clean_file_size('attached_file')
+
+    def _clean_file_size(self, file_field):
+        if file_field not in self.cleaned_data:
+            return 0
+        _file = self.cleaned_data[file_field]
+        if isinstance(_file, UploadedFile):
+            return _file.size
+        return self.initial.get("%s_size" % file_field, 0)

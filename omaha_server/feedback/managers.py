@@ -20,19 +20,18 @@ the License.
 
 from django.db.models.query import QuerySet
 from django.db import models
-from django.db.models import Sum
+from django.db.models import F, Sum
 
-class VersionQuerySet(QuerySet):
+class FeedbackQuerySet(QuerySet):
     def filter_by_enabled(self, *args, **kwargs):
         return self.filter(is_enabled=True, *args, **kwargs)
 
     def get_size(self):
-        return self.aggregate(size=Sum('file_size'))['size'] or 0
+        return self.aggregate(size=Sum(F('screenshot_size') + F('blackbox_size') + F('system_logs_size') + F('attached_file_size')))['size'] or 0
 
-
-class VersionManager(models.Manager):
+class FeedbackManager(models.Manager):
     def get_queryset(self):
-        return VersionQuerySet(self.model, using=self._db)
+        return FeedbackQuerySet(self.model, using=self._db)
 
     def __getattr__(self, name):
         if name.startswith('_'):

@@ -92,12 +92,12 @@ def valuedispatch(func):
     return wrapper
 
 
-def make_piechart(id, data):
+def make_piechart(id, data, unit='users'):
     xdata = [i[0] for i in data]
     ydata = [i[1] for i in data]
 
     extra_serie = {
-        "tooltip": {"y_start": "", "y_end": " users"},
+        "tooltip": {"y_start": "", "y_end": " " + unit},
     }
     chartdata = {'x': xdata, 'y1': ydata, 'extra1': extra_serie}
     charttype = "pieChart"

@@ -64,3 +64,20 @@ class FeedbackModelTest(test.TestCase):
         self.assertEqual(obj.email, email)
         self.assertEqual(obj.page_url, page_url)
         self.assertDictEqual(obj.feedback_data, feedback_data)
+
+    def test_property(self):
+        description = 'Test description'
+
+        obj = Feedback.objects.create(
+            description=description,
+            screenshot=SimpleUploadedFile('./screenshot.png', b''),
+            screenshot_size=111,
+            blackbox=SimpleUploadedFile('./blackbox.tar', b''),
+            blackbox_size=222,
+            system_logs=SimpleUploadedFile('./sys_logs.zip', b''),
+            system_logs_size=333,
+            attached_file=SimpleUploadedFile('./attach.zip', b''),
+            attached_file_size=444,
+        )
+
+        self.assertEqual(obj.size, 111+222+333+444)
