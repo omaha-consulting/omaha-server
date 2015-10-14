@@ -68,6 +68,12 @@ app:
                   content: |
                     client_max_body_size 2048M;
 
+                "/usr/bin/docker-cleanup-volumes.sh":
+                  mode: "000755"
+                  owner: root
+                  group: root
+                  source: https://raw.githubusercontent.com/chadoe/docker-cleanup-volumes/1.6.2/docker-cleanup-volumes.sh
+
         - .ebextensions/02-commands.config:
             yaml:
               commands:
@@ -75,6 +81,8 @@ app:
                   command: 'sed -i "s/docker run -d/docker run --privileged -d/" /opt/elasticbeanstalk/hooks/appdeploy/enact/00run.sh'
                 00002-add-swap:
                   command: '[ -f /var/swap ] || (dd if=/dev/zero of=/var/swap bs=1M count=1024 && mkswap /var/swap && swapon /var/swap)'
+                00003-docker-cleanup:
+                  command: 'docker-cleanup-volumes.sh'
 
       includes:
         - Dockerrun.aws.json
