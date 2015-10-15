@@ -46,7 +46,7 @@ class CrashLimitStorageDays(PositiveIntegerPreference):
     section = 'Crash'
     verbose_name = 'Maximum storage time (days) for crashes'
     name = "limit_storage_days"
-    default = 45
+    default = 360
 
 
 @global_preferences_registry.register
@@ -86,7 +86,7 @@ class FeedbackLimitStorageDays(PositiveIntegerPreference):
     section = 'Feedback'
     verbose_name = 'Maximum storage time (days) for feedbacks'
     name = "limit_storage_days"
-    default = 45
+    default = 360
 
 
 @global_preferences_registry.register
