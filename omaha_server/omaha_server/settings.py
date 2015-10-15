@@ -227,7 +227,10 @@ CELERY_QUEUES = (
 )
 
 if IS_PRIVATE:
-    CELERY_QUEUES += (Queue('limitation', routing_key='limitation'),)
+    CELERY_QUEUES += (
+        Queue('limitation', routing_key='limitation'),
+        Queue('private', routing_key='private'),
+    )
 
     CELERYBEAT_SCHEDULE = {
         'auto_delete_older_then': {

@@ -99,7 +99,7 @@ class Symbols(BaseModel):
 @receiver(post_save, sender=Crash)
 def crash_post_save(sender, instance, created, *args, **kwargs):
     if created and instance.upload_file_minidump:
-        signature("tasks.processing_crash_dump", args=(instance.pk,)).apply_async(queue='default', countdown=1)
+        signature("tasks.processing_crash_dump", args=(instance.pk,)).apply_async(queue='private', countdown=1)
 
 
 @receiver(pre_delete, sender=Crash)
