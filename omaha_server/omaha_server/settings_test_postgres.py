@@ -4,11 +4,13 @@ import os
 
 os.environ.setdefault('DB_PUBLIC_USER', 'test_public_user')
 os.environ.setdefault('DB_PUBLIC_PASSWORD', 'test_public_password')
+# os.environ.setdefault('DB_USER', 'postgres')
+# os.environ.setdefault('DB_PASSWORD', '')
 
-os.environ.setdefault('OMAHA_SERVER_PRIVATE', 'True')
+os.environ.setdefault('OMAHA_SERVER_PRIVATE', 'False')
 
 from .settings import *
-from .settings_test import DisableMigrations
+DB_PUBLIC_ROLE = os.environ.get('DB_PUBLIC_ROLE', 'test_public_users')
 
 DATABASES = {
     'default': {
@@ -18,11 +20,20 @@ DATABASES = {
         'PASSWORD': os.environ.get('DB_PASSWORD', ''),
         'HOST': os.environ.get('DB_HOST', '127.0.0.1'),
         'PORT': os.environ.get('DB_PORT', '5432'),
-        'CONN_MAX_AGE': 60,
-        'TEST': {
-            'USER': os.environ.get('DB_PUBLIC_USER', 'postgres'),
-            'PASSWORD': os.environ.get('DB_PUBLIC_PASSWORD', ''),
-        }
+        # 'CONN_MAX_AGE': 60,
+        # 'TEST': {
+        #     'USER': os.environ.get('DB_PUBLIC_USER', 'public_omaha'),
+        #     'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+        # }
+    },
+    'root': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ.get('DB_NAME', 'postgres'),
+        'USER': os.environ.get('DB_USER', 'postgres'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+        'HOST': os.environ.get('DB_HOST', '127.0.0.1'),
+        'PORT': os.environ.get('DB_PORT', '5432'),
+        # 'CONN_MAX_AGE': 60,
     }
 }
 
@@ -40,9 +51,9 @@ NOSE_ARGS = [
     '--cover-package=omaha_server,omaha,crash,feedback,sparkle,healthcheck',
     '--cover-inclusive',
     '--nologcapture',
+    # '-s',
 ]
 
-MIGRATION_MODULES = DisableMigrations()
 # Tricks to speed up Django tests
 
 DEBUG = False
