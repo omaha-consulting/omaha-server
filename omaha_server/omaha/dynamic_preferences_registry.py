@@ -18,12 +18,14 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
+import pytz
+from datetime import datetime
+
+from django.forms import IntegerField
 from django.core.validators import MinValueValidator
 
-import pytz
-from dynamic_preferences.types import *
+from dynamic_preferences.types import IntegerPreference, ChoicePreference
 from dynamic_preferences import global_preferences_registry
-from datetime import datetime
 
 
 class PositiveIntegerField(IntegerField):
