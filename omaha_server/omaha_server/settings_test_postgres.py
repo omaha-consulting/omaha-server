@@ -4,8 +4,6 @@ import os
 
 os.environ.setdefault('DB_PUBLIC_USER', 'test_public_user')
 os.environ.setdefault('DB_PUBLIC_PASSWORD', 'test_public_password')
-# os.environ.setdefault('DB_USER', 'postgres')
-# os.environ.setdefault('DB_PASSWORD', '')
 
 os.environ.setdefault('OMAHA_SERVER_PRIVATE', 'False')
 
@@ -51,7 +49,7 @@ NOSE_ARGS = [
     '--cover-package=omaha_server,omaha,crash,feedback,sparkle,healthcheck',
     '--cover-inclusive',
     '--nologcapture',
-    # '-s',
+    '-s',
 ]
 
 # Tricks to speed up Django tests
