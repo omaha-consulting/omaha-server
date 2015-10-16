@@ -18,11 +18,6 @@ DATABASES = {
         'PASSWORD': os.environ.get('DB_PASSWORD', ''),
         'HOST': os.environ.get('DB_HOST', '127.0.0.1'),
         'PORT': os.environ.get('DB_PORT', '5432'),
-        # 'CONN_MAX_AGE': 60,
-        # 'TEST': {
-        #     'USER': os.environ.get('DB_PUBLIC_USER', 'public_omaha'),
-        #     'PASSWORD': os.environ.get('DB_PASSWORD', ''),
-        # }
     },
     'root': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -31,7 +26,6 @@ DATABASES = {
         'PASSWORD': os.environ.get('DB_PASSWORD', ''),
         'HOST': os.environ.get('DB_HOST', '127.0.0.1'),
         'PORT': os.environ.get('DB_PORT', '5432'),
-        # 'CONN_MAX_AGE': 60,
     }
 }
 

@@ -68,7 +68,6 @@ class PublicTests(LiveServerTestCase):
         file = SimpleUploadedFile("test.dmg", b"content")
         SparkleVersionFactory._meta.database='root'
         SparkleVersionFactory.create(channel=channel, app=app, file=file)
-        # import pdb; pdb.set_trace()
         url = '%s%s' % (self.live_server_url, reverse('sparkle_appcast', kwargs=dict(app_name=app_name, channel=channel_name)))  # replace by reverse
         resp = requests.get(url)
         root = objectify.fromstring(resp.content)
