@@ -33,10 +33,10 @@ class VersionModelTest(test.TestCase):
     def test_version_upload_to(self):
         version = SparkleVersionFactory.create(file=SimpleUploadedFile('./chrome_installer.exe', False))
         self.assertEqual(version_upload_to(version, 'chrome_installer.exe'),
-                         'sparkle/{}/{}/chrome_installer.exe'.format(
+                         'sparkle/{}/{}/{}/chrome_installer.exe'.format(
                              version.app.name,
                              version.channel.name,
-                             # version.version,     #TODO: Uncomment after merge with master
+                             version.version,     #TODO: Uncomment after merge with master
                          ))
 
     @patch('sparkle.models.version_upload_to', lambda o, f: f)

@@ -32,7 +32,7 @@ from sparkle.managers import VersionManager
 
 
 def version_upload_to(obj, filename):
-    return os.path.join('sparkle', obj.app.name, obj.channel.name, filename)
+    return os.path.join('sparkle', obj.app.name, obj.channel.name, str(obj.version), filename)
 
 
 @python_2_unicode_compatible

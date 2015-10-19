@@ -33,7 +33,7 @@ response_sparkle = b"""<?xml version="1.0" encoding="utf-8"?>
                 ]]>
                 </description>
                 <pubDate>Tue, 14 Oct 2014 08:28:05 +0000</pubDate>
-                <enclosure url="http://cache.pack.google.com/edgedl/chrome/install/782.112/sparkle/chrome/stable/chrome.dmg"
+                <enclosure url="http://cache.pack.google.com/edgedl/chrome/install/782.112/sparkle/chrome/stable/782.112/chrome.dmg"
                            sparkle:version="782.112"
                            sparkle:shortVersionString="13.0.782.112"
                            length="23963192" type="application/octet-stream"/>
@@ -57,7 +57,7 @@ response_sparkle_with_dsa = b"""<?xml version="1.0" encoding="utf-8"?>
                 ]]>
                 </description>
                 <pubDate>Tue, 14 Oct 2014 08:28:05 +0000</pubDate>
-                <enclosure url="http://cache.pack.google.com/edgedl/chrome/install/782.112/sparkle/chrome_dsa/stable/chrome.dmg"
+                <enclosure url="http://cache.pack.google.com/edgedl/chrome/install/782.112/sparkle/chrome_dsa/stable/782.112/chrome.dmg"
                            sparkle:version="782.112"
                            sparkle:shortVersionString="13.0.782.112"
                            sparkle:dsaSignature="MCwCFCdoW13VBGJWIfIklKxQVyetgxE7AhQTVuY9uQT0KOV1UEk21epBsGZMPg=="
