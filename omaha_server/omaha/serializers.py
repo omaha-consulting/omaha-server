@@ -34,7 +34,7 @@ class DataSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class AppSerializer(serializers.HyperlinkedModelSerializer):
-    data_set = DataSerializer(many=True, required=False)
+    data_set = DataSerializer(many=True, required=False, read_only=True)
 
     class Meta:
         model = Application

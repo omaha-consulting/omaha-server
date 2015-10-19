@@ -112,7 +112,7 @@ class AppTest(BaseTest, APITestCase):
 
     @is_private()
     def test_create(self):
-        data = dict(id='test_id', name='test_name')
+        data = dict(id='test_id', name='test_name', data_set=[])
         response = self.client.post(reverse(self.url
                                             ), data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
