@@ -2,7 +2,6 @@
 {% load suit_tags %}
 {% load suit_list %}
 {% load url_replace %}
-{% load django_select2_tags %}
 {% load render_table from django_tables2 %}
 
 {% block title %}Statistics | {{ 'ADMIN_NAME'|suit_conf }}{% endblock %}
@@ -37,21 +36,12 @@
 
 {% block extrastyle %}
     {{ block.super }}
-    {% import_django_select2_css %}
+    {{ filter.form.media.css }}
 {% endblock %}
 
 {% block extrajs %}
     {{ block.super }}
-    {% import_django_select2_js %}
-
-    <script>
-        function select2_add_appid(term, page) {
-            var proxFunc = $.proxy(django_select2.get_url_params, this);
-            var results = proxFunc(term, page);
-            results.app = $('#app-id').val();
-            return results;
-        }
-    </script>
+    {{ filter.form.media.js }}
 {% endblock %}
 
 {% block content %}

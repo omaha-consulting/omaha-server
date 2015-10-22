@@ -26,7 +26,7 @@ from django.core.validators import MinValueValidator
 
 from dynamic_preferences.types import IntegerPreference, ChoicePreference
 from dynamic_preferences import global_preferences_registry
-
+from django_select2.forms import Select2Widget
 
 class PositiveIntegerField(IntegerField):
     min_value = 1
@@ -104,23 +104,15 @@ class SymbolsLimitSize(PositiveIntegerPreference):
     name = "limit_size"
     default = 100
 
-from django_select2.widgets import Select2Widget
 @global_preferences_registry.register
 class TimeZone(ChoicePreference):
     choices = [(tz, ' '.join([tz, datetime.now(pytz.timezone(tz)).strftime('%z')]))
                for tz in pytz.common_timezones]
     widget = Select2Widget
-    select2_options = {'width': '220px'}
     section = 'Timezone'
     verbose_name = "Choose your timezone"
     name = "timezone"
     default = "UTC"
-
-    def get_field_kwargs(self):
-        field_kwargs = super(TimeZone, self).get_field_kwargs()
-
-        field_kwargs['widget'].options.update(self.select2_options)
-        return field_kwargs
 
 
 global_preferences = global_preferences_registry

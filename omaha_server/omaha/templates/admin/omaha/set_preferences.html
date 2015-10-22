@@ -1,10 +1,8 @@
 {% extends "admin/base_site.html" %}
 {% load suit_tags %}
 {% load tz %}
-{% load django_select2_tags %}
 
 {% block title %}Preferences | {{ 'ADMIN_NAME'|suit_conf }}{% endblock %}
-
 {% block breadcrumbs %}
     <ul class="breadcrumb">
         <li><a href="{% url 'admin:index' %}">Home</a>
@@ -18,12 +16,12 @@
 
 {% block extrastyle %}
     {{ block.super }}
-    {% import_django_select2_css %}
+    {{ form.media.css }}
 {% endblock %}
 
 {% block extrajs %}
     {{ block.super }}
-    {% import_django_select2_js %}
+    {{ form.media.js }}
 {% endblock %}
 
 
