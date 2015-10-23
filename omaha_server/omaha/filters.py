@@ -18,12 +18,13 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
-import django_filters
-from django_select2.fields import AutoModelSelect2Field
-from django_select2.widgets import AutoHeavySelect2Widget
-from django_select2 import NO_ERR_RESP
+from django.conf import settings
+from django.forms import CharField
 
-from omaha.models import AppRequest, Request
+import django_filters
+from django_select2.forms import HeavySelect2Widget
+
+from omaha.models import AppRequest
 
 EVENT_RESULT = {
     0: 'error',
@@ -116,46 +117,32 @@ class EventTypeFilter(django_filters.ChoiceFilter):
         return self.options[value][1](qs, self.name)
 
 
-class FilterByUserIdWidget(AutoHeavySelect2Widget):
+class FilterByUserIdWidget(HeavySelect2Widget):
+    def build_attrs(self, extra_attrs=None, **kwargs):
+        attrs = super(FilterByUserIdWidget, self).build_attrs(**kwargs)
+        attrs['data-minimum-input-length'] = 2
+        return attrs
 
-    def init_options(self):
-        super(FilterByUserIdWidget, self).init_options()
-        self.options['ajax']['data'] = '*START*select2_add_appid*END*'
-        self.options['width'] = '220px'
+    def _get_media(self):
+        media = super(FilterByUserIdWidget, self)._get_media()
+        override_index = media._js.index(u'django_select2/django_select2.js')
+        media._js[override_index] = 'django-select2/js/select2_appid.js'
+        return media
 
-
-class FilterByUserIdField(AutoModelSelect2Field):
-    widget = FilterByUserIdWidget
-    queryset = Request.objects
-    max_results = 10
-
-    def get_results(self, request, term, page, context):
-        if not term.startswith('{'):
-            term = '{' + term
-        term = term.lower()
-        requests = Request.objects.filter(apprequest__appid=request.GET['app'], userid__startswith=term).values('userid').distinct()
-        requests = requests[:self.max_results]
-        results = [(_request['userid'], _request['userid']) for _request in requests]
-        results += [('', '')]
-        return NO_ERR_RESP, False, results
-
-    def label_from_instance(self, obj):
-        return obj.userid
-
-    def clean(self, value):
-        return value
+    media = property(_get_media)
 
 
 class UserIdFilter(django_filters.Filter):
-    field = FilterByUserIdField(to_field_name='userid')
+    field = CharField()
 
 
 class AppRequestFilter(django_filters.FilterSet):
     request__created = django_filters.DateRangeFilter()
     event_type = EventTypeFilter()
     event_result = EventResultFilter()
-    request__userid = UserIdFilter()
+    request__userid = django_filters.CharFilter(
+        widget=FilterByUserIdWidget(data_view='select2_userid_filter'))
 
     class Meta:
         model = AppRequest
-        fields = ('request__created', 'request__userid')
+        fields = ('request__userid', 'request__created')

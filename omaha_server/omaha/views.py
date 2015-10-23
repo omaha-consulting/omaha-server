@@ -22,12 +22,14 @@ import logging
 
 from django.views.generic import View
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
+from django_select2.views import AutoResponseView
 from lxml.etree import XMLSyntaxError
 
 from omaha.builder import build_response
 from omaha_server.utils import get_client_ip
+from omaha.models import Request
 
 logger = logging.getLogger(__name__)
 
@@ -52,3 +54,28 @@ class UpdateView(View):
 </data>"""
             return HttpResponse(msg, status=400, content_type="text/html; charset=utf-8")
         return HttpResponse(response, content_type="text/xml; charset=utf-8")
+
+
+class FilterByUserIDResponseView(AutoResponseView):
+    max_results = 10
+
+    def get(self, request, *args, **kwargs):
+        term = request.GET.get('term', '')
+        app = request.GET.get('app_id', '')
+
+        if not term.startswith('{'):
+            term = '{' + term
+        term = term.upper()
+
+        requests = Request.objects.filter(apprequest__appid=app, userid__startswith=term)
+        requests = requests.distinct('userid').values_list('userid', flat=True)[:self.max_results]
+        return JsonResponse({
+            'results': [
+                {
+                    'text': userid,
+                    'id': userid,
+                }
+                for userid in requests
+                ],
+            'more': False
+        })

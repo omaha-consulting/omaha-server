@@ -37,7 +37,7 @@ if settings.IS_PRIVATE:
         url(r'', include('downloads.urls')),
         url(r'^admin/', include(admin.site.urls)),
         url(r'^api/statistics/channels/(?P<app_name>[a-zA-Z0-9_ ]+)/$', omaha.api.StatisticsChannelsView.as_view(),
-        name="api-statistics-channels"),
+            name="api-statistics-channels"),
         url(r'^api/statistics/versions/(?P<app_name>[a-zA-Z0-9_ ]+)/$', omaha.api.StatisticsVersionsView.as_view(),
             name="api-statistics-versions"),
         url(r'^api/statistics/months/(?P<app_name>[a-zA-Z0-9_ ]+)/$', omaha.api.StatisticsMonthsDetailView.as_view(),
@@ -46,7 +46,8 @@ if settings.IS_PRIVATE:
         url(r'^api/version', omaha.api.ServerVersionView.as_view(), name='api-version'),
         url(r'^api/', include(router.urls)),
         url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-        url(r'^select2/', include('django_select2.urls')),
+        url(r'select2_userid_filter/', omaha.views.FilterByUserIDResponseView.as_view(),
+            name='select2_userid_filter'),
     ]
 
 if settings.DEBUG:
