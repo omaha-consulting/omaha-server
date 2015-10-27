@@ -45,7 +45,7 @@ class CrashFormView(FormView):
         obj = form.save(commit=False)
         if meta:
             obj.meta = meta
-            obj.ip = get_client_ip(self.request)
+        obj.ip = get_client_ip(self.request)
         obj.save()
         return HttpResponse(obj.pk, status=200)
 

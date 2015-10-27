@@ -8,7 +8,7 @@ os.environ.setdefault('DB_PUBLIC_PASSWORD', 'test_public_password')
 os.environ.setdefault('OMAHA_SERVER_PRIVATE', 'True')
 
 from .settings import *
-from .settings_test import DisableMigrations
+DB_PUBLIC_ROLE = os.environ.get('DB_PUBLIC_ROLE', 'test_public_users')
 
 DATABASES = {
     'default': {
@@ -18,11 +18,6 @@ DATABASES = {
         'PASSWORD': os.environ.get('DB_PASSWORD', ''),
         'HOST': os.environ.get('DB_HOST', '127.0.0.1'),
         'PORT': os.environ.get('DB_PORT', '5432'),
-        'CONN_MAX_AGE': 60,
-        'TEST': {
-            'USER': os.environ.get('DB_PUBLIC_USER', 'postgres'),
-            'PASSWORD': os.environ.get('DB_PUBLIC_PASSWORD', ''),
-        }
     }
 }
 
@@ -33,16 +28,16 @@ INSTALLED_APPS += (
     'django_nose',
 )
 
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+TEST_RUNNER = 'omaha_server.runner.PublicPrivateNoseTestSuiteRunner'
 
 NOSE_ARGS = [
     '--with-coverage',
     '--cover-package=omaha_server,omaha,crash,feedback,sparkle,healthcheck',
     '--cover-inclusive',
     '--nologcapture',
+    '-s',
 ]
 
-MIGRATION_MODULES = DisableMigrations()
 # Tricks to speed up Django tests
 
 DEBUG = False
