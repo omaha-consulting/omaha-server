@@ -35,8 +35,9 @@ def test():
 
 @task
 def test_tox():
+    path_to_test = os.getenv("PATH_TO_TEST", '')
     settings = os.getenv("DJANGO_SETTINGS_MODULE", 'omaha_server.settings_test')
-    sh('./manage.py test --settings=%s' % settings, cwd='omaha_server')
+    sh('./manage.py test %s --settings=%s' % (path_to_test, settings), cwd='omaha_server')
 
 
 @task
