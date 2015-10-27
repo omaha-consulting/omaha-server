@@ -44,7 +44,14 @@ class DeleteOldTest(TestCase):
         CrashFactory.create_batch(10, created=old_date)
         Crash.objects.update(created=old_date)
         self.assertEqual(Crash.objects.all().count(), 10)
-        delete_older_than('crash', 'Crash')
+
+        created_to_string = lambda x: 'Created: %s' % x.strftime("%d. %B %Y %I:%M%p")
+        signature_to_string = lambda x: 'Signature: %s' % x
+        deleted = list(Crash.objects.values_list('id', 'created', 'signature'))
+        deleted = map(lambda x: (x[0], created_to_string(x[1]), signature_to_string(x[2])), deleted)
+
+        result = delete_older_than('crash', 'Crash')
+        self.assertDictEqual(result, dict(count=10, size=0, elements=deleted))
         self.assertEqual(Crash.objects.all().count(), 0)
 
     @is_private()
@@ -54,7 +61,13 @@ class DeleteOldTest(TestCase):
         FeedbackFactory.create_batch(10, created=old_date)
         Feedback.objects.update(created=old_date)
         self.assertEqual(Feedback.objects.all().count(), 10)
-        delete_older_than('feedback', 'Feedback')
+
+        created_to_string = lambda x: 'Created: %s' % x.strftime("%d. %B %Y %I:%M%p")
+        deleted = list(Feedback.objects.values_list('id', 'created'))
+        deleted = map(lambda x: (x[0], created_to_string(x[1])), deleted)
+
+        result = delete_older_than('feedback', 'Feedback')
+        self.assertDictEqual(result, dict(count=10, size=0, elements=deleted))
         self.assertEqual(Feedback.objects.all().count(), 0)
 
 
@@ -62,17 +75,34 @@ class SizeExceedTest(TestCase):
     @is_private()
     def test_crashes(self):
         gpm['Crash__limit_size'] = 1
-        Crash.objects.bulk_create([Crash(archive_size=10*1024*1023, minidump_size=0) for x in range(500)])
+        crash_size = 10*1024*1023
+        CrashFactory.create_batch(500, archive_size=crash_size, minidump_size=0)
         self.assertEqual(Crash.objects.all().count(), 500)
-        delete_size_is_exceeded('crash', 'Crash')
+
+        del_count = 398
+        created_to_string = lambda x: 'Created: %s' % x.strftime("%d. %B %Y %I:%M%p")
+        signature_to_string = lambda x: 'Signature: %s' % x
+        deleted = list(Crash.objects.values_list('id', 'created', 'signature'))[:del_count]
+        deleted = map(lambda x: (x[0], created_to_string(x[1]), signature_to_string(x[2])), deleted)
+        result = delete_size_is_exceeded('crash', 'Crash')
+
+        self.assertDictEqual(result, dict(count=del_count, size=del_count * crash_size, elements=deleted))
         self.assertEqual(Crash.objects.all().count(), 102)
 
     @is_private()
     def test_feedbacks(self):
         gpm['Feedback__limit_size'] = 1
-        FeedbackFactory.create_batch(500, screenshot_size=10*1024*1023, system_logs_size=0, attached_file_size=0, blackbox_size=0)
+        feedback_size = 10*1024*1023
+        FeedbackFactory.create_batch(500, screenshot_size=feedback_size, system_logs_size=0, attached_file_size=0, blackbox_size=0)
         self.assertEqual(Feedback.objects.all().count(), 500)
-        delete_size_is_exceeded('feedback', 'Feedback')
+
+        del_count = 398
+        created_to_string = lambda x: 'Created: %s' % x.strftime("%d. %B %Y %I:%M%p")
+        deleted = list(Feedback.objects.values_list('id', 'created'))[:del_count]
+        deleted = map(lambda x: (x[0], created_to_string(x[1])), deleted)
+
+        result = delete_size_is_exceeded('feedback', 'Feedback')
+        self.assertDictEqual(result, dict(count=del_count, size=del_count * feedback_size, elements=deleted))
         self.assertEqual(Feedback.objects.all().count(), 102)
 
 
@@ -84,7 +114,15 @@ class DeleteDuplicateTest(TestCase):
         self.assertEqual(Crash.objects.filter(signature='test1').count(), 20)
         CrashFactory.create_batch(9, signature='test2')
         self.assertEqual(Crash.objects.filter(signature='test2').count(), 9)
-        delete_duplicate_crashes()
+
+        created_to_string = lambda x: 'Created: %s' % x.strftime("%d. %B %Y %I:%M%p")
+        signature_to_string = lambda x: 'Signature: %s' % x
+        deleted = list(Crash.objects.filter(signature='test1').values_list('id', 'created', 'signature'))[:10]
+        deleted = map(lambda x: (x[0], created_to_string(x[1]), signature_to_string(x[2])), deleted)
+        signatures = dict(test1=deleted)
+
+        result = delete_duplicate_crashes()
+        self.assertDictEqual(result, dict(count=10, size=0, elements=deleted, signatures=signatures))
         self.assertEqual(Crash.objects.filter(signature='test1').count(), gpm['Crash__duplicate_number'])
         self.assertEqual(Crash.objects.filter(signature='test2').count(), 9)
 
