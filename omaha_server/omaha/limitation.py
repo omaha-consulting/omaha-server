@@ -22,14 +22,13 @@ from feedback.models import Feedback
 dsn = getattr(settings, 'RAVEN_CONFIG', None)
 if dsn:
     dsn = dsn['dsn']
-raven = Client(dsn)
-
-
+raven = Client(dsn, list_max_length=1000)
 
 
 @valuedispatch
 def bulk_delete(cls, qs):
     raise NotImplementedError
+
 
 @bulk_delete.register(Crash)
 def _(cls, qs):
@@ -37,10 +36,16 @@ def _(cls, qs):
         qs = s3_bulk_delete(qs, file_fields=['archive', 'upload_file_minidump'],
                             s3_fields=['minidump_archive', 'minidump'])
 
-    count = qs.count()
-    size = qs.get_size()
+    result = dict()
+    result['count'] = qs.count()
+    result['size'] = qs.get_size()
+    result['elements'] = list(qs.values_list('id', 'created', 'signature'))
+    created_to_string = lambda x: 'Created: %s' % x.strftime("%d. %B %Y %I:%M%p")
+    signature_to_string = lambda x: 'Signature: %s' % x
+    result['elements'] = map(lambda x: (x[0], created_to_string(x[1]), signature_to_string(x[2])), result['elements'])
     qs.delete()
-    return count, size
+    return result
+
 
 @bulk_delete.register(Feedback)
 def _(cls, qs):
@@ -48,10 +53,14 @@ def _(cls, qs):
         qs = s3_bulk_delete(qs, file_fields=['attached_file', 'blackbox', 'screenshot', 'system_logs'],
                             s3_fields=['feedback_attach', 'blackbox', 'screenshot', 'system_logs'])
 
-    count = qs.count()
-    size = qs.get_size()
+    result = dict()
+    result['count'] = qs.count()
+    result['size'] = qs.get_size()
+    result['elements'] = list(qs.values_list('id', 'created'))
+    created_to_string = lambda x: 'Created: %s' % x.strftime("%d. %B %Y %I:%M%p")
+    result['elements'] = map(lambda x: (x[0], created_to_string(x[1])), result['elements'])
     qs.delete()
-    return count, size
+    return result
 
 
 @bulk_delete.register(Symbols)
@@ -59,10 +68,14 @@ def _(cls, qs):
     if settings.DEFAULT_FILE_STORAGE == 'storages.backends.s3boto.S3BotoStorage':
         qs = s3_bulk_delete(qs, file_fields=['file'], s3_fields=['symbols'])
 
-    count = qs.count()
-    size = qs.get_size()
+    result = dict()
+    result['count'] = qs.count()
+    result['size'] = qs.get_size()
+    result['elements'] = list(qs.values_list('id', 'created'))
+    created_to_string = lambda x: 'Created: %s' % x.strftime("%d. %B %Y %I:%M%p")
+    result['elements'] = map(lambda x: (x[0], created_to_string(x[1])), result['elements'])
     qs.delete()
-    return count, size
+    return result
 
 
 @bulk_delete.register(OmahaVersion)
@@ -70,20 +83,29 @@ def _(cls, qs):
     if settings.DEFAULT_FILE_STORAGE == 'storages.backends.s3boto.S3BotoStorage':
         qs = s3_bulk_delete(qs, file_fields=['file'], s3_fields=['build'])
 
-    count = qs.count()
-    size = qs.get_size()
+    result = dict()
+    result['count'] = qs.count()
+    result['size'] = qs.get_size()
+    result['elements'] = list(qs.values_list('id', 'created'))
+    created_to_string = lambda x: 'Created: %s' % x.strftime("%d. %B %Y %I:%M%p")
+    result['elements'] = map(lambda x: (x[0], created_to_string(x[1])), result['elements'])
     qs.delete()
-    return count, size
+    return result
+
 
 @bulk_delete.register(SparkleVersion)
 def _(cls, qs):
     if settings.DEFAULT_FILE_STORAGE == 'storages.backends.s3boto.S3BotoStorage':
         qs = s3_bulk_delete(qs, file_fields=['file'], s3_fields=['sparkle'])
 
-    count = qs.count()
-    size = qs.get_size()
+    result = dict()
+    result['count'] = qs.count()
+    result['size'] = qs.get_size()
+    result['elements'] = list(qs.values_list('id', 'created'))
+    created_to_string = lambda x: 'Created: %s' % x.strftime("%d. %B %Y %I:%M%p")
+    result['elements'] = map(lambda x: (x[0], created_to_string(x[1])), result['elements'])
     qs.delete()
-    return count, size
+    return result
 
 
 def s3_bulk_delete(qs, file_fields, s3_fields):
@@ -112,16 +134,14 @@ def delete_older_than(app, model_name, limit=None):
     offset = timezone.timedelta(days=limit)
     limit = timezone.now() - offset
     old_objects = model.objects.filter(created__lte=limit)
-    count = 0
-    size = 0
+    result = dict()
     if old_objects:
-        count, size = bulk_delete(model, old_objects)
-    return count, size
+        result = bulk_delete(model, old_objects)
+    return result
 
 
 def delete_duplicate_crashes(limit=None):
-    full_count = 0
-    full_size = 0
+    full_result = dict(count=0, size=0, signatures=dict(), elements=[])
     if not limit:
         preference_key = '__'.join(['Crash', 'duplicate_number'])
         limit = global_preferences_manager[preference_key]
@@ -129,19 +149,23 @@ def delete_duplicate_crashes(limit=None):
     duplicated = filter(lambda x: x['count'] > limit, duplicated)
     for group in duplicated:
         qs = Crash.objects.filter(signature=group['signature'])
+        dup_elements = []
         dup_count = qs.count()
         while dup_count > limit:
             bulk_size = dup_count - limit if dup_count - limit < 1000 else 1000
             bulk_ids = qs[:bulk_size].values_list('id', flat=True)
             bulk = qs.filter(id__in=bulk_ids)
-            count, size = bulk_delete(Crash, bulk)
-            full_count += count
-            full_size += size
+            result = bulk_delete(Crash, bulk)
+            full_result['count'] += result['count']
+            full_result['size'] += result['size']
+            full_result['elements'] += result['elements']
+            dup_elements += result['elements']
             dup_count -= bulk_size
-    return full_count, full_size
+        full_result['signatures'].update({'%s' % (group['signature'],): dup_elements})
+    return full_result
+
 
 def delete_size_is_exceeded(app, model_name, limit=None):
-
     if not limit:
         preference_key = '__'.join([model_name, 'limit_size'])
         limit = global_preferences_manager[preference_key] * 1024 * 1024 * 1024
@@ -149,8 +173,7 @@ def delete_size_is_exceeded(app, model_name, limit=None):
         limit *= 1024*1024*1024
     model = get_model(app, model_name)
     group_count = 1000
-    full_count = 0
-    full_size = 0
+    full_result = dict(count=0, size=0, elements=[])
     objects_size = model.objects.get_size()
 
     while objects_size > limit:
@@ -169,12 +192,12 @@ def delete_size_is_exceeded(app, model_name, limit=None):
                     group_objects = model.objects.order_by('created').filter(pk__in=group_objects_ids[:low_border])
                     break
 
-        count, size = bulk_delete(model, group_objects)
-        objects_size -= size
-        full_count += count
-        full_size += size
-
-    return full_count, full_size
+        result = bulk_delete(model, group_objects)
+        objects_size -= result['size']
+        full_result['count'] += result['count']
+        full_result['size'] += result['size']
+        full_result['elements'] += result['elements']
+    return full_result
 
 
 def monitoring_size():
