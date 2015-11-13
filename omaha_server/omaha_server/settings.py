@@ -243,11 +243,11 @@ if IS_PRIVATE:
             'schedule': timedelta(seconds=600),
             'options': {'queue': 'limitation'},
         },
-        'auto_delete_duplicate_crashes': {
-            'task': 'tasks.auto_delete_duplicate_crashes',
-            'schedule': timedelta(seconds=600),
-            'options': {'queue': 'limitation'},
-        },
+        # 'auto_delete_duplicate_crashes': {
+        #     'task': 'tasks.auto_delete_duplicate_crashes',
+        #     'schedule': timedelta(seconds=600),
+        #     'options': {'queue': 'limitation'},
+        # },
         'auto_monitoring_size': {
             'task': 'tasks.auto_monitoring_size',
             'schedule': timedelta(seconds=60),
