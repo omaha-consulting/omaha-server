@@ -47,7 +47,7 @@ services:
   - redis-server
 
 install:
-  - pip install tox==1.9.2
+  - pip install tox==2.2.1
 
 script:
   - tox -e $TOX_ENV
