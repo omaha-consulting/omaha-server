@@ -28,6 +28,8 @@ if os.getenv('OMAHA_ONLY_HTTPS'):
     SECURE_REDIRECT_EXEMPT = [
         r"^healthcheck/status/$"
     ]
+    
+SITE_ID = 1
 
 TEMPLATES = [
     {
@@ -37,10 +39,10 @@ TEMPLATES = [
         ],
         'APP_DIRS': True,
         'OPTIONS': {
-            'context_processors': TCP + (
+            'context_processors': TCP + [
                 'django.core.context_processors.request',
                 'absolute.context_processors.absolute',
-            ),
+            ],
         },
     },
 ]
@@ -91,6 +93,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 
     'storages',
     'django_extensions',

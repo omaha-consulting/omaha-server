@@ -1,7 +1,6 @@
 
 import os
 from lxml import objectify
-import logging
 
 from django.test import LiveServerTestCase, override_settings
 from django.core.files.uploadedfile import SimpleUploadedFile
