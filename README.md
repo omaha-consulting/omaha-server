@@ -47,7 +47,7 @@ Open `http://{DOCKER_HOST}:9090/admin/`
 
 ```shell
 $ mkvirtualenv omaha-server
-$ pip install -r requirements-dev.txt
+$ pip install -r requirements/dev.txt
 ```
 
 ### Tests

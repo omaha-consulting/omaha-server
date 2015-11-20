@@ -1,34 +1,20 @@
 db:
-  image: postgres:9.4
+  extends:
+    file: docker-compose.common.yml
+    service: db
+
 redis:
-  image: redis:3
+  extends:
+    file: docker-compose.common.yml
+    service: redis
+
 web:
+  extends:
+    file: docker-compose.common.yml
+    service: web
   build: .
-  privileged: true
   links:
-   - db
-   - redis
-  ports:
-   - "9090:80"
+    - db
+    - redis
   volumes:
-   - ./:/srv/omaha
-  environment:
-    DB_HOST: db
-    DB_PORT: 5432
-    DB_USER: postgres
-    DB_NAME: postgres
-    DB_PASSWORD: ''
-    HOST_NAME: '*'
-    SECRET_KEY: 'SECRET_KEY'
-    DJANGO_SETTINGS_MODULE: 'omaha_server.settings'
-    AWS_ACCESS_KEY_ID: 'AWS_ACCESS_KEY_ID'
-    AWS_SECRET_ACCESS_KEY: 'AWS_SECRET_ACCESS_KEY'
-    AWS_STORAGE_BUCKET_NAME: 'aws_storage_bucket_name'
-    REDIS_HOST: redis
-    REDIS_PORT: 6379
-    UWSGI_PROCESSES: 10
-    UWSGI_THREADS: 8
-    OMAHA_SERVER_PRIVATE: 'True'
-    AWS_ROLE: 'omaha-private'
-    DB_PUBLIC_USER: 'omaha_public'
-    DB_PUBLIC_PASSWORD: 'omaha_public_password'
+    - ./:/srv/omaha

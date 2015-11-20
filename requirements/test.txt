@@ -1,4 +1,4 @@
--r requirements.txt
+-r base.txt
 
 Paver==1.2.4
 django-nose==1.4.2

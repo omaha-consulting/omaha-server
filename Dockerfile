@@ -20,14 +20,14 @@ RUN \
   mkdir /srv/omaha_s3
 
 
-RUN mkdir $omaha
+RUN mkdir -p $omaha/requirements
 WORKDIR ${omaha}
 
-ADD ./requirements.txt $omaha/requirements.txt
+ADD ./requirements/base.txt $omaha/requirements/base.txt
 
 RUN \
   pip install paver --use-mirrors && \
-  pip install -r requirements.txt --use-mirrors
+  pip install -r requirements/base.txt --use-mirrors
 
 ADD . $omaha
 
