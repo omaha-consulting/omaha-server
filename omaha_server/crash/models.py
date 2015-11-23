@@ -29,7 +29,7 @@ from django.utils import timezone
 from celery import signature
 from jsonfield import JSONField
 
-from omaha.models import BaseModel, Version
+from omaha.models import BaseModel
 from crash.managers import CrashManager, SymbolsManager
 
 

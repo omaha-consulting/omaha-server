@@ -24,12 +24,10 @@ from collections import OrderedDict
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
-from django.http.response import HttpResponse
 from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, ListView, TemplateView
 from django.views.generic.edit import FormView
 from django_tables2 import SingleTableView
-from django.conf import settings
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.shortcuts import get_object_or_404
 from django.http import Http404

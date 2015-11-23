@@ -24,7 +24,6 @@ import os
 import re
 
 from django.conf import settings
-from django.core.urlresolvers import reverse
 
 from clom import clom
 from raven import Client

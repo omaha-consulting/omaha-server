@@ -9,15 +9,15 @@ from django.db.models import Count
 from django.core.cache import cache
 
 import boto
-from dynamic_preferences_registry import global_preferences_manager
 from raven import Client
-from dynamic_preferences_registry import global_preferences_manager as gpm
 
 from omaha.models import Version as OmahaVersion
 from omaha.utils import valuedispatch
 from sparkle.models import SparkleVersion
 from crash.models import Crash, Symbols
 from feedback.models import Feedback
+
+from dynamic_preferences_registry import global_preferences_manager as gpm
 
 dsn = getattr(settings, 'RAVEN_CONFIG', None)
 if dsn:
@@ -129,7 +129,7 @@ def s3_bulk_delete(qs, file_fields, s3_fields):
 def delete_older_than(app, model_name, limit=None):
     if not limit:
         preference_key = '__'.join([model_name, 'limit_storage_days'])
-        limit = global_preferences_manager[preference_key]
+        limit = gpm[preference_key]
     model = get_model(app, model_name)
     offset = timezone.timedelta(days=limit)
     limit = timezone.now() - offset
@@ -144,7 +144,7 @@ def delete_duplicate_crashes(limit=None):
     full_result = dict(count=0, size=0, signatures=dict(), elements=[])
     if not limit:
         preference_key = '__'.join(['Crash', 'duplicate_number'])
-        limit = global_preferences_manager[preference_key]
+        limit = gpm[preference_key]
     duplicated = Crash.objects.values('signature').annotate(count=Count('signature'))
     duplicated = filter(lambda x: x['count'] > limit, duplicated)
     for group in duplicated:
@@ -168,7 +168,7 @@ def delete_duplicate_crashes(limit=None):
 def delete_size_is_exceeded(app, model_name, limit=None):
     if not limit:
         preference_key = '__'.join([model_name, 'limit_size'])
-        limit = global_preferences_manager[preference_key] * 1024 * 1024 * 1024
+        limit = gpm[preference_key] * 1024 * 1024 * 1024
     else:
         limit *= 1024*1024*1024
     model = get_model(app, model_name)
