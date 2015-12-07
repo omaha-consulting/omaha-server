@@ -31,7 +31,8 @@ django-bootstrap3==6.2.2
 protobuf==3.0.0a3
 protobuf-to-dict==0.1.0
 django-dynamic-preferences==0.6.1
+splunk-handler==1.1.3
 
 # Only dev
 #django-httplog==0.2.3
-https://github.com/Crystalnix/django-httplog/archive/5a148dae1d6608aeccb90f77aa7a2b4a2015f52f.zip
+https://github.com/Crystalnix/django-httplog/archive/6ed2a8a4e3d606443492998cbac93a71f4cee7d1.zip

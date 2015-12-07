@@ -43,7 +43,12 @@ app:
         DB_PUBLIC_USER: 'omaha_public'
         DB_PUBLIC_PASSWORD: 'omaha_public_password'
         AWS_ROLE: 'omaha-private'
-
+        SPLUNK_LOGGING_LEVEL: 'INFO'     
+        SPLUNK_HOST: 'splunk.example.com'
+        SPLUNK_PORT: 8089
+        SPLUNK_USERNAME: 'admin'
+        SPLUNK_PASSWORD: 'password'
+        
     omaha-server-public:
       option_settings:
         'aws:autoscaling:launchconfiguration':
@@ -62,3 +67,8 @@ app:
         REDIS_HOST: 'redis.example.com'
         AWS_ROLE: 'omaha-public'
         DJANGO_SETTINGS_MODULE: 'omaha_server.settings_prod'
+        SPLUNK_LOGGING_LEVEL: 'INFO '     
+        SPLUNK_HOST: 'splunk.example.com'
+        SPLUNK_PORT: 8089
+        SPLUNK_USERNAME: 'admin'
+        SPLUNK_PASSWORD: 'password'

@@ -30,6 +30,7 @@ NOSE_ARGS = [
     '--cover-package=omaha_server,omaha,crash,feedback,sparkle,healthcheck',
     '--cover-inclusive',
     '--nologcapture',
+    '-s'
 ]
 
 MIGRATION_MODULES = DisableMigrations()
