@@ -144,7 +144,7 @@ class RequestListView(StaffMemberRequiredMixin, SingleTableView):
             qs = qs.filter(appid=app.id)
             self.appid = app.id
         except Application.DoesNotExist:
-            logger.error('RequestListView DoesNotExist', exc_info=True, extra=dict(request=self.request))
+            raise Http404
 
         qs = qs.distinct()
         self.filter = AppRequestFilter(self.request.GET, queryset=qs)
