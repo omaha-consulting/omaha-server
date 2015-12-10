@@ -47,7 +47,7 @@ from omaha.models import Application, AppRequest
 from omaha.filters import AppRequestFilter
 from omaha.utils import make_piechart, make_discrete_bar_chart
 from omaha.filters import EVENT_RESULT, EVENT_TYPE
-from omaha.tables import AppRequestTable
+from omaha.tables import AppRequestTable, VersionsTable
 from omaha.forms import CrashManualCleanupForm, ManualCleanupForm
 from omaha.dynamic_preferences_registry import global_preferences
 
@@ -122,7 +122,8 @@ class StatisticsDetailView(StaffMemberRequiredMixin, DetailView):
         context['weeks'] = make_discrete_bar_chart('weeks', get_users_statistics_weeks(app_id=app.id))
         context['versions'] = make_piechart('versions', get_users_versions(app.id))
         context['channels'] = make_piechart('channels', get_channel_statistics(app.id))
-
+        versions_data = [dict(version=x[0], number=x[1]) for x in get_users_versions(app.id)]
+        context['versions_table'] = VersionsTable(versions_data)
         return context
 
 

@@ -59,3 +59,12 @@ class AppRequestTable(tables.Table):
         attrs = {'class': 'paleblue table table-striped table-bordered table-hover table-condensed',
                  'id': 'apprequest-table'}
         fields = ('id', 'version', 'platform', 'os', 'sp', 'arch', 'date', 'events',)
+
+
+class VersionsTable(tables.Table):
+    version = tables.Column(orderable=False)
+    number = tables.Column(orderable=False)
+
+    class Meta:
+        attrs = {'class': 'paleblue table table-striped table-bordered table-hover table-condensed',
+         'id': 'versions-table'}
