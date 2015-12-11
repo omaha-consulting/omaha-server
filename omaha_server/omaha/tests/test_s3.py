@@ -1,8 +1,5 @@
-import operator
-
 from django.test import TestCase, override_settings
-from django.db import transaction
-from factory.django import *
+
 import moto
 import boto
 import mock
