@@ -17,17 +17,18 @@ RUN \
   ./configure --prefix=/usr && \
   make && \
   make install && \
-  mkdir /srv/omaha_s3
+  mkdir /srv/omaha_s3 && \
+  rm /usr/src/v1.78.tar.gz
 
 
-RUN mkdir $omaha
+RUN mkdir -p $omaha/requirements
 WORKDIR ${omaha}
 
-ADD ./requirements.txt $omaha/requirements.txt
+ADD ./requirements/base.txt $omaha/requirements/base.txt
 
 RUN \
   pip install paver --use-mirrors && \
-  pip install -r requirements.txt --use-mirrors
+  pip install -r requirements/base.txt --use-mirrors
 
 ADD . $omaha
 
@@ -38,6 +39,14 @@ RUN \
   ln -s /srv/omaha/conf/nginx.conf /etc/nginx/ && \
   ln -s /srv/omaha/conf/nginx-app.conf /etc/nginx/sites-enabled/ && \
   ln -s /srv/omaha/conf/supervisord.conf /etc/supervisor/conf.d/
+
+RUN \
+  wget -O /tmp/splunkforwarder-6.3.1-f3e41e4b37b2-linux-2.6-amd64.deb 'http://www.splunk.com/bin/splunk/DownloadActivityServlet?architecture=x86_64&platform=linux&version=6.3.1&product=universalforwarder&filename=splunkforwarder-6.3.1-f3e41e4b37b2-linux-2.6-amd64.deb&wget=true' && \
+  dpkg -i /tmp/splunkforwarder-6.3.1-f3e41e4b37b2-linux-2.6-amd64.deb && \
+  /opt/splunkforwarder/bin/splunk start --accept-license&& \
+  /opt/splunkforwarder/bin/splunk add forward-server splunk.viasat.omaha-server.com:9997 -auth admin:changeme && \
+  /opt/splunkforwarder/bin/splunk add monitor /var/log/nginx -index main -sourcetype Nginx && \
+  rm /tmp/splunkforwarder-6.3.1-f3e41e4b37b2-linux-2.6-amd64.deb
 
 EXPOSE 80
 CMD ["paver", "docker_run"]

@@ -24,7 +24,6 @@ import os
 import re
 
 from django.conf import settings
-from django.core.urlresolvers import reverse
 
 from clom import clom
 from raven import Client
@@ -33,7 +32,7 @@ from crash.settings import MINIDUMP_STACKWALK_PATH, SYMBOLS_PATH
 from crash.stacktrace_to_json import pipe_dump_to_json_dump
 
 
-client = Client(getattr(settings, 'RAVEN_DSN_STACKTRACE', None))
+client = Client(getattr(settings, 'RAVEN_DSN_STACKTRACE', None), name=getattr(settings, 'HOST_NAME', None))
 
 
 class FileNotFoundError(Exception):

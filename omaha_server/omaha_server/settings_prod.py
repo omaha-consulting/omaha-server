@@ -26,9 +26,12 @@ AWS_IS_GZIPPED = True
 
 RAVEN_CONFIG = {
     'dsn': os.environ.get('RAVEN_DNS'),
+    'name': HOST_NAME,
 }
 
 RAVEN_DSN_STACKTRACE = os.environ.get('RAVEN_DSN_STACKTRACE', RAVEN_CONFIG['dsn'])
+
+SPLUNK_HOST = os.environ.get('SPLUNK_HOST')
 
 INSTALLED_APPS = INSTALLED_APPS + (
     'raven.contrib.django.raven_compat',
@@ -38,15 +41,18 @@ CELERYD_HIJACK_ROOT_LOGGER = False
 
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': True,
+    'disable_existing_loggers': False,
     'root': {
-        'level': 'WARNING',
+        'level': 'INFO',
         'handlers': ['sentry', 'console'],
     },
     'formatters': {
         'verbose': {
             'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
         },
+        'splunk_format':{
+            'format': 'level=%(levelname)s logger=%(name)s timestamp=%(asctime)s module=%(module)s process=%(process)d thread=%(thread)d message=%(message)s\n\r'
+        }
     },
     'handlers': {
         'sentry': {
@@ -77,3 +83,20 @@ LOGGING = {
         },
     },
 }
+
+if SPLUNK_HOST:
+    LOGGING['handlers']['splunk'] = {
+        'level': os.environ.get('SPLUNK_LOGGING_LEVEL', 'INFO'),
+        'class': 'splunk_handler.SplunkHandler',
+        'formatter': 'splunk_format',
+        'host': SPLUNK_HOST,
+        'port': os.environ.get('SPLUNK_PORT', 8089),
+        'username': os.environ.get('SPLUNK_USERNAME', 'admin'),
+        'password': os.environ.get('SPLUNK_PASSWORD', 'changeme'),
+        'hostname': HOST_NAME or 'Unknown',
+        'index': 'main',
+        'source': 'omaha',
+        'sourcetype': 'omaha-server',
+        'verify': False,
+    }
+    LOGGING['root']['handlers'].append('splunk')

@@ -18,7 +18,6 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
-from django.conf import settings
 from django.forms import CharField
 
 import django_filters

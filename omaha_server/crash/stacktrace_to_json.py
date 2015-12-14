@@ -73,7 +73,6 @@ class DotDict(dict):
     __delattr__ = dict.__delitem__
 
 
-# ==============================================================================
 class DotDictWithPut(DotDict):
     #--------------------------------------------------------------------------
     def put_if_not_none(self, key, value):
@@ -81,22 +80,12 @@ class DotDictWithPut(DotDict):
             self[key] = value
 
 
-#==============================================================================
-class DotDictWithPut(DotDict):
-    #--------------------------------------------------------------------------
-    def put_if_not_none(self, key, value):
-        if value is not None and value != '':
-            self[key] = value
-
-
-#------------------------------------------------------------------------------
 def pipe_dump_to_json_dump(pipe_dump_iterable):
     """given a list (or any iterable) of strings representing a MDSW pipe dump,
     this function will convert it into a json format."""
     json_dump = DotDict()
     crashing_thread = None
     module_counter = 0
-    thread_counter = 0
     for a_line in pipe_dump_iterable:
         parts = a_line.split('|')
         if parts[0] == 'OS':

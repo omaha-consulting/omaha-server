@@ -9,9 +9,7 @@ from django.db.models import Count
 from django.core.cache import cache
 
 import boto
-from dynamic_preferences_registry import global_preferences_manager
 from raven import Client
-from dynamic_preferences_registry import global_preferences_manager as gpm
 
 from omaha.models import Version as OmahaVersion
 from omaha.utils import valuedispatch
@@ -19,11 +17,12 @@ from sparkle.models import SparkleVersion
 from crash.models import Crash, Symbols
 from feedback.models import Feedback
 
+from dynamic_preferences_registry import global_preferences_manager as gpm
+
 dsn = getattr(settings, 'RAVEN_CONFIG', None)
 if dsn:
     dsn = dsn['dsn']
-raven = Client(dsn, list_max_length=1000)
-
+raven = Client(dsn, name=getattr(settings, 'HOST_NAME', None))
 
 @valuedispatch
 def bulk_delete(cls, qs):
@@ -32,17 +31,16 @@ def bulk_delete(cls, qs):
 
 @bulk_delete.register(Crash)
 def _(cls, qs):
-    if settings.DEFAULT_FILE_STORAGE == 'storages.backends.s3boto.S3BotoStorage':
+    if settings.DEFAULT_FILE_STORAGE == 'omaha_server.s3utils.S3Storage':
         qs = s3_bulk_delete(qs, file_fields=['archive', 'upload_file_minidump'],
                             s3_fields=['minidump_archive', 'minidump'])
 
     result = dict()
     result['count'] = qs.count()
     result['size'] = qs.get_size()
-    result['elements'] = list(qs.values_list('id', 'created', 'signature'))
-    created_to_string = lambda x: 'Created: %s' % x.strftime("%d. %B %Y %I:%M%p")
-    signature_to_string = lambda x: 'Signature: %s' % x
-    result['elements'] = map(lambda x: (x[0], created_to_string(x[1]), signature_to_string(x[2])), result['elements'])
+    elements = list(qs.values_list('id', 'created', 'signature', 'userid', 'appid'))
+    result['elements'] = map(lambda x: dict(id=x[0], element_created=x[1].strftime("%d. %B %Y %I:%M%p"), signature=x[2],
+                                            userid=x[3], appid=x[4]), elements)
     qs.delete()
     return result
 
@@ -56,9 +54,8 @@ def _(cls, qs):
     result = dict()
     result['count'] = qs.count()
     result['size'] = qs.get_size()
-    result['elements'] = list(qs.values_list('id', 'created'))
-    created_to_string = lambda x: 'Created: %s' % x.strftime("%d. %B %Y %I:%M%p")
-    result['elements'] = map(lambda x: (x[0], created_to_string(x[1])), result['elements'])
+    elements = list(qs.values_list('id', 'created'))
+    result['elements'] = map(lambda x: dict(id=x[0], element_created=x[1].strftime("%d. %B %Y %I:%M%p")), elements)
     qs.delete()
     return result
 
@@ -71,9 +68,8 @@ def _(cls, qs):
     result = dict()
     result['count'] = qs.count()
     result['size'] = qs.get_size()
-    result['elements'] = list(qs.values_list('id', 'created'))
-    created_to_string = lambda x: 'Created: %s' % x.strftime("%d. %B %Y %I:%M%p")
-    result['elements'] = map(lambda x: (x[0], created_to_string(x[1])), result['elements'])
+    elements = list(qs.values_list('id', 'created'))
+    result['elements'] = map(lambda x: dict(id=x[0], element_created=x[1].strftime("%d. %B %Y %I:%M%p")), elements)
     qs.delete()
     return result
 
@@ -86,9 +82,8 @@ def _(cls, qs):
     result = dict()
     result['count'] = qs.count()
     result['size'] = qs.get_size()
-    result['elements'] = list(qs.values_list('id', 'created'))
-    created_to_string = lambda x: 'Created: %s' % x.strftime("%d. %B %Y %I:%M%p")
-    result['elements'] = map(lambda x: (x[0], created_to_string(x[1])), result['elements'])
+    elements = list(qs.values_list('id', 'created'))
+    result['elements'] = map(lambda x: dict(id=x[0], element_created=x[1].strftime("%d. %B %Y %I:%M%p")), elements)
     qs.delete()
     return result
 
@@ -102,8 +97,8 @@ def _(cls, qs):
     result['count'] = qs.count()
     result['size'] = qs.get_size()
     result['elements'] = list(qs.values_list('id', 'created'))
-    created_to_string = lambda x: 'Created: %s' % x.strftime("%d. %B %Y %I:%M%p")
-    result['elements'] = map(lambda x: (x[0], created_to_string(x[1])), result['elements'])
+    elements = list(qs.values_list('id', 'created'))
+    result['elements'] = map(lambda x: dict(id=x[0], element_created=x[1].strftime("%d. %B %Y %I:%M%p")), elements)
     qs.delete()
     return result
 
@@ -129,7 +124,7 @@ def s3_bulk_delete(qs, file_fields, s3_fields):
 def delete_older_than(app, model_name, limit=None):
     if not limit:
         preference_key = '__'.join([model_name, 'limit_storage_days'])
-        limit = global_preferences_manager[preference_key]
+        limit = gpm[preference_key]
     model = get_model(app, model_name)
     offset = timezone.timedelta(days=limit)
     limit = timezone.now() - offset
@@ -141,10 +136,10 @@ def delete_older_than(app, model_name, limit=None):
 
 
 def delete_duplicate_crashes(limit=None):
-    full_result = dict(count=0, size=0, signatures=dict(), elements=[])
+    full_result = dict(count=0, size=0, elements=[])
     if not limit:
         preference_key = '__'.join(['Crash', 'duplicate_number'])
-        limit = global_preferences_manager[preference_key]
+        limit = gpm[preference_key]
     duplicated = Crash.objects.values('signature').annotate(count=Count('signature'))
     duplicated = filter(lambda x: x['count'] > limit, duplicated)
     for group in duplicated:
@@ -161,14 +156,13 @@ def delete_duplicate_crashes(limit=None):
             full_result['elements'] += result['elements']
             dup_elements += result['elements']
             dup_count -= bulk_size
-        full_result['signatures'].update({'%s' % (group['signature'],): dup_elements})
     return full_result
 
 
 def delete_size_is_exceeded(app, model_name, limit=None):
     if not limit:
         preference_key = '__'.join([model_name, 'limit_size'])
-        limit = global_preferences_manager[preference_key] * 1024 * 1024 * 1024
+        limit = gpm[preference_key] * 1024 * 1024 * 1024
     else:
         limit *= 1024*1024*1024
     model = get_model(app, model_name)

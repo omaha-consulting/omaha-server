@@ -91,6 +91,11 @@ def create_admin():
     sh('./createadmin.py', cwd='omaha_server')
 
 @task
+def configure_splunk_forwarder():
+    hostname = os.environ.get('HOST_NAME')
+    sh('echo "[default] \nhost = %s \n" > /opt/splunkforwarder/etc/system/local/inputs.conf' % hostname)
+
+@task
 def docker_run():
     try:
         is_private = True if os.environ.get('OMAHA_SERVER_PRIVATE', '').title() == 'True' else False
@@ -101,6 +106,7 @@ def docker_run():
             create_admin()
             collectstatic()
 
+        configure_splunk_forwarder()
         sh('/usr/bin/supervisord')
     except:
         client.captureException()
@@ -110,13 +116,16 @@ def docker_run():
 @task
 def docker_run_test():
     sh('apt-get install -y python-dev libxslt-dev libpq-dev')
-    sh('pip install -r requirements-test.txt --use-mirrors')
+    sh('pip install -r requirements/test.txt --use-mirrors')
     test()
     test_postgres()
 
 
 @task
 def run_test_in_docker():
-    sh('docker-compose -f docker-compose.test.yml -p dev run --rm web paver docker_run_test')
-    sh('docker-compose -f docker-compose.test.yml -p dev stop')
-    sh('docker-compose -f docker-compose.test.yml -p dev rm --force')
+    try:
+        sh('docker-compose -f docker-compose.test.yml -p omaha_testing run --rm web paver docker_run_test')
+    except:
+        pass
+    sh('docker-compose -f docker-compose.test.yml -p omaha_testing stop')
+    sh('docker-compose -f docker-compose.test.yml -p omaha_testing rm --force')

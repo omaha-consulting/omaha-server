@@ -22,7 +22,7 @@ from django.test import TestCase
 from django.test import override_settings
 from mock import Mock
 
-from omaha_server.utils import show_toolbar
+from omaha_server.utils import show_toolbar, add_extra_to_log_message, get_splunk_url
 
 
 class UtilsTest(TestCase):
@@ -42,3 +42,17 @@ class UtilsTest(TestCase):
     def test_show_toolbar_debug_false(self):
         self.request.is_ajax = lambda: False
         self.assertFalse(show_toolbar(self.request))
+
+    def test_add_extra_to_log_message(self):
+        msg = 'test'
+        extra = dict(a=1, c=3, b=2, d=4)
+        expected_msg = 'test, a=1 , b=2 , c=3 , d=4'
+        actual_msg = add_extra_to_log_message(msg, extra)
+        self.assertEqual(actual_msg, expected_msg)
+
+    @override_settings(SPLUNK_HOST='splunk.example.com')
+    def test_add_extra_to_log_message(self):
+        params = dict(a=1, c=3, b=2, d=4)
+        actual_msg = get_splunk_url(params)
+        expected_msg = 'http://splunk.example.com/en-US/app/search/search?q=search a=1 b=2 c=3 d=4'
+        self.assertEqual(actual_msg, expected_msg)

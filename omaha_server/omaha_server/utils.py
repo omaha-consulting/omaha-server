@@ -1,6 +1,7 @@
 # coding: utf8
 
 from functools import wraps
+
 from django.conf import settings
 
 
@@ -41,3 +42,13 @@ def get_client_ip(request):
     else:
         ip = request.META.get('REMOTE_ADDR')
     return ip
+
+
+def add_extra_to_log_message(msg, extra):
+    return msg + ' '.join(", %s=%s" % (key, val) for (key, val) in sorted(extra.items()))
+
+def get_splunk_url(params):
+    SEARCH_TEMPLATE = 'http://%s/en-US/app/search/search?q=search %s'
+    splunk_host = getattr(settings, 'SPLUNK_HOST', None)
+    string_params = ' '.join("%s=%s" % (key, val) for (key, val) in sorted(params.items()))
+    return SEARCH_TEMPLATE % (splunk_host, string_params) if splunk_host else None

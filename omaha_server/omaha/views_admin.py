@@ -24,12 +24,10 @@ from collections import OrderedDict
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
-from django.http.response import HttpResponse
 from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, ListView, TemplateView
 from django.views.generic.edit import FormView
 from django_tables2 import SingleTableView
-from django.conf import settings
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.shortcuts import get_object_or_404
 from django.http import Http404
@@ -146,7 +144,7 @@ class RequestListView(StaffMemberRequiredMixin, SingleTableView):
             qs = qs.filter(appid=app.id)
             self.appid = app.id
         except Application.DoesNotExist:
-            logger.error('RequestListView DoesNotExist', exc_info=True, extra=dict(request=self.request))
+            raise Http404
 
         qs = qs.distinct()
         self.filter = AppRequestFilter(self.request.GET, queryset=qs)

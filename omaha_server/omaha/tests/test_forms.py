@@ -20,7 +20,7 @@ the License.
 
 from collections import OrderedDict
 
-from django.test import TestCase, override_settings
+from django.test import TestCase
 
 from omaha.forms import ApplicationAdminForm, ManualCleanupForm, CrashManualCleanupForm
 
