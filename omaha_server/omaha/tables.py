@@ -68,3 +68,19 @@ class VersionsTable(tables.Table):
     class Meta:
         attrs = {'class': 'paleblue table table-striped table-bordered table-hover table-condensed',
          'id': 'versions-table'}
+
+
+class VersionsUsageTable(tables.Table):
+    userid = tables.Column(accessor='request.userid', verbose_name='UserID')
+    nextversion = tables.Column(verbose_name='Current Version')
+    last_update = tables.DateTimeColumn(accessor='request.created', order_by='-request__created',
+                                        verbose_name='Last update')
+    ip = tables.Column(accessor='request.ip')
+    platform = tables.Column(accessor='request.os.platform')
+
+    class Meta:
+        model = AppRequest
+        orderable = False
+        attrs = {'class': 'paleblue table table-striped table-bordered table-hover table-condensed',
+                 'id': 'usage-table'}
+        fields = ('userid', 'nextversion', 'last_update', 'ip', 'platform')

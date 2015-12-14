@@ -76,6 +76,11 @@ event_list = [
     <event eventtype="1" eventresult="1" errorcode="0" extracode1="0" download_time_ms="3903" downloaded="32768" total="32768"/>
     <event eventtype="6" eventresult="1" errorcode="0" extracode1="0"/>
     <event eventtype="2" eventresult="5" errorcode="1639" extracode1="0"/>""",
+    """<event eventtype="9" eventresult="1" errorcode="0" extracode1="0"/>
+    <event eventtype="5" eventresult="1" errorcode="0" extracode1="0"/>
+    <event eventtype="1" eventresult="1" errorcode="0" extracode1="0" download_time_ms="3903" downloaded="32768" total="32768"/>
+    <event eventtype="6" eventresult="1" errorcode="0" extracode1="0"/>
+    <event eventtype="2" eventresult="1" errorcode="0" extracode1="0"/>""",
 ]
 
 
@@ -86,7 +91,7 @@ def get_random_uuid():
 def get_random_date():
     month = random.choice(range(1, 13))
     day = random.choice(range(1, 28))
-    return datetime(2014, month, day)
+    return datetime(2015, month, day, hour=8)
 
 
 def generate_events(app_id, **options):
@@ -108,8 +113,8 @@ def generate_events(app_id, **options):
             os_sp=random.choice(os_sp_list),
             os_arch=random.choice(os_arch_list),
             app_id=app_id,
-            version=str(version.version),
-            nextversion='',
+            version='',
+            nextversion=str(version.version),
             events=random.choice(event_list)
         )
 
