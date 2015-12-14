@@ -47,7 +47,7 @@ from omaha.models import Application, AppRequest
 from omaha.filters import AppRequestFilter
 from omaha.utils import make_piechart, make_discrete_bar_chart
 from omaha.filters import EVENT_RESULT, EVENT_TYPE
-from omaha.tables import AppRequestTable, VersionsTable
+from omaha.tables import AppRequestTable, VersionsTable, VersionsUsageTable
 from omaha.forms import CrashManualCleanupForm, ManualCleanupForm
 from omaha.dynamic_preferences_registry import global_preferences
 
@@ -124,6 +124,36 @@ class StatisticsDetailView(StaffMemberRequiredMixin, DetailView):
         context['channels'] = make_piechart('channels', get_channel_statistics(app.id))
         versions_data = [dict(version=x[0], number=x[1]) for x in get_users_versions(app.id)]
         context['versions_table'] = VersionsTable(versions_data)
+        return context
+
+
+class VersionsUsageView(StaffMemberRequiredMixin, SingleTableView):
+    model = AppRequest
+    template_name = 'admin/omaha/version_usage.html'
+    context_object_name = 'version_usage'
+    table_class = VersionsUsageTable
+
+    def get_queryset(self):
+        qs = super(VersionsUsageView, self).get_queryset()
+
+        qs = qs.select_related('request', 'request__os')
+        qs = qs.order_by('-request__created')
+        self.appid = None
+
+        try:
+            app = Application.objects.get(name=self.kwargs.get('name'))
+            qs = qs.filter(appid=app.id)
+            self.appid = app.id
+        except Application.DoesNotExist:
+            raise Http404
+
+        qs = qs.filter(events__eventtype__in=[2, 3], events__eventresult=1)
+        qs = qs.distinct('request__userid').order_by('request__userid', '-request__created')
+        return list(qs)
+
+    def get_context_data(self, **kwargs):
+        context = super(VersionsUsageView, self).get_context_data(**kwargs)
+        context['app_name'] = self.kwargs.get('name')
         return context
 
 

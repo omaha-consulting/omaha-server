@@ -22,7 +22,16 @@ from django.conf import settings
 from django.conf.urls import url
 
 from omaha.views import UpdateView
-from omaha.views_admin import StatisticsView, StatisticsDetailView, RequestListView, AppRequestDetailView, PreferenceFormView, MonitoringFormView, ManualCleanupFormView
+from omaha.views_admin import (
+    StatisticsView,
+    StatisticsDetailView,
+    VersionsUsageView,
+    RequestListView,
+    AppRequestDetailView,
+    PreferenceFormView,
+    MonitoringFormView,
+    ManualCleanupFormView,
+)
 
 
 urlpatterns = [
@@ -36,6 +45,7 @@ if settings.IS_PRIVATE:
         url(r'^admin/statistics/(?P<name>[a-zA-Z0-9_ ]+)/$', StatisticsDetailView.as_view(),
             name='omaha_statistics_detail'),
         url(r'^admin/statistics/(?P<name>[a-zA-Z0-9_ ]+)/requests/$', RequestListView.as_view(), name='omaha_request_list'),
+        url(r'^admin/statistics/(?P<name>[a-zA-Z0-9_ ]+)/usage/$', VersionsUsageView.as_view(), name='omaha_version_usage'),
         url(r'^admin/statistics/requests/(?P<pk>\d+)/$', AppRequestDetailView.as_view(), name='omaha_request_detail'),
         url(r'^admin/preferences/(?P<section>[a-zA-Z0-9_ ]*)', PreferenceFormView.as_view(), name='set_preferences'),
         url(r'^admin/monitoring/', MonitoringFormView.as_view(), name='monitoring'),

@@ -1,0 +1,42 @@
+{% extends "admin/base.html" %}
+{% load nvd3_tags %}
+{% load suit_tags %}
+{% load render_table from django_tables2 %}
+
+{% block title %}Statistics | {{ 'ADMIN_NAME'|suit_conf }}{% endblock %}
+
+{% block breadcrumbs %}
+    <ul class="breadcrumb">
+        <li><a href="{% url 'admin:index' %}">Home</a>
+            <span class="divider">&raquo;</span>
+        </li>
+        <li>
+            <a href="{% url "omaha_statistics" %}">Statistics</a>
+            <span class="divider">&raquo;</span>
+        </li>
+        <li>
+            <a href="{% url "omaha_statistics_detail" app_name %}">{{ app_name }}</a>
+            <span class="divider">&raquo;</span>
+        </li>
+        <li class="active">
+            <a href="#">Version Usage</a>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block extrahead %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
+    <style>
+        .table-container, .paleblue {
+            width: 100% !important;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <h1>Usage of {{ app_name|title }} versions</h1>
+    {% render_table table %}
+
+
+
+{% endblock %}
