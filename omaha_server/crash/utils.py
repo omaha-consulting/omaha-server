@@ -27,6 +27,7 @@ from django.conf import settings
 
 from clom import clom
 from raven import Client
+from celery import signature
 
 from crash.settings import MINIDUMP_STACKWALK_PATH, SYMBOLS_PATH
 from crash.stacktrace_to_json import pipe_dump_to_json_dump
@@ -89,7 +90,6 @@ def get_signature(stacktrace):
 
 def send_stacktrace_sentry(crash):
     stacktrace = crash.stacktrace_json
-
     exception = {
         "values": [
             {
@@ -124,13 +124,14 @@ def send_stacktrace_sentry(crash):
     if crash.appid:
         tags['appid'] = crash.appid
 
-    client.capture(
+    event_id = client.capture(
         'raven.events.Message',
         message=crash.signature,
         extra=extra,
         tags=tags,
         data=data
     )
+    signature("tasks.get_sentry_link", args=(crash.pk, event_id)).apply_async(queue='private', countdown=1)
 
 
 def parse_debug_meta_info(head, exception=Exception):

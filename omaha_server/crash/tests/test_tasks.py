@@ -23,12 +23,13 @@ import os
 from django import test
 from django.core.files.uploadedfile import SimpleUploadedFile
 
+# import requests
 from clom.shell import CommandError
 from mock import patch
 from freezegun import freeze_time
 
 from crash.models import Crash
-from crash.tasks import processing_crash_dump
+from crash.tasks import processing_crash_dump, get_sentry_link
 from omaha.tests.utils import temporary_media_root
 
 
@@ -47,6 +48,7 @@ class CrashModelTest(test.TestCase):
         CRASH_S3_MOUNT_PATH=TEST_DATA_DIR,
         CRASH_SYMBOLS_PATH=SYMBOLS_PATH,
     )
+    @test.override_settings(CELERY_EAGER_PROPAGATES_EXCEPTIONS=False,)
     @freeze_time("2014-12-11")
     @patch('crash.utils.send_stacktrace_sentry')
     @patch('crash.utils.client')
@@ -103,3 +105,34 @@ class CrashModelTest(test.TestCase):
             )
             self.assertRaises(CommandError, Crash.objects.create, **obj)
 
+    @temporary_media_root(
+        MEDIA_URL='http://omaha-test.s3.amazonaws.com/',
+        CRASH_S3_MOUNT_PATH=TEST_DATA_DIR,
+        CRASH_SYMBOLS_PATH=SYMBOLS_PATH,
+    )
+    @test.override_settings(CELERY_ALWAYS_EAGER=False,)
+    @freeze_time("2014-12-11")
+    @patch('crash.utils.send_stacktrace_sentry', lambda: None)
+    @patch('crash.utils.client')
+    @patch('uuid.uuid4', lambda: '92d51f8b-f67a-4d80-ac7f-9ab8018297d9')
+    def test_get_sentry_link(self, mock_client):
+        meta = dict(
+            lang='en',
+            version='1.0.0.1',
+        )
+        app_id = '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}'
+        user_id = '{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}'
+        with open(CRASH_DUMP_FILE, 'rb') as f:
+            obj = Crash.objects.create(
+                appid=app_id,
+                userid=user_id,
+                upload_file_minidump=SimpleUploadedFile('7b05e196-7e23-416b-bd13-99287924e214.dmp', f.read()),
+                meta=meta,
+            )
+        with patch('requests.get') as mocked:
+            instance = mocked.return_value
+            instance.json.return_value = {'groupID': '1', 'id': '2'}
+            get_sentry_link(obj.pk, '123')
+        obj = Crash.objects.get(id=obj.id)
+        self.assertEqual(obj.eventid, '2')
+        self.assertEqual(obj.groupid, '1')

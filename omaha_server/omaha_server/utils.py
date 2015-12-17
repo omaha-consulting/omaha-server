@@ -5,6 +5,7 @@ import logging.handlers
 
 from django.conf import settings
 
+import requests
 
 class is_private(object):
     def __init__(self, is_private=True):
@@ -23,6 +24,19 @@ class is_private(object):
                 return
 
         return inner
+
+
+class CustomSysLogHandler(logging.handlers.SysLogHandler):
+    def emit(self, record):
+        msg = self.format(record) + '\000'
+        if type(msg) is unicode:
+            msg = msg.encode('utf-8')
+        try:
+            self.socket.sendto(msg, self.address)
+        except (KeyboardInterrupt, SystemExit):
+            raise
+        except:
+            self.handleError(record)
 
 
 def show_toolbar(request):
@@ -54,14 +68,22 @@ def get_splunk_url(params):
     string_params = ' '.join("%s=%s" % (key, val) for (key, val) in sorted(params.items()))
     return SEARCH_TEMPLATE % (splunk_host, string_params) if splunk_host else None
 
-class CustomSysLogHandler(logging.handlers.SysLogHandler):
-    def emit(self, record):
-        msg = self.format(record) + '\000'
-        if type(msg) is unicode:
-            msg = msg.encode('utf-8')
-        try:
-            self.socket.sendto(msg, self.address)
-        except (KeyboardInterrupt, SystemExit):
-            raise
-        except:
-            self.handleError(record)
+
+def get_sentry_organization_slug(domain, api_key):  # 1 api_key - 1 organization_slug
+    organizations = requests.get(
+        'http://%s/api/0/organizations/' % (domain,),
+        auth=(api_key, '')
+    ).json()
+
+    return organizations[0]['slug']
+
+
+def get_sentry_project_slug(domain, organization, project_id, api_key):
+    projects = requests.get(
+        'http://%s/api/0/organizations/%s/projects/' % (domain, organization),
+        auth=(api_key, '')
+    ).json()
+
+    projects = filter(lambda x: x['id'] == project_id, projects)
+
+    return projects[0]['slug']

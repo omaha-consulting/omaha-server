@@ -3,7 +3,11 @@
 import os
 
 from django.utils import crypto
+
+from furl import furl
+
 from .settings import *
+from utils import get_sentry_organization_slug, get_sentry_project_slug
 
 DEBUG = False
 
@@ -30,7 +34,15 @@ RAVEN_CONFIG = {
 }
 
 RAVEN_DSN_STACKTRACE = os.environ.get('RAVEN_DSN_STACKTRACE', RAVEN_CONFIG['dsn'])
+SENTRY_STACKTRACE_API_KEY = os.environ.get('SENTRY_STACKTRACE_API_KEY')
 
+if RAVEN_DSN_STACKTRACE:
+    f = furl(RAVEN_DSN_STACKTRACE)
+    SENTRY_STACKTRACE_DOMAIN = f.host
+    project_id = f.path.segments[0]
+    SENTRY_STACKTRACE_ORG_SLUG = get_sentry_organization_slug(SENTRY_STACKTRACE_DOMAIN, SENTRY_STACKTRACE_API_KEY)
+    SENTRY_STACKTRACE_PROJ_SLUG = get_sentry_project_slug(SENTRY_STACKTRACE_DOMAIN, SENTRY_STACKTRACE_ORG_SLUG,
+                                                          project_id, SENTRY_STACKTRACE_API_KEY)
 
 SPLUNK_HOST = os.environ.get('SPLUNK_HOST')
 SPLUNK_PORT = os.environ.get('SPLUNK_PORT', None)

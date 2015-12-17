@@ -207,9 +207,11 @@ app:
 | DB_PUBLIC_PASSWORD        |                   |                            |
 | AWS_ROLE                  |                   |                            |
 | OMAHA_URL_PREFIX          | no trailing slash!|                            |
+| SENTRY_STACKTRACE_API_KEY | Auth API token    |                            |
 
 - [uWSGI Options](http://uwsgi-docs.readthedocs.org/en/latest/Options.html) & [Environment variables](http://uwsgi-docs.readthedocs.org/en/latest/Configuration.html#environment-variables)
 - [Sentry](https://github.com/getsentry/sentry)
+- Sentry API key is stored on the way Sentry Organization page -> API Keys 
 
 ### Initialize your ElasticBeanstalk application
 

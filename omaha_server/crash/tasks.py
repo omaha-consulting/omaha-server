@@ -21,8 +21,11 @@ the License.
 import os
 import logging
 
+from django.conf import settings
+
 from furl import furl
 from clom.shell import CommandError
+import requests
 
 from omaha_server.celery import app
 from crash.models import Crash
@@ -37,7 +40,10 @@ from crash.utils import (
 
 
 logger = logging.getLogger(__name__)
-
+SENTRY_DOMAIN = getattr(settings, 'SENTRY_STACKTRACE_DOMAIN', None)
+SENTRY_ORG_SLUG = getattr(settings, 'SENTRY_STACKTRACE_ORG_SLUG', None)
+SENTRY_PROJ_SLUG = getattr(settings, 'SENTRY_STACKTRACE_PROJ_SLUG', None)
+SENTRY_API_KEY = getattr(settings, 'SENTRY_STACKTRACE_API_KEY', None)
 
 @app.task(name='tasks.processing_crash_dump', ignore_result=True, max_retries=12, bind=True)
 def processing_crash_dump(self, crash_pk):
@@ -64,3 +70,23 @@ def processing_crash_dump(self, crash_pk):
                      extra=dict(crash_pk=crash_pk,
                                 crash_dump_path=crash_dump_path))
         raise exc
+
+
+@app.task(name='tasks.get_sentry_link', ignore_result=True, max_retries=6, bind=True)
+def get_sentry_link(self, crash_pk, event_id):
+    try:
+        if SENTRY_DOMAIN and SENTRY_ORG_SLUG and SENTRY_PROJ_SLUG and SENTRY_API_KEY:
+            crash = Crash.objects.get(pk=crash_pk)
+            resp = requests.get(
+                'http://%s/api/0/projects/%s/%s/events/%s/' % (SENTRY_DOMAIN, SENTRY_ORG_SLUG, SENTRY_PROJ_SLUG, event_id,),
+                auth=(SENTRY_API_KEY, '')
+            ).json()
+
+            crash.groupid = resp['groupID']
+            crash.eventid = resp['id']
+            crash.save()
+        else:
+            logging.warning("Sentry is not congured")
+    except KeyError as exc:
+        logging.error("Sentry event not found")
+        raise self.retry(exc=exc, countdown=2 ** get_sentry_link.request.retries)
