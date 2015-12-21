@@ -68,7 +68,7 @@ Required `userid`. [Including user id into request](https://github.com/Crystalni
 
 ## Utils
 
-A command for generating fake data such as requests, events and statistics:
+A command for generating  fake data such as requests, events and statistics:
 
 ```shell
 # Usage: ./manage.py generate_fake_data [options] <app_id>
