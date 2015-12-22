@@ -93,7 +93,15 @@ def create_admin():
 @task
 def configure_splunk_forwarder():
     hostname = os.environ.get('HOST_NAME')
-    sh('echo "[default] \nhost = %s \n" > /opt/splunkforwarder/etc/system/local/inputs.conf' % hostname)
+    splunk_host = os.environ.get('SPLUNK_HOST')
+    splunk_receiving_port = os.environ.get('SPLUNK_RECEIVING_PORT', 9997)
+    if splunk_host:
+        try:
+            sh('/opt/splunkforwarder/bin/splunk add forward-server %s:%s --accept-license -auth admin:changeme' % (splunk_host, splunk_receiving_port))
+            sh('/opt/splunkforwarder/bin/splunk add monitor /var/log/nginx -index main -sourcetype Nginx')
+            sh('echo "[default] \nhost = %s \n" > /opt/splunkforwarder/etc/system/local/inputs.conf' % hostname)
+        except:
+            pass
 
 @task
 def docker_run():
