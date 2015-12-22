@@ -31,6 +31,7 @@ RAVEN_CONFIG = {
 
 RAVEN_DSN_STACKTRACE = os.environ.get('RAVEN_DSN_STACKTRACE', RAVEN_CONFIG['dsn'])
 
+
 SPLUNK_HOST = os.environ.get('SPLUNK_HOST')
 
 INSTALLED_APPS = INSTALLED_APPS + (
@@ -90,7 +91,7 @@ if SPLUNK_HOST:
         'class': 'splunk_handler.SplunkHandler',
         'formatter': 'splunk_format',
         'host': SPLUNK_HOST,
-        'port': os.environ.get('SPLUNK_PORT', 8089),
+        'port': os.environ.get('SPLUNK_MANAGEMENT_PORT', 8089),
         'username': os.environ.get('SPLUNK_USERNAME', 'admin'),
         'password': os.environ.get('SPLUNK_PASSWORD', 'changeme'),
         'hostname': HOST_NAME or 'Unknown',

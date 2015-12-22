@@ -45,7 +45,8 @@ app:
         AWS_ROLE: 'omaha-private'
         SPLUNK_LOGGING_LEVEL: 'INFO'     
         SPLUNK_HOST: 'splunk.example.com'
-        SPLUNK_PORT: 8089
+        SPLUNK_MANAGEMENT_PORT: 8089
+        SPLUNK_RECEIVING_PORT: 9997
         SPLUNK_USERNAME: 'admin'
         SPLUNK_PASSWORD: 'password'
         
@@ -67,8 +68,9 @@ app:
         REDIS_HOST: 'redis.example.com'
         AWS_ROLE: 'omaha-public'
         DJANGO_SETTINGS_MODULE: 'omaha_server.settings_prod'
-        SPLUNK_LOGGING_LEVEL: 'INFO '     
+        SPLUNK_LOGGING_LEVEL: 'INFO'     
         SPLUNK_HOST: 'splunk.example.com'
-        SPLUNK_PORT: 8089
+        SPLUNK_MANAGEMENT_PORT: 8089
+        SPLUNK_RECEIVING_PORT: 9997
         SPLUNK_USERNAME: 'admin'
         SPLUNK_PASSWORD: 'password'

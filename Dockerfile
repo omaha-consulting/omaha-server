@@ -43,9 +43,6 @@ RUN \
 RUN \
   wget -O /tmp/splunkforwarder-6.3.1-f3e41e4b37b2-linux-2.6-amd64.deb 'http://www.splunk.com/bin/splunk/DownloadActivityServlet?architecture=x86_64&platform=linux&version=6.3.1&product=universalforwarder&filename=splunkforwarder-6.3.1-f3e41e4b37b2-linux-2.6-amd64.deb&wget=true' && \
   dpkg -i /tmp/splunkforwarder-6.3.1-f3e41e4b37b2-linux-2.6-amd64.deb && \
-  /opt/splunkforwarder/bin/splunk start --accept-license&& \
-  /opt/splunkforwarder/bin/splunk add forward-server splunk.viasat.omaha-server.com:9997 -auth admin:changeme && \
-  /opt/splunkforwarder/bin/splunk add monitor /var/log/nginx -index main -sourcetype Nginx && \
   rm /tmp/splunkforwarder-6.3.1-f3e41e4b37b2-linux-2.6-amd64.deb
 
 EXPOSE 80
