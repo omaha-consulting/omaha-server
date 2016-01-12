@@ -323,7 +323,7 @@ class GetStatisticsTest(TestCase):
         year = now.year
 
         for i in range(1, 13):
-            date = datetime(year=year, month=i, day=1)
+            date = datetime(year=year, month=i, day=10)
             for id in range(1, i + 1):
                 user_id = UUID(int=id)
                 userid_counting(user_id, self.app_list, self.platform.name, now=date)
@@ -371,7 +371,7 @@ class GetStatisticsTest(TestCase):
 
     def test_get_users_statistics_weeks(self):
         now = datetime.now()
-        with freeze_time(datetime(year=now.year, month=now.month, day=1)):
+        with freeze_time(datetime(year=now.year, month=now.month, day=10)):
             self.assertListEqual(get_users_statistics_weeks(),
                                  [('Previous week', 0),
                                   ('Current week', now.month),
@@ -385,10 +385,10 @@ class GetStatisticsTest(TestCase):
 
     def test_get_chanels_statistics(self):
         now = datetime.now()
-        with freeze_time(datetime(year=now.year, month=now.month, day=1)):
+        with freeze_time(datetime(year=now.year, month=now.month, day=10)):
             self.assertListEqual(get_channel_statistics(self.app.id), [('stable', now.month)])
 
     def test_get_users_versions(self):
         now = datetime.now()
-        with freeze_time(datetime(year=now.year, month=now.month, day=1)):
+        with freeze_time(datetime(year=now.year, month=now.month, day=10)):
             self.assertListEqual(get_users_versions(self.app.id), [('1.0.0.0', now.month), ('2.0.0.0', 0)])
