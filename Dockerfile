@@ -30,8 +30,8 @@ RUN \
   pip install --upgrade six
     
 RUN \
-  pip install paver --use-mirrors && \
-  pip install -r requirements/base.txt --use-mirrors
+  pip install paver  && \
+  pip install -r requirements/base.txt 
 
 ADD . $omaha
 
