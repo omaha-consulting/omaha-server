@@ -27,8 +27,9 @@ WORKDIR ${omaha}
 ADD ./requirements/base.txt $omaha/requirements/base.txt
 
 RUN \
-  pip install paver --use-mirrors && \
-  pip install -r requirements/base.txt --use-mirrors
+  pip install paver && \
+  pip install --upgrade six && \
+  pip install -r requirements/base.txt
 
 ADD . $omaha
 
