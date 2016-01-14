@@ -3,6 +3,8 @@ FROM ubuntu-debootstrap:14.04
 ENV omaha /srv/omaha
 
 RUN \
+  apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ABF5BD827BD9BF62 && \
+  echo 'deb http://nginx.org/packages/ubuntu/ trusty nginx' | tee --append /etc/apt/sources.list && \
   apt-get update && \
   apt-get install -y --no-install-recommends python-pip python-lxml python-psycopg2 uwsgi supervisor uwsgi-plugin-python nginx libtiff5-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev python-pil build-essential libfuse-dev libcurl4-openssl-dev libxml2-dev mime-support automake libtool pkg-config libssl-dev wget tar && \
   apt-get clean && \
@@ -35,16 +37,12 @@ ADD . $omaha
 
 # setup all the configfiles
 RUN \
-  rm /etc/nginx/sites-enabled/default && \
+  mkdir /etc/nginx/sites-enabled/ && \
+  rm /etc/nginx/conf.d/default.conf && \
   rm /etc/nginx/nginx.conf && \
   ln -s /srv/omaha/conf/nginx.conf /etc/nginx/ && \
   ln -s /srv/omaha/conf/nginx-app.conf /etc/nginx/sites-enabled/ && \
   ln -s /srv/omaha/conf/supervisord.conf /etc/supervisor/conf.d/
-
-RUN \
-  wget -O /tmp/splunkforwarder-6.3.1-f3e41e4b37b2-linux-2.6-amd64.deb 'http://www.splunk.com/bin/splunk/DownloadActivityServlet?architecture=x86_64&platform=linux&version=6.3.1&product=universalforwarder&filename=splunkforwarder-6.3.1-f3e41e4b37b2-linux-2.6-amd64.deb&wget=true' && \
-  dpkg -i /tmp/splunkforwarder-6.3.1-f3e41e4b37b2-linux-2.6-amd64.deb && \
-  rm /tmp/splunkforwarder-6.3.1-f3e41e4b37b2-linux-2.6-amd64.deb
 
 EXPOSE 80
 CMD ["paver", "docker_run"]

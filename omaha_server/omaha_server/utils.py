@@ -1,6 +1,7 @@
 # coding: utf8
 
 from functools import wraps
+import logging.handlers
 
 from django.conf import settings
 
@@ -52,3 +53,15 @@ def get_splunk_url(params):
     splunk_host = getattr(settings, 'SPLUNK_HOST', None)
     string_params = ' '.join("%s=%s" % (key, val) for (key, val) in sorted(params.items()))
     return SEARCH_TEMPLATE % (splunk_host, string_params) if splunk_host else None
+
+class CustomSysLogHandler(logging.handlers.SysLogHandler):
+    def emit(self, record):
+        msg = self.format(record) + '\000'
+        if type(msg) is unicode:
+            msg = msg.encode('utf-8')
+        try:
+            self.socket.sendto(msg, self.address)
+        except (KeyboardInterrupt, SystemExit):
+            raise
+        except:
+            self.handleError(record)
