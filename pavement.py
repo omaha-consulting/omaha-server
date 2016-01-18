@@ -90,18 +90,20 @@ def migrate():
 def create_admin():
     sh('./createadmin.py', cwd='omaha_server')
 
+
 @task
-def configure_splunk_forwarder():
-    hostname = os.environ.get('HOST_NAME')
+def configure_nginx():
     splunk_host = os.environ.get('SPLUNK_HOST')
-    splunk_receiving_port = os.environ.get('SPLUNK_RECEIVING_PORT', 9997)
-    if splunk_host:
-        try:
-            sh('/opt/splunkforwarder/bin/splunk add forward-server %s:%s --accept-license -auth admin:changeme' % (splunk_host, splunk_receiving_port))
-            sh('/opt/splunkforwarder/bin/splunk add monitor /var/log/nginx -index main -sourcetype Nginx')
-            sh('echo "[default] \nhost = %s \n" > /opt/splunkforwarder/etc/system/local/inputs.conf' % hostname)
-        except:
-            pass
+    splunk_port = os.environ.get('SPLUNK_PORT', '')
+    if splunk_host and splunk_port.isdigit():
+        sh("sed -i 's/access_log.*;/access_log syslog:server=%s:%s main;/g' /etc/nginx/nginx.conf" % (splunk_host, splunk_port))
+        sh("sed -i 's/error_log.*;/error_log syslog:server=%s:%s;/g' /etc/nginx/nginx.conf" % (splunk_host, splunk_port))
+    else:
+        sh("sed -i 's#access_log.*;#access_log /var/log/nginx/access.log main;#g' /etc/nginx/nginx.conf")
+        sh("sed -i 's#error_log.*;#error_log /var/log/nginx/error.log;#g' /etc/nginx/nginx.conf")
+    server_name = os.environ.get('HOST_NAME', '_')
+    sh("sed -i 's/server_name.*;/server_name %s;/g' /etc/nginx/sites-enabled/nginx-app.conf" % (server_name))
+
 
 @task
 def docker_run():
@@ -114,7 +116,7 @@ def docker_run():
             create_admin()
             collectstatic()
 
-        configure_splunk_forwarder()
+        configure_nginx()
         sh('/usr/bin/supervisord')
     except:
         client.captureException()

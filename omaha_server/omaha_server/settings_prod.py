@@ -33,6 +33,7 @@ RAVEN_DSN_STACKTRACE = os.environ.get('RAVEN_DSN_STACKTRACE', RAVEN_CONFIG['dsn'
 
 
 SPLUNK_HOST = os.environ.get('SPLUNK_HOST')
+SPLUNK_PORT = os.environ.get('SPLUNK_PORT', None)
 
 INSTALLED_APPS = INSTALLED_APPS + (
     'raven.contrib.django.raven_compat',
@@ -42,7 +43,7 @@ CELERYD_HIJACK_ROOT_LOGGER = False
 
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': False,
+    'disable_existing_loggers': True,
     'root': {
         'level': 'INFO',
         'handlers': ['sentry', 'console'],
@@ -52,7 +53,7 @@ LOGGING = {
             'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
         },
         'splunk_format':{
-            'format': 'level=%(levelname)s logger=%(name)s timestamp=%(asctime)s module=%(module)s process=%(process)d thread=%(thread)d message=%(message)s\n\r'
+            'format': 'hostname={} level=%(levelname)s logger=%(name)s timestamp=%(asctime)s module=%(module)s process=%(process)d thread=%(thread)d message=%(message)s\n\r'.format(HOST_NAME)
         }
     },
     'handlers': {
@@ -85,19 +86,11 @@ LOGGING = {
     },
 }
 
-if SPLUNK_HOST:
+if SPLUNK_HOST and SPLUNK_PORT:
     LOGGING['handlers']['splunk'] = {
         'level': os.environ.get('SPLUNK_LOGGING_LEVEL', 'INFO'),
-        'class': 'splunk_handler.SplunkHandler',
+        'class': 'omaha_server.utils.CustomSysLogHandler',
         'formatter': 'splunk_format',
-        'host': SPLUNK_HOST,
-        'port': os.environ.get('SPLUNK_MANAGEMENT_PORT', 8089),
-        'username': os.environ.get('SPLUNK_USERNAME', 'admin'),
-        'password': os.environ.get('SPLUNK_PASSWORD', 'changeme'),
-        'hostname': HOST_NAME or 'Unknown',
-        'index': 'main',
-        'source': 'omaha',
-        'sourcetype': 'omaha-server',
-        'verify': False,
+        'address': (SPLUNK_HOST, int(SPLUNK_PORT))
     }
     LOGGING['root']['handlers'].append('splunk')
