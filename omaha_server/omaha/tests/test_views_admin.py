@@ -18,19 +18,20 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 from uuid import UUID
+from datetime import datetime
 
 from django.test import TestCase
 from django.test.client import Client
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
+from django.db import connections
 
 import mock
 from pyquery import PyQuery as pq
 
 from omaha_server.utils import is_private
-from omaha.factories import ApplicationFactory, RequestFactory, AppRequestFactory
+from omaha.factories import ApplicationFactory, RequestFactory, AppRequestFactory, EventFactory
 from omaha.models import Request, AppRequest
-from omaha.forms import ManualCleanupForm
 from omaha.views_admin import (
     StatisticsView,
     RequestListView,
@@ -150,6 +151,41 @@ class FilteringAppRequestsByUserIdTest(TestCase):
         d = pq(resp.content)
         res = d('#apprequest-table tbody tr')
         self.assertEqual(len(res), 2)
+
+
+class VersionUsageViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.app = ApplicationFactory.create(id='{D0AB2EBC-931B-4013-9FEB-C9C4C2225C0}')
+        self.userid1 = UUID(int=1)
+        self.userid2 = UUID(int=2)
+        self.userid3 = UUID(int=3)
+        self.req1 = RequestFactory(userid=self.userid1, created=datetime(2015, 1, 1))
+        self.req2 = RequestFactory(userid=self.userid1, created=datetime(2015, 7, 7))
+        self.req3 = RequestFactory(userid=self.userid2)
+        self.req4 = RequestFactory(userid=self.userid3)
+        self.app_req1 = AppRequestFactory(request=self.req1, events=(EventFactory(eventtype=2, eventresult=1),))
+        self.app_req2 = AppRequestFactory(request=self.req2, events=(EventFactory(eventtype=3, eventresult=1),))
+        self.app_req3 = AppRequestFactory(request=self.req3, events=(EventFactory(eventtype=2, eventresult=1),))
+        self.app_req4 = AppRequestFactory(request=self.req4, events=(EventFactory(eventtype=2, eventresult=5),))
+        self.user = User.objects.create_superuser(
+            username='test', email='test@example.com', password='test')
+        self.client.login(username='test', password='test')
+
+    @is_private()
+    def test_table(self):
+        if connections['default'].settings_dict['ENGINE'] != 'django.db.backends.postgresql_psycopg2':
+            self.skipTest('Database should be postgreSQL')
+        url = reverse('omaha_version_usage', kwargs=dict(name=self.app.name))
+        resp = self.client.get(url)
+        d = pq(resp.content)
+        res = d('#usage-table tbody tr')
+        self.assertEqual(AppRequest.objects.count(), 4)
+        self.assertEqual(len(res), 2)
+
+        self.assertEqual(d("#usage-table tbody tr .userid").contents(),
+                         ['00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000002'])
+        self.assertEqual(d("#usage-table tbody tr .last_update").contents()[0], '07/07/2015 midnight')
 
 
 class ManualCleanupView(TestCase):

@@ -84,6 +84,15 @@ class AppRequestFactory(factory.DjangoModelFactory):
     request = factory.LazyAttribute(lambda x: RequestFactory())
     appid = '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C0}'
 
+    @factory.post_generation
+    def events(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for event in extracted:
+                self.events.add(event)
+
 
 class ActionFactory(factory.DjangoModelFactory):
     class Meta:
@@ -91,3 +100,11 @@ class ActionFactory(factory.DjangoModelFactory):
 
     version = factory.lazy_attribute(lambda x: VersionFactory())
     event = 1
+
+
+class EventFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = 'omaha.Event'
+
+    eventtype = 1
+    eventresult = 1
