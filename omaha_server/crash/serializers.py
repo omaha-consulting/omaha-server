@@ -28,6 +28,7 @@ __all__ = ['SymbolsSerializer']
 
 
 class SymbolsSerializer(serializers.HyperlinkedModelSerializer):
+    file = serializers.FileField(required=True)
     debug_id = serializers.CharField(default='', required=False, allow_blank=True)
     debug_file = serializers.CharField(default='', required=False, allow_blank=True)
 
