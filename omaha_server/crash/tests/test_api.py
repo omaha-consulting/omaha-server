@@ -69,6 +69,14 @@ class SymbolsTest(BaseTest, APITestCase):
         self.assertEqual(symbols.debug_file, 'BreakpadTestApp.pdb')
 
     @is_private()
+    @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
+    def test_create_without_file(self):
+        data = dict()
+        response = self.client.post(reverse(self.url), data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.data, {'file': [u'No file was submitted.']})
+
+    @is_private()
     def test_duplicate(self):
         with open(SYM_FILE, 'rb') as f:
             data = dict(file=SimpleUploadedFile('./BreakpadTestApp.sym', f.read()))
