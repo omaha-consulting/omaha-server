@@ -99,7 +99,7 @@ def get_users_versions(app_id):
     week = now.isocalendar()[1]
     versions = [str(v.version) for v in Version.objects.filter_by_enabled(app__id=app_id)]
     data = [(v, len(WeekEvents(event_name.format(app_id, v), now.year, week))) for v in versions]
-    return data
+    return filter(lambda x: x[1], data)
 
 
 @valuedispatch
