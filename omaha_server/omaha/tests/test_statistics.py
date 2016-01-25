@@ -391,4 +391,4 @@ class GetStatisticsTest(TestCase):
     def test_get_users_versions(self):
         now = datetime.now()
         with freeze_time(datetime(year=now.year, month=now.month, day=10)):
-            self.assertListEqual(get_users_versions(self.app.id), [('1.0.0.0', now.month), ('2.0.0.0', 0)])
+            self.assertListEqual(get_users_versions(self.app.id), [('1.0.0.0', now.month)])
