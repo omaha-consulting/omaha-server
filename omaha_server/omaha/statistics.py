@@ -56,15 +56,16 @@ def add_app_statistics(userid, platform, app, now=None):
     mark('request:{}:{}:{}'.format(appid, platform, version), userid)
 
 
-def get_users_statistics_months(app_id=None):
+def get_users_statistics_months(app_id=None, year=None, start=1, end=12):
     now = timezone.now()
-    year = now.year
+    if not year:
+        year = now.year
     event_name = 'request:%s' % app_id if app_id else 'request'
 
     months = []
-    for m in range(1, 13):
+    for m in range(start, end + 1):
         months.append(MonthEvents(event_name, year, m))
-    data = [(datetime(year, i+1, 1).strftime("%B"), len(e)) for i, e in enumerate(months)]
+    data = [(datetime(year, start + i, 1).strftime("%Y-%m"), len(e)) for i, e in enumerate(months)]
     return data
 
 

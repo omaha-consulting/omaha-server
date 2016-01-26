@@ -31,6 +31,7 @@ from django.conf import settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
+from freezegun import freeze_time
 
 from omaha_server.utils import is_private
 from omaha.statistics import userid_counting, get_users_versions, get_channel_statistics
@@ -219,7 +220,7 @@ class ActionTest(BaseTest, APITestCase):
         obj = Action.objects.get(id=response.data['id'])
         self.assertEqual(response.data, self.serializer(obj).data)
 
-
+@freeze_time("2016-01-27")
 class StatisticsMonthsMixin(object):
     url = None
     url_args = ()
@@ -227,13 +228,16 @@ class StatisticsMonthsMixin(object):
 
     def _generate_fake_statistics(self):
         now = datetime.now()
-        year = now.year
+        prev_year = now.year - 1
 
-        for i in range(1, 13):
-            date = datetime(year=year, month=i, day=1)
+        for i in range(2, 13):
+            date = datetime(year=prev_year, month=i, day=1)
             for id in range(1, i + 1):
                 user_id = UUID(int=id)
                 userid_counting(user_id, self.app_list, self.platform.name, now=date)
+
+        user_id = UUID(int=13)
+        userid_counting(user_id, self.app_list, self.platform.name, now=datetime(year=now.year, month=1, day=1))
 
     @temporary_media_root()
     def setUp(self):
@@ -260,18 +264,9 @@ class StatisticsMonthsMixin(object):
         self.app_list = [dict(appid=self.app.id, version=str(self.version1.version))]
 
         self._generate_fake_statistics()
-        self.users_statistics = [('January', 1),
-                                 ('February', 2),
-                                 ('March', 3),
-                                 ('April', 4),
-                                 ('May', 5),
-                                 ('June', 6),
-                                 ('July', 7),
-                                 ('August', 8),
-                                 ('September', 9),
-                                 ('October', 10),
-                                 ('November', 11),
-                                 ('December', 12)]
+        now = datetime.now()
+        self.users_statistics = [(datetime(now.year-1, x, 1).strftime("%Y-%m"), x) for x in range(2, 13)]
+        self.users_statistics.append((datetime(now.year, 1, 1).strftime("%Y-%m"), 1))
         self.data = dict(data=dict(self.users_statistics))
 
     @is_private()
@@ -279,6 +274,7 @@ class StatisticsMonthsMixin(object):
         client = APIClient()
         response = client.get(reverse(self.url, args=self.url_args), format='json')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
 
     @is_private()
     def test_list(self):
@@ -291,7 +287,7 @@ class StatisticsMonthsListTest(StatisticsMonthsMixin, APITestCase):
     url = 'api-statistics-months-list'
     serializer = StatisticsMonthsSerializer
 
-
+@freeze_time("2016-01-27")
 class StatisticsMonthsDetailTest(StatisticsMonthsMixin, APITestCase):
     url = 'api-statistics-months-detail'
     url_args = ('app',)
