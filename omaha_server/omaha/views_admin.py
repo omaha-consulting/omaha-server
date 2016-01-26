@@ -20,6 +20,7 @@ the License.
 
 import logging
 import datetime
+import calendar
 from collections import OrderedDict
 
 from django.contrib.admin.views.decorators import staff_member_required
@@ -45,10 +46,10 @@ from omaha.statistics import (
 )
 from omaha.models import Application, AppRequest
 from omaha.filters import AppRequestFilter
-from omaha.utils import make_piechart, make_discrete_bar_chart
+from omaha.utils import make_piechart, make_discrete_bar_chart, get_month_range_from_dict
 from omaha.filters import EVENT_RESULT, EVENT_TYPE
 from omaha.tables import AppRequestTable, VersionsTable, VersionsUsageTable
-from omaha.forms import CrashManualCleanupForm, ManualCleanupForm
+from omaha.forms import CrashManualCleanupForm, ManualCleanupForm, MonthRangeForm
 from omaha.dynamic_preferences_registry import global_preferences
 
 logger = logging.getLogger(__name__)
@@ -82,48 +83,92 @@ class StaffMemberRequiredMixin(object):
         return super(StaffMemberRequiredMixin, self).dispatch(*args, **kwargs)
 
 
-class StatisticsView(StaffMemberRequiredMixin, ListView):
+class StatisticsView(StaffMemberRequiredMixin, ListView, FormView):
     template_name = "admin/omaha/statistics.html"
     model = Application
     context_object_name = "app_list"
+    form_class = MonthRangeForm
+    success_url = reverse_lazy('omaha_statistics')
+
+    def get_initial(self):
+        initial = super(StatisticsView, self).get_initial()
+        initial['start'] = self.request.GET.get('start')
+        initial['end'] = self.request.GET.get('end')
+        return initial
 
     def get_context_data(self, **kwargs):
         context = super(StatisticsView, self).get_context_data(**kwargs)
 
-        context['months'] = make_discrete_bar_chart('months', get_users_statistics_months())
-        context['weeks'] = make_discrete_bar_chart('weeks', get_users_statistics_weeks())
+        form = self.get_form()
+        form.is_valid()
 
+        start, end = get_month_range_from_dict(form.cleaned_data)
+
+        diapasons = [((start.month if year == start.year else 1, end.month if year == end.year else 12), year)
+                     for year in range(start.year, end.year+1)]
+
+        data = []
+        for diapason in diapasons:
+            data += get_users_statistics_months(year=diapason[1], start=diapason[0][0], end=diapason[0][1])
+
+        context['range_start'] = start.strftime('%B %Y')
+        context['range_end'] = end.strftime('%B %Y')
+        context['months'] = make_discrete_bar_chart('months', data)
+        context['weeks'] = make_discrete_bar_chart('weeks', get_users_statistics_weeks())
+        context['form'] = form
         return context
 
 
-class StatisticsDetailView(StaffMemberRequiredMixin, DetailView):
+class StatisticsDetailView(StaffMemberRequiredMixin, DetailView, FormView):
     model = Application
     template_name = 'admin/omaha/statistics_detail.html'
     context_object_name = 'app'
+    form_class = MonthRangeForm
+    success_url = reverse_lazy('omaha_statistics_detail')
 
     def get_object(self, queryset=None):
         return get_object_or_404(Application, name=self.kwargs.get('name'))
+
+    def get_initial(self):
+        initial = super(StatisticsDetailView, self).get_initial()
+        initial['start'] = self.request.GET.get('start')
+        initial['end'] = self.request.GET.get('end')
+        return initial
 
     def get_context_data(self, **kwargs):
         context = super(StatisticsDetailView, self).get_context_data(**kwargs)
 
         app = self.object
+        form = self.get_form()
+        form.is_valid()
 
         now = timezone.now()
         last_week = now - datetime.timedelta(days=7)
 
+        start, end = get_month_range_from_dict(form.cleaned_data)
+
+        diapasons = [((start.month if year == start.year else 1, end.month if year == end.year else 12), year)
+                     for year in range(start.year, end.year+1)]
+
+        data = []
+        for diapason in diapasons:
+            data += get_users_statistics_months(app_id=app.id, year=diapason[1], start=diapason[0][0], end=diapason[0][1])
+
         qs = AppRequest.objects.filter(appid=app.id,
                                        request__created__range=[last_week, now])
 
+        context['range_start'] = start.strftime('%B %Y')
+        context['range_end'] = end.strftime('%B %Y')
         context['install_count'] = qs.filter(events__eventtype=2).count()
         context['update_count'] = qs.filter(events__eventtype=3).count()
 
-        context['months'] = make_discrete_bar_chart('months', get_users_statistics_months(app_id=app.id))
+        context['months'] = make_discrete_bar_chart('months', data)
         context['weeks'] = make_discrete_bar_chart('weeks', get_users_statistics_weeks(app_id=app.id))
         context['versions'] = make_piechart('versions', get_users_versions(app.id))
         context['channels'] = make_piechart('channels', get_channel_statistics(app.id))
         versions_data = [dict(version=x[0], number=x[1]) for x in get_users_versions(app.id)]
         context['versions_table'] = VersionsTable(versions_data)
+        context['form'] = form
         return context
 
 
