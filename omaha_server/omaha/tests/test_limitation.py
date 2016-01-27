@@ -69,6 +69,8 @@ class DeleteOldTest(TestCase):
 
 
 class SizeExceedTest(TestCase):
+    maxDiff = None
+
     @is_private()
     def test_crashes(self):
         gpm['Crash__limit_size'] = 1

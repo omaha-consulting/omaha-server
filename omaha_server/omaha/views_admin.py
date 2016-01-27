@@ -20,7 +20,6 @@ the License.
 
 import logging
 import datetime
-import calendar
 from collections import OrderedDict
 
 from django.contrib.admin.views.decorators import staff_member_required
@@ -169,6 +168,23 @@ class StatisticsDetailView(StaffMemberRequiredMixin, DetailView, FormView):
         versions_data = [dict(version=x[0], number=x[1]) for x in get_users_versions(app.id)]
         context['versions_table'] = VersionsTable(versions_data)
         context['form'] = form
+        return context
+
+
+class LiveStatisticsView(StaffMemberRequiredMixin, DetailView):
+    model = Application
+    template_name = 'admin/omaha/live_statistics.html'
+    context_object_name = 'app'
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(Application, name=self.kwargs.get('name'))
+
+    def get_context_data(self, **kwargs):
+        context = super(LiveStatisticsView, self).get_context_data(**kwargs)
+
+        app = self.object
+
+        context['app_name'] = app.name
         return context
 
 

@@ -34,7 +34,6 @@ from omaha.factories import ApplicationFactory, RequestFactory, AppRequestFactor
 from omaha.models import Request, AppRequest
 from omaha.views_admin import (
     StatisticsView,
-    RequestListView,
 )
 
 User = get_user_model()
@@ -73,6 +72,12 @@ class ViewsStaffMemberRequiredTest(TestCase):
     @is_private()
     def test_omaha_statistics_detail(self):
         url = reverse('omaha_statistics_detail', kwargs=dict(name=self.app.name))
+        response = self.client.get(url)
+        self.assertRedirects(response, '/admin/login/?next=%s' % url)
+
+    @is_private()
+    def test_live_statistics(self):
+        url = reverse('omaha_live_statistics', kwargs=dict(name=self.app.name))
         response = self.client.get(url)
         self.assertRedirects(response, '/admin/login/?next=%s' % url)
 

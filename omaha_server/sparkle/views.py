@@ -21,8 +21,11 @@ the License.
 import logging
 
 from django.views.generic import ListView
-from sparkle.models import SparkleVersion
+from django.http.response import Http404
 
+from sparkle.models import SparkleVersion
+from sparkle.statistics import collect_statistics
+from omaha.models import Application
 
 logger = logging.getLogger(__name__)
 
@@ -32,15 +35,29 @@ class SparkleView(ListView):
     queryset = SparkleVersion.objects.filter_by_enabled()
     template_name = 'sparkle/appcast.xml'
 
+    def get(self, request, *args, **kwargs):
+        self.appname = self.kwargs.get('app_name')
+        self.appid = None
+        self.channel = self.kwargs.get('channel')
+
+        try:
+            app = Application.objects.get(name=self.kwargs.get('app_name'))
+            self.appid = app.id
+        except Application.DoesNotExist:
+            raise Http404
+
+        collect_statistics(request, self.appid, self.channel)
+        return super(SparkleView, self).get(self, request, *args, **kwargs)
+
     def get_queryset(self):
         qs = super(SparkleView, self).get_queryset()
-        return qs.filter(channel__name=self.kwargs.get('channel'),
-                         app__name=self.kwargs.get('app_name'))
+        return qs.filter(channel__name=self.channel,
+                         app__name=self.appname)
 
     def get_context_data(self, **kwargs):
         context = super(SparkleView, self).get_context_data(**kwargs)
-        context['app_name'] = self.kwargs.get('app_name')
-        context['channel'] = self.kwargs.get('channel')
+        context['app_name'] = self.appname
+        context['channel'] = self.channel
         return context
 
     def render_to_response(self, context, **response_kwargs):

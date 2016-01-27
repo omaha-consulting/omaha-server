@@ -157,4 +157,3 @@ def get_month_range_from_dict(source):
 
     end = source.get('end', datetime.datetime(now.year, now.month, calendar.monthrange(now.year, now.month)[1]))
     return start, end
-
