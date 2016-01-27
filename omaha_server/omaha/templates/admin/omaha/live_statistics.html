@@ -1,0 +1,51 @@
+{% extends "admin/base.html" %}
+{% load nvd3_tags %}
+{% load suit_tags %}
+{% load static %}
+
+{% block title %}Statistics | {{ 'ADMIN_NAME'|suit_conf }}{% endblock %}
+
+{% block breadcrumbs %}
+    <ul class="breadcrumb">
+        <li><a href="{% url 'admin:index' %}">Home</a>
+            <span class="divider">&raquo;</span>
+        </li>
+        <li>
+            <a href="{% url "omaha_statistics" %}">Statistics</a>
+            <span class="divider">&raquo;</span>
+        </li>
+        <li>
+            <a href="{% url "omaha_statistics_detail" app_name %}">{{ app_name }}</a>
+            <span class="divider">&raquo;</span>
+        </li>
+        <li class="active">
+            <a href="#">Live Dashboard</a>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block extrahead %}
+    <link media="all" href="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.1-alpha/nv.d3.min.css" type="text/css" rel="stylesheet" />
+{% endblock %}
+
+{% block extrajs %}
+    {{ block.super }}
+    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.14/d3.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.1-alpha/nv.d3.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src='{% static "statistics/js/live_charts.js" %}'></script>
+{% endblock %}
+
+{% block content %}
+    <h1 data-name='{{ app.name }}' id="app_name">{{ app.name|title }}</h1>
+    <h2>Windows users</h2>
+    <div id="win-chart">
+      <svg style="width:1200px;height:400px;"></svg>
+    </div>
+
+    <h2>Mac users</h2>
+    <div id="mac-chart">
+      <svg style="width:1200px;height:400px;"></svg>
+    </div>
+{% endblock %}

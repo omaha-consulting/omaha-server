@@ -51,6 +51,39 @@ request_event = b"""<?xml version="1.0" encoding="UTF-8"?>
 </request>
 """
 
+request_event_install_success = b"""<?xml version="1.0" encoding="UTF-8"?>
+<request protocol="3.0" version="1.3.23.0" ismachine="1" sessionid="{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}" userid="{F25EC606-5FC2-449b-91FF-FA21CADB46E4}" installsource="otherinstallcmd" testsource="ossdev" requestid="{164FC0EC-8EF7-42cb-A49D-474E20E8D352}">
+  <os platform="win" version="6.1" sp="" arch="x64"/>
+  <app appid="{8A69D345-D564-463C-AFF1-A69D9E530F96}" version="" nextversion="0.0.0.1" lang="en" brand="" client="" installage="6">
+    <event eventtype="9" eventresult="1" errorcode="0" extracode1="0"/>
+    <event eventtype="5" eventresult="1" errorcode="0" extracode1="0"/>
+    <event eventtype="2" eventresult="1" errorcode="0" extracode1="0"/>
+  </app>
+</request>
+"""
+
+request_event_update_success = b"""<?xml version="1.0" encoding="UTF-8"?>
+<request protocol="3.0" version="1.3.23.0" ismachine="1" sessionid="{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}" userid="{F25EC606-5FC2-449b-91FF-FA21CADB46E4}" installsource="otherinstallcmd" testsource="ossdev" requestid="{164FC0EC-8EF7-42cb-A49D-474E20E8D352}">
+  <os platform="win" version="6.1" sp="" arch="x64"/>
+  <app appid="{8A69D345-D564-463C-AFF1-A69D9E530F96}" version="0.0.0.1" nextversion="0.0.0.2" lang="en" brand="" client="" installage="6">
+    <event eventtype="9" eventresult="1" errorcode="0" extracode1="0"/>
+    <event eventtype="5" eventresult="1" errorcode="0" extracode1="0"/>
+    <event eventtype="3" eventresult="1" errorcode="0" extracode1="0"/>
+  </app>
+</request>
+"""
+
+request_event_uninstall_success = b"""<?xml version="1.0" encoding="UTF-8"?>
+<request protocol="3.0" version="1.3.23.0" ismachine="1" sessionid="{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}" userid="{F25EC606-5FC2-449b-91FF-FA21CADB46E4}" installsource="otherinstallcmd" testsource="ossdev" requestid="{164FC0EC-8EF7-42cb-A49D-474E20E8D352}">
+  <os platform="win" version="6.1" sp="" arch="x64"/>
+  <app appid="{8A69D345-D564-463C-AFF1-A69D9E530F96}" version="0.0.0.2" nextversion="" lang="en" brand="" client="" installage="6">
+    <event eventtype="9" eventresult="1" errorcode="0" extracode1="0"/>
+    <event eventtype="5" eventresult="1" errorcode="0" extracode1="0"/>
+    <event eventtype="4" eventresult="1" errorcode="0" extracode1="0"/>
+  </app>
+</request>
+"""
+
 request_data = b"""<?xml version="1.0" encoding="UTF-8"?>
 <request protocol="3.0" version="1.3.23.0" ismachine="0" sessionid="{5FAD27D4-6BFA-4daa-A1B3-5A1F821FEE0F}" userid="{D0BBD725-742D-44ae-8D46-0231E881D58E}" installsource="scheduler" testsource="ossdev" requestid="{C8F6EDF3-B623-4ee6-B2DA-1D08A0B4C665}">
   <os platform="win" version="6.1" sp="" arch="x64"/>

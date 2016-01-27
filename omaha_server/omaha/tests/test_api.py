@@ -33,10 +33,13 @@ from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 from freezegun import freeze_time
 
+from bitmapist import mark_event
+from freezegun import freeze_time
+import pytz
+
 from omaha_server.utils import is_private
 from omaha.statistics import userid_counting, get_users_versions, get_channel_statistics
 from omaha.utils import redis
-
 from omaha.serializers import (
     AppSerializer,
     DataSerializer,
@@ -49,9 +52,8 @@ from omaha.serializers import (
 )
 from omaha.factories import ApplicationFactory, DataFactory, PlatformFactory, ChannelFactory, VersionFactory, ActionFactory
 from omaha.models import Application, Data, Channel, Platform, Version, Action
-
 from omaha.tests.utils import temporary_media_root
-
+from sparkle.models import SparkleVersion
 
 User = get_user_model()
 
@@ -219,6 +221,90 @@ class ActionTest(BaseTest, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         obj = Action.objects.get(id=response.data['id'])
         self.assertEqual(response.data, self.serializer(obj).data)
+
+class LiveStatistics(APITestCase):
+    maxDiff = None
+
+    def _generate_fake_statistics(self):
+        now = datetime(2016, 2, 13)
+
+        for i in range(self.n_hours):
+            date = datetime(now.year, now.month, now.day, i)
+            for id in range(0, i):
+                mark_event('online:app:win:2.0.0.0', id, now=date, track_hourly=True)
+
+                mark_event('online:app:mac:4.0.0.1', id, now=date, track_hourly=True)
+            for id in range(i, self.n_hours):
+                mark_event('online:app:win:1.0.0.0', id, now=date, track_hourly=True)
+                mark_event('online:app:mac:3.0.0.0', id, now=date, track_hourly=True)
+
+
+    def setUp(self):
+        self.user = User.objects.create_user(username='test', password='secret', email='test@example.com')
+        self.client.credentials(
+            HTTP_AUTHORIZATION='Basic %s' % base64.b64encode(bytes('{}:{}'.format('test', 'secret'), 'utf8')).decode())
+
+        redis.flushdb()
+        self.app = Application.objects.create(id='app', name='app')
+        self.channel = Channel.objects.create(name='stable')
+        self.platform = Platform.objects.create(name='win')
+        self.version1 = Version.objects.create(
+            app=self.app,
+            platform=self.platform,
+            channel=self.channel,
+            version='1.0.0.0',
+            file=SimpleUploadedFile('./chrome_installer.exe', False))
+
+        self.version2 = Version.objects.create(
+            app=self.app,
+            platform=self.platform,
+            channel=self.channel,
+            version='2.0.0.0',
+            file=SimpleUploadedFile('./chrome_installer.exe', False))
+
+        self.sparkle_version1 = SparkleVersion.objects.create(
+            app=self.app,
+            channel=self.channel,
+            version='0.0',
+            short_version='3.0.0.0',
+            file=SimpleUploadedFile('./chrome_installer.dmg', False))
+
+        self.sparkle_version2 = SparkleVersion.objects.create(
+            app=self.app,
+            channel=self.channel,
+            version='0.1',
+            short_version='4.0.0.1',
+            file=SimpleUploadedFile('./chrome_installer.dmg', False))
+
+        self.n_hours = 24
+        self._generate_fake_statistics()
+
+        self.win_statistics = [('1.0.0.0', [[datetime(2016, 2, 13, hour, tzinfo=pytz.UTC).strftime("%Y-%m-%dT%H:%M:%S.%fZ"), self.n_hours - hour]
+                                            for hour in range(self.n_hours)])]
+        self.win_statistics.append(('2.0.0.0', [[datetime(2016, 2, 13, hour, tzinfo=pytz.UTC).strftime("%Y-%m-%dT%H:%M:%S.%fZ"), hour]
+                                                for hour in range(self.n_hours)]))
+
+        self.mac_statistics = [('3.0.0.0', [[datetime(2016, 2, 13, hour, tzinfo=pytz.UTC).strftime("%Y-%m-%dT%H:%M:%S.%fZ"), self.n_hours - hour]
+                                            for hour in range(self.n_hours)])]
+        self.mac_statistics.append(('4.0.0.1', [[datetime(2016, 2, 13, hour, tzinfo=pytz.UTC).strftime("%Y-%m-%dT%H:%M:%S.%fZ"), hour]
+                                                for hour in range(self.n_hours)]))
+
+        self.data = dict(data=dict(win=dict(self.win_statistics),
+                                   mac=dict(self.mac_statistics)))
+
+    @is_private()
+    def test_unauthorized(self):
+        client = APIClient()
+        response = client.get(reverse('api-statistics-live', args=('app',)), format='json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    @is_private()
+    def test_list(self):
+        with freeze_time("2016-02-13 23:00:01"):
+            response = self.client.get(reverse('api-statistics-live', args=('app',)), format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertDictEqual(StatisticsMonthsSerializer(self.data).data, response.data)
+
 
 @freeze_time("2016-01-27")
 class StatisticsMonthsMixin(object):

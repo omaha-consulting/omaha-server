@@ -86,6 +86,22 @@ A command for generating fake statistics:
 $ ./manage.py generate_fake_statistics --count=3000
 ```
 
+A command for generating fake live data:
+
+```shell
+# Usage: ./manage.py generate_fake_live_data <app_id>
+#
+$ ./manage.py generate_fake_live_data {c00b6344-038f-4e51-bcb1-33ffdd812d81}
+```
+
+A command for generating fake live data for Mac:
+
+```shell
+# Usage: ./manage.py generate_fake_mac_live_data <app_name> <channel>
+#
+$ ./manage.py generate_fake_mac_live_data Application alpha
+```
+
 ## Deploying Omaha-Server to AWS Elastic Beanstalk
 
 **Requirements:**

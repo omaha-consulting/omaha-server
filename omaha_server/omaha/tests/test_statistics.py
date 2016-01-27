@@ -28,13 +28,14 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 
 from mock import patch
 from freezegun import freeze_time
-from bitmapist import DayEvents, mark_event
+from bitmapist import DayEvents, HourEvents, mark_event
 
 from omaha.tests import fixtures
 from omaha.parser import parse_request
 from omaha.statistics import (
     userid_counting,
     add_app_statistics,
+    add_app_live_statistics,
     is_user_active,
     get_kwargs_for_model,
     parse_os,
@@ -43,6 +44,7 @@ from omaha.statistics import (
     parse_apps,
     parse_events,
     collect_statistics,
+    update_live_statistics,
     get_users_statistics_months,
     get_users_statistics_weeks,
     get_channel_statistics,
@@ -147,6 +149,31 @@ class StatisticsTest(TestCase):
         self.assertIn(userid, events_appid_version)
         self.assertIn(userid, events_appid_platform)
         self.assertIn(userid, events_appid_channel)
+        self.assertIn(userid, events_appid_platform_version)
+
+    def test_add_app_live_statistics(self):
+        request = parse_request(fixtures.request_update_check)
+        app = request.findall('app')[0]
+
+        now = datetime.utcnow()
+        userid = 1
+        platform = 'win'
+
+        appid = app.get('appid')
+        version = app.get('version')
+
+        events_appid_version = HourEvents('online:{}:{}'.format(appid, version), now.year, now.month, now.day, now.hour)
+        events_appid_platform_version = HourEvents('online:{}:{}:{}'.format(appid, platform, version), now.year, now.month, now.day, now.hour)
+
+        self.assertEqual(len(events_appid_version), 0)
+        self.assertEqual(len(events_appid_platform_version), 0)
+
+        add_app_live_statistics(userid, platform, app)
+
+        self.assertEqual(len(events_appid_version), 1)
+        self.assertEqual(len(events_appid_platform_version), 1)
+
+        self.assertIn(userid, events_appid_version)
         self.assertIn(userid, events_appid_platform_version)
 
     def test_is_user_active(self):
@@ -315,6 +342,81 @@ class StatisticsTest(TestCase):
 
         for e in events:
             self.assertIn(e, app_req.events.all())
+
+    def test_update_live_statistics_install(self):
+        request = parse_request(fixtures.request_event_install_success)
+        apps = request.findall('app')
+        app = apps[0]
+
+        now = datetime.utcnow()
+        userid = 1
+        platform = 'win'
+
+        appid = app.get('appid')
+        version_1 = '0.0.0.1'
+        version_2 = '0.0.0.2'
+
+        events_appid_version_1 = HourEvents('online:{}:{}'.format(appid, version_1), now.year, now.month, now.day, now.hour)
+        events_appid_platform_version_1 = HourEvents('online:{}:{}:{}'.format(appid, platform, version_1), now.year, now.month, now.day, now.hour)
+
+        self.assertEqual(len(events_appid_version_1), 0)
+        self.assertEqual(len(events_appid_platform_version_1), 0)
+
+        update_live_statistics(userid, apps, platform)
+
+        self.assertEqual(len(events_appid_version_1), 1)
+        self.assertEqual(len(events_appid_platform_version_1), 1)
+
+        request = parse_request(fixtures.request_event_update_success)
+        apps = request.findall('app')
+
+        update_live_statistics(userid, apps, platform)
+
+        events_appid_version_1 = HourEvents('online:{}:{}'.format(appid, version_1), now.year, now.month, now.day, now.hour)
+        events_appid_platform_version_1 = HourEvents('online:{}:{}:{}'.format(appid, platform, version_1), now.year, now.month, now.day, now.hour)
+        events_appid_version_2 = HourEvents('online:{}:{}'.format(appid, version_2), now.year, now.month, now.day, now.hour)
+        events_appid_platform_version_2 = HourEvents('online:{}:{}:{}'.format(appid, platform, version_2), now.year, now.month, now.day, now.hour)
+
+        self.assertEqual(len(events_appid_version_1), 0)
+        self.assertEqual(len(events_appid_platform_version_1), 0)
+        self.assertEqual(len(events_appid_version_2), 1)
+        self.assertEqual(len(events_appid_platform_version_2), 1)
+
+        request = parse_request(fixtures.request_event_uninstall_success)
+        apps = request.findall('app')
+
+        update_live_statistics(userid, apps, platform)
+
+        events_appid_version_2 = HourEvents('online:{}:{}'.format(appid, version_2),
+                                            now.year, now.month, now.day, now.hour)
+        events_appid_platform_version_2 = HourEvents('online:{}:{}:{}'.format(appid, platform, version_2),
+                                                     now.year, now.month, now.day, now.hour)
+
+        self.assertEqual(len(events_appid_version_2), 0)
+        self.assertEqual(len(events_appid_platform_version_2), 0)
+
+    def test_update_live_statistics_updatecheck(self):
+        request = parse_request(fixtures.request_update_check)
+        apps = request.findall('app')
+        app = apps[0]
+
+        now = datetime.utcnow()
+        userid = 1
+        platform = 'win'
+
+        appid = app.get('appid')
+        version = app.get('version')
+
+        events_appid_version = HourEvents('online:{}:{}'.format(appid, version), now.year, now.month, now.day, now.hour)
+        events_appid_platform_version = HourEvents('online:{}:{}:{}'.format(appid, platform, version), now.year, now.month, now.day, now.hour)
+
+        self.assertEqual(len(events_appid_version), 0)
+        self.assertEqual(len(events_appid_platform_version), 0)
+
+        update_live_statistics(userid, apps, platform)
+
+        self.assertEqual(len(events_appid_version), 1)
+        self.assertEqual(len(events_appid_platform_version), 1)
 
 
 class GetStatisticsTest(TestCase):

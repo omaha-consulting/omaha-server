@@ -89,9 +89,10 @@ def get_random_uuid():
 
 
 def get_random_date():
+    now = datetime.now()
     month = random.choice(range(1, 13))
     day = random.choice(range(1, 28))
-    return datetime(2015, month, day, hour=8)
+    return datetime(now.year, month, day, hour=8)
 
 
 def generate_events(app_id, **options):

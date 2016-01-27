@@ -25,6 +25,7 @@ from omaha.views import UpdateView
 from omaha.views_admin import (
     StatisticsView,
     StatisticsDetailView,
+    LiveStatisticsView,
     VersionsUsageView,
     RequestListView,
     AppRequestDetailView,
@@ -44,6 +45,8 @@ if settings.IS_PRIVATE:
         url(r'^admin/statistics/$', StatisticsView.as_view(), name='omaha_statistics'),
         url(r'^admin/statistics/(?P<name>[a-zA-Z0-9_ ]+)/$', StatisticsDetailView.as_view(),
             name='omaha_statistics_detail'),
+        url(r'^admin/statistics/(?P<name>[a-zA-Z0-9_ ]+)/live/$', LiveStatisticsView.as_view(),
+            name='omaha_live_statistics'),
         url(r'^admin/statistics/(?P<name>[a-zA-Z0-9_ ]+)/requests/$', RequestListView.as_view(), name='omaha_request_list'),
         url(r'^admin/statistics/(?P<name>[a-zA-Z0-9_ ]+)/usage/$', VersionsUsageView.as_view(), name='omaha_version_usage'),
         url(r'^admin/statistics/requests/(?P<pk>\d+)/$', AppRequestDetailView.as_view(), name='omaha_request_detail'),

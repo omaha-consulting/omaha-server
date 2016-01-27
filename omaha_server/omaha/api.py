@@ -32,7 +32,12 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 
-from omaha.statistics import get_users_statistics_months, get_users_versions, get_channel_statistics
+from omaha.statistics import (
+    get_users_statistics_months,
+    get_users_versions,
+    get_channel_statistics,
+    get_users_live_versions
+)
 from omaha.serializers import (
     AppSerializer,
     DataSerializer,
@@ -232,6 +237,21 @@ class StatisticsVersionsView(APIView):
         data = get_users_versions(app.id)
         serializer = StatisticsMonthsSerializer(dict(data=dict(data)))
         return Response(serializer.data)
+
+
+class StatisticsVersionsLiveView(APIView):
+    def get_object(self, name):
+        try:
+            return Application.objects.get(name=name)
+        except Application.DoesNotExist:
+            raise Http404
+
+    def get(self, request, app_name, format=None):
+        app = self.get_object(app_name)
+        data = get_users_live_versions(app.id, tz=request.session.get('django_timezone', 'UTC'))
+        serializer = StatisticsMonthsSerializer(dict(data=dict(data)))
+        return Response(serializer.data)
+
 
 class StatisticsChannelsView(APIView):
     def get_object(self, name):

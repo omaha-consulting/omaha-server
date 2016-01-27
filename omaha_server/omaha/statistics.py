@@ -26,11 +26,13 @@ from datetime import datetime, timedelta
 from django.conf import settings
 from django.db import transaction
 from django.utils import timezone
-from bitmapist import setup_redis, mark_event, WeekEvents, MonthEvents, DayEvents
+from bitmapist import setup_redis, mark_event, unmark_event, WeekEvents, MonthEvents, DayEvents, HourEvents
+import pytz
 
 from omaha.utils import get_id, valuedispatch
 from omaha.settings import DEFAULT_CHANNEL
 from omaha.models import ACTIVE_USERS_DICT_CHOICES, Request, AppRequest, Os, Hw, Event, Version, Channel
+from sparkle.models import SparkleVersion
 
 __all__ = ['userid_counting', 'is_user_active']
 
@@ -55,6 +57,43 @@ def add_app_statistics(userid, platform, app, now=None):
     mark('request:{}:{}'.format(appid, channel), userid)
     mark('request:{}:{}:{}'.format(appid, platform, version), userid)
 
+def update_live_statistics(userid, apps_list, platform, now=None):
+    id = get_id(userid)
+    list(map(partial(add_app_live_statistics, id, platform, now=now), apps_list or []))
+
+
+def add_app_live_statistics(userid, platform, app, now=None):
+    mark = partial(mark_event, now=now, track_hourly=True)
+    unmark = partial(unmark_event, track_hourly=True)
+    appid = app.get('appid')
+    version = app.get('version')
+    events = app.findall('event')
+    nextversion = app.get('nextversion')
+
+    install_event = filter(lambda x: x.get('eventtype') == '2', events)
+    if install_event and install_event[0].get('eventresult') == '1':
+        mark('online:{}:{}'.format(appid, nextversion), userid)
+        mark('online:{}:{}:{}'.format(appid, platform, nextversion), userid)
+        return
+
+    update_event = filter(lambda x: x.get('eventtype') == '3', events)
+    if update_event and update_event[0].get('eventresult') == '1':
+        unmark('online:{}:{}'.format(appid, version), userid)               # necessary for
+        unmark('online:{}:{}:{}'.format(appid, platform, version), userid)  # 1 hour interval
+        mark('online:{}:{}'.format(appid, nextversion), userid)
+        mark('online:{}:{}:{}'.format(appid, platform, nextversion), userid)
+        return
+
+    uninstall_event = filter(lambda x: x.get('eventtype') == '4', events)
+    if uninstall_event and uninstall_event[0].get('eventresult') == '1':
+        unmark('online:{}:{}'.format(appid, version), userid)               # necessary for
+        unmark('online:{}:{}:{}'.format(appid, platform, version), userid)  # 1 hour interval
+        return
+
+    # updatecheck handling
+    if version:
+        mark('online:{}:{}'.format(appid, version), userid)
+        mark('online:{}:{}:{}'.format(appid, platform, version), userid)
 
 def get_users_statistics_months(app_id=None, year=None, start=1, end=12):
     now = timezone.now()
@@ -101,6 +140,35 @@ def get_users_versions(app_id):
     versions = [str(v.version) for v in Version.objects.filter_by_enabled(app__id=app_id)]
     data = [(v, len(WeekEvents(event_name.format(app_id, v), now.year, week))) for v in versions]
     return filter(lambda x: x[1], data)
+
+
+def get_versions_data_by_platform(app_id, versions, platform, tz='UTC'):
+    tzinfo = pytz.timezone(tz)
+    now = timezone.now()
+    start = now - timezone.timedelta(days=1)
+    event_name = "online:{}:{}:{}"
+
+    hours = [datetime(start.year, start.month, start.day, start.hour, tzinfo=pytz.UTC)
+             + timezone.timedelta(hours=x) for x in range(1, 25)]
+
+    data = [(v, [[hour.astimezone(tzinfo).strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                  len(HourEvents.from_date(event_name.format(app_id, platform, v), hour))]
+                 for hour in hours])
+            for v in versions]
+    data = filter(lambda version_data: sum([data[1] for data in version_data[1]]), data)
+    return dict(data)
+
+
+def get_users_live_versions(app_id, tz='UTC'):
+    win_versions = [str(v.version) for v in Version.objects.filter_by_enabled(app__id=app_id)]
+    mac_versions = [str(v.short_version) for v in SparkleVersion.objects.filter_by_enabled(app__id=app_id)]
+
+    win_data = get_versions_data_by_platform(app_id, win_versions, 'win', tz=tz)
+    mac_data = get_versions_data_by_platform(app_id, mac_versions, 'mac', tz=tz)
+
+    data = dict(win=win_data, mac=mac_data)
+
+    return data
 
 
 @valuedispatch
@@ -181,6 +249,7 @@ def collect_statistics(request, ip=None):
 
     if userid:
         userid_counting(userid, apps, request.os.get('platform'))
+        update_live_statistics(userid, apps, request.os.get('platform'))
 
     if not filter(lambda app: bool(app.findall('event')), apps):
         return
