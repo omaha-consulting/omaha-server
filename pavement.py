@@ -102,6 +102,7 @@ def configure_nginx():
         sh("sed -i 's#access_log.*;#access_log /var/log/nginx/access.log main;#g' /etc/nginx/nginx.conf")
         sh("sed -i 's#error_log.*;#error_log /var/log/nginx/error.log;#g' /etc/nginx/nginx.conf")
     server_name = os.environ.get('HOST_NAME', '_')
+    server_name = server_name if server_name != '*' else '_'
     sh("sed -i 's/server_name.*;/server_name %s;/g' /etc/nginx/sites-enabled/nginx-app.conf" % (server_name))
 
 
