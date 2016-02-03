@@ -65,3 +65,4 @@ class CustomSysLogHandler(logging.handlers.SysLogHandler):
             raise
         except:
             self.handleError(record)
+
