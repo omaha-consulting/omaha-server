@@ -27,6 +27,7 @@ AWS_IS_GZIPPED = True
 RAVEN_CONFIG = {
     'dsn': os.environ.get('RAVEN_DNS'),
     'name': HOST_NAME,
+    'release': APP_VERSION,
 }
 
 RAVEN_DSN_STACKTRACE = os.environ.get('RAVEN_DSN_STACKTRACE', RAVEN_CONFIG['dsn'])

@@ -32,7 +32,8 @@ from crash.settings import MINIDUMP_STACKWALK_PATH, SYMBOLS_PATH
 from crash.stacktrace_to_json import pipe_dump_to_json_dump
 
 
-client = Client(getattr(settings, 'RAVEN_DSN_STACKTRACE', None), name=getattr(settings, 'HOST_NAME', None))
+client = Client(getattr(settings, 'RAVEN_DSN_STACKTRACE', None), name=getattr(settings, 'HOST_NAME', None),
+                release=getattr(settings, 'APP_VERSION', None))
 
 
 class FileNotFoundError(Exception):

@@ -22,7 +22,7 @@ from dynamic_preferences_registry import global_preferences_manager as gpm
 dsn = getattr(settings, 'RAVEN_CONFIG', None)
 if dsn:
     dsn = dsn['dsn']
-raven = Client(dsn, name=getattr(settings, 'HOST_NAME', None))
+raven = Client(dsn, name=getattr(settings, 'HOST_NAME', None), release=getattr(settings, 'APP_VERSION', None))
 
 @valuedispatch
 def bulk_delete(cls, qs):
