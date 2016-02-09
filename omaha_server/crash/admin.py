@@ -105,6 +105,7 @@ class CrashAdmin(admin.ModelAdmin):
     search_fields = ('appid', 'userid',)
     form = CrashFrom
     readonly_fields = ('sentry_link_field',)
+    exclude = ('groupid', 'eventid', )
     actions = ('regenerate_stacktrace',)
     inlines = [CrashDescriptionInline]
 
