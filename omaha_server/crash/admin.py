@@ -20,12 +20,18 @@ the License.
 
 from django.contrib import admin
 from django.core.exceptions import ObjectDoesNotExist
+from django.conf import settings
+from django.utils.html import format_html
 
 from celery import signature
 
 from crash.forms import SymbolsAdminForm, CrashFrom
 from crash.models import Crash, CrashDescription, Symbols
 from crash.forms import TextInputForm
+
+SENTRY_DOMAIN = getattr(settings, 'SENTRY_STACKTRACE_DOMAIN', None)
+SENTRY_ORG_SLUG = getattr(settings, 'SENTRY_STACKTRACE_ORG_SLUG', None)
+SENTRY_PROJ_SLUG = getattr(settings, 'SENTRY_STACKTRACE_PROJ_SLUG', None)
 
 
 class BooleanFilter(admin.SimpleListFilter):
@@ -98,6 +104,7 @@ class CrashAdmin(admin.ModelAdmin):
     list_filter = (('id', TextInputFilter,), 'created', CrashArchiveFilter)
     search_fields = ('appid', 'userid',)
     form = CrashFrom
+    readonly_fields = ('sentry_link_field',)
     actions = ('regenerate_stacktrace',)
     inlines = [CrashDescriptionInline]
 
@@ -112,6 +119,23 @@ class CrashAdmin(admin.ModelAdmin):
     def cpu_architecture_field(self, obj):
         return obj.stacktrace_json['system_info']['cpu_arch'] if obj.stacktrace_json else ''
     cpu_architecture_field.short_description = "CPU Architecture"
+
+    def sentry_link_field(self, obj):
+        if not SENTRY_DOMAIN or not SENTRY_ORG_SLUG or not SENTRY_PROJ_SLUG:
+            return "Sentry variables are not set"
+        if not obj.groupid or not obj.eventid:
+            return "No sentry link"
+        link = "http://{}/{}/{}/group/{}/events/{}/".format(
+            SENTRY_DOMAIN,
+            SENTRY_ORG_SLUG,
+            SENTRY_PROJ_SLUG,
+            obj.groupid,
+            obj.eventid
+        )
+        return format_html("<a href='{link}'>{link}</a>".format(link=link))
+
+    sentry_link_field.short_description = "Sentry link"
+    sentry_link_field.allow_tags = True
 
     def summary_field(self, obj):
         try:

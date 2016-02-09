@@ -57,6 +57,8 @@ class Crash(BaseModel):
     stacktrace_json = JSONField(null=True, blank=True)
     signature = models.CharField(max_length=255, db_index=True, null=True, blank=True)
     ip = models.GenericIPAddressField(blank=True, null=True, protocol="ipv4")
+    groupid = models.CharField(max_length=38, null=True, blank=True)
+    eventid = models.CharField(max_length=38, null=True, blank=True)
 
     objects = CrashManager()
 
