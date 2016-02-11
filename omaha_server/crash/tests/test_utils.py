@@ -108,7 +108,8 @@ class SignatureTest(test.TestCase):
 
 class SendStackTraceTest(test.TestCase):
     @patch('crash.utils.client')
-    @test.override_settings(HOST_NAME='example.com')
+    @test.override_settings(HOST_NAME='example.com',
+                            CELERY_EAGER_PROPAGATES_EXCEPTIONS=False,)
     @is_private(False)
     def test_send_stacktrace_sentry(self, mock_client):
         meta = dict(

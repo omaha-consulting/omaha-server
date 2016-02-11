@@ -46,6 +46,7 @@ app:
         SPLUNK_LOGGING_LEVEL: 'INFO'     
         SPLUNK_HOST: 'splunk.example.com'
         SPLUNK_PORT: 9999
+        SENTRY_STACKTRACE_API_KEY: sentry_api_key
         
     omaha-server-public:
       option_settings:
@@ -68,3 +69,4 @@ app:
         SPLUNK_LOGGING_LEVEL: 'INFO'     
         SPLUNK_HOST: 'splunk.example.com'
         SPLUNK_PORT: 9999
+        SENTRY_STACKTRACE_API_KEY: sentry_api_key
