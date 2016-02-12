@@ -178,36 +178,37 @@ app:
 
 #### Environment variables
 
-| Environment variable name |    Description    |       Default value        |
-|---------------------------|-------------------|----------------------------|
-| APP_VERSION               | App version       | DEV                        |
-| DJANGO_SETTINGS_MODULE    |                   | omaha_server.settings_prod |
-| SECRET_KEY                | Django SECRET_KEY |                            |
-| HOST_NAME                 | Eb app host name  |                            |
-| DB_HOST                   | DB Host           | 127.0.0.1                  |
-| DB_USER                   | DB User           | postgres                   |
-| DB_NAME                   | DB Name           | postgres                   |
-| DB_PASSWORD               | DB Password       | ''                         |
-| DB_PORT                   | DB port           | 5432                       |
-| AWS_ACCESS_KEY_ID         | AWS Access Key    |                            |
-| AWS_SECRET_ACCESS_KEY     | AWS Secret Key    |                            |
-| AWS_STORAGE_BUCKET_NAME   | S3 storage bucket |                            |
-| RAVEN_DNS                 | Sentry url        |                            |
-| RAVEN_DSN_STACKTRACE      | Sentry url        | RAVEN_DNS                  |
-| REDIS_HOST                | Redis host        | 127.0.0.1                  |
-| REDIS_PORT                | Redis port        | 6379                       |
-| REDIS_DB                  | Redis db          | 1                          |
-| REDIS_STAT_PORT           | For statistics    | REDIS_PORT                 |
-| REDIS_STAT_HOST           |                   | REDIS_HOST                 |
-| REDIS_STAT_DB             |                   | 15                         |
-| UWSGI_PROCESSES           |                   |                            |
-| UWSGI_THREADS             |                   |                            |
-| OMAHA_SERVER_PRIVATE      | Is private server | False                      |
-| DB_PUBLIC_USER            |                   |                            |
-| DB_PUBLIC_PASSWORD        |                   |                            |
-| AWS_ROLE                  |                   |                            |
-| OMAHA_URL_PREFIX          | no trailing slash!|                            |
-| SENTRY_STACKTRACE_API_KEY | Auth API token    |                            |
+| Environment variable name |    Description     |       Default value        |
+|---------------------------|--------------------|----------------------------|
+| APP_VERSION               | App version        | DEV                        |
+| DJANGO_SETTINGS_MODULE    |                    | omaha_server.settings_prod |
+| SECRET_KEY                | Django SECRET_KEY  |                            |
+| HOST_NAME                 | Eb app host name   |                            |
+| DB_HOST                   | DB Host            | 127.0.0.1                  |
+| DB_USER                   | DB User            | postgres                   |
+| DB_NAME                   | DB Name            | postgres                   |
+| DB_PASSWORD               | DB Password        | ''                         |
+| DB_PORT                   | DB port            | 5432                       |
+| AWS_ACCESS_KEY_ID         | AWS Access Key     |                            |
+| AWS_SECRET_ACCESS_KEY     | AWS Secret Key     |                            |
+| AWS_STORAGE_BUCKET_NAME   | S3 storage bucket  |                            |
+| RAVEN_DNS                 | Sentry url         |                            |
+| RAVEN_DSN_STACKTRACE      | Sentry url         | RAVEN_DNS                  |
+| REDIS_HOST                | Redis host         | 127.0.0.1                  |
+| REDIS_PORT                | Redis port         | 6379                       |
+| REDIS_DB                  | Redis db           | 1                          |
+| REDIS_STAT_PORT           | For statistics     | REDIS_PORT                 |
+| REDIS_STAT_HOST           |                    | REDIS_HOST                 |
+| REDIS_STAT_DB             |                    | 15                         |
+| UWSGI_PROCESSES           |                    |                            |
+| UWSGI_THREADS             |                    |                            |
+| OMAHA_SERVER_PRIVATE      | Is private server  | False                      |
+| DB_PUBLIC_USER            |                    |                            |
+| DB_PUBLIC_PASSWORD        |                    |                            |
+| AWS_ROLE                  |                    |                            |
+| OMAHA_URL_PREFIX          | no trailing slash! |                            |
+| SENTRY_STACKTRACE_API_KEY | Auth API token     |                            |
+| OMAHA_USE_SSL             | HTTPS-only         | False                      |
 
 - [uWSGI Options](http://uwsgi-docs.readthedocs.org/en/latest/Options.html) & [Environment variables](http://uwsgi-docs.readthedocs.org/en/latest/Configuration.html#environment-variables)
 - [Sentry](https://github.com/getsentry/sentry)
@@ -226,6 +227,20 @@ $ ebs-deploy init
 ```shell
 $ ebs-deploy deploy -e omaha-server-dev
 ```
+
+#### HTTPS
+
+1. [Add SSL Certificate for Elastic Load Balancing](https://github.com/Crystalnix/omaha-server/wiki/SSL-Certificate-for-Elastic-Load-Balancing)
+2. Next, just add the following snippet to your file `deploy/settings.yml`
+
+  ```yml
+  # http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/command-options-general.html#command-options-general-elbloadbalancer
+  'aws:elb:loadbalancer':
+    LoadBalancerHTTPSPort: 443
+    LoadBalancerSSLPortProtocol: HTTPS
+    SSLCertificateId: arn:aws:acm:us-east-1:your-ssl-id # ToDo: change on your SSL ID
+  ```
+3. Finally, add environment variable `OMAHA_USE_SSL: true` to the *environment* section.
 
 ## Links
 
