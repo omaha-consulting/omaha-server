@@ -5,7 +5,7 @@
 {% block title %}Crash report{% endblock %}
 
 {% block content %}
-    <h1 class="text-center">Please fill the form</h1>
+    <h1 class="text-center">Please provide crash information</h1>
     <form method="post" class="form">
     {% csrf_token %}
     {% bootstrap_form form %}
