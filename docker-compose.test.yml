@@ -8,7 +8,8 @@ redis:
     file: docker-compose.common.yml
     service: redis
 
-web:
+sut:
+  command: 'true'
   extends:
     file: docker-compose.common.yml
     service: web
