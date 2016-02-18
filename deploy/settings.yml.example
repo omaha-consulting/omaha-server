@@ -24,6 +24,12 @@ app:
           IamInstanceProfile: 'omaha-public'
           SecurityGroups: 'omaha-server,omaha-server-private' # If you use Amazon VPC with Elastic Beanstalk so that your instances are launched within a virtual private cloud (VPC), specify security group IDs instead of a security group name.
 
+        # http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/command-options-general.html#command-options-general-elbloadbalancer
+        'aws:elb:loadbalancer':
+          LoadBalancerHTTPSPort: 443
+          LoadBalancerSSLPortProtocol: HTTPS
+          SSLCertificateId: arn:aws:acm:us-east-1:your-ssl-id
+
         'aws:ec2:vpc':
           VPCId: 'vpc-bb6b9fdf'
           Subnets: 'subnet-e386d5ba'
