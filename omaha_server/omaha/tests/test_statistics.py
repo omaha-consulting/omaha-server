@@ -349,18 +349,8 @@ class GetStatisticsTest(TestCase):
         self.app_list = [dict(appid=self.app.id, version=str(self.version1.version))]
 
         self._generate_fake_statistics()
-        self.users_statistics = [('January', 1),
-                                 ('February', 2),
-                                 ('March', 3),
-                                 ('April', 4),
-                                 ('May', 5),
-                                 ('June', 6),
-                                 ('July', 7),
-                                 ('August', 8),
-                                 ('September', 9),
-                                 ('October', 10),
-                                 ('November', 11),
-                                 ('December', 12)]
+        now = datetime.now()
+        self.users_statistics = [(datetime(now.year, x, 1).strftime("%Y-%m"), x) for x in range(1, 13)]
 
     def tearDown(self):
         redis.flushdb()

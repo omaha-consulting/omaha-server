@@ -19,6 +19,7 @@ the License.
 """
 
 import datetime
+import calendar
 
 from django.http import Http404
 from django.conf import settings
@@ -40,6 +41,7 @@ from omaha.serializers import (
     VersionSerializer,
     ActionSerializer,
     StatisticsMonthsSerializer,
+    MonthRangeSerializer,
     ServerVersionSerializer,
 )
 from omaha.models import (
@@ -51,7 +53,7 @@ from omaha.models import (
     Action,
     AppRequest,
 )
-
+from omaha.utils import get_month_range_from_dict
 
 class BaseView(mixins.ListModelMixin, mixins.CreateModelMixin,
                mixins.DestroyModelMixin, mixins.RetrieveModelMixin,
@@ -170,7 +172,19 @@ class ActionViewSet(BaseView):
 
 class StatisticsMonthsListView(APIView):
     def get(self, request, format=None):
-        data = get_users_statistics_months()
+        dates = MonthRangeSerializer(data=request.GET)
+        dates.is_valid()
+
+        start, end = get_month_range_from_dict(dates.validated_data)
+
+
+        diapasons = [((start.month if year == start.year else 1, end.month if year == end.year else 12), year)
+                     for year in range(start.year, end.year+1)]
+
+        data = []
+        for diapason in diapasons:
+            data += get_users_statistics_months(year=diapason[1], start=diapason[0][0], end=diapason[0][1])
+
         serializer = StatisticsMonthsSerializer(dict(data=dict(data)))
         return Response(serializer.data)
 
@@ -187,16 +201,24 @@ class StatisticsMonthsDetailView(APIView):
 
         now = timezone.now()
         last_week = now - datetime.timedelta(days=7)
+        dates = MonthRangeSerializer(data=request.GET)
+        dates.is_valid()
+
+        start, end = get_month_range_from_dict(dates.validated_data)
+
+        diapasons = [((start.month if year == start.year else 1, end.month if year == end.year else 12), year)
+                     for year in range(start.year, end.year+1)]
+
+        data = []
+        for diapason in diapasons:
+            data += get_users_statistics_months(app_id=app.id, year=diapason[1], start=diapason[0][0], end=diapason[0][1])
 
         qs = AppRequest.objects.filter(appid=app.id,
                                        request__created__range=[last_week, now])
-
-        data = get_users_statistics_months(app_id=app.id)
         data.append(('install_count', qs.filter(events__eventtype=2).count()))
         data.append(('update_count', qs.filter(events__eventtype=3).count()))
         serializer = StatisticsMonthsSerializer(dict(data=dict(data)))
         return Response(serializer.data)
-
 
 class StatisticsVersionsView(APIView):
     def get_object(self, name):

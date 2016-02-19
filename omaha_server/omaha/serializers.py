@@ -86,6 +86,10 @@ class VersionSerializer(serializers.HyperlinkedModelSerializer):
 class StatisticsMonthsSerializer(serializers.Serializer):
     data = serializers.DictField()
 
+class MonthRangeSerializer(serializers.Serializer):
+    start = serializers.DateTimeField(input_formats=['%Y-%m'])
+    end = serializers.DateTimeField(input_formats=['%Y-%m'])
+
 
 class ServerVersionSerializer(serializers.Serializer):
     version = serializers.CharField()

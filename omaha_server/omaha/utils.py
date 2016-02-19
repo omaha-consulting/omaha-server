@@ -19,10 +19,14 @@ the License.
 """
 
 from functools import wraps
+import datetime
+import calendar
 
 from singledispatch import singledispatch
 from django_redis import get_redis_connection
 from redis.exceptions import WatchError
+from django.utils import timezone
+
 from omaha.settings import KEY_PREFIX, KEY_LAST_ID
 
 __all__ = ['get_sec_since_midnight', 'get_id']
@@ -139,3 +143,18 @@ def make_discrete_bar_chart(id, data):
         },
     }
     return data
+
+
+def get_month_range_from_dict(source):
+    """
+    :param request: dictionary with keys 'start' and 'end
+    :return: a tuple of datatime objects in the form (start, end)
+    """
+    now = timezone.now()
+    start = source.get('start')
+    if not start:
+        start = datetime.datetime(now.year-1, now.month+1, 1) if now.month != 12 else datetime.datetime(now.year, now.month, 1)
+
+    end = source.get('end', datetime.datetime(now.year, now.month, calendar.monthrange(now.year, now.month)[1]))
+    return start, end
+

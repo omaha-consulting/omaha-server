@@ -16,7 +16,12 @@
 {% endblock %}
 
 {% block extrahead %}
+    <link rel="stylesheet" type="text/css" media="screen"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.1/css/bootstrap-datepicker.min.css">
     <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.1/js/bootstrap-datepicker.min.js">
+    </script>
     {% include_chart_jscss %}
     {% load_chart months.charttype months.chartdata months.chartcontainer months.extra %}
     {% load_chart weeks.charttype weeks.chartdata weeks.chartcontainer weeks.extra %}
@@ -25,7 +30,6 @@
 {% block content %}
 
     <h2>Applications</h2>
-
     <ul class="">
     {% for app in app_list %}
         <li>
@@ -35,6 +39,28 @@
     </ul>
 
     <h2>Users</h2>
+
+    <p>Statistics in the range from {{ range_start }} to {{ range_end }}</p>
+
+    <form class="form-inline" action="" method="get">
+        <span class="input-daterange">
+            {{ form.start.label }}
+            {{ form.start }}
+            {{ form.end }}
+        </span>
+        <input class="btn btn-primary" type="submit" value="Filter">
+    </form>
+
     {% include_container months.chartcontainer 400 1200 %}
     {% include_container weeks.chartcontainer 400 600 %}
+
+    <script type="text/javascript">
+    $('.input-daterange').datepicker({
+        format: "yyyy-mm",
+        startView: 1,
+        minViewMode: 1,
+        todayBtn: "linked",
+        clearBtn: true
+    });
+    </script>
 {% endblock %}
