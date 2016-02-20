@@ -9,7 +9,7 @@ import omaha.api
 import sparkle.api
 import crash.api
 import feedback.api
-
+import downloads.api
 
 router = routers.DefaultRouter()
 router.register(r'app', omaha.api.AppViewSet)
@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'', include('feedback.urls')),
     url(r'^healthcheck/', include('healthcheck.urls')),
     url(r'^sparkle/', include('sparkle.urls')),
+    url(r'^api/downloads', downloads.api.LatestVersionView.as_view(), name='api-downloads'),
 ]
 
 if settings.IS_PRIVATE:
