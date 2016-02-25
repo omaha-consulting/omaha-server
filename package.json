@@ -2,7 +2,7 @@
   "name": "omaha-pages",
   "dependencies": {},
   "devDependencies": {
-    "aglio": "^1.17.1"
+    "aglio": "^2.2.0"
   },
   "repository": {
     "type": "git",
