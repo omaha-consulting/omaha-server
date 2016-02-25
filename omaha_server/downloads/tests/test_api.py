@@ -1,29 +1,16 @@
-import base64
-from builtins import bytes, range
 import json
-from collections import defaultdict
 
-from rest_framework import status
-from rest_framework.test import APITestCase, APIClient
-from django.contrib.auth import get_user_model
-from django.core.files.uploadedfile import SimpleUploadedFile
+from rest_framework.test import APITestCase
 from django.db import connections
 
-from omaha_server.utils import is_private
 from omaha.factories import VersionFactory, ApplicationFactory, ChannelFactory
 from sparkle.factories import SparkleVersionFactory
 
-
-User = get_user_model()
 
 class DownloadsTest(APITestCase):
     maxDiff = None
 
     def setUp(self):
-        self.user = User.objects.create_user(username='test', password='secret', email='test@example.com')
-        self.client.credentials(
-            HTTP_AUTHORIZATION='Basic %s' % base64.b64encode(bytes('{}:{}'.format('test', 'secret'), 'utf8')).decode())
-
         self.app = ApplicationFactory(name='TestApp')
         self.channel = ChannelFactory(name='alpha')
         self.stable_channel = ChannelFactory(name='stable')
@@ -64,12 +51,6 @@ class DownloadsTest(APITestCase):
                 }
             }
         }
-
-    @is_private()
-    def test_unauthorized(self):
-        client = APIClient()
-        response = client.get('/api/downloads', format='json')
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test(self):
         if connections['default'].settings_dict['ENGINE'] != 'django.db.backends.postgresql_psycopg2':

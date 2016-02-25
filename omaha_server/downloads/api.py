@@ -36,6 +36,8 @@ class LatestVersionView(APIView):
     """
     API returns an information about the latest versions of applications available on the server. The information contains supported platforms, provided channels, version numbers and download links.
     """
+    permission_classes = []
+
     def get(self, request, format=None):
         win_versions = Version.objects.filter_by_enabled()\
             .select_related('app__name', 'channel__name')\
