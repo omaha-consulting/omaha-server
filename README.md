@@ -224,7 +224,7 @@ app:
 | AWS_ROLE                  |                    |                            |
 | OMAHA_URL_PREFIX          | no trailing slash! |                            |
 | SENTRY_STACKTRACE_API_KEY | Auth API token     |                            |
-| OMAHA_USE_SSL             | HTTPS-only         | False                      |
+| OMAHA_ONLY_HTTPS          | HTTPS-only         | False                      |
 
 - [uWSGI Options](http://uwsgi-docs.readthedocs.org/en/latest/Options.html) & [Environment variables](http://uwsgi-docs.readthedocs.org/en/latest/Configuration.html#environment-variables)
 - [Sentry](https://github.com/getsentry/sentry)
@@ -244,7 +244,7 @@ $ ebs-deploy init
 $ ebs-deploy deploy -e omaha-server-dev
 ```
 
-#### HTTPS
+#### Enable HTTPS
 
 1. [Add SSL Certificate for Elastic Load Balancing](https://github.com/Crystalnix/omaha-server/wiki/SSL-Certificate-for-Elastic-Load-Balancing)
 2. Next, just add the following snippet to your file `deploy/settings.yml`
@@ -256,7 +256,8 @@ $ ebs-deploy deploy -e omaha-server-dev
     LoadBalancerSSLPortProtocol: HTTPS
     SSLCertificateId: arn:aws:acm:us-east-1:your-ssl-id # ToDo: change on your SSL ID
   ```
-3. Finally, add environment variable `OMAHA_USE_SSL: true` to the *environment* section.
+3. Finally, in the case if you want to redirect all HTTP traffic to HTTPS, you can add `OMAHA_ONLY_HTTPS: true` to environment variables in the *environment* section.
+*Warning:* Please, don't activate the redirection of HTTP to HTTPS if you don't enable HTTPS. It will lead to that an Omaha server won't be accessible.
 
 ## Links
 
