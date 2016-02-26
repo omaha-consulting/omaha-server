@@ -20,7 +20,7 @@ PROJECT_DIR = BASE_DIR
 
 IS_PRIVATE = True if os.getenv('OMAHA_SERVER_PRIVATE', '').title() == 'True' else False
 
-if os.getenv('OMAHA_USE_SSL'):
+if os.getenv('OMAHA_ONLY_HTTPS'):
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
