@@ -1,15 +1,9 @@
 # Group Downloads Portal
 API returns an information about the latest versions of applications available on the server. The information contains supported platforms, provided channels, version numbers and download links.
 
-## Latest Available Versions [/api]
+## Latest Available Versions [/api/downloads]
 
 ### Get Latest Versions [GET]
-
-+ Request (application/json)
-    
-    + Headers
-    
-            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
             
 + Response 200 (application/json)
     
