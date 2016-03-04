@@ -97,7 +97,7 @@ request_data = b"""<?xml version="1.0" encoding="UTF-8"?>
 
 response_update_check_negative = b"""<?xml version="1.0" encoding="UTF-8"?>
 <response protocol="3.0" server="prod">
-  <daystart elapsed_seconds="56508"/>
+  <daystart elapsed_seconds="56508" elapsed_days="2557"/>
   <app appid="{430FD4D0-B729-4F61-AA34-91526481799D}" status="ok">
     <updatecheck status="noupdate"/>
     <ping status="ok"/>
@@ -110,7 +110,7 @@ response_update_check_negative = b"""<?xml version="1.0" encoding="UTF-8"?>
 
 response_update_check_positive = b"""<?xml version="1.0" encoding="UTF-8"?>
 <response protocol="3.0" server="prod">
-  <daystart elapsed_seconds="56508"/>
+  <daystart elapsed_seconds="56508" elapsed_days="2557"/>
   <app appid="{430FD4D0-B729-4F61-AA34-91526481799D}" status="ok">
     <updatecheck status="noupdate"/>
     <ping status="ok"/>
@@ -136,7 +136,7 @@ response_update_check_positive = b"""<?xml version="1.0" encoding="UTF-8"?>
 
 response_event = b"""<?xml version="1.0" encoding="UTF-8"?>
 <response protocol="3.0" server="prod">
-  <daystart elapsed_seconds="56754"/>
+  <daystart elapsed_seconds="56754" elapsed_days="2557"/>
   <app appid="{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}" status="ok">
     <event status="ok"/>
     <event status="ok"/>
@@ -146,7 +146,7 @@ response_event = b"""<?xml version="1.0" encoding="UTF-8"?>
 
 response_data_doc = b"""<?xml version="1.0" encoding="UTF-8"?>
 <response protocol="3.0" server="prod">
-  <daystart elapsed_seconds="56754"/>
+  <daystart elapsed_seconds="56754" elapsed_days="2557"/>
   <app appid="{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}" status="ok">
     <data index="verboselogging" name="install" status="ok">
       app-specific values here
@@ -157,7 +157,7 @@ response_data_doc = b"""<?xml version="1.0" encoding="UTF-8"?>
 
 response_data = b"""<?xml version="1.0" encoding="UTF-8"?>
 <response protocol="3.0" server="prod">
-  <daystart elapsed_seconds="56754"/>
+  <daystart elapsed_seconds="56754" elapsed_days="2557"/>
   <app status="ok" appid="{430FD4D0-B729-4F61-AA34-91526481799D}">
     <data status="ok" index="verboselogging" name="install">app-specific values here</data>
     <data status="ok" name="untrusted"/>
