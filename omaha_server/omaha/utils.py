@@ -47,6 +47,19 @@ def get_sec_since_midnight(date):
     return delta.seconds
 
 
+def get_days_since_20070101(date):
+    """
+    Return days since 2007-01-01
+
+    >>> from datetime import datetime
+    >>> get_days_since_20070101(datetime(year=2016, month=3, day=4))
+    3350
+    """
+    date_20070101 = datetime.datetime(year=2007, month=1, day=1, tzinfo=date.tzinfo)
+    delta = date - date_20070101
+    return delta.days
+
+
 def get_id(uuid):
     """
     >>> get_id('{8C65E04C-0383-4AE2-893F-4EC7C58F70DC}')
