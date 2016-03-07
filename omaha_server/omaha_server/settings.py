@@ -135,6 +135,7 @@ if IS_PRIVATE:
         'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
         'django.contrib.messages.middleware.MessageMiddleware',
         'omaha_server.middlewares.TimezoneMiddleware',
+        'omaha_server.middlewares.CUP2Middleware',
     ) + MIDDLEWARE_CLASSES
 
 ROOT_URLCONF = 'omaha_server.urls'
@@ -308,3 +309,11 @@ REST_FRAMEWORK = {
 # django_select2
 
 AUTO_RENDER_SELECT2_STATICS = False
+
+# Client Update Protocol
+
+CUP_REQUEST_VALIDATION = os.environ.get('CUP_REQUEST_VALIDATION', False)
+
+CUP_PEM_KEYS = {
+    # 'keyid': 'private_key_path',
+}

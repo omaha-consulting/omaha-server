@@ -227,6 +227,7 @@ app:
 | OMAHA_URL_PREFIX          | no trailing slash! |                            |
 | SENTRY_STACKTRACE_API_KEY | Auth API token     |                            |
 | OMAHA_ONLY_HTTPS          | HTTPS-only         | False                      |
+| CUP_REQUEST_VALIDATION    |                    | False                      |
 
 - [uWSGI Options](http://uwsgi-docs.readthedocs.org/en/latest/Options.html) & [Environment variables](http://uwsgi-docs.readthedocs.org/en/latest/Configuration.html#environment-variables)
 - [Sentry](https://github.com/getsentry/sentry)
@@ -260,6 +261,12 @@ $ ebs-deploy deploy -e omaha-server-dev
   ```
 3. Finally, in the case if you want to redirect all HTTP traffic to HTTPS, you can add `OMAHA_ONLY_HTTPS: true` to environment variables in the *environment* section.
 *Warning:* Please, don't activate the redirection of HTTP to HTTPS if you don't enable HTTPS. It will lead to that an Omaha server won't be accessible.
+
+#### Enable Client Update Protocol v2
+
+1. Use [Omaha eckeytool](https://github.com/google/omaha/tree/master/omaha/tools/eckeytool) to generate private.pem key and cup_ecdsa_pubkey.{KEYID}.h files.
+2. Add cup_ecdsa_pubkey.{KEYID}.h to Omaha source directory /path/to/omaha/omaha/net/, set CupEcdsaRequestImpl::kCupProductionPublicKey in /path/to/omaha/omaha/net/cup_ecdsa_request.cc to new key and build Omaha client.
+3. Add private.pem keyid and path to omaha CUP_PEM_KEYS dictionary.
 
 ## Links
 
