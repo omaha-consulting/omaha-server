@@ -1,10 +1,34 @@
-function get_versions(data){
+var macChartData, macChart, winChartData, winChart;
+
+function applyRange() {
+    var app_name = document.getElementById('app_name').dataset.name;
+    var $start = $("#range-start input");
+    var $end = $("#range-end input");
+    var start = moment($start.val(), 'YYYY-MM-DD HH:mm:ss', true).utc();
+    var end = moment($end.val(), 'YYYY-MM-DD HH:mm:ss', true).utc();
+
+    if (start > end){
+        var tmp = start;
+        start = end;
+        end = tmp;
+        $start.val(start.format('YYYY-MM-DD HH:mm:ss'));
+        $end.val(end.format('YYYY-MM-DD HH:mm:ss'));
+    }
+    updateGraph({
+        app_name: app_name,
+        start: start.isValid() ? start.format(): '',
+        end: end.isValid() ? end.format(): ''
+    })
+}
+
+
+function getVersions(data){
     return Object.keys(data).sort();
 }
 
 
-function get_data(data){
-    return get_versions(data).map(function(d){
+function getData(data){
+    return getVersions(data).map(function(d){
         return {
             key: d,
             values: data[d]
@@ -13,7 +37,7 @@ function get_data(data){
 }
 
 
-function get_hours(data){
+function getHours(data){
     if (Object.keys(data).length) {
         return data[Object.keys(data)[0]].map(function (d) {
             return new Date(d[0])
@@ -23,62 +47,106 @@ function get_hours(data){
 }
 
 
-$(document).ready(function() {
-    var app = document.getElementById('app_name');
-    var app_name = app.dataset.name;
+function getLiveStatisticsAPIurl(options){
+    var url = "/api/statistics/live/" + options['app_name'] + "/";
+    var start = options['start'];
+    var end = options['end'];
+    if (start || end){
+        url += "?";
+        url += start ? 'start=' + start + '&': '';
+        url += end ? 'end=' + end: '';
+    }
+    return url.replace(/\+/g, '%2B');
+}
+
+
+function makePlatformGraph(chartName, chartDataName, data, platform){
+    nv.addGraph(function () {
+        var graphSelector = ''.concat('#', platform, '-chart svg');
+        var hours = getHours(data);
+        var tickSize = Math.ceil(hours.length / 8);
+        var chart = nv.models.stackedAreaChart()
+                .x(function(d) { return new Date(d[0]) })
+                .y(function(d) { return d[1] })
+                .useInteractiveGuideline(true)
+                .showControls(false);
+
+        chart.xAxis.showMaxMin(false)
+            .tickValues(hours.filter(function(d, i){
+                return !(i % tickSize);
+            }))
+            .tickFormat(function (d) {
+                return d3.time.format('%b %d %I:%M %p')(new Date(d));
+            });
+
+        chart.duration(1000);
+        var chartData = d3.select(graphSelector)
+            .datum(getData(data)).call(chart);
+
+        nv.utils.windowResize(chart.update);
+
+        window[chartName] = chart;
+        window[chartDataName] = chartData;
+        return chart;
+    });
+}
+
+
+function makeGraph(options){
     $.ajax({
-        url: "/api/statistics/live/" + app_name, success: function (result) {
+        url: getLiveStatisticsAPIurl(options),
+        success: function (result) {
             var data = result.data;
-
-            nv.addGraph(function () {
-                var local_data=data.win;
-                var chart = nv.models.stackedAreaChart()
-                        .x(function(d) { return new Date(d[0]) })
-                        .y(function(d) { return d[1] })
-                        .useInteractiveGuideline(true)
-                        .showControls(false);
-
-                chart.xAxis.showMaxMin(false)
-                    .tickValues(get_hours(local_data).filter(function(d, i){
-                        return !(i%3);
-                    }))
-                    .tickFormat(function (d) {
-                        return d3.time.format('%b %d %I:%M %p')(new Date(d));
-                    });
-
-                chart.duration(1000);
-                d3.select('#win-chart svg')
-                    .datum(get_data(local_data)).call(chart);
-
-                nv.utils.windowResize(chart.update);
-
-                return chart;
-            });
-
-            nv.addGraph(function () {
-                var local_data=data.mac;
-                var chart = nv.models.stackedAreaChart()
-                        .x(function(d) { return new Date(d[0]) })
-                        .y(function(d) { return d[1] })
-                        .useInteractiveGuideline(true)
-                        .showControls(false);
-
-                chart.xAxis.showMaxMin(false)
-                    .tickValues(get_hours(local_data).filter(function(d, i){
-                        return !(i%3);
-                    }))
-                    .tickFormat(function (d) {
-                        return d3.time.format('%b %d %I:%M %p')(new Date(d));
-                    });
-
-                chart.duration(1000);
-                d3.select('#mac-chart svg')
-                    .datum(get_data(local_data)).call(chart);
-
-                nv.utils.windowResize(chart.update);
-
-                return chart;
-            });
+            makePlatformGraph('winChart', 'winChartData', data.win, 'win');
+            makePlatformGraph('macChart', 'macChartData', data.mac, 'mac');
         }
     });
+}
+
+
+function updatePlatformGraph(chart, chartData, data){
+    var hours = getHours(data);
+    var tickSize = Math.ceil(hours.length / 8);
+    chart.xAxis.showMaxMin(false)
+        .tickValues(hours.filter(function(d, i){
+            return !(i % tickSize);
+        }));
+
+    chartData.datum(getData(data)).transition().duration(1000).call(chart);
+    nv.utils.windowResize(chart.update);
+}
+
+
+function updateGraph(options){
+    var $ajaxCompleted = $('#ajax-completed');
+    var $ajaxLoading = $('#ajax-loading');
+    var $ajaxButton = $('#btn-apply');
+
+    $ajaxLoading.show();
+    $ajaxCompleted.hide();
+    $ajaxButton.prop( "disabled", true );
+    $.ajax({
+        url: getLiveStatisticsAPIurl(options),
+        success: function (result) {
+            var data = result.data;
+            updatePlatformGraph(winChart, winChartData, data.win);
+            updatePlatformGraph(macChart, macChartData, data.mac);
+        },
+        complete: function() {
+            $ajaxLoading.hide();
+            $ajaxCompleted.show();
+            $ajaxButton.prop( "disabled", false);
+        }
+    });
+}
+
+
+$(document).ready(function() {
+    var now = moment()
+    $("#range-end input").val(now.format('YYYY-MM-DD HH:mm:00'));
+    $("#range-start input").val(now.subtract(1, 'days').format('YYYY-MM-DD HH:mm:00'));
+    $('#btn-apply').click(applyRange);
+    var app = document.getElementById('app_name');
+    var app_name = app.dataset.name;
+    makeGraph({app_name:app_name});
 });
