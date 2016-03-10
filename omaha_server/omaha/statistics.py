@@ -142,14 +142,13 @@ def get_users_versions(app_id):
     return filter(lambda x: x[1], data)
 
 
-def get_versions_data_by_platform(app_id, versions, platform, tz='UTC'):
+def get_versions_data_by_platform(app_id, end, n_hours, versions, platform, tz='UTC'):
     tzinfo = pytz.timezone(tz)
-    now = timezone.now()
-    start = now - timezone.timedelta(days=1)
+    start = end - timezone.timedelta(hours=n_hours)
     event_name = "online:{}:{}:{}"
 
     hours = [datetime(start.year, start.month, start.day, start.hour, tzinfo=pytz.UTC)
-             + timezone.timedelta(hours=x) for x in range(1, 25)]
+             + timezone.timedelta(hours=x) for x in range(1, n_hours + 1)]
 
     data = [(v, [[hour.astimezone(tzinfo).strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                   len(HourEvents.from_date(event_name.format(app_id, platform, v), hour))]
@@ -159,12 +158,16 @@ def get_versions_data_by_platform(app_id, versions, platform, tz='UTC'):
     return dict(data)
 
 
-def get_users_live_versions(app_id, tz='UTC'):
+def get_users_live_versions(app_id, start, end, tz='UTC'):
     win_versions = [str(v.version) for v in Version.objects.filter_by_enabled(app__id=app_id)]
     mac_versions = [str(v.short_version) for v in SparkleVersion.objects.filter_by_enabled(app__id=app_id)]
 
-    win_data = get_versions_data_by_platform(app_id, win_versions, 'win', tz=tz)
-    mac_data = get_versions_data_by_platform(app_id, mac_versions, 'mac', tz=tz)
+    tmp_hours = divmod((end - start).total_seconds(), 60*60)
+    n_hours = tmp_hours[0]+1
+    n_hours = int(n_hours)
+
+    win_data = get_versions_data_by_platform(app_id, end, n_hours, win_versions, 'win', tz=tz)
+    mac_data = get_versions_data_by_platform(app_id, end, n_hours, mac_versions, 'mac', tz=tz)
 
     data = dict(win=win_data, mac=mac_data)
 

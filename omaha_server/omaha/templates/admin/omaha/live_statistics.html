@@ -25,27 +25,73 @@
 {% endblock %}
 
 {% block extrahead %}
-    <link media="all" href="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.1-alpha/nv.d3.min.css" type="text/css" rel="stylesheet" />
+    <link media="all" href="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.1-alpha/nv.d3.min.css" type="text/css"
+          rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" media="screen"
+          href="http://tarruda.github.com/bootstrap-datetimepicker/assets/css/bootstrap-datetimepicker.min.css">
 {% endblock %}
 
 {% block extrajs %}
     {{ block.super }}
-    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.14/d3.min.js" type="text/javascript" charset="utf-8"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.1-alpha/nv.d3.min.js" type="text/javascript" charset="utf-8"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.14/d3.min.js" type="text/javascript"
+            charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/nvd3/1.8.1-alpha/nv.d3.min.js" type="text/javascript"
+            charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js" type="text/javascript"
+            charset="utf-8"></script>
+    <script type="text/javascript"
+            src="http://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.min.js">
+    </script>
     <script src='{% static "statistics/js/live_charts.js" %}'></script>
+    <script type="text/javascript">
+        $('.datetimepicker').datetimepicker({
+            format: 'yyyy-MM-dd hh:mm:00',
+            pickSeconds: false,
+            startDate: function () {
+                var d = new Date();
+                d.setDate(d.getDate() - 7);
+                return d;
+            }(),
+            endDate: new Date()
+        });
+    </script>
+
 {% endblock %}
 
 {% block content %}
     <h1 data-name='{{ app.name }}' id="app_name">{{ app.name|title }}</h1>
+
+    <div style="display: table">
+        Filter live statistics by range:
+        <p id='range-start' class="datetimepicker input-append date"
+           style="display: table-cell; vertical-align: middle; padding: 0 10px">
+            <input type="text" placeholder="Start">
+          <span class="add-on">
+            <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+          </span>
+        </p>
+        -
+        <p id='range-end' class="datetimepicker input-append date"
+           style="display: table-cell; vertical-align: middle; padding: 0 10px">
+            <input type="text" placeholder="End">
+          <span class="add-on">
+            <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+          </span>
+        </p>
+
+        <button id="btn-apply" class="btn">
+            <span id="ajax-completed">Apply</span>
+            <img id="ajax-loading" src="{% static "statistics/gif/ajax_loader.gif" %}" hidden/>
+        </button>
+    </div>
+
     <h2>Windows users</h2>
     <div id="win-chart">
-      <svg style="width:1200px;height:400px;"></svg>
+        <svg style="width:1200px;height:400px;"></svg>
     </div>
 
     <h2>Mac users</h2>
     <div id="mac-chart">
-      <svg style="width:1200px;height:400px;"></svg>
+        <svg style="width:1200px;height:400px;"></svg>
     </div>
 {% endblock %}

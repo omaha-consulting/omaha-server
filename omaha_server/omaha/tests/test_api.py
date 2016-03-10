@@ -21,7 +21,7 @@ from __future__ import unicode_literals
 from builtins import bytes, range
 
 import base64
-from datetime import datetime
+from datetime import datetime, timedelta
 from uuid import UUID
 
 from django.core.urlresolvers import reverse
@@ -31,8 +31,6 @@ from django.conf import settings
 
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
-from freezegun import freeze_time
-
 from bitmapist import mark_event
 from freezegun import freeze_time
 import pytz
@@ -226,17 +224,16 @@ class LiveStatistics(APITestCase):
     maxDiff = None
 
     def _generate_fake_statistics(self):
-        now = datetime(2016, 2, 13)
-
+        # now = datetime(2016, 2, 13)
+        date = datetime(2016, 2, 13, 0)
         for i in range(self.n_hours):
-            date = datetime(now.year, now.month, now.day, i)
             for id in range(0, i):
                 mark_event('online:app:win:2.0.0.0', id, now=date, track_hourly=True)
-
                 mark_event('online:app:mac:4.0.0.1', id, now=date, track_hourly=True)
             for id in range(i, self.n_hours):
                 mark_event('online:app:win:1.0.0.0', id, now=date, track_hourly=True)
                 mark_event('online:app:mac:3.0.0.0', id, now=date, track_hourly=True)
+            date += timedelta(hours=1)
 
 
     def setUp(self):
@@ -276,18 +273,20 @@ class LiveStatistics(APITestCase):
             short_version='4.0.0.1',
             file=SimpleUploadedFile('./chrome_installer.dmg', False))
 
-        self.n_hours = 24
+        self.n_hours = 36
         self._generate_fake_statistics()
 
-        self.win_statistics = [('1.0.0.0', [[datetime(2016, 2, 13, hour, tzinfo=pytz.UTC).strftime("%Y-%m-%dT%H:%M:%S.%fZ"), self.n_hours - hour]
-                                            for hour in range(self.n_hours)])]
-        self.win_statistics.append(('2.0.0.0', [[datetime(2016, 2, 13, hour, tzinfo=pytz.UTC).strftime("%Y-%m-%dT%H:%M:%S.%fZ"), hour]
-                                                for hour in range(self.n_hours)]))
+        hours = [datetime(2016, 2, 13, 0, tzinfo=pytz.UTC) + timedelta(hours=hour)
+                 for hour in range(self.n_hours)]
+        self.win_statistics = [('1.0.0.0', [[hour.strftime("%Y-%m-%dT%H:%M:%S.%fZ"), self.n_hours - i]
+                                            for (i, hour)in enumerate(hours)])]
+        self.win_statistics.append(('2.0.0.0', [[hour.strftime("%Y-%m-%dT%H:%M:%S.%fZ"), i]
+                                                for (i, hour)in enumerate(hours)]))
 
-        self.mac_statistics = [('3.0.0.0', [[datetime(2016, 2, 13, hour, tzinfo=pytz.UTC).strftime("%Y-%m-%dT%H:%M:%S.%fZ"), self.n_hours - hour]
-                                            for hour in range(self.n_hours)])]
-        self.mac_statistics.append(('4.0.0.1', [[datetime(2016, 2, 13, hour, tzinfo=pytz.UTC).strftime("%Y-%m-%dT%H:%M:%S.%fZ"), hour]
-                                                for hour in range(self.n_hours)]))
+        self.mac_statistics = [('3.0.0.0', [[hour.strftime("%Y-%m-%dT%H:%M:%S.%fZ"), self.n_hours - i]
+                                            for (i, hour)in enumerate(hours)])]
+        self.mac_statistics.append(('4.0.0.1', [[hour.strftime("%Y-%m-%dT%H:%M:%S.%fZ"), i]
+                                                for (i, hour)in enumerate(hours)]))
 
         self.data = dict(data=dict(win=dict(self.win_statistics),
                                    mac=dict(self.mac_statistics)))
@@ -300,8 +299,11 @@ class LiveStatistics(APITestCase):
 
     @is_private()
     def test_list(self):
-        with freeze_time("2016-02-13 23:00:01"):
-            response = self.client.get(reverse('api-statistics-live', args=('app',)), format='json')
+        start = datetime(2016, 2, 13, 0)
+        end = start + timedelta(hours=self.n_hours-1)
+        response = self.client.get(reverse('api-statistics-live', args=('app',)),
+                                   dict(start=start.isoformat(), end=end.isoformat()),
+                                   format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertDictEqual(StatisticsMonthsSerializer(self.data).data, response.data)
 
