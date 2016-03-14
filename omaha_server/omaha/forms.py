@@ -119,12 +119,3 @@ class CrashManualCleanupForm(ManualCleanupForm):
         task_kwargs = super(CrashManualCleanupForm, self).get_task_kwargs()
         task_kwargs.update(dict(limit_duplicated=self.cleaned_data['limit_duplicated']))
         return task_kwargs
-
-class MonthRangeForm(forms.Form):
-    start = forms.DateTimeField(input_formats=['%Y-%m'], label='Filter statistics by range:',
-                                widget=forms.TextInput(attrs={'class': 'input-small', 'placeholder': 'Start'}))
-    end = forms.DateTimeField(input_formats=['%Y-%m'], widget=forms.TextInput(attrs={'class': 'input-small', 'placeholder': 'End'}))
-
-    def __init__(self, *args, **kwargs):
-        kwargs['data'] = kwargs.pop('initial', None)
-        super(MonthRangeForm, self).__init__(*args, **kwargs)

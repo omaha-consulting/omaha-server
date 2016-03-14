@@ -22,7 +22,6 @@ router.register(r'sparkle/version', sparkle.api.SparkleVersionViewSet)
 router.register(r'symbols', crash.api.SymbolsViewSet)
 router.register(r'crash_report', crash.api.CrashViewSet)
 router.register(r'feedback', feedback.api.FeedbackViewSet)
-router.register(r'statistics/months', omaha.api.StatisticsMonthsListView, 'api-statistics-months')
 router.register(r'statistics/live', omaha.api.StatisticsVersionsLiveView, 'api-statistics-live')
 
 urlpatterns = [
@@ -46,7 +45,6 @@ if settings.IS_PRIVATE:
             name="api-statistics-months-detail"),
         url(r'^api/statistics/live/(?P<app_name>[a-zA-Z0-9_ ]+)/$', omaha.api.StatisticsVersionsLiveView.as_view(),
             name="api-statistics-live"),
-        url(r'^api/statistics/months/$', omaha.api.StatisticsMonthsListView.as_view(), name="api-statistics-months-list"),
         url(r'^api/version', omaha.api.ServerVersionView.as_view(), name='api-version'),
         url(r'^api/', include(router.urls)),
         url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),

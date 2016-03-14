@@ -2,7 +2,7 @@
 {% load nvd3_tags %}
 {% load suit_tags %}
 {% load render_table from django_tables2 %}
-
+{% load staticfiles %}
 {% block title %}Statistics | {{ 'ADMIN_NAME'|suit_conf }}{% endblock %}
 
 {% block breadcrumbs %}
@@ -23,18 +23,39 @@
 {% block extrahead %}
     <link rel="stylesheet" type="text/css" media="screen"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.1/css/bootstrap-datepicker.min.css">
+    <link rel="stylesheet" type="text/css" media="screen"
+	          href="https://cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" media="screen"
+	          href='{% static "statistics/css/statistics.css" %}'>
+    {% include_chart_jscss %}
+
+{% endblock %}
+
+{% block extrajs %}
+    {{ block.super }}
     <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script type="text/javascript"
             src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.1/js/bootstrap-datepicker.min.js"></script>
-    {% include_chart_jscss %}
-    {% load_chart months.charttype months.chartdata months.chartcontainer months.extra %}
-    {% load_chart weeks.charttype weeks.chartdata weeks.chartcontainer weeks.extra %}
-    {% load_chart versions.charttype versions.chartdata versions.chartcontainer versions.extra %}
-    {% load_chart channels.charttype channels.chartdata channels.chartcontainer channels.extra %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+    <script src='{% static "statistics/js/month_charts.js" %}'></script>
+    <script src='{% static "statistics/js/version_charts.js" %}'></script>
+    <script src='{% static "statistics/js/channel_charts.js" %}'></script>
+    <script type="text/javascript">
+    $('.input-datepicker').datepicker({
+        format: "yyyy-mm",
+        startView: 1,
+        minViewMode: 1,
+        todayBtn: "linked",
+        clearBtn: true,
+        startDate: moment('{{ start_date }}').utc().format('YYYY-MM'),
+        autoclose: true
+    });
+    </script>
 {% endblock %}
 
 {% block content %}
-    <h1>{{ app.name|title }}</h1>
+    <h1 data-name='{{ app.name }}' data-start-date={{ start_date }} id="app_name">{{ app.name|title }}</h1>
 
     <a href="{% url "omaha_live_statistics" app.name %}" class="btn">Live Statistics</a>
     <a href="{% url "omaha_request_list" app.name %}" class="btn">View Requests & Events</a>
@@ -42,46 +63,108 @@
 
     <hr/>
 
-    <h2>Last week</h2>
+    <h2>Monthly Statistics</h2>
 
-    <div>
-        <ul>
-            <li>New Installations: <strong>{{ install_count }}</strong></li>
-            <li>Updates: <strong>{{ update_count }}</strong></li>
-        </ul>
-    </div>
-
-    <h2>Users</h2>
-
-    <p>Statistics in the range from {{ range_start }} to {{ range_end }}</p>
-
-    <form class="form-inline" action="" method="get">
-        <span class="input-daterange">
-            {{ form.start.label }}
-            {{ form.start }}
-            {{ form.end }}
-        </span>
-        <input class="btn btn-primary" type="submit" value="Filter">
+    <form id="month-statistics" class="form-inline center" action="">
+        Filter months:
+        <input type="text" class="input-small input-datepicker" placeholder="Start" name="start">
+        to
+        <input type="text" class="input-small input-datepicker" placeholder="End" name="end">
+        <button type="button" class="btn">
+            <span id="ajax-completed">Apply</span>
+            <img id="ajax-loading" src="{% static "statistics/gif/ajax_loader.gif" %}" hidden/>
+        </button>
     </form>
 
-    {% include_container months.chartcontainer 400 1200 %}
-    {% include_container weeks.chartcontainer %}
+    <h2 align="center">Windows users</h2>
+    <div id="win-months-chart" class="bar-chart">
+      <svg></svg>
+    </div>
+
+    <h2 align="center">Mac users</h2>
+    <div id="mac-months-chart" class="bar-chart">
+      <svg></svg>
+    </div>
 
     <hr/>
 
     <h2>Versions</h2>
-    {% include_container versions.chartcontainer %}
-    {% render_table versions_table %}
+    <form id="version-statistics" class="form-inline center" action="">
+        Choose a month:
+        <input type="text" class="input-small input-datepicker" placeholder="Month" name="date">
+        <button type="button" class="btn">
+            <span class="ajax-completed">Apply</span>
+            <img class="ajax-loading" src="{% static "statistics/gif/ajax_loader.gif" %}" hidden/>
+        </button>
+    </form>
+
+        <div class="row">
+            <div class="span6 versions-stat-container">
+                <h3 align="center">Windows users</h3>
+                <div id="win-versions-chart" class="pie-chart">
+                    <svg></svg>
+                </div>
+                <div id="win-table" class="datatable">
+                    <table class="stripe">
+                        <thead>
+                        <tr>
+                            <th>Version</th>
+                            <th>Amount</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+            <div class="span6 versions-stat-container">
+                <h3 align="center">Mac users</h3>
+                <div id="mac-versions-chart" class="pie-chart">
+                    <svg></svg>
+                </div>
+                <div id="mac-table" class="datatable">
+                    <table class="stripe" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>Version</th>
+                            <th>Amount</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    <hr/>
 
     <h2>Channels</h2>
-    {% include_container channels.chartcontainer %}
-    <script type="text/javascript">
-    $('.input-daterange').datepicker({
-        format: "yyyy-mm",
-        startView: 1,
-        minViewMode: 1,
-        todayBtn: "linked",
-        clearBtn: true
-    });
-    </script>
+
+    <form id="channel-statistics" class="form-inline center" action="">
+        Choose a month:
+        <input type="text" class="input-small input-datepicker" placeholder="Month" name="date">
+        <button type="button" class="btn">
+            <span class="ajax-completed">Apply</span>
+            <img class="ajax-loading" src="{% static "statistics/gif/ajax_loader.gif" %}" hidden/>
+        </button>
+    </form>
+
+    <div class="container" style="width:100%">
+        <div class="row">
+            <div class="offset3 span6">
+                <h3 align="center">All platforms</h3>
+                <div id="channels-chart" class="pie-chart">
+                    <svg></svg>
+                </div>
+                <div id="channels-table" class="datatable">
+                    <table class="stripe" cellspacing="0" width="100%">
+                        <thead class="dt-right">
+                        <tr>
+                            <th>Version</th>
+                            <th>Amount</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 {% endblock %}

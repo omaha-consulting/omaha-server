@@ -38,7 +38,7 @@ class StatisticsTest(TestCase):
     def tearDown(self):
         redis.flushdb()
 
-    def test_userid_counting(self):
+    def test_add_app_statistics(self):
         userid1 = '{F07B3878-CD6F-4B96-B52F-95C4D23077E0}'
         user1_id = get_id(userid1)
 
@@ -50,59 +50,78 @@ class StatisticsTest(TestCase):
         channel = 'test'
         test_app = dict(appid=appid, version=version, tag=channel)
 
+        install_app_events = DayEvents('new_install:%s' % appid)
         request_app_events = DayEvents('request:%s' % appid)
         request_version_events = DayEvents('request:{}:{}'.format(appid, version))
+        install_platform_events = DayEvents('new_install:{}:{}'.format(appid, 'mac'))
         request_platform_events = DayEvents('request:{}:{}'.format(appid, 'mac'))
         request_channel_events = DayEvents('request:{}:{}'.format(appid, channel))
         request_platform_version_events = DayEvents('request:{}:{}:{}'.format(appid, 'mac', version))
 
+        self.assertFalse(user1_id in install_app_events)
+        self.assertEqual(len(install_app_events), 0)
+        self.assertFalse(user1_id in install_platform_events)
+        self.assertEqual(len(install_platform_events), 0)
         self.assertFalse(user1_id in request_app_events)
         self.assertEqual(len(request_app_events), 0)
-        self.assertFalse(user1_id in request_version_events)
-        self.assertEqual(len(request_version_events), 0)
         self.assertFalse(user1_id in request_platform_events)
         self.assertEqual(len(request_platform_events), 0)
+        self.assertFalse(user1_id in request_version_events)
+        self.assertEqual(len(request_version_events), 0)
         self.assertFalse(user1_id in request_channel_events)
         self.assertEqual(len(request_channel_events), 0)
         self.assertFalse(user1_id in request_platform_version_events)
         self.assertEqual(len(request_platform_version_events), 0)
 
         add_app_statistics(user1_id, 'mac', test_app)
-        self.assertTrue(user1_id in request_app_events)
-        self.assertEqual(len(request_app_events), 1)
+        self.assertTrue(user1_id in install_app_events)
+        self.assertEqual(len(install_app_events), 1)
+        self.assertFalse(user1_id in request_app_events)
+        self.assertEqual(len(request_app_events), 0)
+        self.assertFalse(user1_id in request_platform_events)
+        self.assertEqual(len(request_platform_events), 0)
         self.assertTrue(user1_id in request_version_events)
         self.assertEqual(len(request_version_events), 1)
-        self.assertTrue(user1_id in request_platform_events)
-        self.assertEqual(len(request_platform_events), 1)
+        self.assertTrue(user1_id in install_platform_events)
+        self.assertEqual(len(install_platform_events), 1)
         self.assertTrue(user1_id in request_channel_events)
         self.assertEqual(len(request_channel_events), 1)
         self.assertTrue(user1_id in request_platform_version_events)
         self.assertEqual(len(request_platform_version_events), 1)
 
-        add_app_statistics(user1_id, 'mac', test_app)
-
-        self.assertTrue(user1_id in request_app_events)
-        self.assertEqual(len(request_app_events), 1)
-        self.assertTrue(user1_id in request_version_events)
-        self.assertEqual(len(request_version_events), 1)
-        self.assertTrue(user1_id in request_platform_events)
-        self.assertEqual(len(request_platform_events), 1)
-        self.assertTrue(user1_id in request_channel_events)
-        self.assertEqual(len(request_channel_events), 1)
-        self.assertTrue(user1_id in request_platform_version_events)
-        self.assertEqual(len(request_platform_version_events), 1)
 
         add_app_statistics(user2_id, 'mac', test_app)
 
-        self.assertTrue(user2_id in request_app_events)
-        self.assertEqual(len(request_app_events), 2)
+        self.assertTrue(user2_id in install_app_events)
+        self.assertEqual(len(install_app_events), 2)
+        self.assertFalse(user2_id in request_app_events)
+        self.assertEqual(len(request_app_events), 0)
+        self.assertFalse(user2_id in request_platform_events)
+        self.assertEqual(len(request_platform_events), 0)
         self.assertTrue(user2_id in request_version_events)
         self.assertEqual(len(request_version_events), 2)
-        self.assertTrue(user2_id in request_platform_events)
-        self.assertEqual(len(request_platform_events), 2)
+        self.assertTrue(user2_id in install_platform_events)
+        self.assertEqual(len(install_platform_events), 2)
         self.assertTrue(user2_id in request_channel_events)
         self.assertEqual(len(request_channel_events), 2)
         self.assertTrue(user2_id in request_platform_version_events)
+        self.assertEqual(len(request_platform_version_events), 2)
+
+        add_app_statistics(user1_id, 'mac', test_app)
+
+        self.assertTrue(user1_id in install_app_events)
+        self.assertEqual(len(install_app_events), 2)
+        self.assertFalse(user1_id in request_app_events)
+        self.assertEqual(len(request_app_events), 0)
+        self.assertFalse(user1_id in request_platform_events)
+        self.assertEqual(len(request_platform_events), 0)
+        self.assertTrue(user1_id in request_version_events)
+        self.assertEqual(len(request_version_events), 2)
+        self.assertTrue(user1_id in install_platform_events)
+        self.assertEqual(len(install_platform_events), 2)
+        self.assertTrue(user1_id in request_channel_events)
+        self.assertEqual(len(request_channel_events), 2)
+        self.assertTrue(user1_id in request_platform_version_events)
         self.assertEqual(len(request_platform_version_events), 2)
 
     def test_update_live_statistics(self):
@@ -123,21 +142,21 @@ class StatisticsTest(TestCase):
         self.assertFalse(user1_id in request_platform_version_events)
         self.assertEqual(len(request_platform_version_events), 0)
 
-        update_live_statistics(user1_id, appid, version)
+        update_live_statistics(userid1, appid, version)
 
         self.assertTrue(user1_id in request_version_events)
         self.assertEqual(len(request_version_events), 1)
         self.assertTrue(user1_id in request_platform_version_events)
         self.assertEqual(len(request_platform_version_events), 1)
 
-        update_live_statistics(user1_id, appid, version)
+        update_live_statistics(userid1, appid, version)
 
         self.assertTrue(user1_id in request_version_events)
         self.assertEqual(len(request_version_events), 1)
         self.assertTrue(user1_id in request_platform_version_events)
         self.assertEqual(len(request_platform_version_events), 1)
 
-        update_live_statistics(user2_id, appid, version)
+        update_live_statistics(userid2, appid, version)
 
         self.assertTrue(user2_id in request_version_events)
         self.assertEqual(len(request_version_events), 2)
@@ -156,6 +175,5 @@ class StatisticsTest(TestCase):
 
         collect_statistics(request, app_id, channel)
 
-        user_id = get_id(deviceID)
-        mock_update_live_statistics.assert_called_with(user_id, app_id, version)
+        mock_update_live_statistics.assert_called_with(deviceID, app_id, version)
 

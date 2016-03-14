@@ -88,8 +88,12 @@ class StatisticsMonthsSerializer(serializers.Serializer):
 
 
 class MonthRangeSerializer(serializers.Serializer):
-    start = serializers.DateTimeField(input_formats=['%Y-%m'])
-    end = serializers.DateTimeField(input_formats=['%Y-%m'])
+    start = serializers.DateTimeField(input_formats=['%Y-%m'], required=False)
+    end = serializers.DateTimeField(input_formats=['%Y-%m'], required=False)
+
+
+class MonthInputSerializer(serializers.Serializer):
+    date = serializers.DateTimeField(input_formats=['%Y-%m'], required=False)
 
 
 class LiveStatisticsRangeSerializer(serializers.Serializer):

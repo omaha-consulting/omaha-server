@@ -22,24 +22,23 @@ from functools import partial
 
 from bitmapist import mark_event
 
-from omaha.statistics import get_id, add_app_statistics
+from omaha.statistics import get_id, userid_counting
 
-def collect_statistics(request, appid, channel, now=None):
+def collect_statistics(request, appid, channel):
     deviceID = request.GET.get('deviceID')
     version = request.GET.get('appVersionShort')
     if not deviceID or not version:
         return
-    userid = get_id(deviceID)
     app = dict(appid=appid,
                version=version,
                tag=channel)
-    mark_event('request', userid, now=now)
 
-    add_app_statistics(userid, 'mac', app)
-    update_live_statistics(userid, appid, version)
+    userid_counting(deviceID, [app], 'mac')
+    update_live_statistics(deviceID, appid, version)
 
 
 def update_live_statistics(userid, appid, version, now=None):
+    userid = get_id(userid)
     mark = partial(mark_event, now=now, track_hourly=True)
     mark('online:{}:{}'.format(appid, version), userid)
     mark('online:{}:{}:{}'.format(appid, 'mac', version), userid)

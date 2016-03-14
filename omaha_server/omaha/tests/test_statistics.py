@@ -46,7 +46,6 @@ from omaha.statistics import (
     collect_statistics,
     update_live_statistics,
     get_users_statistics_months,
-    get_users_statistics_weeks,
     get_channel_statistics,
     get_users_versions,
 )
@@ -66,7 +65,8 @@ from omaha.models import (
     Channel,
     Version,
 )
-
+from sparkle.models import SparkleVersion
+from sparkle.statistics import userid_counting as mac_userid_counting
 
 class StatisticsTest(TestCase):
     def setUp(self):
@@ -125,9 +125,9 @@ class StatisticsTest(TestCase):
         appid = app.get('appid')
         version = app.get('version')
 
-        events_appid = DayEvents('request:%s' % app.get('appid'), now.year, now.month, now.day)
+        events_appid = DayEvents('new_install:%s' % app.get('appid'), now.year, now.month, now.day)
         events_appid_version = DayEvents('request:{}:{}'.format(appid, version), now.year, now.month, now.day)
-        events_appid_platform =DayEvents('request:{}:{}'.format(appid, platform), now.year, now.month, now.day)
+        events_appid_platform = DayEvents('new_install:{}:{}'.format(appid, platform), now.year, now.month, now.day)
         events_appid_channel = DayEvents('request:{}:{}'.format(appid, channel), now.year, now.month, now.day)
         events_appid_platform_version = DayEvents('request:{}:{}:{}'.format(appid, platform, version), now.year, now.month, now.day)
 
@@ -423,12 +423,15 @@ class GetStatisticsTest(TestCase):
     def _generate_fake_statistics(self):
         now = datetime.now()
         year = now.year
+        n_users = 12
 
-        for i in range(1, 13):
+        for i in range(1, n_users+1):
             date = datetime(year=year, month=i, day=10)
             for id in range(1, i + 1):
                 user_id = UUID(int=id)
                 userid_counting(user_id, self.app_list, self.platform.name, now=date)
+                user_id = UUID(int=n_users + id)
+                userid_counting(user_id, [self.mac_app], 'mac', now=date)
 
     @temporary_media_root()
     def setUp(self):
@@ -448,39 +451,45 @@ class GetStatisticsTest(TestCase):
             channel=self.channel,
             version='2.0.0.0',
             file=SimpleUploadedFile('./chrome_installer.exe', False))
+        self.mac_version = SparkleVersion.objects.create(
+            app=self.app,
+            channel=self.channel,
+            version='782.112',
+            short_version='13.0.782.112',
+            dsa_signature='MCwCFCdoW13VBGJWIfIklKxQVyetgxE7AhQTVuY9uQT0KOV1UEk21epBsGZMPg==',
+            file=SimpleUploadedFile('./chrome.dmg', b'_' * 23963192),
+            file_size=23963192)
         self.app_list = [dict(appid=self.app.id, version=str(self.version1.version))]
+        self.mac_app = dict(appid=self.app.id, version=str(self.mac_version.short_version))
 
         self._generate_fake_statistics()
         now = datetime.now()
-        self.users_statistics = [(datetime(now.year, x, 1).strftime("%Y-%m"), x) for x in range(1, 13)]
-
+        win_updates = [(datetime(now.year, x, 1).strftime("%Y-%m"), x - 1) for x in range(1, 13)]
+        win_installs = [(datetime(now.year, x, 1).strftime("%Y-%m"), 1) for x in range(1, 13)]
+        mac_updates = [(datetime(now.year, x, 1).strftime("%Y-%m"), x - 1) for x in range(1, 13)]
+        mac_installs = [(datetime(now.year, x, 1).strftime("%Y-%m"), 1) for x in range(1, 13)]
+        total_installs = map(lambda x, y: (x[0], x[1] + y[1]), win_installs, mac_installs)
+        total_updates = map(lambda x, y: (x[0], x[1] + y[1]), win_updates, mac_updates)
+        self.users_statistics = dict(new=total_installs, updates=total_updates)
+        self.win_users_statistics = dict(new=win_installs, updates=win_updates)
+        self.mac_users_statistics = dict(new=mac_installs, updates=mac_updates)
+        
     def tearDown(self):
         redis.flushdb()
 
     def test_get_users_statistics_months(self):
-        self.assertListEqual(get_users_statistics_months(), self.users_statistics)
-        self.assertListEqual(get_users_statistics_months(app_id=self.app.id), self.users_statistics)
+        self.assertDictEqual(get_users_statistics_months(app_id=self.app.id), self.users_statistics)
+        self.assertDictEqual(get_users_statistics_months(app_id=self.app.id, platform='win'), self.win_users_statistics)
+        self.assertDictEqual(get_users_statistics_months(app_id=self.app.id, platform='mac'), self.mac_users_statistics)
 
-    def test_get_users_statistics_weeks(self):
-        now = datetime.now()
-        with freeze_time(datetime(year=now.year, month=now.month, day=10)):
-            self.assertListEqual(get_users_statistics_weeks(),
-                                 [('Previous week', 0),
-                                  ('Current week', now.month),
-                                  ('Yesterday', 0),
-                                  ('Today', now.month)])
-            self.assertListEqual(get_users_statistics_weeks(self.app.id),
-                                 [('Previous week', 0),
-                                  ('Current week', now.month),
-                                  ('Yesterday', 0),
-                                  ('Today', now.month)])
 
     def test_get_chanels_statistics(self):
         now = datetime.now()
         with freeze_time(datetime(year=now.year, month=now.month, day=10)):
-            self.assertListEqual(get_channel_statistics(self.app.id), [('stable', now.month)])
+            self.assertListEqual(get_channel_statistics(self.app.id), [('stable', now.month * 2)])
 
     def test_get_users_versions(self):
         now = datetime.now()
+        expected = dict(win={'1.0.0.0': now.month}, mac={'13.0.782.112': now.month})
         with freeze_time(datetime(year=now.year, month=now.month, day=10)):
-            self.assertListEqual(get_users_versions(self.app.id), [('1.0.0.0', now.month)])
+            self.assertDictEqual(get_users_versions(self.app.id), expected)

@@ -18,7 +18,7 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.test import TestCase
 from django.test.client import Client
@@ -99,7 +99,6 @@ class UpdateViewTest(TestCase, XmlTestMixin):
         self.assertXmlEquivalentOutputs(response.content,
                                         fixtures.response_update_check_positive)
 
-    @freeze_time('2014-01-01 15:41:48')  # 56508 sec
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
     @patch('omaha.models.version_upload_to', lambda o, f: f)
     def test_userid_counting(self):
@@ -108,15 +107,18 @@ class UpdateViewTest(TestCase, XmlTestMixin):
         user_id = get_id(userid)
         appid1 = '{430FD4D0-B729-4F61-AA34-91526481799D}'
         appid2 = '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}'
+        install_date = datetime(year=2014, month=1, day=1, hour=15, minute=41, second=48)
+        update_date = install_date + timedelta(days=31)
 
-        request_events = DayEvents('request', now.year, now.month, now.day)
-        app1_events = DayEvents('request:%s' % appid1, now.year, now.month, now.day)
-        app2_events = DayEvents('request:%s' % appid2, now.year, now.month, now.day)
+        request_events = DayEvents('request', install_date.year, install_date.month, install_date.day)
+        app1_install_events = DayEvents('new_install:%s' % appid1, install_date.year, install_date.month, install_date.day)
+        app2_install_events = DayEvents('new_install:%s' % appid2, install_date.year, install_date.month, install_date.day)
+        app1_update_events = DayEvents('request:%s' % appid1, update_date.year, update_date.month, update_date.day)
+        app2_update_events = DayEvents('request:%s' % appid2, update_date.year, update_date.month, update_date.day)
 
         self.assertEqual(len(request_events), 0)
-        self.assertEqual(len(app1_events), 0)
-        self.assertEqual(len(app2_events), 0)
-
+        self.assertEqual(len(app1_install_events), 0)
+        self.assertEqual(len(app2_install_events), 0)
 
         app = ApplicationFactory.create(id='{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}', name='chrome')
         platform = PlatformFactory.create(name='win')
@@ -146,15 +148,25 @@ class UpdateViewTest(TestCase, XmlTestMixin):
             )
         )
 
-        self.client.post(reverse('update'),
-                         fixtures.request_update_check, content_type='text/xml')
+        with freeze_time(install_date):  # 56508 sec
+            self.client.post(reverse('update'),
+                             fixtures.request_update_check, content_type='text/xml')
 
         self.assertEqual(len(request_events), 1)
-        self.assertEqual(len(app1_events), 1)
-        self.assertEqual(len(app2_events), 1)
+        self.assertEqual(len(app1_install_events), 1)
+        self.assertEqual(len(app2_install_events), 1)
         self.assertTrue(user_id in request_events)
-        self.assertTrue(user_id in app1_events)
-        self.assertTrue(user_id in app2_events)
+        self.assertTrue(user_id in app1_install_events)
+        self.assertTrue(user_id in app2_install_events)
+
+        with freeze_time(update_date):
+            self.client.post(reverse('update'),
+                             fixtures.request_update_check, content_type='text/xml')
+
+        self.assertEqual(len(app1_update_events), 1)
+        self.assertEqual(len(app2_update_events), 1)
+        self.assertTrue(user_id in app1_update_events)
+        self.assertTrue(user_id in app2_update_events)
 
     @freeze_time('2014-01-01 15:45:54')  # 56754 sec
     def test_event(self):
