@@ -1,5 +1,7 @@
 # coding: utf8
 
+import sys
+import socket
 from functools import wraps
 import logging.handlers
 
@@ -32,10 +34,22 @@ class CustomSysLogHandler(logging.handlers.SysLogHandler):
         if type(msg) is unicode:
             msg = msg.encode('utf-8')
         try:
-            self.socket.sendto(msg, self.address)
+            if self.unixsocket:
+                try:
+                    self.socket.send(msg)
+                except socket.error:
+                    self.socket.close()
+                    self._connect_unixsocket(self.address)
+                    self.socket.send(msg)
+            elif self.socktype == socket.SOCK_DGRAM:
+                self.socket.sendto(msg, self.address)
+            else:
+                self.socket.sendall(msg)
         except (KeyboardInterrupt, SystemExit):
             raise
         except:
+            sys.stderr.write("Unix socket: %s" % (self.unixsocket,))
+            sys.stderr.write("Socket type: %s" % (self.socktype,))
             self.handleError(record)
 
 
