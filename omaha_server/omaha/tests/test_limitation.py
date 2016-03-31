@@ -105,6 +105,8 @@ class SizeExceedTest(TestCase):
 
 
 class DeleteDuplicateTest(TestCase):
+    maxDiff = None
+
     @is_private()
     def test_crashes(self):
         gpm['Crash__duplicate_number'] = 10
@@ -113,7 +115,7 @@ class DeleteDuplicateTest(TestCase):
         CrashFactory.create_batch(9, signature='test2')
         self.assertEqual(Crash.objects.filter(signature='test2').count(), 9)
 
-        deleted = list(Crash.objects.filter(signature='test1').values_list('id', 'created', 'signature', 'userid', 'appid'))[:15]
+        deleted = list(Crash.objects.filter(signature='test1').order_by('created').values_list('id', 'created', 'signature', 'userid', 'appid'))[:15]
         deleted = map(lambda x: dict(id=x[0], element_created=x[1].strftime("%d. %B %Y %I:%M%p"), signature=x[2],
                                      userid=x[3], appid=x[4]), deleted)
 

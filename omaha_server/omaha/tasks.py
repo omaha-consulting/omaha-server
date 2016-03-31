@@ -21,6 +21,8 @@ import time
 import logging
 import uuid
 
+from django.template import defaultfilters as filters
+
 from omaha_server.celery import app
 from omaha_server.utils import add_extra_to_log_message, get_splunk_url
 from omaha import statistics
@@ -28,6 +30,7 @@ from omaha.parser import parse_request
 from omaha.limitation import delete_older_than, delete_size_is_exceeded, delete_duplicate_crashes, monitoring_size, raven
 
 logger = logging.getLogger(__name__)
+
 
 @app.task(ignore_result=True)
 def collect_statistics(request, ip=None):
@@ -44,16 +47,15 @@ def auto_delete_older_than():
     for model in model_list:
         result = delete_older_than(*model)
         if result.get('count', 0):
-            result['size'] /= 1024.0 * 1024
             log_id = str(uuid.uuid4())
             params = dict(log_id=log_id)
             splunk_url = get_splunk_url(params)
             splunk_filter = 'log_id=%s' % log_id if splunk_url else None
             raven_extra = dict(id=log_id, splunk_url=splunk_url, splunk_filter=splunk_filter)
-            raven.captureMessage("[Limitation]Periodic task 'Older than' cleaned up %d %s, total size of cleaned space is %.2f Mb[%d]" %
-                                 (result['count'], model[1], result['size'], time.time()),
+            raven.captureMessage("[Limitation]Periodic task 'Older than' cleaned up %d %s, total size of cleaned space is %s [%d]" %
+                                 (result['count'], model[1], filters.filesizeformat(result['size']).replace(u'\xa0', u' '), time.time()),
                                  data=dict(level=20, logger='limitation'), extra=raven_extra)
-            extra = dict(log_id=log_id, meta=True, count=result['count'], size=result['size'], model=model[1], reason='old')
+            extra = dict(log_id=log_id, meta=True, count=result['count'], size=filters.filesizeformat(result['size']).replace(u'\xa0', u' '), model=model[1], reason='old')
             logger.info(add_extra_to_log_message('Automatic cleanup', extra=extra))
             for element in result['elements']:
                 element.update(dict(log_id=log_id))
@@ -69,16 +71,15 @@ def auto_delete_size_is_exceeded():
     for model in model_list:
         result = delete_size_is_exceeded(*model)
         if result.get('count', 0):
-            result['size'] /= 1024.0 * 1024
             log_id = str(uuid.uuid4())
             params = dict(log_id=log_id)
             splunk_url = get_splunk_url(params)
             splunk_filter = 'log_id=%s' % log_id if splunk_url else None
             raven_extra = dict(id=log_id, splunk_url=splunk_url, splunk_filter=splunk_filter)
-            raven.captureMessage("[Limitation]Periodic task 'Size is exceeded' cleaned up %d %s, total size of cleaned space is %.2f Mb[%d]" %
-                                 (result['count'], model[1], result['size'], time.time()),
+            raven.captureMessage("[Limitation]Periodic task 'Size is exceeded' cleaned up %d %s, total size of cleaned space is %s [%d]" %
+                                 (result['count'], model[1], filters.filesizeformat(result['size']).replace(u'\xa0', u' '), time.time()),
                                  data=dict(level=20, logger='limitation'), extra=raven_extra)
-            extra = dict(log_id=log_id, meta=True, count=result['count'], size=result['size'], model=model[1], reason='size_is_exceeded')
+            extra = dict(log_id=log_id, meta=True, count=result['count'], size=filters.filesizeformat(result['size']).replace(u'\xa0', u' '), model=model[1], reason='size_is_exceeded')
             logger.info(add_extra_to_log_message('Automatic cleanup', extra=extra))
             for element in result['elements']:
                 element.update(dict(log_id=log_id))
@@ -90,16 +91,15 @@ def auto_delete_duplicate_crashes():
     logger = logging.getLogger('limitation')
     result = delete_duplicate_crashes()
     if result.get('count', 0):
-        result['size'] /= 1024.0 * 1024
         log_id = str(uuid.uuid4())
         params = dict(log_id=log_id)
         splunk_url = get_splunk_url(params)
         splunk_filter = 'log_id=%s' % log_id if splunk_url else None
         raven_extra = dict(id=log_id, splunk_url=splunk_url, splunk_filter=splunk_filter)
-        raven.captureMessage("[Limitation]Periodic task 'Duplicated' cleaned up %d crashes, total size of cleaned space is %.2f Mb[%d]" %
-                             (result['count'], result['size'], time.time()),
+        raven.captureMessage("[Limitation]Periodic task 'Duplicated' cleaned up %d crashes, total size of cleaned space is %s [%d]" %
+                             (result['count'], filters.filesizeformat(result['size']).replace(u'\xa0', u' '), time.time()),
                              data=dict(level=20, logger='limitation'), extra=raven_extra)
-        extra = dict(log_id=log_id, meta=True, count=result['count'], size=result['size'], reason='duplicated', model='Crash')
+        extra = dict(log_id=log_id, meta=True, count=result['count'], size=filters.filesizeformat(result['size']).replace(u'\xa0', u' '), reason='duplicated', model='Crash')
         logger.info(add_extra_to_log_message('Automatic cleanup', extra=extra))
         for element in result['elements']:
             element.update(dict(log_id=log_id))
@@ -130,17 +130,16 @@ def deferred_manual_cleanup(model, limit_size=None, limit_days=None, limit_dupli
             full_result['size'] += result['size']
             full_result['elements'] += result['elements']
 
-    full_result['size'] /= 1024.0 * 1024
     log_id = str(uuid.uuid4())
     params = dict(log_id=log_id)
     splunk_url = get_splunk_url(params)
     splunk_filter = 'log_id=%s' % log_id if splunk_url else None
     raven_extra = dict(id=log_id, splunk_url=splunk_url, splunk_filter=splunk_filter)
-    raven.captureMessage("[Limitation]Manual cleanup freed %d %s, total size of cleaned space is %.2f Mb[%s]" %
-                         (full_result['count'], model[1], full_result['size'], log_id),
+    raven.captureMessage("[Limitation]Manual cleanup freed %d %s, total size of cleaned space is %s [%s]" %
+                         (full_result['count'], model[1], filters.filesizeformat(full_result['size']).replace(u'\xa0', u' '), log_id),
                          data=dict(level=20, logger='limitation'), extra=raven_extra)
 
-    extra = dict(log_id=log_id, meta=True, count=full_result['count'], size=full_result['size'], model=model[1],
+    extra = dict(log_id=log_id, meta=True, count=full_result['count'], size=filters.filesizeformat(full_result['size']).replace(u'\xa0', u' '), model=model[1],
                  limit_duplicated=limit_duplicated, limit_size=limit_size, limit_days=limit_days, reason='manual')
     logger.info(add_extra_to_log_message('Manual cleanup', extra=extra))
     for element in full_result['elements']:
