@@ -54,7 +54,7 @@ class DuplicatedCrashesTest(TestCase):
         self.assertEqual(Crash.objects.all().count(), 10)
 
         extra_meta = dict(count=8, reason='duplicated', meta=True, log_id='36446dc3-ae7c-42ad-ae4e-6a826dcf0a00',
-                          model='Crash', size=0.0)
+                          model='Crash', size='0 bytes')
         log_extra_msg = add_extra_to_log_message('Automatic cleanup', extra=extra_meta)
 
         extra = dict(id=deleted_crash.id, element_created=deleted_crash.created.strftime("%d. %B %Y %I:%M%p"),
@@ -67,7 +67,7 @@ class DuplicatedCrashesTest(TestCase):
             mocked_uuid4.side_effect = (uuid.UUID('36446dc3-ae7c-42ad-ae4e-6a826dcf0a%02d' % x) for x in range(100))
             auto_delete_duplicate_crashes()
 
-        self.assertEqual(mocked_logger.info.call_count, 9)
+        self.assertEqual(mocked_logger.info.call_count, 10)
         mocked_logger.info.assert_any_call(log_extra_msg)
         mocked_logger.info.assert_any_call(log_msg)
 
@@ -83,7 +83,7 @@ class OldObjectsTest(TestCase):
         self.assertEqual(Crash.objects.all().count(), 10)
 
         extra_meta = dict(count=10, reason='old', meta=True, log_id='36446dc3-ae7c-42ad-ae4e-6a826dcf0a00',
-                          model='Crash', size=0.0)
+                          model='Crash', size='0 bytes')
         log_extra_msg = add_extra_to_log_message('Automatic cleanup', extra=extra_meta)
 
         extra = dict(id=deleted_crash.id, element_created=deleted_crash.created.strftime("%d. %B %Y %I:%M%p"),
@@ -110,7 +110,7 @@ class OldObjectsTest(TestCase):
         self.assertEqual(Feedback.objects.all().count(), 10)
 
         extra_meta = dict(count=10, reason='old', meta=True, log_id='36446dc3-ae7c-42ad-ae4e-6a826dcf0a00',
-                          model='Feedback', size=0.0)
+                          model='Feedback', size='0 bytes')
         log_extra_msg = add_extra_to_log_message('Automatic cleanup', extra=extra_meta)
 
         extra = dict(id=deleted_feedback.id, element_created=deleted_feedback.created.strftime("%d. %B %Y %I:%M%p"),
@@ -139,7 +139,7 @@ class SizeExceedTest(TestCase):
         self.assertEqual(Crash.objects.all().count(), 200)
 
         extra_meta = dict(count=98, reason='size_is_exceeded', meta=True, log_id='36446dc3-ae7c-42ad-ae4e-6a826dcf0a00',
-                          model='Crash', size=979.04296875)
+                          model='Crash', size='979.0 MB')
         log_extra_msg = add_extra_to_log_message('Automatic cleanup', extra=extra_meta)
 
         extra = dict(id=deleted_crash.id, element_created=deleted_crash.created.strftime("%d. %B %Y %I:%M%p"),
@@ -168,7 +168,7 @@ class SizeExceedTest(TestCase):
         self.assertEqual(Feedback.objects.all().count(), 200)
 
         extra_meta = dict(count=98, reason='size_is_exceeded', meta=True, log_id='36446dc3-ae7c-42ad-ae4e-6a826dcf0a00',
-                          model='Feedback', size=979.04296875)
+                          model='Feedback', size='979.0 MB')
         log_extra_msg = add_extra_to_log_message('Automatic cleanup', extra=extra_meta)
 
         extra = dict(id=deleted_feedback.id, element_created=deleted_feedback.created.strftime("%d. %B %Y %I:%M%p"),
@@ -195,7 +195,7 @@ class ManualCleanupTest(TestCase):
         self.assertEqual(Crash.objects.count(), 10)
 
         extra_meta = dict(count=8, reason='manual', meta=True, log_id='36446dc3-ae7c-42ad-ae4e-6a826dcf0a00',
-                          model='Crash', limit_duplicated=2, limit_size=None, limit_days=None, size=0.0)
+                          model='Crash', limit_duplicated=2, limit_size=None, limit_days=None, size='0 bytes')
         log_extra_msg = add_extra_to_log_message('Manual cleanup', extra=extra_meta)
 
         extra = dict(id=deleted_crash.id, element_created=deleted_crash.created.strftime("%d. %B %Y %I:%M%p"),
@@ -208,7 +208,7 @@ class ManualCleanupTest(TestCase):
             mocked_uuid4.side_effect = (uuid.UUID('36446dc3-ae7c-42ad-ae4e-6a826dcf0a%02d' % x) for x in range(100))
             deferred_manual_cleanup(['crash', 'Crash'], limit_duplicated=2)
 
-        self.assertEqual(mocked_logger.info.call_count, 9)
+        self.assertEqual(mocked_logger.info.call_count, 10)
         mocked_logger.info.assert_any_call(log_extra_msg)
         mocked_logger.info.assert_any_call(log_msg)
 
@@ -224,7 +224,7 @@ class ManualCleanupTest(TestCase):
         self.assertEqual(Feedback.objects.count(), 20)
 
         extra_meta = dict(count=10, reason='manual', meta=True, log_id='36446dc3-ae7c-42ad-ae4e-6a826dcf0a00',
-                          model='Feedback', limit_duplicated=None, limit_size=1, limit_days=None, size=999.0234375)
+                          model='Feedback', limit_duplicated=None, limit_size=1, limit_days=None, size='999.0 MB')
         log_extra_msg = add_extra_to_log_message('Manual cleanup', extra=extra_meta)
 
         extra = dict(id=deleted_feedback.id, element_created=deleted_feedback.created.strftime("%d. %B %Y %I:%M%p"),
@@ -250,7 +250,7 @@ class ManualCleanupTest(TestCase):
         self.assertEqual(Symbols.objects.count(), 20)
 
         extra_meta = dict(count=10, reason='manual', meta=True, log_id='36446dc3-ae7c-42ad-ae4e-6a826dcf0a00',
-                          model='Symbols', limit_duplicated=None, limit_size=1, limit_days=None, size=999.0234375)
+                          model='Symbols', limit_duplicated=None, limit_size=1, limit_days=None, size='999.0 MB')
         log_extra_msg = add_extra_to_log_message('Manual cleanup', extra=extra_meta)
 
         extra = dict(id=deleted_symbols.id, element_created=deleted_symbols.created.strftime("%d. %B %Y %I:%M%p"),
@@ -276,7 +276,7 @@ class ManualCleanupTest(TestCase):
         self.assertEqual(Version.objects.count(), 2)
 
         extra_meta = dict(count=1, reason='manual', meta=True, log_id='36446dc3-ae7c-42ad-ae4e-6a826dcf0a00',
-                          model='Version', limit_duplicated=None, limit_size=1, limit_days=None, size=999.0234375)
+                          model='Version', limit_duplicated=None, limit_size=1, limit_days=None, size='999.0 MB')
         log_extra_msg = add_extra_to_log_message('Manual cleanup', extra=extra_meta)
 
         extra = dict(id=deleted_version.id, element_created=deleted_version.created.strftime("%d. %B %Y %I:%M%p"),
@@ -302,7 +302,7 @@ class ManualCleanupTest(TestCase):
         self.assertEqual(SparkleVersion.objects.count(), 2)
 
         extra_meta = dict(count=1, reason='manual', meta=True, log_id='36446dc3-ae7c-42ad-ae4e-6a826dcf0a00',
-                          model='SparkleVersion', limit_duplicated=None, limit_size=1, limit_days=None, size=999.0234375)
+                          model='SparkleVersion', limit_duplicated=None, limit_size=1, limit_days=None, size='999.0 MB')
         log_extra_msg = add_extra_to_log_message('Manual cleanup', extra=extra_meta)
 
         extra = dict(id=deleted_version.id, element_created=deleted_version.created.strftime("%d. %B %Y %I:%M%p"),

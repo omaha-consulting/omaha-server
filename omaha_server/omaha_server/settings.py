@@ -245,19 +245,19 @@ if IS_PRIVATE:
     CELERYBEAT_SCHEDULE = {
         'auto_delete_older_then': {
             'task': 'tasks.auto_delete_older_then',
-            'schedule': timedelta(seconds=600),
+            'schedule': timedelta(hours=24),
             'options': {'queue': 'limitation'},
         },
         'auto_delete_size_is_exceed': {
             'task': 'tasks.auto_delete_size_is_exceeded',
-            'schedule': timedelta(seconds=600),
+            'schedule': timedelta(hours=1),
             'options': {'queue': 'limitation'},
         },
-        # 'auto_delete_duplicate_crashes': {
-        #     'task': 'tasks.auto_delete_duplicate_crashes',
-        #     'schedule': timedelta(seconds=600),
-        #     'options': {'queue': 'limitation'},
-        # },
+        'auto_delete_duplicate_crashes': {
+            'task': 'tasks.auto_delete_duplicate_crashes',
+            'schedule': timedelta(hours=24),
+            'options': {'queue': 'limitation'},
+        },
         'auto_monitoring_size': {
             'task': 'tasks.auto_monitoring_size',
             'schedule': timedelta(seconds=60),
