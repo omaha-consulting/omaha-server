@@ -1,0 +1,23 @@
+.bar-chart svg{
+    width: 100%;
+    height: 400px;
+}
+
+.pie-chart svg{
+    width: 100%;
+    height: 400px;
+}
+
+
+.datatable{
+    margin: 10px 18px;
+    width: auto;
+}
+
+.center {
+    text-align:center;
+}
+
+.versions-stat-container{
+    min-width: 350px;
+}

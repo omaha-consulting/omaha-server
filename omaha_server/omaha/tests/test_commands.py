@@ -40,6 +40,9 @@ class GenerateFakeDataTest(TestCase):
             version='2.0.0.0',
             file=SimpleUploadedFile('./chrome_installer.exe', False))
 
+    def tearDown(self):
+        redis.flushdb()
+
     def test_command(self):
         self.assertEqual(0, Request.objects.all().count())
         call_command('generate_fake_data', self.app.id, count=10)
@@ -66,6 +69,9 @@ class GenerateFakeStatisticsTest(TestCase):
             channel=self.channel,
             version='2.0.0.0',
             file=SimpleUploadedFile('./chrome_installer.exe', False))
+
+    def tearDown(self):
+        redis.flushdb()
 
     def test_command(self):
         now = datetime.datetime.now()

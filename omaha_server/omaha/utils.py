@@ -121,39 +121,22 @@ def make_piechart(id, data, unit='users'):
     return data
 
 
-def make_discrete_bar_chart(id, data):
-    xdata = [i[0] for i in data]
-    ydata = [i[1] for i in data]
-
-    extra_serie1 = {"tooltip": {"y_start": "", "y_end": " cal"}}
-    chartdata = {
-        'x': xdata, 'name1': '', 'y1': ydata, 'extra1': extra_serie1,
-    }
-    charttype = "discreteBarChart"
-    chartcontainer = 'chart_container_%s' % id  # container name
-    data = {
-        'charttype': charttype,
-        'chartdata': chartdata,
-        'chartcontainer': chartcontainer,
-        'extra': {
-            'x_is_date': False,
-            'x_axis_format': '',
-            'tag_script_js': True,
-            'jquery_on_ready': True,
-        },
-    }
-    return data
-
-
 def get_month_range_from_dict(source):
     """
-    :param request: dictionary with keys 'start' and 'end
+    :param source: dictionary with keys 'start' and 'end
     :return: a tuple of datatime objects in the form (start, end)
     """
     now = timezone.now()
     start = source.get('start')
-    if not start:
-        start = datetime.datetime(now.year-1, now.month+1, 1) if now.month != 12 else datetime.datetime(now.year, now.month, 1)
 
     end = source.get('end', datetime.datetime(now.year, now.month, calendar.monthrange(now.year, now.month)[1]))
+
+    if not start:
+        start = datetime.datetime(end.year-1, end.month+1, 1) if end.month != 12 else datetime.datetime(end.year, 1, 1)
+
     return start, end
+
+
+def is_new_install(appid, userid):
+    event = "known_users:{}"
+    return not redis.getbit(event.format(appid), userid)

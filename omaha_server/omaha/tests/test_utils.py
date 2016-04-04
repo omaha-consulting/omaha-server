@@ -28,7 +28,6 @@ from omaha.utils import (
     get_id,
     create_id,
     make_piechart,
-    make_discrete_bar_chart,
 )
 
 
@@ -119,16 +118,3 @@ class ChartsTest(TestCase):
                                         'x_axis_format': '',
                                         'x_is_date': False}})
 
-    def test_make_discrete_bar_chart(self):
-        data = [('apple', 10), ('orange', 3)]
-        self.assertDictEqual(make_discrete_bar_chart('test', data),
-                             {'chartcontainer': 'chart_container_test',
-                              'chartdata': {'extra1': {'tooltip': {'y_end': ' cal', 'y_start': ''}},
-                                            'name1': '',
-                                            'x': ['apple', 'orange'],
-                                            'y1': [10, 3]},
-                              'charttype': 'discreteBarChart',
-                              'extra': {'jquery_on_ready': True,
-                                        'tag_script_js': True,
-                                        'x_axis_format': '',
-                                        'x_is_date': False}})

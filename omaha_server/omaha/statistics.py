@@ -29,7 +29,7 @@ from django.utils import timezone
 from bitmapist import setup_redis, mark_event, unmark_event, WeekEvents, MonthEvents, DayEvents, HourEvents
 import pytz
 
-from omaha.utils import get_id, valuedispatch
+from omaha.utils import get_id, is_new_install, valuedispatch, redis
 from omaha.settings import DEFAULT_CHANNEL
 from omaha.models import ACTIVE_USERS_DICT_CHOICES, Request, AppRequest, Os, Hw, Event, Version, Channel
 from sparkle.models import SparkleVersion
@@ -48,12 +48,21 @@ def userid_counting(userid, apps_list, platform, now=None):
 
 def add_app_statistics(userid, platform, app, now=None):
     mark = partial(mark_event, now=now)
+    if not now:
+        now = timezone.now()
     appid = app.get('appid')
     version = app.get('version')
     channel = app.get('tag') or DEFAULT_CHANNEL
-    mark('request:%s' % appid, userid)
+
+    if is_new_install(appid, userid):
+        mark('new_install:%s' % appid, userid)
+        mark('new_install:{}:{}'.format(appid, platform), userid)
+        redis.setbit("known_users:%s" % appid, userid, 1)
+    elif userid not in MonthEvents('new_install:{}:{}'.format(appid, platform), year=now.year, month=now.month):
+        mark('request:%s' % appid, userid)
+        mark('request:{}:{}'.format(appid, platform), userid)
+
     mark('request:{}:{}'.format(appid, version), userid)
-    mark('request:{}:{}'.format(appid, platform), userid)
     mark('request:{}:{}'.format(appid, channel), userid)
     mark('request:{}:{}:{}'.format(appid, platform, version), userid)
 
@@ -95,17 +104,26 @@ def add_app_live_statistics(userid, platform, app, now=None):
         mark('online:{}:{}'.format(appid, version), userid)
         mark('online:{}:{}:{}'.format(appid, platform, version), userid)
 
-def get_users_statistics_months(app_id=None, year=None, start=1, end=12):
+def get_users_statistics_months(app_id, platform=None, year=None, start=1, end=12):
     now = timezone.now()
     if not year:
         year = now.year
-    event_name = 'request:%s' % app_id if app_id else 'request'
 
-    months = []
+    if platform:
+        install_event_name = 'new_install:{}:{}'.format(app_id, platform)
+        update_event_name = 'request:{}:{}'.format(app_id, platform)
+    else:
+        install_event_name = 'new_install:%s' % app_id
+        update_event_name = 'request:%s' % app_id
+
+    installs_by_month = []
+    updates_by_month = []
     for m in range(start, end + 1):
-        months.append(MonthEvents(event_name, year, m))
-    data = [(datetime(year, start + i, 1).strftime("%Y-%m"), len(e)) for i, e in enumerate(months)]
-    return data
+        installs_by_month.append(MonthEvents(install_event_name, year, m))
+        updates_by_month.append(MonthEvents(update_event_name, year, m))
+    installs_data = [(datetime(year, start + i, 1).strftime("%Y-%m"), len(e)) for i, e in enumerate(installs_by_month)]
+    updates_data = [(datetime(year, start + i, 1).strftime("%Y-%m"), len(e)) for i, e in enumerate(updates_by_month)]
+    return dict(new=installs_data, updates=updates_data)
 
 
 def get_users_statistics_weeks(app_id=None):
@@ -124,22 +142,41 @@ def get_users_statistics_weeks(app_id=None):
     return data
 
 
-def get_channel_statistics(app_id):
-    now = timezone.now()
+def get_channel_statistics(app_id, date=None):
+    if not date:
+        date = timezone.now()
+
     event_name = 'request:{}:{}'
-    week = now.isocalendar()[1]
     channels = [c.name for c in Channel.objects.all()]
-    data = [(channel, len(WeekEvents(event_name.format(app_id, channel), now.year, week))) for channel in channels]
+    data = [(channel, len(MonthEvents(event_name.format(app_id, channel), date.year, date.month))) for channel in channels]
+    data = filter(lambda x: x[1], data)
     return data
 
 
-def get_users_versions(app_id):
-    now = timezone.now()
-    event_name = 'request:{}:{}'
-    week = now.isocalendar()[1]
-    versions = [str(v.version) for v in Version.objects.filter_by_enabled(app__id=app_id)]
-    data = [(v, len(WeekEvents(event_name.format(app_id, v), now.year, week))) for v in versions]
-    return filter(lambda x: x[1], data)
+def get_users_versions_by_platform(app_id, platform, date):
+    if platform == 'win':
+        versions = [str(v.version) for v in Version.objects.filter_by_enabled(app__id=app_id)]
+    else:
+        versions = [str(v.short_version) for v in SparkleVersion.objects.filter_by_enabled(app__id=app_id)]
+    event_name = 'request:{}:{}:{}'
+    data = [(v, len(MonthEvents(event_name.format(app_id, platform, v), date.year, date.month))) for v in versions]
+    return data
+
+
+def get_users_versions(app_id, date=None):
+    if not date:
+        date = timezone.now()
+
+    win_data = get_users_versions_by_platform(app_id, 'win', date)
+    win_data = filter(lambda x: x[1], win_data)
+
+    mac_data = get_users_versions_by_platform(app_id, 'mac', date)
+    mac_data = filter(lambda x: x[1], mac_data)
+
+    data = dict(win=dict(win_data), mac=dict(mac_data))
+
+    return data
+
 
 
 def get_versions_data_by_platform(app_id, end, n_hours, versions, platform, tz='UTC'):

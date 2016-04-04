@@ -19,7 +19,6 @@ the License.
 """
 
 import datetime
-import calendar
 
 from django.http import Http404
 from django.conf import settings
@@ -47,6 +46,7 @@ from omaha.serializers import (
     ActionSerializer,
     StatisticsMonthsSerializer,
     MonthRangeSerializer,
+    MonthInputSerializer,
     ServerVersionSerializer,
     LiveStatisticsRangeSerializer,
 )
@@ -57,7 +57,6 @@ from omaha.models import (
     Channel,
     Version,
     Action,
-    AppRequest,
 )
 from omaha.utils import get_month_range_from_dict
 
@@ -176,25 +175,6 @@ class ActionViewSet(BaseView):
     serializer_class = ActionSerializer
 
 
-class StatisticsMonthsListView(APIView):
-    def get(self, request, format=None):
-        dates = MonthRangeSerializer(data=request.GET)
-        dates.is_valid()
-
-        start, end = get_month_range_from_dict(dates.validated_data)
-
-
-        diapasons = [((start.month if year == start.year else 1, end.month if year == end.year else 12), year)
-                     for year in range(start.year, end.year+1)]
-
-        data = []
-        for diapason in diapasons:
-            data += get_users_statistics_months(year=diapason[1], start=diapason[0][0], end=diapason[0][1])
-
-        serializer = StatisticsMonthsSerializer(dict(data=dict(data)))
-        return Response(serializer.data)
-
-
 class StatisticsMonthsDetailView(APIView):
     def get_object(self, name):
         try:
@@ -204,9 +184,6 @@ class StatisticsMonthsDetailView(APIView):
 
     def get(self, request, app_name, format=None):
         app = self.get_object(app_name)
-
-        now = timezone.now()
-        last_week = now - datetime.timedelta(days=7)
         dates = MonthRangeSerializer(data=request.GET)
         dates.is_valid()
 
@@ -215,15 +192,17 @@ class StatisticsMonthsDetailView(APIView):
         diapasons = [((start.month if year == start.year else 1, end.month if year == end.year else 12), year)
                      for year in range(start.year, end.year+1)]
 
-        data = []
+        win_data = dict(new=[], updates=[])
+        mac_data = dict(new=[], updates=[])
         for diapason in diapasons:
-            data += get_users_statistics_months(app_id=app.id, year=diapason[1], start=diapason[0][0], end=diapason[0][1])
+            step = get_users_statistics_months(app_id=app.id, platform='win', year=diapason[1], start=diapason[0][0], end=diapason[0][1])
+            win_data['new'] += step['new']
+            win_data['updates'] += step['updates']
+            step = get_users_statistics_months(app_id=app.id, platform='mac', year=diapason[1], start=diapason[0][0], end=diapason[0][1])
+            mac_data['new'] += step['new']
+            mac_data['updates'] += step['updates']
 
-        qs = AppRequest.objects.filter(appid=app.id,
-                                       request__created__range=[last_week, now])
-        data.append(('install_count', qs.filter(events__eventtype=2).count()))
-        data.append(('update_count', qs.filter(events__eventtype=3).count()))
-        serializer = StatisticsMonthsSerializer(dict(data=dict(data)))
+        serializer = StatisticsMonthsSerializer(dict(data=dict(win=win_data, mac=mac_data)))
         return Response(serializer.data)
 
 class StatisticsVersionsView(APIView):
@@ -234,8 +213,14 @@ class StatisticsVersionsView(APIView):
             raise Http404
 
     def get(self, request, app_name, format=None):
+        now = timezone.now()
         app = self.get_object(app_name)
-        data = get_users_versions(app.id)
+
+        date = MonthInputSerializer(data=request.GET)
+        date.is_valid()
+        date = date.validated_data.get('date', now)
+
+        data = get_users_versions(app.id, date=date)
         serializer = StatisticsMonthsSerializer(dict(data=dict(data)))
         return Response(serializer.data)
 
@@ -270,8 +255,14 @@ class StatisticsChannelsView(APIView):
             raise Http404
 
     def get(self, request, app_name, format=None):
+        now = timezone.now()
         app = self.get_object(app_name)
-        data = get_channel_statistics(app.id)
+
+        date = MonthInputSerializer(data=request.GET)
+        date.is_valid()
+        date = date.validated_data.get('date', now)
+
+        data = get_channel_statistics(app.id, date=date)
         serializer = StatisticsMonthsSerializer(dict(data=dict(data)))
         return Response(serializer.data)
 

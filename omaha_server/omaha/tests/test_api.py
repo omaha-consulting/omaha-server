@@ -235,7 +235,6 @@ class LiveStatistics(APITestCase):
                 mark_event('online:app:mac:3.0.0.0', id, now=date, track_hourly=True)
             date += timedelta(hours=1)
 
-
     def setUp(self):
         self.user = User.objects.create_user(username='test', password='secret', email='test@example.com')
         self.client.credentials(
@@ -308,25 +307,31 @@ class LiveStatistics(APITestCase):
         self.assertDictEqual(StatisticsMonthsSerializer(self.data).data, response.data)
 
 
-@freeze_time("2016-01-27")
+
 class StatisticsMonthsMixin(object):
     url = None
     url_args = ()
     serializer = None
+    url_get_params = None
 
     def _generate_fake_statistics(self):
         now = datetime.now()
         prev_year = now.year - 1
 
-        for i in range(2, 13):
-            date = datetime(year=prev_year, month=i, day=1)
+        for i in range(1, 13):
+            date = datetime(year=prev_year, month=i, day=10)
             for id in range(1, i + 1):
                 user_id = UUID(int=id)
                 userid_counting(user_id, self.app_list, self.platform.name, now=date)
+                user_id = UUID(int=1000 + id)
+                userid_counting(user_id, [self.mac_app], 'mac', now=date)
 
         user_id = UUID(int=13)
         userid_counting(user_id, self.app_list, self.platform.name, now=datetime(year=now.year, month=1, day=1))
+        user_id = UUID(int=1013)
+        userid_counting(user_id, [self.mac_app], 'mac', now=datetime(year=now.year, month=1, day=1))
 
+    @freeze_time("2016-01-27")
     @temporary_media_root()
     def setUp(self):
         self.user = User.objects.create_user(username='test', password='secret', email='test@example.com')
@@ -349,12 +354,25 @@ class StatisticsMonthsMixin(object):
             channel=self.channel,
             version='2.0.0.0',
             file=SimpleUploadedFile('./chrome_installer.exe', False))
+        self.mac_version = SparkleVersion.objects.create(
+            app=self.app,
+            channel=self.channel,
+            version='782.112',
+            short_version='13.0.782.112',
+            dsa_signature='MCwCFCdoW13VBGJWIfIklKxQVyetgxE7AhQTVuY9uQT0KOV1UEk21epBsGZMPg==',
+            file=SimpleUploadedFile('./chrome.dmg', b'_' * 1024),
+            file_size=1024)
         self.app_list = [dict(appid=self.app.id, version=str(self.version1.version))]
+        self.mac_app = dict(appid=self.app.id, version=str(self.mac_version.short_version))
 
         self._generate_fake_statistics()
         now = datetime.now()
-        self.users_statistics = [(datetime(now.year-1, x, 1).strftime("%Y-%m"), x) for x in range(2, 13)]
-        self.users_statistics.append((datetime(now.year, 1, 1).strftime("%Y-%m"), 1))
+        updates = [(datetime(now.year-1, x, 1).strftime("%Y-%m"), x - 1) for x in range(2, 13)]
+        updates.append((datetime(now.year, 1, 1).strftime("%Y-%m"), 0))
+        installs = [(datetime(now.year-1, x, 1).strftime("%Y-%m"), 1) for x in range(2, 13)]
+        installs.append((datetime(now.year, 1, 1).strftime("%Y-%m"), 1))
+        platform_statistics = dict(new=installs, updates=updates)
+        self.users_statistics = dict(win=platform_statistics, mac=platform_statistics)
         self.data = dict(data=dict(self.users_statistics))
 
     @is_private()
@@ -363,30 +381,31 @@ class StatisticsMonthsMixin(object):
         response = client.get(reverse(self.url, args=self.url_args), format='json')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-
     @is_private()
     def test_list(self):
-        response = self.client.get(reverse(self.url, args=self.url_args), format='json')
+        response = self.client.get(reverse(self.url, args=self.url_args), self.url_get_params, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(self.serializer(self.data).data, response.data)
 
+    @freeze_time("2016-01-27")
+    @is_private()
+    def test_default_list(self):
+        data_detail = self.data.copy()
+        response = self.client.get(reverse(self.url, args=self.url_args), format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.serializer(data_detail).data, response.data)
 
-class StatisticsMonthsListTest(StatisticsMonthsMixin, APITestCase):
-    url = 'api-statistics-months-list'
-    serializer = StatisticsMonthsSerializer
 
-@freeze_time("2016-01-27")
 class StatisticsMonthsDetailTest(StatisticsMonthsMixin, APITestCase):
     url = 'api-statistics-months-detail'
     url_args = ('app',)
     serializer = StatisticsMonthsSerializer
+    url_get_params = dict(start='2015-2', end='2016-1')
 
     @is_private()
     def test_list(self):
         data_detail = self.data.copy()
-        data_detail['data']['install_count'] = 0
-        data_detail['data']['update_count'] = 0
-        response = self.client.get(reverse(self.url, args=self.url_args), format='json')
+        response = self.client.get(reverse(self.url, args=self.url_args), self.url_get_params, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(self.serializer(data_detail).data, response.data)
 
@@ -395,7 +414,9 @@ class StatisticsVersionsTest(StatisticsMonthsMixin, APITestCase):
     url = 'api-statistics-versions'
     url_args = ('app',)
     serializer = StatisticsMonthsSerializer
+    url_get_params = dict(date='2016-01')
 
+    @freeze_time("2016-01-27")
     def setUp(self):
         super(StatisticsVersionsTest, self).setUp()
         data = get_users_versions(self.app.id)
@@ -406,11 +427,21 @@ class StatisticsChannelsTest(StatisticsMonthsMixin, APITestCase):
     url = 'api-statistics-channels'
     url_args = ('app',)
     serializer = StatisticsMonthsSerializer
+    url_get_params = dict(date='2016-01')
 
+    @freeze_time("2016-01-27")
     def setUp(self):
         super(StatisticsChannelsTest, self).setUp()
         data = get_channel_statistics(self.app.id)
         self.data = dict(data=dict(data))
+
+    @is_private()
+    def test_list(self):
+        data_detail = self.data.copy()
+        response = self.client.get(reverse(self.url, args=self.url_args), dict(date='2016-1'), format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(self.serializer(data_detail).data, response.data)
+
 
 class ServerVersionTest(APITestCase):
     url = 'api-version'
