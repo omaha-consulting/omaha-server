@@ -1,9 +1,13 @@
 # Group Live Statistics
-API returns amount of active users per hour for recent 24 hours. Unused versions won't be shown.
+API returns amount of active users per hour for the chosen range. Default range is recent 24 hours. Unused versions won't be shown.
 
-## Online Users per hour for app [/api/statistics/live/{app_name}/]
+## Online Users per hour for app [/api/statistics/live/{app_name}{?start,end}]
 
 ### Get live statistics [GET]
++ Parameters
+    * app_name (required, string, `AppTest`)
+    * start (optional, string, `2016-02-23T07:00:00.000000Z`) ... Start range in ISO format
+    * end (optional, string, `2016-02-24T06:00:00.000000Z`) ... End range in ISO format
 
 + Request (application/json)
 
