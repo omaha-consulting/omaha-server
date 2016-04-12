@@ -98,7 +98,10 @@ def _get_version(partialupdate, app_id, platform, channel, version, date=None):
     else:
         qs = qs.filter(Q(partialupdate__isnull=True)
                        | Q(partialupdate__is_enabled=False))
-        new_version = qs.cache().latest('version')
+        try:
+            new_version = qs.cache().latest('version')
+        except:
+            raise Version.DoesNotExist
 
     return new_version
 
