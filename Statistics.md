@@ -1,8 +1,13 @@
 # Group Statistics
 
-## Users by months [/api/statistics/months]
+## Users by months for app [/api/statistics/months/{app_name}{?start,end}]
 
-### Get overall statistics [GET]
+### Get statistics [GET]
+
++ Parameters
+    * app_name (required, string, `AppTest`)
+    * start (optional, string, `2015-02`) ... Range start in the "YYYY-MM" format
+    * end (optional, string, `2016-02`) ... Range start in the "YYYY-MM" format
 
 + Request (application/json)
 
@@ -15,25 +20,237 @@
 
             {
                 "data": {
-                    "February": 251, 
-                    "October": 235, 
-                    "March": 260, 
-                    "August": 256, 
-                    "April": 255, 
-                    "May": 269, 
-                    "January": 249, 
-                    "June": 239, 
-                    "September": 235, 
-                    "December": 255, 
-                    "July": 265, 
-                    "November": 231
+                    "win": {
+                        "new": [
+                            [
+                                "2015-02",
+                                9
+                            ],
+                            [
+                                "2015-03",
+                                12
+                            ],
+                            [
+                                "2015-04",
+                                6
+                            ],
+                            [
+                                "2015-05",
+                                8
+                            ],
+                            [
+                                "2015-06",
+                                9
+                            ],
+                            [
+                                "2015-07",
+                                13
+                            ],
+                            [
+                                "2015-08",
+                                7
+                            ],
+                            [
+                                "2015-09",
+                                12
+                            ],
+                            [
+                                "2015-10",
+                                11
+                            ],
+                            [
+                                "2015-11",
+                                7
+                            ],
+                            [
+                                "2015-12",
+                                7
+                            ],
+                            [
+                                "2016-01",
+                                6
+                            ],
+                            [
+                                "2016-02",
+                                10
+                            ]
+                        ],
+                        "updates": [
+                            [
+                                "2015-02",
+                                42
+                            ],
+                            [
+                                "2015-03",
+                                34
+                            ],
+                            [
+                                "2015-04",
+                                49
+                            ],
+                            [
+                                "2015-05",
+                                39
+                            ],
+                            [
+                                "2015-06",
+                                34
+                            ],
+                            [
+                                "2015-07",
+                                35
+                            ],
+                            [
+                                "2015-08",
+                                39
+                            ],
+                            [
+                                "2015-09",
+                                40
+                            ],
+                            [
+                                "2015-10",
+                                36
+                            ],
+                            [
+                                "2015-11",
+                                38
+                            ],
+                            [
+                                "2015-12",
+                                35
+                            ],
+                            [
+                                "2016-01",
+                                28
+                            ],
+                            [
+                                "2016-02",
+                                41
+                            ]
+                        ]
+                    },
+                    "mac": {
+                        "new": [
+                            [
+                                "2015-02",
+                                10
+                            ],
+                            [
+                                "2015-03",
+                                11
+                            ],
+                            [
+                                "2015-04",
+                                7
+                            ],
+                            [
+                                "2015-05",
+                                8
+                            ],
+                            [
+                                "2015-06",
+                                11
+                            ],
+                            [
+                                "2015-07",
+                                8
+                            ],
+                            [
+                                "2015-08",
+                                9
+                            ],
+                            [
+                                "2015-09",
+                                5
+                            ],
+                            [
+                                "2015-10",
+                                8
+                            ],
+                            [
+                                "2015-11",
+                                7
+                            ],
+                            [
+                                "2015-12",
+                                6
+                            ],
+                            [
+                                "2016-01",
+                                7
+                            ],
+                            [
+                                "2016-02",
+                                9
+                            ]
+                        ],
+                        "updates": [
+                            [
+                                "2015-02",
+                                8
+                            ],
+                            [
+                                "2015-03",
+                                12
+                            ],
+                            [
+                                "2015-04",
+                                12
+                            ],
+                            [
+                                "2015-05",
+                                9
+                            ],
+                            [
+                                "2015-06",
+                                11
+                            ],
+                            [
+                                "2015-07",
+                                8
+                            ],
+                            [
+                                "2015-08",
+                                14
+                            ],
+                            [
+                                "2015-09",
+                                16
+                            ],
+                            [
+                                "2015-10",
+                                6
+                            ],
+                            [
+                                "2015-11",
+                                14
+                            ],
+                            [
+                                "2015-12",
+                                11
+                            ],
+                            [
+                                "2016-01",
+                                10
+                            ],
+                            [
+                                "2016-02",
+                                16
+                            ]
+                        ]
+                    }
                 }
             }
 
-## Users by months for app [/api/statistics/months/{app_name}/]
+## Users by versions for app [/api/statistics/version/{app_name}{?date}]
 
 ### Get statistics [GET]
 
++ Parameters
+    * app_name (required, string, `AppTest`)
+    * date (optional, string, `2016-02`) ... Month in the "YYYY-MM" format
+    
 + Request (application/json)
 
     + Headers
@@ -45,46 +262,25 @@
 
             {
                 "data": {
-                    "February": 251, 
-                    "October": 235, 
-                    "March": 260, 
-                    "August": 256, 
-                    "April": 255, 
-                    "May": 269, 
-                    "January": 249, 
-                    "June": 239, 
-                    "September": 235, 
-                    "December": 255, 
-                    "July": 265, 
-                    "November": 231
+                    "win": {
+                        "38.0.0.42": 19,
+                        "38.0.0.55": 21,
+                        "39.5.0.0": 22
+                    },
+                    "mac": {
+                        "38.0.0.42": 36
+                    }
                 }
             }
 
-## Users by versions for app [/api/statistics/version/{app_name}/]
+## Users by channels for app [/api/statistics/channels/{app_name}{?date}]
 
 ### Get statistics [GET]
 
-+ Request (application/json)
++ Parameters
+    * app_name (required, string, `AppTest`)
+    * date (optional, string, `2016-02`) ... Month in the "YYYY-MM" format
 
-    + Headers
-
-            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
-
-+ Response 200 (application/json)
-    + Body
-
-            {
-                "data": {
-                    "39.0.2171.2": 1230, 
-                    "0.0.1.0": 0, 
-                    "39.0.2171.1": 2140, 
-                    "38.0.2125.2": 320
-                }
-            }
-
-## Users by channels for app [/api/statistics/channels/{app_name}/]
-
-### Get statistics [GET]
 
 + Request (application/json)
 
