@@ -84,7 +84,7 @@ class BaseTest(object):
             return
         client = APIClient()
         response = client.get(reverse(self.url, args=self.url_args), format='json')
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_list(self):
         if not self._is_private():
@@ -294,7 +294,7 @@ class LiveStatistics(APITestCase):
     def test_unauthorized(self):
         client = APIClient()
         response = client.get(reverse('api-statistics-live', args=('app',)), format='json')
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     @is_private()
     def test_list(self):
@@ -379,7 +379,7 @@ class StatisticsMonthsMixin(object):
     def test_unauthorized(self):
         client = APIClient()
         response = client.get(reverse(self.url, args=self.url_args), format='json')
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     @is_private()
     def test_list(self):
