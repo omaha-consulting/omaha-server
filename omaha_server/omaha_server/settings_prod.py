@@ -103,7 +103,7 @@ LOGGING = {
 if SPLUNK_HOST and SPLUNK_PORT:
     LOGGING['handlers']['splunk'] = {
         'level': os.environ.get('SPLUNK_LOGGING_LEVEL', 'INFO'),
-        'class': 'omaha_server.utils.CustomSysLogHandler',
+        'class': 'logging.handlers.SysLogHandler',
         'formatter': 'splunk_format',
         'address': (SPLUNK_HOST, int(SPLUNK_PORT))
     }
