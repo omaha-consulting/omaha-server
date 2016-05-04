@@ -26,19 +26,6 @@ class is_private(object):
         return inner
 
 
-class CustomSysLogHandler(logging.handlers.SysLogHandler):
-    def emit(self, record):
-        msg = self.format(record) + '\000'
-        if type(msg) is unicode:
-            msg = msg.encode('utf-8')
-        try:
-            self.socket.sendto(msg, self.address)
-        except (KeyboardInterrupt, SystemExit):
-            raise
-        except:
-            self.handleError(record)
-
-
 def show_toolbar(request):
     """
     Default function to determine whether to show the toolbar on a given page.
