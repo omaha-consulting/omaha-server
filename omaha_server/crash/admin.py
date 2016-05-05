@@ -102,7 +102,7 @@ class CrashAdmin(admin.ModelAdmin):
     list_select_related = ['crash_description']
     list_display_links = ('id', 'created', 'modified', 'signature', 'appid', 'userid', 'os_field', 'cpu_architecture_field',)
     list_filter = (('id', TextInputFilter,), 'created', CrashArchiveFilter)
-    search_fields = ('appid', 'userid',)
+    search_fields = ('appid', 'userid', 'archive',)
     form = CrashFrom
     readonly_fields = ('sentry_link_field',)
     exclude = ('groupid', 'eventid', )
