@@ -68,11 +68,11 @@ app:
                   content: |
                     client_max_body_size 2048M;
 
-                "/usr/bin/docker-cleanup-volumes.sh":
+                "/usr/bin/docker-gc":
                   mode: "000755"
                   owner: root
                   group: root
-                  source: https://raw.githubusercontent.com/chadoe/docker-cleanup-volumes/1.6.2/docker-cleanup-volumes.sh
+                  source: https://raw.githubusercontent.com/spotify/docker-gc/fa99444919c37cb6e7866ee6e54a52d50913f4d6/docker-gc
 
         - .ebextensions/02-commands.config:
             yaml:
@@ -82,7 +82,7 @@ app:
                 00002-add-swap:
                   command: '[ -f /var/swap ] || (dd if=/dev/zero of=/var/swap bs=1M count=1024 && mkswap /var/swap && swapon /var/swap)'
                 00003-docker-cleanup:
-                  command: 'docker-cleanup-volumes.sh'
+                  command: 'docker-gc'
 
       includes:
         - Dockerrun.aws.json
