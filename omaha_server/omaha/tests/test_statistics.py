@@ -392,8 +392,8 @@ class StatisticsTest(TestCase):
         events_appid_platform_version_2 = HourEvents('online:{}:{}:{}'.format(appid, platform, version_2),
                                                      now.year, now.month, now.day, now.hour)
 
-        self.assertEqual(len(events_appid_version_2), 0)
-        self.assertEqual(len(events_appid_platform_version_2), 0)
+        self.assertEqual(len(events_appid_version_2), 1)
+        self.assertEqual(len(events_appid_platform_version_2), 1)
 
     def test_update_live_statistics_updatecheck(self):
         request = parse_request(fixtures.request_update_check)

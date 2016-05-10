@@ -93,12 +93,6 @@ def add_app_live_statistics(userid, platform, app, now=None):
         mark('online:{}:{}:{}'.format(appid, platform, nextversion), userid)
         return
 
-    uninstall_event = filter(lambda x: x.get('eventtype') == '4', events)
-    if uninstall_event and uninstall_event[0].get('eventresult') == '1':
-        unmark('online:{}:{}'.format(appid, version), userid)               # necessary for
-        unmark('online:{}:{}:{}'.format(appid, platform, version), userid)  # 1 hour interval
-        return
-
     # updatecheck handling
     if version:
         mark('online:{}:{}'.format(appid, version), userid)
