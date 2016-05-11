@@ -23,6 +23,7 @@ import tempfile
 from django.conf import settings
 from django.test import override_settings
 
+from lxml.builder import E
 
 class temporary_media_root(override_settings):
     """Temporarily override settings.MEDIA_ROOT with a temporary directory.
@@ -65,3 +66,15 @@ class temporary_media_root(override_settings):
         setting."""
         shutil.rmtree(settings.MEDIA_ROOT)
         super(temporary_media_root, self).disable()
+
+
+def create_app_xml(**kwargs):
+    events = kwargs.pop('events', [])
+    app = dict(**kwargs)
+    app = E.app(app)
+    if type(events) is not list:
+        events = [events]
+    for event in events:
+        e = E.event(event)
+        app.append(e)
+    return app

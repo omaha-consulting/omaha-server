@@ -192,12 +192,13 @@ class StatisticsMonthsDetailView(APIView):
         diapasons = [((start.month if year == start.year else 1, end.month if year == end.year else 12), year)
                      for year in range(start.year, end.year+1)]
 
-        win_data = dict(new=[], updates=[])
+        win_data = dict(new=[], updates=[], uninstalls=[])
         mac_data = dict(new=[], updates=[])
         for diapason in diapasons:
             step = get_users_statistics_months(app_id=app.id, platform='win', year=diapason[1], start=diapason[0][0], end=diapason[0][1])
             win_data['new'] += step['new']
             win_data['updates'] += step['updates']
+            win_data['uninstalls'] += step['uninstalls']
             step = get_users_statistics_months(app_id=app.id, platform='mac', year=diapason[1], start=diapason[0][0], end=diapason[0][1])
             mac_data['new'] += step['new']
             mac_data['updates'] += step['updates']

@@ -18,6 +18,7 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
+import __builtin__
 import random
 from datetime import datetime
 from uuid import uuid4
@@ -30,7 +31,16 @@ from django.core.management.base import BaseCommand
 
 from omaha.models import Version, Channel
 from omaha.statistics import userid_counting
+from omaha.tests.utils import create_app_xml
 from sparkle.models import SparkleVersion
+from sparkle.statistics import userid_counting as mac_userid_counting
+
+
+events = [dict(eventtype="2", eventresult="1", errorcode="0", extracode1="0"),
+          dict(eventtype="2", eventresult="1", errorcode="0", extracode1="0"),
+          dict(eventtype="2", eventresult="1", errorcode="0", extracode1="0"),
+          dict(eventtype="2", eventresult="1", errorcode="0", extracode1="0"),
+          dict(eventtype="4", eventresult="1", errorcode="0", extracode1="0")]
 
 NUMBER_UNIQUE = 1000
 uuids = dict(
@@ -38,6 +48,8 @@ uuids = dict(
     mac=["{%s}" % uuid4() for i in range(NUMBER_UNIQUE)]
 )
 
+COUNTING = dict(win=userid_counting,
+                mac=mac_userid_counting)
 
 def get_random_uuid(platform):
     return random.choice(uuids[platform])
@@ -52,22 +64,22 @@ def generate_statistics(i, versions, channels, year):
     platform = version.platform.name if getattr(version, 'platform', None) else 'mac'
     channel = random.choice(channels)
     if platform == 'win':
-        app_list = [dict(
-            appid=version.app.id,
-            version=str(version.version),
-            tag=channel,
-        )]
+        app = create_app_xml(appid=version.app.id,
+                       version=str(version.version),
+                       tag=channel.name,
+                       events=[random.choice(events)])
+        app_list = [app]
     else:
-        app_list = [dict(
+        app_list = dict(
             appid=version.app.id,
             version=str(version.short_version),
             tag=version.channel
-        )]
+        )
     month = random.choice(range(1, 13))
     day = random.choice(range(1, 28))
     date = datetime(year, month, day)
     userid = get_random_uuid(platform)
-    userid_counting(userid, app_list, platform, now=date)
+    COUNTING[platform](userid, app_list, platform, now=date)
 
 
 def run_worker(data, versions, channels, year):

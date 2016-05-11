@@ -20,9 +20,12 @@ the License.
 
 from functools import partial
 
-from bitmapist import mark_event
+from bitmapist import mark_event, MonthEvents
+from django.utils import timezone
 
-from omaha.statistics import get_id, userid_counting
+from omaha.statistics import get_id, is_new_install, redis
+from omaha.settings import DEFAULT_CHANNEL
+
 
 def collect_statistics(request, appid, channel):
     deviceID = request.GET.get('deviceID')
@@ -33,7 +36,7 @@ def collect_statistics(request, appid, channel):
                version=version,
                tag=channel)
 
-    userid_counting(deviceID, [app], 'mac')
+    userid_counting(deviceID, app, 'mac')
     update_live_statistics(deviceID, appid, version)
 
 
@@ -44,3 +47,28 @@ def update_live_statistics(userid, appid, version, now=None):
     mark('online:{}:{}:{}'.format(appid, 'mac', version), userid)
 
 
+def userid_counting(userid, app, platform, now=None):
+    id = get_id(userid)
+    mark_event('request', id, now=now)
+    add_app_statistics(id, platform, app, now=now)
+
+
+def add_app_statistics(userid, platform, app, now=None):
+    mark = partial(mark_event, now=now)
+    if not now:
+        now = timezone.now()
+    appid = app.get('appid')
+    version = app.get('version')
+    channel = app.get('tag') or DEFAULT_CHANNEL
+
+    if is_new_install(appid, userid):
+        mark('new_install:%s' % appid, userid)
+        mark('new_install:{}:{}'.format(appid, platform), userid)
+        redis.setbit("known_users:%s" % appid, userid, 1)
+    elif userid not in MonthEvents('new_install:{}:{}'.format(appid, platform), year=now.year, month=now.month):
+        mark('request:%s' % appid, userid)
+        mark('request:{}:{}'.format(appid, platform), userid)
+
+    mark('request:{}:{}'.format(appid, version), userid)
+    mark('request:{}:{}'.format(appid, channel), userid)
+    mark('request:{}:{}:{}'.format(appid, platform, version), userid)

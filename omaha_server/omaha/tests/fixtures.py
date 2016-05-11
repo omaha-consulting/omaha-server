@@ -41,9 +41,9 @@ request_update_check = b"""<?xml version="1.0" encoding="UTF-8"?>
 </request>"""
 
 request_event = b"""<?xml version="1.0" encoding="UTF-8"?>
-<request protocol="3.0" version="1.3.23.0" ismachine="1" sessionid="{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}" userid="{F25EC606-5FC2-449b-91FF-FA21CADB46E4}" installsource="otherinstallcmd" testsource="ossdev" requestid="{164FC0EC-8EF7-42cb-A49D-474E20E8D352}">
+<request protocol="3.0" version="1.3.23.0" ismachine="1" sessionid="{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}" userid="{D0BBD725-742D-44ae-8D46-0231E881D58E}" installsource="otherinstallcmd" testsource="ossdev" requestid="{164FC0EC-8EF7-42cb-A49D-474E20E8D352}">
   <os platform="win" version="6.1" sp="" arch="x64"/>
-  <app appid="{8A69D345-D564-463C-AFF1-A69D9E530F96}" version="" nextversion="13.0.782.112" lang="en" brand="" client="" installage="6">
+  <app appid="{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}" version="" nextversion="13.0.782.112" lang="en" brand="" client="" installage="6">
     <event eventtype="9" eventresult="1" errorcode="0" extracode1="0"/>
     <event eventtype="5" eventresult="1" errorcode="0" extracode1="0"/>
     <event eventtype="2" eventresult="4" errorcode="-2147219440" extracode1="268435463"/>
@@ -52,9 +52,9 @@ request_event = b"""<?xml version="1.0" encoding="UTF-8"?>
 """
 
 request_event_install_success = b"""<?xml version="1.0" encoding="UTF-8"?>
-<request protocol="3.0" version="1.3.23.0" ismachine="1" sessionid="{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}" userid="{F25EC606-5FC2-449b-91FF-FA21CADB46E4}" installsource="otherinstallcmd" testsource="ossdev" requestid="{164FC0EC-8EF7-42cb-A49D-474E20E8D352}">
+<request protocol="3.0" version="1.3.23.0" ismachine="1" sessionid="{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}" userid="{D0BBD725-742D-44ae-8D46-0231E881D58E}" installsource="otherinstallcmd" testsource="ossdev" requestid="{164FC0EC-8EF7-42cb-A49D-474E20E8D352}">
   <os platform="win" version="6.1" sp="" arch="x64"/>
-  <app appid="{8A69D345-D564-463C-AFF1-A69D9E530F96}" version="" nextversion="0.0.0.1" lang="en" brand="" client="" installage="6">
+  <app appid="{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}" version="" nextversion="0.0.0.1" lang="en" brand="" client="" installage="6">
     <event eventtype="9" eventresult="1" errorcode="0" extracode1="0"/>
     <event eventtype="5" eventresult="1" errorcode="0" extracode1="0"/>
     <event eventtype="2" eventresult="1" errorcode="0" extracode1="0"/>
@@ -63,9 +63,9 @@ request_event_install_success = b"""<?xml version="1.0" encoding="UTF-8"?>
 """
 
 request_event_update_success = b"""<?xml version="1.0" encoding="UTF-8"?>
-<request protocol="3.0" version="1.3.23.0" ismachine="1" sessionid="{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}" userid="{F25EC606-5FC2-449b-91FF-FA21CADB46E4}" installsource="otherinstallcmd" testsource="ossdev" requestid="{164FC0EC-8EF7-42cb-A49D-474E20E8D352}">
+<request protocol="3.0" version="1.3.23.0" ismachine="1" sessionid="{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}" userid="{D0BBD725-742D-44ae-8D46-0231E881D58E}" installsource="otherinstallcmd" testsource="ossdev" requestid="{164FC0EC-8EF7-42cb-A49D-474E20E8D352}">
   <os platform="win" version="6.1" sp="" arch="x64"/>
-  <app appid="{8A69D345-D564-463C-AFF1-A69D9E530F96}" version="0.0.0.1" nextversion="0.0.0.2" lang="en" brand="" client="" installage="6">
+  <app appid="{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}" version="0.0.0.1" nextversion="0.0.0.2" lang="en" brand="" client="" installage="6">
     <event eventtype="9" eventresult="1" errorcode="0" extracode1="0"/>
     <event eventtype="5" eventresult="1" errorcode="0" extracode1="0"/>
     <event eventtype="3" eventresult="1" errorcode="0" extracode1="0"/>
@@ -74,9 +74,9 @@ request_event_update_success = b"""<?xml version="1.0" encoding="UTF-8"?>
 """
 
 request_event_uninstall_success = b"""<?xml version="1.0" encoding="UTF-8"?>
-<request protocol="3.0" version="1.3.23.0" ismachine="1" sessionid="{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}" userid="{F25EC606-5FC2-449b-91FF-FA21CADB46E4}" installsource="otherinstallcmd" testsource="ossdev" requestid="{164FC0EC-8EF7-42cb-A49D-474E20E8D352}">
+<request protocol="3.0" version="1.3.23.0" ismachine="1" sessionid="{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}" userid="{D0BBD725-742D-44ae-8D46-0231E881D58E}" installsource="otherinstallcmd" testsource="ossdev" requestid="{164FC0EC-8EF7-42cb-A49D-474E20E8D352}">
   <os platform="win" version="6.1" sp="" arch="x64"/>
-  <app appid="{8A69D345-D564-463C-AFF1-A69D9E530F96}" version="0.0.0.2" nextversion="" lang="en" brand="" client="" installage="6">
+  <app appid="{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}" version="0.0.0.2" nextversion="" lang="en" brand="" client="" installage="6">
     <event eventtype="9" eventresult="1" errorcode="0" extracode1="0"/>
     <event eventtype="5" eventresult="1" errorcode="0" extracode1="0"/>
     <event eventtype="4" eventresult="1" errorcode="0" extracode1="0"/>
@@ -137,7 +137,7 @@ response_update_check_positive = b"""<?xml version="1.0" encoding="UTF-8"?>
 response_event = b"""<?xml version="1.0" encoding="UTF-8"?>
 <response protocol="3.0" server="prod">
   <daystart elapsed_seconds="56754"/>
-  <app appid="{8A69D345-D564-463C-AFF1-A69D9E530F96}" status="ok">
+  <app appid="{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}" status="ok">
     <event status="ok"/>
     <event status="ok"/>
     <event status="ok"/>
@@ -147,7 +147,7 @@ response_event = b"""<?xml version="1.0" encoding="UTF-8"?>
 response_data_doc = b"""<?xml version="1.0" encoding="UTF-8"?>
 <response protocol="3.0" server="prod">
   <daystart elapsed_seconds="56754"/>
-  <app appid="{8A69D345-D564-463C-AFF1-A69D9E530F96}" status="ok">
+  <app appid="{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}" status="ok">
     <data index="verboselogging" name="install" status="ok">
       app-specific values here
     </data>
@@ -174,3 +174,7 @@ response_data = b"""<?xml version="1.0" encoding="UTF-8"?>
     <ping status="ok"/>
   </app>
 </response>"""
+
+event_install_success = dict(eventtype="2", eventresult="1", errorcode="0", extracode1="0")
+event_install_error = dict(eventtype="2", eventresult="0", errorcode="0", extracode1="0")
+event_uninstall_success = dict(eventtype="4", eventresult="1", errorcode="0", extracode1="0")
