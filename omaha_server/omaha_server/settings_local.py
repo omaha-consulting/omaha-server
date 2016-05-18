@@ -14,7 +14,7 @@ STATIC_URL = '/static/'
 SITE_ID = 1
 
 INSTALLED_APPS += (
-    'debug_toolbar.apps.DebugToolbarConfig',
+    'debug_toolbar',
     'debug_panel',
     'httplog',
 )
