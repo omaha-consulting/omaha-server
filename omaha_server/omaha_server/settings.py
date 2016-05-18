@@ -28,7 +28,7 @@ if os.getenv('OMAHA_ONLY_HTTPS'):
     SECURE_REDIRECT_EXEMPT = [
         r"^healthcheck/status/$"
     ]
-    
+
 SITE_ID = 1
 
 TEMPLATES = [
@@ -52,7 +52,7 @@ APP_VERSION = "0.3.6"
 SUIT_CONFIG = {
     'ADMIN_NAME': 'Omaha Server [{}]'.format(APP_VERSION),
     'MENU': (
-        'sites',
+        # 'sites',
         {'app': 'omaha', 'label': 'Omaha', 'icon': 'icon-refresh'},
         {'app': 'sparkle', 'label': 'Sparkle', 'icon': 'icon-circle-arrow-down'},
         {'app': 'crash', 'label': 'Crash reports', 'icon': 'icon-fire'},
