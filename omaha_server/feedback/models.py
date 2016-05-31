@@ -83,3 +83,8 @@ def pre_feedback_delete(sender, instance, **kwargs):
         storage, name = field.storage, field.name
         if name:
             storage.delete(name)
+
+
+class FeedbackDescription(Feedback):
+    class Meta:
+        proxy = True

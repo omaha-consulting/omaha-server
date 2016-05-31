@@ -22,7 +22,7 @@ from django.contrib import admin
 
 from crash.admin import TextInputFilter, BooleanFilter
 
-from feedback.models import Feedback
+from feedback.models import Feedback, FeedbackDescription
 from feedback.forms import FeedbackForm
 
 
@@ -53,3 +53,20 @@ class FeedbackAdmin(admin.ModelAdmin):
     list_filter = (('id', TextInputFilter,), ScreenshotFilter, BlackboxFilter, SystemLogsFilter, AttachedFileFilter, 'created_at',)
     form = FeedbackForm
     readonly_fields = ('created_at',)
+
+    def get_queryset(self, request):
+        qs = super(FeedbackAdmin, self).get_queryset(request)
+        return qs.filter(description__startswith='BlackBox')
+
+
+@admin.register(FeedbackDescription)
+class FeedbackDescriptionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'description', 'email', 'page_url', 'created_at', 'ip',)
+    list_display_links = ('id', 'description')
+    list_filter = (('id', TextInputFilter,), ScreenshotFilter, BlackboxFilter, SystemLogsFilter, AttachedFileFilter, 'created_at')
+    form = FeedbackForm
+    readonly_fields = ('created_at',)
+
+    def get_queryset(self, request):
+        qs = super(FeedbackDescriptionAdmin, self).get_queryset(request)
+        return qs.exclude(description__startswith='BlackBox')
