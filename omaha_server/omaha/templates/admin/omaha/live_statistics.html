@@ -29,6 +29,8 @@
           rel="stylesheet"/>
     <link rel="stylesheet" type="text/css" media="screen"
           href="https://cdn.rawgit.com/tarruda/bootstrap-datetimepicker/c26217db8840e5aa8f56e343ce307581960543c9/build/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" type="text/css" media="screen"
+          href='{% static "statistics/css/statistics.css" %}'>
 {% endblock %}
 
 {% block extrajs %}
@@ -55,43 +57,50 @@
             endDate: new Date()
         });
     </script>
+    <script>
+    $(document).ready(function(){
+        $('[data-toggle="popover"]').popover();
+    });
+    </script>
 
 {% endblock %}
 
 {% block content %}
     <h1 data-name='{{ app.name }}' id="app_name">{{ app.name|title }}</h1>
 
-    <div style="display: table">
-        Filter live statistics by range:
-        <p id='range-start' class="datetimepicker input-append date"
-           style="display: table-cell; vertical-align: middle; padding: 0 10px">
+    <h2 style="display: inline">Live Statistics</h2>
+    <span data-toggle="popover" data-content="This shows how many users are active during a particular hour. The data is stored only for the last 7 days. These statistics are based on update check requests.">
+        <i class="icon-question-sign"></i>
+    </span>
+
+    <div id="month-statistics" class="form-inline center">
+        Filter live statistics:
+        <span id='range-start' class="datetimepicker input-append date">
             <input type="text" placeholder="Start">
           <span class="add-on">
             <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
           </span>
-        </p>
+        </span>
         -
-        <p id='range-end' class="datetimepicker input-append date"
-           style="display: table-cell; vertical-align: middle; padding: 0 10px">
+        <span id='range-end' class="datetimepicker input-append date">
             <input type="text" placeholder="End">
           <span class="add-on">
             <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
           </span>
-        </p>
-
+        </span>
         <button id="btn-apply" class="btn">
             <span id="ajax-completed">Apply</span>
             <img id="ajax-loading" src="{% static "statistics/gif/ajax_loader.gif" %}" hidden/>
         </button>
     </div>
 
-    <h2>Windows users</h2>
-    <div id="win-chart">
-        <svg style="width:1200px;height:400px;"></svg>
+    <h2 align="center">Windows users</h2>
+    <div class="stacked-chart" id="win-chart">
+        <svg></svg>
     </div>
 
-    <h2>Mac users</h2>
-    <div id="mac-chart">
-        <svg style="width:1200px;height:400px;"></svg>
+    <h2 align="center">Mac users</h2>
+    <div class="stacked-chart" id="mac-chart">
+        <svg></svg>
     </div>
 {% endblock %}

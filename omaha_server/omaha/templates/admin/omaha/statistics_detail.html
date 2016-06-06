@@ -33,7 +33,6 @@
 
 {% block extrajs %}
     {{ block.super }}
-    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script type="text/javascript"
             src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.1/js/bootstrap-datepicker.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js" type="text/javascript" charset="utf-8"></script>
@@ -52,6 +51,11 @@
         autoclose: true
     });
     </script>
+    <script>
+    $(document).ready(function(){
+        $('[data-toggle="popover"]').popover();
+    });
+    </script>
 {% endblock %}
 
 {% block content %}
@@ -63,7 +67,10 @@
 
     <hr/>
 
-    <h2>Monthly Statistics</h2>
+    <h2 style="display: inline;">Monthly Statistics</h2>
+    <span data-toggle="popover" data-content="Two charts for Windows and Mac platforms showing aggregated information about users’ actions (installs, updates, uninstalls) per month. A special feature of them is the fact that they show installs and uninstalls separately and all actions are unique. It means that if a user installs the application in a particular month and updates it in the same month, the charts show only one action and in this case it will be an install. So it allows us to see the number of new users per month. But if a user does an install and right after that deletes the application, the charts show one install and one uninstall action.">
+        <i class="icon-question-sign"></i>
+    </span>
 
     <form id="month-statistics" class="form-inline center" action="">
         Filter months:
@@ -88,7 +95,11 @@
 
     <hr/>
 
-    <h2>Versions</h2>
+    <h2 style="display: inline">Versions</h2>
+    <span data-toggle="popover" data-content="Two pie charts for Windows and Mac platforms showing the number of active users per month for each version of the application.">
+        <i class="icon-question-sign"></i>
+    </span>
+
     <form id="version-statistics" class="form-inline center" action="">
         Choose a month:
         <input type="text" class="input-small input-datepicker" placeholder="Month" name="date">
@@ -134,7 +145,10 @@
         </div>
     <hr/>
 
-    <h2>Channels</h2>
+    <h2 style="display: inline">Channels</h2>
+    <span data-toggle="popover" data-content="This pie chart shows the number of active users per distribution channel per month.">
+        <i class="icon-question-sign"></i>
+    </span>
 
     <form id="channel-statistics" class="form-inline center" action="">
         Choose a month:
