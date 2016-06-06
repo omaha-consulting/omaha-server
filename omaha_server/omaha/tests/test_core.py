@@ -267,7 +267,7 @@ class TestRequestScheme(TestCase, XmlTestMixin):
         response = Response(
             date=datetime(year=2014, month=1, day=1, hour=15, minute=45, second=54),
             apps_list=[App(
-                app_id='{8A69D345-D564-463C-AFF1-A69D9E530F96}',
+                app_id='{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}',
                 status='ok',
                 events=[Event(), Event(), Event()]
             )]
@@ -280,7 +280,7 @@ class TestRequestScheme(TestCase, XmlTestMixin):
         response = Response(
             date=datetime(year=2014, month=1, day=1, hour=15, minute=45, second=54),
             apps_list=[App(
-                app_id='{8A69D345-D564-463C-AFF1-A69D9E530F96}',
+                app_id='{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}',
                 status='ok',
                 data_list=[
                     Data('install', index='verboselogging', text='app-specific values here'),

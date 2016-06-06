@@ -151,21 +151,25 @@ class UpdateViewTest(TestCase, XmlTestMixin):
         with freeze_time(install_date):  # 56508 sec
             self.client.post(reverse('update'),
                              fixtures.request_update_check, content_type='text/xml')
+            self.client.post(reverse('update'),
+                             fixtures.request_event_install_success, content_type='text/xml')
 
         self.assertEqual(len(request_events), 1)
-        self.assertEqual(len(app1_install_events), 1)
+        self.assertEqual(len(app1_install_events), 0)
         self.assertEqual(len(app2_install_events), 1)
+        self.assertEqual(len(app1_update_events), 0)
+        self.assertEqual(len(app2_update_events), 0)
         self.assertTrue(user_id in request_events)
-        self.assertTrue(user_id in app1_install_events)
+        self.assertFalse(user_id in app1_install_events)
         self.assertTrue(user_id in app2_install_events)
 
         with freeze_time(update_date):
             self.client.post(reverse('update'),
                              fixtures.request_update_check, content_type='text/xml')
 
-        self.assertEqual(len(app1_update_events), 1)
+        self.assertEqual(len(app1_update_events), 0)
         self.assertEqual(len(app2_update_events), 1)
-        self.assertTrue(user_id in app1_update_events)
+        self.assertFalse(user_id in app1_update_events)
         self.assertTrue(user_id in app2_update_events)
 
     @freeze_time('2014-01-01 15:45:54')  # 56754 sec

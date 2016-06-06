@@ -26,14 +26,15 @@
 
 
     function getData(data){
-        var tmp;
+        if (data.hasOwnProperty('uninstalls'))
+            data.uninstalls.forEach(function(el, index, arr){arr[index][1] = -el[1]});
         var res = Object.keys(data).map(function(d){
             return {
                 key: d,
                 values: data[d]
             }
         });
-        tmp = res[0]; res[0] = res[1]; res[1] = tmp;
+        res.unshift(res.pop());
         return res;
     }
 
@@ -56,7 +57,7 @@
                         .y(function(d) { return d[1] })
                         .stacked(true)
                         .showControls(false)
-                        .color(['#00f', 'green']);
+                        .color(['#00f', 'green', 'red']);
             var graphSelector = ''.concat('#', platform, '-months-chart svg');
 
             chart.xAxis.showMaxMin(false)

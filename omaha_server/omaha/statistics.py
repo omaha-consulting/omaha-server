@@ -53,18 +53,29 @@ def add_app_statistics(userid, platform, app, now=None):
     appid = app.get('appid')
     version = app.get('version')
     channel = app.get('tag') or DEFAULT_CHANNEL
-
+    events = app.findall('event')
+    err_events = filter(lambda x: x.get('eventresult') not in ['1', '2', '3'], events)
+    if err_events:
+        return
+    install_event = filter(lambda x: x.get('eventtype') == '2', events)
     if is_new_install(appid, userid):
-        mark('new_install:%s' % appid, userid)
-        mark('new_install:{}:{}'.format(appid, platform), userid)
-        redis.setbit("known_users:%s" % appid, userid, 1)
+        if install_event and install_event[0].get('eventresult') in ['1', '2', '3']:
+            mark('new_install:%s' % appid, userid)
+            mark('new_install:{}:{}'.format(appid, platform), userid)
+            redis.setbit("known_users:%s" % appid, userid, 1)
     elif userid not in MonthEvents('new_install:{}:{}'.format(appid, platform), year=now.year, month=now.month):
         mark('request:%s' % appid, userid)
         mark('request:{}:{}'.format(appid, platform), userid)
 
+    uninstall_event = filter(lambda x: x.get('eventtype') == '4', events)
+    if uninstall_event and uninstall_event[0].get('eventresult') in ['1', '2', '3']:
+        mark('uninstall:%s' % appid, userid)
+        mark('uninstall:{}:{}'.format(appid, platform), userid)
+
     mark('request:{}:{}'.format(appid, version), userid)
     mark('request:{}:{}'.format(appid, channel), userid)
     mark('request:{}:{}:{}'.format(appid, platform, version), userid)
+
 
 def update_live_statistics(userid, apps_list, platform, now=None):
     id = get_id(userid)
@@ -80,13 +91,13 @@ def add_app_live_statistics(userid, platform, app, now=None):
     nextversion = app.get('nextversion')
 
     install_event = filter(lambda x: x.get('eventtype') == '2', events)
-    if install_event and install_event[0].get('eventresult') == '1':
+    if install_event and install_event[0].get('eventresult') in ['1', '2', '3']:
         mark('online:{}:{}'.format(appid, nextversion), userid)
         mark('online:{}:{}:{}'.format(appid, platform, nextversion), userid)
         return
 
     update_event = filter(lambda x: x.get('eventtype') == '3', events)
-    if update_event and update_event[0].get('eventresult') == '1':
+    if update_event and update_event[0].get('eventresult') in ['1', '2', '3']:
         unmark('online:{}:{}'.format(appid, version), userid)               # necessary for
         unmark('online:{}:{}:{}'.format(appid, platform, version), userid)  # 1 hour interval
         mark('online:{}:{}'.format(appid, nextversion), userid)
@@ -98,6 +109,7 @@ def add_app_live_statistics(userid, platform, app, now=None):
         mark('online:{}:{}'.format(appid, version), userid)
         mark('online:{}:{}:{}'.format(appid, platform, version), userid)
 
+
 def get_users_statistics_months(app_id, platform=None, year=None, start=1, end=12):
     now = timezone.now()
     if not year:
@@ -106,18 +118,26 @@ def get_users_statistics_months(app_id, platform=None, year=None, start=1, end=1
     if platform:
         install_event_name = 'new_install:{}:{}'.format(app_id, platform)
         update_event_name = 'request:{}:{}'.format(app_id, platform)
+        uninstall_event_name = 'uninstall:{}:{}'.format(app_id, platform)
     else:
         install_event_name = 'new_install:%s' % app_id
         update_event_name = 'request:%s' % app_id
+        uninstall_event_name = 'uninstall:%s' % app_id
 
     installs_by_month = []
     updates_by_month = []
+    uninstalls_by_month = []
     for m in range(start, end + 1):
         installs_by_month.append(MonthEvents(install_event_name, year, m))
         updates_by_month.append(MonthEvents(update_event_name, year, m))
+        uninstalls_by_month.append(MonthEvents(uninstall_event_name, year, m))
     installs_data = [(datetime(year, start + i, 1).strftime("%Y-%m"), len(e)) for i, e in enumerate(installs_by_month)]
     updates_data = [(datetime(year, start + i, 1).strftime("%Y-%m"), len(e)) for i, e in enumerate(updates_by_month)]
-    return dict(new=installs_data, updates=updates_data)
+    res = dict(new=installs_data, updates=updates_data)
+    if platform != 'mac':
+        uninstalls_data = [(datetime(year, start + i, 1).strftime("%Y-%m"), len(e)) for i, e in enumerate(uninstalls_by_month)]
+        res.update(dict(uninstalls=uninstalls_data))
+    return res
 
 
 def get_users_statistics_weeks(app_id=None):

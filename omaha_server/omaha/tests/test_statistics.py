@@ -50,7 +50,7 @@ from omaha.statistics import (
     get_users_versions,
 )
 
-from omaha.tests.utils import temporary_media_root
+from omaha.tests.utils import temporary_media_root, create_app_xml
 from omaha.utils import redis, get_id
 from omaha.settings import DEFAULT_CHANNEL
 from omaha.models import (
@@ -67,6 +67,7 @@ from omaha.models import (
 )
 from sparkle.models import SparkleVersion
 from sparkle.statistics import userid_counting as mac_userid_counting
+
 
 class StatisticsTest(TestCase):
     def setUp(self):
@@ -116,40 +117,89 @@ class StatisticsTest(TestCase):
 
         self.assertEqual(len(request_events), 2)
 
+    @freeze_time('2016-1-1')
     def test_add_app_statistics(self):
         now = datetime.utcnow()
+        next_month = now.replace(month=now.month + 1)
         userid = 1
         channel = DEFAULT_CHANNEL
         platform = 'win'
-        app = dict(appid='{F97917B1-20AB-48C1-9802-CEF305B10804}', version='30.0.123.1234')
-        appid = app.get('appid')
-        version = app.get('version')
+        app_kwargs = dict(appid='{F97917B1-20AB-48C1-9802-CEF305B10804}', version='30.0.123.1234')
+        success_app = create_app_xml(events=fixtures.event_install_success, **app_kwargs)
+        error_app = create_app_xml(events=fixtures.event_install_error, **app_kwargs)
+        appid = app_kwargs.get('appid')
+        version = app_kwargs.get('version')
 
-        events_appid = DayEvents('new_install:%s' % app.get('appid'), now.year, now.month, now.day)
-        events_appid_version = DayEvents('request:{}:{}'.format(appid, version), now.year, now.month, now.day)
-        events_appid_platform = DayEvents('new_install:{}:{}'.format(appid, platform), now.year, now.month, now.day)
-        events_appid_channel = DayEvents('request:{}:{}'.format(appid, channel), now.year, now.month, now.day)
-        events_appid_platform_version = DayEvents('request:{}:{}:{}'.format(appid, platform, version), now.year, now.month, now.day)
+        events_request_appid = lambda date=now: DayEvents.from_date('request:%s' % appid, date)
+        events_new_appid = lambda date=now: DayEvents.from_date('new_install:%s' % appid, date)
+        events_request_appid_version = lambda date=now: DayEvents.from_date('request:{}:{}'.format(appid, version), date)
+        events_request_appid_platform = lambda date=now: DayEvents.from_date('request:{}:{}'.format(appid, platform), date)
+        events_new_appid_platform = lambda date=now: DayEvents.from_date('new_install:{}:{}'.format(appid, platform), date)
+        events_request_appid_channel = lambda date=now: DayEvents.from_date('request:{}:{}'.format(appid, channel), date)
+        events_request_appid_platform_version = lambda date=now: DayEvents.from_date('request:{}:{}:{}'.format(appid, platform, version), date)
 
-        self.assertEqual(len(events_appid), 0)
-        self.assertEqual(len(events_appid_version), 0)
-        self.assertEqual(len(events_appid_platform), 0)
-        self.assertEqual(len(events_appid_channel), 0)
-        self.assertEqual(len(events_appid_platform_version), 0)
 
-        add_app_statistics(userid, platform, app)
+        self.assertEqual(len(events_new_appid()), 0)
+        self.assertEqual(len(events_request_appid()), 0)
+        self.assertEqual(len(events_request_appid_version()), 0)
+        self.assertEqual(len(events_request_appid_platform()), 0)
+        self.assertEqual(len(events_new_appid_platform()), 0)
+        self.assertEqual(len(events_request_appid_channel()), 0)
+        self.assertEqual(len(events_request_appid_platform_version()), 0)
 
-        self.assertEqual(len(events_appid), 1)
-        self.assertEqual(len(events_appid_version), 1)
-        self.assertEqual(len(events_appid_platform), 1)
-        self.assertEqual(len(events_appid_channel), 1)
-        self.assertEqual(len(events_appid_platform_version), 1)
+        add_app_statistics(userid, platform, error_app)
 
-        self.assertIn(userid, events_appid)
-        self.assertIn(userid, events_appid_version)
-        self.assertIn(userid, events_appid_platform)
-        self.assertIn(userid, events_appid_channel)
-        self.assertIn(userid, events_appid_platform_version)
+        self.assertEqual(len(events_new_appid()), 0)
+        self.assertEqual(len(events_request_appid()), 0)
+        self.assertEqual(len(events_request_appid_version()), 0)
+        self.assertEqual(len(events_request_appid_platform()), 0)
+        self.assertEqual(len(events_new_appid_platform()), 0)
+        self.assertEqual(len(events_request_appid_channel()), 0)
+        self.assertEqual(len(events_request_appid_platform_version()), 0)
+
+        add_app_statistics(userid, platform, success_app)
+        self.assertEqual(len(events_new_appid()), 1)
+        self.assertEqual(len(events_request_appid()), 0)
+        self.assertEqual(len(events_request_appid_version()), 1)
+        self.assertEqual(len(events_new_appid_platform()), 1)
+        self.assertEqual(len(events_request_appid_platform()), 0)
+        self.assertEqual(len(events_request_appid_channel()), 1)
+        self.assertEqual(len(events_request_appid_platform_version()), 1)
+
+        self.assertIn(userid, events_new_appid())
+        self.assertIn(userid, events_request_appid_version())
+        self.assertIn(userid, events_new_appid_platform())
+        self.assertIn(userid, events_request_appid_channel())
+        self.assertIn(userid, events_request_appid_platform_version())
+
+        add_app_statistics(userid, platform, success_app)
+        self.assertEqual(len(events_new_appid()), 1)
+        self.assertEqual(len(events_request_appid()), 0)
+        self.assertEqual(len(events_request_appid_version()), 1)
+        self.assertEqual(len(events_new_appid_platform()), 1)
+        self.assertEqual(len(events_request_appid_platform()), 0)
+        self.assertEqual(len(events_request_appid_channel()), 1)
+        self.assertEqual(len(events_request_appid_platform_version()), 1)
+
+        with freeze_time(next_month):
+            add_app_statistics(userid, platform, error_app)
+
+        self.assertEqual(len(events_request_appid(next_month)), 0)
+        self.assertEqual(len(events_request_appid_platform(next_month)), 0)
+
+        with freeze_time(next_month):
+            add_app_statistics(userid, platform, success_app)
+
+        self.assertEqual(len(events_request_appid(next_month)), 1)
+        self.assertEqual(len(events_request_appid_platform(next_month)), 1)
+        self.assertEqual(len(events_new_appid(next_month)), 0)
+        self.assertEqual(len(events_request_appid_version(next_month)), 1)
+        self.assertEqual(len(events_new_appid_platform(next_month)), 0)
+        self.assertEqual(len(events_request_appid_channel()), 1)
+        self.assertEqual(len(events_request_appid_platform_version()), 1)
+
+        self.assertIn(userid, events_request_appid(next_month))
+        self.assertIn(userid, events_request_appid_platform(next_month))
 
     def test_add_app_live_statistics(self):
         request = parse_request(fixtures.request_update_check)
@@ -231,7 +281,7 @@ class StatisticsTest(TestCase):
         self.assertEqual(req.version, Request._meta.get_field_by_name('version')[0].to_python('1.3.23.0'))
         self.assertEqual(req.ismachine, 1)
         self.assertEqual(req.sessionid, '{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}')
-        self.assertEqual(req.userid, '{F25EC606-5FC2-449b-91FF-FA21CADB46E4}')
+        self.assertEqual(req.userid, '{D0BBD725-742D-44ae-8D46-0231E881D58E}')
         self.assertEqual(req.originurl, None)
         self.assertEqual(req.testsource, 'ossdev')
         self.assertEqual(req.updaterchannel, None)
@@ -252,7 +302,7 @@ class StatisticsTest(TestCase):
         self.assertEqual(app.lang, 'en')
         self.assertEqual(app.tag, None)
         self.assertEqual(app.installage, 6)
-        self.assertEqual(app.appid, '{8A69D345-D564-463C-AFF1-A69D9E530F96}')
+        self.assertEqual(app.appid, '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}')
 
     def test_parse_events(self):
         request = parse_request(fixtures.request_event)
@@ -307,7 +357,7 @@ class StatisticsTest(TestCase):
         self.assertEqual(req.version, Request._meta.get_field_by_name('version')[0].to_python('1.3.23.0'))
         self.assertEqual(req.ismachine, 1)
         self.assertEqual(req.sessionid, '{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}')
-        self.assertEqual(req.userid, '{F25EC606-5FC2-449b-91FF-FA21CADB46E4}')
+        self.assertEqual(req.userid, '{D0BBD725-742D-44ae-8D46-0231E881D58E}')
         self.assertEqual(req.originurl, None)
         self.assertEqual(req.testsource, 'ossdev')
         self.assertEqual(req.updaterchannel, None)
@@ -319,7 +369,7 @@ class StatisticsTest(TestCase):
         self.assertEqual(app_req.lang, 'en')
         self.assertEqual(app_req.tag, None)
         self.assertEqual(app_req.installage, 6)
-        self.assertEqual(app_req.appid, '{8A69D345-D564-463C-AFF1-A69D9E530F96}')
+        self.assertEqual(app_req.appid, '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}')
         self.assertEqual(app_req.request, req)
 
         event = events[0]
@@ -420,6 +470,8 @@ class StatisticsTest(TestCase):
 
 
 class GetStatisticsTest(TestCase):
+    maxDiff = None
+
     def _generate_fake_statistics(self):
         now = datetime.now()
         year = now.year
@@ -429,9 +481,11 @@ class GetStatisticsTest(TestCase):
             date = datetime(year=year, month=i, day=10)
             for id in range(1, i + 1):
                 user_id = UUID(int=id)
-                userid_counting(user_id, self.app_list, self.platform.name, now=date)
+                userid_counting(user_id, self.install_app_list, self.platform.name, now=date)
                 user_id = UUID(int=n_users + id)
-                userid_counting(user_id, [self.mac_app], 'mac', now=date)
+                mac_userid_counting(user_id, self.mac_app, 'mac', now=date)
+            userid_counting(UUID(int=i), self.uninstall_app_list, self.platform.name, now=date)
+
 
     @temporary_media_root()
     def setUp(self):
@@ -459,21 +513,28 @@ class GetStatisticsTest(TestCase):
             dsa_signature='MCwCFCdoW13VBGJWIfIklKxQVyetgxE7AhQTVuY9uQT0KOV1UEk21epBsGZMPg==',
             file=SimpleUploadedFile('./chrome.dmg', b'_' * 23963192),
             file_size=23963192)
-        self.app_list = [dict(appid=self.app.id, version=str(self.version1.version))]
+
+        app_kwargs = dict(appid=self.app.id, version=str(self.version1.version))
+        install_app = create_app_xml(events=[fixtures.event_install_success], **app_kwargs)
+        uninstall_app = create_app_xml(events=[fixtures.event_uninstall_success], **app_kwargs)
+        self.install_app_list = [install_app]
+        self.uninstall_app_list = [uninstall_app]
         self.mac_app = dict(appid=self.app.id, version=str(self.mac_version.short_version))
 
         self._generate_fake_statistics()
         now = datetime.now()
         win_updates = [(datetime(now.year, x, 1).strftime("%Y-%m"), x - 1) for x in range(1, 13)]
         win_installs = [(datetime(now.year, x, 1).strftime("%Y-%m"), 1) for x in range(1, 13)]
+        uninstalls = [(datetime(now.year, x, 1).strftime("%Y-%m"), 1) for x in range(1, 13)]
         mac_updates = [(datetime(now.year, x, 1).strftime("%Y-%m"), x - 1) for x in range(1, 13)]
         mac_installs = [(datetime(now.year, x, 1).strftime("%Y-%m"), 1) for x in range(1, 13)]
         total_installs = map(lambda x, y: (x[0], x[1] + y[1]), win_installs, mac_installs)
         total_updates = map(lambda x, y: (x[0], x[1] + y[1]), win_updates, mac_updates)
-        self.users_statistics = dict(new=total_installs, updates=total_updates)
-        self.win_users_statistics = dict(new=win_installs, updates=win_updates)
+        self.users_statistics = dict(new=total_installs, updates=total_updates, uninstalls=uninstalls)
+        self.win_users_statistics = dict(new=win_installs, updates=win_updates, uninstalls=uninstalls)
         self.mac_users_statistics = dict(new=mac_installs, updates=mac_updates)
-        
+
+
     def tearDown(self):
         redis.flushdb()
 
@@ -486,7 +547,7 @@ class GetStatisticsTest(TestCase):
     def test_get_chanels_statistics(self):
         now = datetime.now()
         with freeze_time(datetime(year=now.year, month=now.month, day=10)):
-            self.assertListEqual(get_channel_statistics(self.app.id), [('stable', now.month * 2)])
+            self.assertListEqual(get_channel_statistics(self.app.id), [('stable', now.month*2)])
 
     def test_get_users_versions(self):
         now = datetime.now()

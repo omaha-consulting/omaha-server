@@ -29,6 +29,7 @@ from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings
 
+from lxml.builder import E
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 from bitmapist import mark_event
@@ -50,9 +51,10 @@ from omaha.serializers import (
 )
 from omaha.factories import ApplicationFactory, DataFactory, PlatformFactory, ChannelFactory, VersionFactory, ActionFactory
 from omaha.models import Application, Data, Channel, Platform, Version, Action
-from omaha.tests.utils import temporary_media_root
+from omaha.tests import fixtures
+from omaha.tests.utils import temporary_media_root, create_app_xml
 from sparkle.models import SparkleVersion
-
+from sparkle.statistics import userid_counting as mac_userid_counting
 User = get_user_model()
 
 
@@ -307,7 +309,6 @@ class LiveStatistics(APITestCase):
         self.assertDictEqual(StatisticsMonthsSerializer(self.data).data, response.data)
 
 
-
 class StatisticsMonthsMixin(object):
     url = None
     url_args = ()
@@ -322,14 +323,16 @@ class StatisticsMonthsMixin(object):
             date = datetime(year=prev_year, month=i, day=10)
             for id in range(1, i + 1):
                 user_id = UUID(int=id)
-                userid_counting(user_id, self.app_list, self.platform.name, now=date)
+                userid_counting(user_id, self.install_app_list, self.platform.name, now=date)
                 user_id = UUID(int=1000 + id)
-                userid_counting(user_id, [self.mac_app], 'mac', now=date)
+                mac_userid_counting(user_id, self.mac_app, 'mac', now=date)
+            userid_counting(UUID(int=i), self.uninstall_app_list, self.platform.name, now=date)
 
         user_id = UUID(int=13)
-        userid_counting(user_id, self.app_list, self.platform.name, now=datetime(year=now.year, month=1, day=1))
+        userid_counting(user_id, self.install_app_list, self.platform.name, now=datetime(year=now.year, month=1, day=1))
+        userid_counting(user_id, self.uninstall_app_list, self.platform.name, now=datetime(year=now.year, month=1, day=1))
         user_id = UUID(int=1013)
-        userid_counting(user_id, [self.mac_app], 'mac', now=datetime(year=now.year, month=1, day=1))
+        mac_userid_counting(user_id, self.mac_app, 'mac', now=datetime(year=now.year, month=1, day=1))
 
     @freeze_time("2016-01-27")
     @temporary_media_root()
@@ -362,7 +365,11 @@ class StatisticsMonthsMixin(object):
             dsa_signature='MCwCFCdoW13VBGJWIfIklKxQVyetgxE7AhQTVuY9uQT0KOV1UEk21epBsGZMPg==',
             file=SimpleUploadedFile('./chrome.dmg', b'_' * 1024),
             file_size=1024)
-        self.app_list = [dict(appid=self.app.id, version=str(self.version1.version))]
+        app_kwargs = dict(appid=self.app.id, version=str(self.version1.version))
+        install_app = create_app_xml(events=[fixtures.event_install_success], **app_kwargs)
+        uninstall_app = create_app_xml(events=[fixtures.event_uninstall_success], **app_kwargs)
+        self.install_app_list = [install_app]
+        self.uninstall_app_list = [uninstall_app]
         self.mac_app = dict(appid=self.app.id, version=str(self.mac_version.short_version))
 
         self._generate_fake_statistics()
@@ -371,8 +378,12 @@ class StatisticsMonthsMixin(object):
         updates.append((datetime(now.year, 1, 1).strftime("%Y-%m"), 0))
         installs = [(datetime(now.year-1, x, 1).strftime("%Y-%m"), 1) for x in range(2, 13)]
         installs.append((datetime(now.year, 1, 1).strftime("%Y-%m"), 1))
-        platform_statistics = dict(new=installs, updates=updates)
-        self.users_statistics = dict(win=platform_statistics, mac=platform_statistics)
+        uninstalls = [(datetime(now.year-1, x, 1).strftime("%Y-%m"), 1) for x in range(2, 13)]
+        uninstalls.append((datetime(now.year, 1, 1).strftime("%Y-%m"), 1))
+
+        win_platform_statistics = dict(new=installs, updates=updates, uninstalls=uninstalls)
+        mac_platform_statistics = dict(new=installs, updates=updates)
+        self.users_statistics = dict(win=win_platform_statistics, mac=mac_platform_statistics)
         self.data = dict(data=dict(self.users_statistics))
 
     @is_private()
