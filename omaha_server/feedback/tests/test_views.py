@@ -122,12 +122,12 @@ class FeedbackViewTest(test.TestCase):
 
         # No description provided - form is not valid
         self.assertEqual(Feedback.objects.all().count(), 0)
-        with self.assertRaises(NotImplementedError):
-            self.client.post(
-                reverse('feedback'),
-                data=body,
-                content_type='application/x-protobuf'
-            )
+        resp = self.client.post(
+            reverse('feedback'),
+            data=body,
+            content_type='application/x-protobuf'
+        )
+        self.assertEqual(resp.status_code, 400)
         self.assertEqual(Feedback.objects.all().count(), 0)
 
         # Fail to parse protobuf messages

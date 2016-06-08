@@ -23,13 +23,21 @@ from copy import copy
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.views.generic import FormView
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
+from django.conf import settings
+
 from google.protobuf.descriptor import FieldDescriptor
 from protobuf_to_dict import protobuf_to_dict, TYPE_CALLABLE_MAP
+from raven import Client
 
 from feedback.forms import FeedbackForm
 from feedback.proto_gen.extension_pb2 import ExtensionSubmit
 from omaha_server.utils import get_client_ip
+
+dsn = getattr(settings, 'RAVEN_CONFIG', None)
+if dsn:
+    dsn = dsn['dsn']
+raven = Client(dsn, name=getattr(settings, 'HOST_NAME', None), release=getattr(settings, 'APP_VERSION', None))
 
 
 class FeedbackFormView(FormView):
@@ -80,5 +88,6 @@ class FeedbackFormView(FormView):
         return HttpResponse(obj.pk, status=200)
 
     def form_invalid(self, form):
-        # We're not expecting to end up here in case of correct request
-        raise NotImplementedError
+        message = 'Invalid feedback form: ' + form.errors.as_json()
+        raven.captureMessage(message=message, extra=form.cleaned_data)
+        return HttpResponseBadRequest(message)
