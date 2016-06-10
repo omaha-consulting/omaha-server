@@ -102,6 +102,11 @@ LOGGING = {
             'handlers': ['console'],
             'propagate': False,
         },
+        'celery.beat': {
+            'level': 'INFO',
+            'handlers': ['console'],
+            'propagate': False,
+        },
     },
 }
 
