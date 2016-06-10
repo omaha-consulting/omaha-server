@@ -77,7 +77,10 @@
             "other": null
         }
 
-## Action [/api/action/{id}]
+## Action [/api/action/{id}/]
+
++ Parameters
+    * id (required, number, `42`)
 
 ### Retrieve an Action [GET]
 

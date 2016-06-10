@@ -52,7 +52,10 @@
             "name": "dev",
         }
 
-## Channel [/api/channel/{id}]
+## Channel [/api/channel/{id}/]
+
++ Parameters
+    * id (required, number, `42`)
 
 ### Retrieve a Channel [GET]
 

@@ -89,7 +89,10 @@
             "modified": "2015-01-14T10:50:56.026884Z"
         }
 
-## Version [/api/sparkle/version/{id}]
+## Version [/api/sparkle/version/{id}/]
+
++ Parameters
+    * id (required, number, `42`)
 
 ### Retrieve a Version [GET]
 

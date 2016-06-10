@@ -61,7 +61,10 @@
             "value": "",
         }
 
-## Data [/api/data/{id}]
+## Data [/api/data/{id}/]
+
++ Parameters
+    * id (required, number, `42`)
 
 ### Retrieve a Data [GET]
 

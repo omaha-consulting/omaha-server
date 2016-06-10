@@ -135,6 +135,9 @@
 
 ## Feedback [/api/feedback/{id}/]
 
++ Parameters
+    * id (required, number, `42`)
+
 ### Retrieve a Feedback [GET]
 
 + Request (application/json)

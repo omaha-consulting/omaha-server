@@ -94,7 +94,10 @@
                 "modified": "2014-12-18T09:00:00.094911Z"
             }
 
-## Version [/api/omaha/version/{id}]
+## Version [/api/omaha/version/{id}/]
+
++ Parameters
+    * id (required, number, `42`)
 
 ### Retrieve a Version [GET]
 

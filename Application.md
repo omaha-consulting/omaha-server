@@ -50,7 +50,10 @@
             "name": "Chromium",
         }
 
-## Application [/api/app/{id}]
+## Application [/api/app/{id}/]
+
++ Parameters
+    * id (required, string, `{F84D2B10-5F37-41F0-8B1F-2566AF2723B2}`)
 
 ### Retrieve an Application [GET]
 
