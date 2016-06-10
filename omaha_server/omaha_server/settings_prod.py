@@ -87,6 +87,11 @@ LOGGING = {
             'handlers': ['console'],
             'propagate': False,
         },
+        'django.request': {
+            'level': 'ERROR',
+            'handlers': ['console'],
+            'propagate': False,
+        },
         'raven': {
             'level': 'DEBUG',
             'handlers': ['console', 'sentry'],
@@ -108,3 +113,4 @@ if SPLUNK_HOST and SPLUNK_PORT:
         'address': (SPLUNK_HOST, int(SPLUNK_PORT))
     }
     LOGGING['root']['handlers'].append('splunk')
+    LOGGING['loggers']['django.request']['handlers'].append('splunk')
