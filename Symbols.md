@@ -62,7 +62,10 @@
             "modified": "2014-12-26T08:05:11.377844Z"
         }
 
-## Symbols [/api/symbols/{id}]
+## Symbols [/api/symbols/{id}/]
+
++ Parameters
+    * id (required, number, `42`)
 
 ### Retrieve a Symbols [GET]
 

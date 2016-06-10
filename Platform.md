@@ -48,7 +48,10 @@
             "name": "ios",
         }
 
-## Platform [/api/platform/{id}]
+## Platform [/api/platform/{id}/]
+
++ Parameters
+    * id (required, number, `42`)
 
 ### Retrieve a Platform [GET]
 

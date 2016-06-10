@@ -45,6 +45,9 @@
 
 ## Crash report [/api/crash_report/{id}/]
 
++ Parameters
+    * id (required, number, `42`)
+
 ### Retrieve a Crash Report [GET]
 
 + Request (application/json)
