@@ -9,7 +9,7 @@
 
 Google Omaha server implementation and Sparkle (mac) feed management. 
 
-Currently, our implementation is integrated into the updating processes of several organisations for products that require sophisticated update logic and advanced usage statistics. We provide additional support and further enhancement on a contract basis. For a case study and enquiries please refer [](http://crystalnix.com/works/google-omaha-server.html)
+Currently, our implementation is integrated into the updating processes of several organisations for products that require sophisticated update logic and advanced usage statistics. We provide additional support and further enhancement on a contract basis. For a case study and enquiries please refer [our website](http://crystalnix.com/works/google-omaha-server.html)
 
 ## Setting up a development server
 
