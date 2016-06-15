@@ -7,7 +7,9 @@
 [![Apache License, Version 2.0](https://img.shields.io/badge/license-Apache%202.0-red.svg)](https://github.com/Crystalnix/omaha-server/blob/master/LICENSE)
 [![](https://badge.imagelayers.io/crystalnix/omaha-server:master.svg)](https://imagelayers.io/?images=crystalnix/omaha-server:master 'Get your own badge on imagelayers.io')
 
-Google Omaha server implementation + added Sparkle (mac) feed management
+Google Omaha server implementation and Sparkle (mac) feed management. 
+
+Currently, our implementation is integrated into the updating processes of several organisations for products that require sophisticated update logic and advanced usage statistics. We provide additional support and further enhancement on a contract basis. For a case study and enquiries please refer [](http://crystalnix.com/works/google-omaha-server.html)
 
 ## Setting up a development server
 
