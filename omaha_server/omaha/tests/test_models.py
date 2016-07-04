@@ -30,6 +30,8 @@ from omaha.tests.utils import temporary_media_root
 
 
 class ApplicationModelTest(test.SimpleTestCase):
+    allow_database_queries = True
+
     def test_factory(self):
         app = ApplicationFactory.create()
         self.assertTrue(Application.objects.get(id=app.id))

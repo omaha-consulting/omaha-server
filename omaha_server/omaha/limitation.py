@@ -3,7 +3,7 @@ import operator
 import time
 import logging
 
-from django.db.models.loading import get_model
+from django.apps import apps
 from django.utils import timezone
 from django.conf import settings
 from django.db.models import Count
@@ -128,7 +128,7 @@ def delete_older_than(app, model_name, limit=None):
     if not limit:
         preference_key = '__'.join([model_name, 'limit_storage_days'])
         limit = gpm[preference_key]
-    model = get_model(app, model_name)
+    model = apps.get_model(app, model_name)
     offset = timezone.timedelta(days=limit)
     limit = timezone.now() - offset
     old_objects = model.objects.filter(created__lte=limit)
@@ -170,7 +170,7 @@ def delete_size_is_exceeded(app, model_name, limit=None):
         limit = gpm[preference_key] * 1024 * 1024 * 1024
     else:
         limit *= 1024*1024*1024
-    model = get_model(app, model_name)
+    model = apps.get_model(app, model_name)
     group_count = 1000
     full_result = dict(count=0, size=0, elements=[])
     objects_size = model.objects.get_size()
