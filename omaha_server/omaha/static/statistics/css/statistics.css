@@ -25,3 +25,12 @@
 .versions-stat-container{
     min-width: 350px;
 }
+
+.inline-middle {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.middle {
+    vertical-align: middle;
+}
