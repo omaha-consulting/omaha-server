@@ -31,7 +31,7 @@ SETTINGS_PATH = os.path.join(BASE_DIR, 'settings.yml')
 DEFAULT_SETTINGS = dict(
     app=dict(
         versions_to_keep=10,
-        solution_stack_name='64bit Amazon Linux 2015.03 v1.4.3 running Docker 1.6.2',
+        solution_stack_name='64bit Amazon Linux 2016.03 v2.1.0 running Docker 1.9.1',
         InstanceType='t2.small',
         autoscaling=dict(min=1, max=10),
         healthcheck_url='/healthcheck/status/',
