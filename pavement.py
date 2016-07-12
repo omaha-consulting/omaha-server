@@ -108,8 +108,30 @@ def configure_nginx():
 
 
 @task
+def install_syslog():
+    sh("apt-get install rsyslog curl cron unzip libwww-perl libdatetime-perl -y")
+    sh("service rsyslog start")
+
+
+@task
+def enable_memory_monitoring():
+    sh("curl http://aws-cloudwatch.s3.amazonaws.com/downloads/CloudWatchMonitoringScripts-1.2.1.zip -O")
+    sh("unzip CloudWatchMonitoringScripts-1.2.1.zip")
+    sh("rm CloudWatchMonitoringScripts-1.2.1.zip")
+    path_to_omaha = os.getenv('omaha')
+    sh("echo '*/5 * * * * %s/aws-scripts-mon/mon-put-instance-data.pl --mem-util --mem-used --mem-avail --from-cron' "\
+       "> cron_config" % (path_to_omaha,))
+    sh("crontab cron_config")
+    sh("cron")
+
+
+@task
 def docker_run():
     try:
+        is_memory_monitoring_enabled = True if os.environ.get('MEMORY_MONITORING_ENABLED', '').title() == 'True' else False
+        if is_memory_monitoring_enabled:
+            install_syslog()
+            enable_memory_monitoring()
         is_private = True if os.environ.get('OMAHA_SERVER_PRIVATE', '').title() == 'True' else False
 
         if is_private:

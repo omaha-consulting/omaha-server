@@ -227,6 +227,7 @@ app:
 | OMAHA_URL_PREFIX          | no trailing slash! |                            |
 | SENTRY_STACKTRACE_API_KEY | Auth API token     |                            |
 | OMAHA_ONLY_HTTPS          | HTTPS-only         | False                      |
+| MEMORY_MONITORING_ENABLED | Add memory metrics | False                      |
 
 - [uWSGI Options](http://uwsgi-docs.readthedocs.org/en/latest/Options.html) & [Environment variables](http://uwsgi-docs.readthedocs.org/en/latest/Configuration.html#environment-variables)
 - [Sentry](https://github.com/getsentry/sentry)
