@@ -29,6 +29,8 @@ if os.getenv('OMAHA_ONLY_HTTPS'):
         r"^healthcheck/status/$"
     ]
 
+SITE_ID = 1
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -37,10 +39,10 @@ TEMPLATES = [
         ],
         'APP_DIRS': True,
         'OPTIONS': {
-            'context_processors': TCP + (
+            'context_processors': TCP + [
                 'django.core.context_processors.request',
                 'absolute.context_processors.absolute',
-            ),
+            ],
         },
     },
 ]
@@ -50,7 +52,7 @@ APP_VERSION = "0.3.9"
 SUIT_CONFIG = {
     'ADMIN_NAME': 'Omaha Server [{}]'.format(APP_VERSION),
     'MENU': (
-        'sites',
+        # 'sites',
         {'app': 'omaha', 'label': 'Omaha', 'icon': 'icon-refresh'},
         {'app': 'sparkle', 'label': 'Sparkle', 'icon': 'icon-circle-arrow-down'},
         {'app': 'crash', 'label': 'Crash reports', 'icon': 'icon-fire'},
@@ -91,6 +93,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 
     'storages',
     'django_extensions',

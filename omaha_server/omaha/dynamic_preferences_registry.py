@@ -25,7 +25,7 @@ from django.forms import IntegerField
 from django.core.validators import MinValueValidator
 
 from dynamic_preferences.types import IntegerPreference, ChoicePreference
-from dynamic_preferences import global_preferences_registry
+from dynamic_preferences.registries import global_preferences_registry
 from django_select2.forms import Select2Widget
 
 class PositiveIntegerField(IntegerField):
