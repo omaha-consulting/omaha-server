@@ -242,6 +242,10 @@ class Os(models.Model):
     sp = models.CharField(max_length=40, null=True, blank=True)
     arch = models.CharField(max_length=10, null=True, blank=True)
 
+    class Meta:
+        unique_together = (
+            ('platform', 'version', 'sp', 'arch'),
+        )
 
 class Hw(models.Model):
     sse = models.PositiveIntegerField(null=True, blank=True)

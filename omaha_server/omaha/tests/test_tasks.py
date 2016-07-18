@@ -57,7 +57,7 @@ class DuplicatedCrashesTest(TestCase):
                           model='Crash', size='0 bytes')
         log_extra_msg = add_extra_to_log_message('Automatic cleanup', extra=extra_meta)
 
-        extra = dict(id=deleted_crash.id, element_created=deleted_crash.created.strftime("%d. %B %Y %I:%M%p"),
+        extra = dict(Crash_id=deleted_crash.id, element_created=deleted_crash.created.strftime("%d. %B %Y %I:%M%p"),
                      signature=deleted_crash.signature, userid=deleted_crash.userid, appid=deleted_crash.appid,
                      log_id='36446dc3-ae7c-42ad-ae4e-6a826dcf0a00')
         log_msg = add_extra_to_log_message('Automatic cleanup element', extra=extra)
@@ -86,7 +86,7 @@ class OldObjectsTest(TestCase):
                           model='Crash', size='0 bytes')
         log_extra_msg = add_extra_to_log_message('Automatic cleanup', extra=extra_meta)
 
-        extra = dict(id=deleted_crash.id, element_created=deleted_crash.created.strftime("%d. %B %Y %I:%M%p"),
+        extra = dict(Crash_id=deleted_crash.id, element_created=deleted_crash.created.strftime("%d. %B %Y %I:%M%p"),
                      signature=deleted_crash.signature, userid=deleted_crash.userid, appid=deleted_crash.appid,
                      log_id='36446dc3-ae7c-42ad-ae4e-6a826dcf0a00')
         log_msg = add_extra_to_log_message('Automatic cleanup element', extra=extra)
@@ -113,7 +113,7 @@ class OldObjectsTest(TestCase):
                           model='Feedback', size='0 bytes')
         log_extra_msg = add_extra_to_log_message('Automatic cleanup', extra=extra_meta)
 
-        extra = dict(id=deleted_feedback.id, element_created=deleted_feedback.created.strftime("%d. %B %Y %I:%M%p"),
+        extra = dict(Feedback_id=deleted_feedback.id, element_created=deleted_feedback.created.strftime("%d. %B %Y %I:%M%p"),
                      log_id='36446dc3-ae7c-42ad-ae4e-6a826dcf0a00')
         log_msg = add_extra_to_log_message('Automatic cleanup element', extra=extra)
 
@@ -142,7 +142,7 @@ class SizeExceedTest(TestCase):
                           model='Crash', size='979.0 MB')
         log_extra_msg = add_extra_to_log_message('Automatic cleanup', extra=extra_meta)
 
-        extra = dict(id=deleted_crash.id, element_created=deleted_crash.created.strftime("%d. %B %Y %I:%M%p"),
+        extra = dict(Crash_id=deleted_crash.id, element_created=deleted_crash.created.strftime("%d. %B %Y %I:%M%p"),
                      signature=deleted_crash.signature, userid=deleted_crash.userid, appid=deleted_crash.appid,
                      log_id='36446dc3-ae7c-42ad-ae4e-6a826dcf0a00')
         log_msg = add_extra_to_log_message('Automatic cleanup element', extra=extra)
@@ -171,7 +171,7 @@ class SizeExceedTest(TestCase):
                           model='Feedback', size='979.0 MB')
         log_extra_msg = add_extra_to_log_message('Automatic cleanup', extra=extra_meta)
 
-        extra = dict(id=deleted_feedback.id, element_created=deleted_feedback.created.strftime("%d. %B %Y %I:%M%p"),
+        extra = dict(Feedback_id=deleted_feedback.id, element_created=deleted_feedback.created.strftime("%d. %B %Y %I:%M%p"),
                      log_id='36446dc3-ae7c-42ad-ae4e-6a826dcf0a00')
         log_msg = add_extra_to_log_message('Automatic cleanup element', extra=extra)
 
@@ -198,7 +198,7 @@ class ManualCleanupTest(TestCase):
                           model='Crash', limit_duplicated=2, limit_size=None, limit_days=None, size='0 bytes')
         log_extra_msg = add_extra_to_log_message('Manual cleanup', extra=extra_meta)
 
-        extra = dict(id=deleted_crash.id, element_created=deleted_crash.created.strftime("%d. %B %Y %I:%M%p"),
+        extra = dict(Crash_id=deleted_crash.id, element_created=deleted_crash.created.strftime("%d. %B %Y %I:%M%p"),
                      signature=deleted_crash.signature, userid=deleted_crash.userid, appid=deleted_crash.appid,
                      log_id='36446dc3-ae7c-42ad-ae4e-6a826dcf0a00')
         log_msg = add_extra_to_log_message('Manual cleanup element', extra=extra)
@@ -227,7 +227,7 @@ class ManualCleanupTest(TestCase):
                           model='Feedback', limit_duplicated=None, limit_size=1, limit_days=None, size='999.0 MB')
         log_extra_msg = add_extra_to_log_message('Manual cleanup', extra=extra_meta)
 
-        extra = dict(id=deleted_feedback.id, element_created=deleted_feedback.created.strftime("%d. %B %Y %I:%M%p"),
+        extra = dict(Feedback_id=deleted_feedback.id, element_created=deleted_feedback.created.strftime("%d. %B %Y %I:%M%p"),
                      log_id='36446dc3-ae7c-42ad-ae4e-6a826dcf0a00')
         log_msg = add_extra_to_log_message('Manual cleanup element', extra=extra)
         mocked_logger = mocked_get_logger.return_value
@@ -253,7 +253,7 @@ class ManualCleanupTest(TestCase):
                           model='Symbols', limit_duplicated=None, limit_size=1, limit_days=None, size='999.0 MB')
         log_extra_msg = add_extra_to_log_message('Manual cleanup', extra=extra_meta)
 
-        extra = dict(id=deleted_symbols.id, element_created=deleted_symbols.created.strftime("%d. %B %Y %I:%M%p"),
+        extra = dict(Symbols_id=deleted_symbols.id, element_created=deleted_symbols.created.strftime("%d. %B %Y %I:%M%p"),
                      log_id='36446dc3-ae7c-42ad-ae4e-6a826dcf0a00')
         log_msg = add_extra_to_log_message('Manual cleanup element', extra=extra)
         mocked_logger = mocked_get_logger.return_value
@@ -279,7 +279,7 @@ class ManualCleanupTest(TestCase):
                           model='Version', limit_duplicated=None, limit_size=1, limit_days=None, size='999.0 MB')
         log_extra_msg = add_extra_to_log_message('Manual cleanup', extra=extra_meta)
 
-        extra = dict(id=deleted_version.id, element_created=deleted_version.created.strftime("%d. %B %Y %I:%M%p"),
+        extra = dict(Version_id=deleted_version.id, element_created=deleted_version.created.strftime("%d. %B %Y %I:%M%p"),
                      log_id='36446dc3-ae7c-42ad-ae4e-6a826dcf0a00')
         log_msg = add_extra_to_log_message('Manual cleanup element', extra=extra)
         mocked_logger = mocked_get_logger.return_value
@@ -305,7 +305,7 @@ class ManualCleanupTest(TestCase):
                           model='SparkleVersion', limit_duplicated=None, limit_size=1, limit_days=None, size='999.0 MB')
         log_extra_msg = add_extra_to_log_message('Manual cleanup', extra=extra_meta)
 
-        extra = dict(id=deleted_version.id, element_created=deleted_version.created.strftime("%d. %B %Y %I:%M%p"),
+        extra = dict(SparkleVersion_id=deleted_version.id, element_created=deleted_version.created.strftime("%d. %B %Y %I:%M%p"),
                      log_id='36446dc3-ae7c-42ad-ae4e-6a826dcf0a00')
         log_msg = add_extra_to_log_message('Manual cleanup element', extra=extra)
         mocked_logger = mocked_get_logger.return_value

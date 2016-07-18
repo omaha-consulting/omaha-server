@@ -18,7 +18,7 @@
     <xs:element name="daystart">
         <xs:complexType>
             <xs:attribute name="elapsed_seconds" use="required" type="xs:positiveInteger"/>
-            <xs:attribute name="elapsed_days" use="optional" type="xs:nonPositiveInteger" default="0"/>
+            <xs:attribute name="elapsed_days" use="optional" type="xs:positiveInteger" default="0"/>
         </xs:complexType>
     </xs:element>
     <xs:element name='app'>

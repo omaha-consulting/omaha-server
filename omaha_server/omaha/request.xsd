@@ -50,6 +50,9 @@
             <xs:attribute name='testsource' type='xs:NCName' use="optional"/>
             <xs:attribute name='dedup' type='xs:NCName' use="optional"/>
             <xs:attribute name='updaterchannel' type='xs:NCName' use="optional"/>
+            <xs:attribute name='shell_version' type='xs:string' use="optional"/>
+            <xs:attribute name='periodoverridesec' type='xs:integer' use="optional"/>
+            <xs:attribute name='dlpref' type='xs:string' use="optional"/>
         </xs:complexType>
     </xs:element>
     <xs:element name="hw">
@@ -90,7 +93,11 @@
             <xs:attribute name='experiments' use='optional' type="xs:string"/>
             <xs:attribute name='iid' use='optional' type="GuidType"/>
             <xs:attribute name='installage' use='optional' type='xs:integer'/>
+            <xs:attribute name='installdate' use='optional' type='xs:integer'/>
             <xs:attribute name='tag' use='optional' type='xs:string'/>
+            <xs:attribute name='cohort' use='optional' type='xs:string'/>
+            <xs:attribute name='cohorthint' use='optional' type='xs:string'/>
+            <xs:attribute name='cohortname' use='optional' type='xs:string'/>
         </xs:complexType>
     </xs:element>
     <xs:element name='updatecheck'>
@@ -108,6 +115,7 @@
             <xs:attribute name="extracode1" use="optional" type="xs:integer"/>
             <xs:attribute name="download_time_ms" use="optional" type="xs:integer"/>
             <xs:attribute name="downloaded" use="optional" type="xs:integer"/>
+            <xs:attribute name="downloader" use="optional" type="xs:string"/>
             <xs:attribute name="total" use="optional" type="xs:integer"/>
             <xs:attribute name="update_check_time_ms" use="optional" type="xs:integer"/>
             <xs:attribute name="install_time_ms" use="optional" type="xs:integer"/>
@@ -117,6 +125,8 @@
             <xs:attribute name="time_since_download_start_ms" use="optional" type="xs:integer"/>
             <xs:attribute name="nextversion" use="optional" type="xs:integer"/>
             <xs:attribute name="previousversion" use="optional" type="xs:integer"/>
+            <xs:attribute name="url" use="optional" type="xs:string"/>
+            <xs:attribute name="is_bundled" use="optional" type="xs:integer/">
         </xs:complexType>
     </xs:element>
     <xs:element name='ping'>
@@ -124,6 +134,9 @@
             <xs:attribute name='active' use='optional' type='xs:integer' default="0"/>
             <xs:attribute name='r' use='optional' type='xs:integer' default="0"/>
             <xs:attribute name='a' use='optional' type='xs:integer' default="0"/>
+            <xs:attribute name='rd' use='optional' type='xs:integer' default="-2"/>
+            <xs:attribute name='ad' use='optional' type='xs:integer' default="-2"/>
+            <xs:attribute name='ping_freshness' use='optional' type='xs:string' default="0"/>
         </xs:complexType>
     </xs:element>
     <xs:element name="data" type="DataType"/>

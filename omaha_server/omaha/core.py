@@ -24,7 +24,7 @@ from datetime import datetime
 
 from lxml.builder import E
 
-from omaha.utils import get_sec_since_midnight
+from omaha.utils import get_sec_since_midnight, get_days_since_20070101
 
 
 __all__ = [
@@ -35,10 +35,12 @@ __all__ = [
 
 
 def Response(apps_list, protocol='3.0', date=None, server='prod'):
-    elapsed_seconds = get_sec_since_midnight(date or datetime.utcnow())
+    date = date or datetime.utcnow()
+    elapsed_seconds = get_sec_since_midnight(date)
+    elapsed_days = get_days_since_20070101(date)
     resp = E.response(
         dict(protocol=protocol, server=server),
-        E.daystart(elapsed_seconds=str(elapsed_seconds)),
+        E.daystart(elapsed_seconds=str(elapsed_seconds), elapsed_days=str(elapsed_days)),
     )
     list(map(resp.append, apps_list))
     return resp
