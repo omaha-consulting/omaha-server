@@ -31,8 +31,11 @@ django-bootstrap3==7.0.1
 protobuf==3.0.0a3
 protobuf-to-dict==0.1.0
 django-dynamic-preferences==0.8.1
+<<<<<<< HEAD
 ecdsa==0.13
 
 # Only dev
 #django-httplog==0.2.3
 https://github.com/Crystalnix/django-httplog/archive/6ed2a8a4e3d606443492998cbac93a71f4cee7d1.zip
+=======
+>>>>>>> Clean up requirements
