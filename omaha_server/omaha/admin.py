@@ -17,11 +17,18 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
 """
+import copy
 
 from django.contrib import admin
+from django.contrib.admin import utils
+from django.utils.encoding import smart_text
+
+from dynamic_preferences.models import GlobalPreferenceModel, UserPreferenceModel
+from versionfield import VersionField
+
 from omaha.models import Channel, Platform, Application, Version, Action, PartialUpdate, Data
 from omaha.forms import ApplicationAdminForm, VersionAdminForm, ActionAdminForm, DataAdminForm
-from dynamic_preferences.models import GlobalPreferenceModel, UserPreferenceModel
+
 
 admin.site.unregister(GlobalPreferenceModel)
 admin.site.unregister(UserPreferenceModel)
@@ -68,3 +75,12 @@ class VersionAdmin(admin.ModelAdmin):
     list_filter = ('channel__name', 'platform__name', 'app__name',)
     readonly_fields = ('file_hash',)
     form = VersionAdminForm
+
+
+def my_display_for_field(value, field, *args, **kwargs):
+    if isinstance(field, VersionField):
+        return smart_text(value)
+    return django_display_for_field(value, field, *args, **kwargs)
+
+django_display_for_field = copy.deepcopy(utils.display_for_field)
+utils.display_for_field = my_display_for_field
