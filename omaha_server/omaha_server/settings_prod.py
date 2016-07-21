@@ -39,7 +39,10 @@ SENTRY_STACKTRACE_API_KEY = os.environ.get('SENTRY_STACKTRACE_API_KEY')
 
 if RAVEN_DSN_STACKTRACE:
     f = furl(RAVEN_DSN_STACKTRACE)
-    SENTRY_STACKTRACE_DOMAIN = f.host
+    if f.port:
+        SENTRY_STACKTRACE_DOMAIN = '%s:%d' % (f.host, f.port)
+    else:
+        SENTRY_STACKTRACE_DOMAIN = f.host
     project_id = f.path.segments[0]
     if SENTRY_STACKTRACE_API_KEY:
         SENTRY_STACKTRACE_ORG_SLUG = get_sentry_organization_slug(SENTRY_STACKTRACE_DOMAIN, SENTRY_STACKTRACE_API_KEY)
