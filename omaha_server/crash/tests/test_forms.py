@@ -19,6 +19,8 @@ the License.
 """
 
 import os
+import string
+import random
 
 from django.test import TestCase
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -30,6 +32,10 @@ BASE_DIR = os.path.dirname(__file__)
 TEST_DATA_DIR = os.path.join(BASE_DIR, 'testdata')
 SYM_FILE = os.path.join(TEST_DATA_DIR, 'BreakpadTestApp.sym')
 TAR_FILE = os.path.join(TEST_DATA_DIR, 'foo.tar')
+
+
+def string_generator(size, chars=string.ascii_uppercase + string.ascii_lowercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
 
 
 class SymbolsAdminFormTest(TestCase):
@@ -79,3 +85,32 @@ class CrashFormTest(TestCase):
         self.assertEqual(form.cleaned_data['archive'].name, 'foo.tar')
         self.assertEqual(form.cleaned_data['archive_size'], 85504)
         self.assertEqual(form.cleaned_data['minidump_size'], 14606)
+
+    def test_invalid_data(self):
+        with open(TAR_FILE, 'rb') as f:
+            form_file_data = dict(upload_file_minidump=SimpleUploadedFile(
+                "foo.tar", f.read(100)))
+        form_data = dict(
+            appid=string_generator(40),
+            userid=string_generator(40),
+            meta=string_generator(40),
+            stacktrace=string_generator(40),
+            stacktrace_json=string_generator(40),
+            signature=string_generator(256),
+            ip=string_generator(40),
+            groupid=string_generator(40),
+            eventid=string_generator(40),
+        )
+
+        form = CrashFrom(form_data, form_file_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('upload_file_minidump', form.errors)
+        self.assertIn('appid', form.errors)
+        self.assertIn('userid', form.errors)
+        self.assertIn('meta', form.errors)
+        self.assertNotIn('stacktrace', form.errors)
+        self.assertIn('stacktrace_json', form.errors)
+        self.assertIn('signature', form.errors)
+        self.assertIn('ip', form.errors)
+        self.assertIn('groupid', form.errors)
+        self.assertIn('eventid', form.errors)

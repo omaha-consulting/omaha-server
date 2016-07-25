@@ -52,17 +52,20 @@ class CrashFrom(forms.ModelForm):
     def clean_upload_file_minidump(self):
         file = self.cleaned_data["upload_file_minidump"]
 
-        if file.name.endswith('.tar'):
-            t_file = BytesIO(file.read())
-            t_file = tarfile.open(fileobj=t_file, mode='r')
-            self.cleaned_data['archive_file'] = file
-            dump_name = filter(lambda i: i.endswith('.dmp'), t_file.getnames())
+        if file and file.name.endswith('.tar'):
             try:
-                file_name = next(dump_name)
-                file = t_file.extractfile(file_name)
-                file = SimpleUploadedFile(file_name, file.read())
-            except StopIteration:
-                return None
+                t_file = BytesIO(file.read())
+                t_file = tarfile.open(fileobj=t_file, mode='r')
+                self.cleaned_data['archive_file'] = file
+                dump_name = filter(lambda i: i.endswith('.dmp'), t_file.getnames())
+                try:
+                    file_name = next(dump_name)
+                    file = t_file.extractfile(file_name)
+                    file = SimpleUploadedFile(file_name, file.read())
+                except StopIteration:
+                    return None
+            except tarfile.TarError as err:
+                raise forms.ValidationError('The tar file is broken, error: {0}'.format(err.message))
         return file
 
     def clean_minidump_size(self):
