@@ -114,11 +114,11 @@ class CrashAdmin(admin.ModelAdmin):
     archive_field.short_description = 'Instrumental file'
 
     def os_field(self, obj):
-        return obj.stacktrace_json['system_info']['os'] if obj.stacktrace_json else ''
+        return obj.stacktrace_json.get('system_info', {}).get('os', '') if obj.stacktrace_json else ''
     os_field.short_description = 'OS'
 
     def cpu_architecture_field(self, obj):
-        return obj.stacktrace_json['system_info']['cpu_arch'] if obj.stacktrace_json else ''
+        return obj.stacktrace_json.get('system_info', {}).get('cpu_arch', '') if obj.stacktrace_json else ''
     cpu_architecture_field.short_description = "CPU Architecture"
 
     def sentry_link_field(self, obj):
