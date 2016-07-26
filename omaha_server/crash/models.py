@@ -65,9 +65,13 @@ class Crash(BaseModel):
     class Meta(BaseModel.Meta):
         verbose_name_plural = 'Crashes'
 
+    def __unicode__(self):
+        return u"Crash #{0}".format(self.id) + (" ({0})".format(self.signature) if self.signature else '')
+
     @property
     def size(self):
-         return self.archive_size + self.minidump_size
+        return self.archive_size + self.minidump_size
+
 
 class CrashDescription(BaseModel):
     crash = models.OneToOneField(Crash, related_name='crash_description')
