@@ -82,8 +82,6 @@ def loaddata():
 
 @task
 def migrate():
-    sh('./manage.py migrate sites --noinput', cwd='omaha_server')
-    sh('./manage.py migrate auth --noinput', cwd='omaha_server')
     sh('./manage.py migrate --noinput', cwd='omaha_server')
 
 
