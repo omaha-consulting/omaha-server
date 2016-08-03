@@ -70,7 +70,10 @@ function makePlatformGraph(chartName, chartDataName, data, platform){
                 .y(function(d) { return d[1] })
                 .useInteractiveGuideline(true)
                 .showControls(false);
-
+        chart.interactiveLayer.tooltip.headerFormatter(function(d) {
+            var top_limit = moment(d, 'MMMM DD hh:mm a').add(1, 'h');
+            return d + ' - ' + top_limit.format('hh:mm A');
+        });
         chart.xAxis.showMaxMin(false)
             .tickValues(hours.filter(function(d, i){
                 return !(i % tickSize);
