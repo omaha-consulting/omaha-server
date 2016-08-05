@@ -28,20 +28,29 @@ function getVersions(data){
 
 
 function getData(data){
-    return getVersions(data).map(function(d){
+    var result = getVersions(data).map(function(d){
         return {
             key: d,
             values: data[d]
         }
     });
+
+    if (result.length) {
+        result.map(function(x){
+            x.values.pop();
+        });
+    }
+    return result;
 }
 
 
 function getHours(data){
     if (Object.keys(data).length) {
-        return data[Object.keys(data)[0]].map(function (d) {
-            return new Date(d[0])
+        var res = data[Object.keys(data)[0]].map(function (d) {
+            return new Date(d[0]);
         });
+        res.pop();
+        return res;
     }
     else return [];
 }
