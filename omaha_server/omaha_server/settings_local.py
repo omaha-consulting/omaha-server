@@ -16,15 +16,11 @@ SITE_ID = 1
 INSTALLED_APPS += (
     'debug_toolbar',
     'debug_panel',
-    'httplog',
 )
 
 MIDDLEWARE_CLASSES += (
     'debug_panel.middleware.DebugPanelMiddleware',
-    'httplog.middleware.RequestResponseLoggingMiddleware',
 )
-
-HTTPLOG_URLNAMES = ['update', 'sparkle_appcast']
 
 #
 # Debug Toolbar
