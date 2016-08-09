@@ -4,8 +4,8 @@ function applyRange() {
     var app_name = document.getElementById('app_name').dataset.name;
     var $start = $("#range-start input");
     var $end = $("#range-end input");
-    var start = moment($start.val(), 'YYYY-MM-DD HH:mm:ss', true).utc();
-    var end = moment($end.val(), 'YYYY-MM-DD HH:mm:ss', true).utc();
+    var start = moment($start.val(), 'YYYY-MM-DD HH:mm:ss', true);
+    var end = moment($end.val(), 'YYYY-MM-DD HH:mm:ss', true);
 
     if (start > end){
         var tmp = start;
@@ -16,8 +16,8 @@ function applyRange() {
     }
     updateGraph({
         app_name: app_name,
-        start: start.isValid() ? start.format(): '',
-        end: end.isValid() ? end.format(): ''
+        start: start.isValid() ? start.format('YYYY-MM-DDTHH:mm:ss'): '',
+        end: end.isValid() ? end.format('YYYY-MM-DDTHH:mm:ss'): ''
     })
 }
 
@@ -34,7 +34,6 @@ function getData(data){
             values: data[d]
         }
     });
-
     if (result.length) {
         result.map(function(x){
             x.values.pop();
@@ -88,7 +87,7 @@ function makePlatformGraph(chartName, chartDataName, data, platform){
                 return !(i % tickSize);
             }))
             .tickFormat(function (d) {
-                return d3.time.format('%b %d %I:%M %p')(new Date(d));
+                return d3.utcFormat('%b %d %I:%M %p')(new Date(d));
             });
 
         chart.duration(1000);
@@ -103,12 +102,29 @@ function makePlatformGraph(chartName, chartDataName, data, platform){
     });
 }
 
+function fillForm(data) {
+    console.log(data);
+    if (Object.keys(data.win).length != 0) {
+        data = data.win;
+        console.log(data);
+    } else if ((Object.keys(data.mac).length != 0)) {
+        data = data.mac;
+    } else {
+        return
+    }
+    var start = data[Object.keys(data)[0]][0][0];
+    var end = data[Object.keys(data)[0]].slice(-1)[0][0];
+    console.log(start);
+    $("#range-end input").val(moment(end).utc().format('YYYY-MM-DD HH:mm:00'));
+    $("#range-start input").val(moment(start).utc().format('YYYY-MM-DD HH:mm:00'));
+}
 
 function makeGraph(options){
     $.ajax({
         url: getLiveStatisticsAPIurl(options),
         success: function (result) {
             var data = result.data;
+            fillForm(data);
             makePlatformGraph('winChart', 'winChartData', data.win, 'win');
             makePlatformGraph('macChart', 'macChartData', data.mac, 'mac');
         }
@@ -154,9 +170,6 @@ function updateGraph(options){
 
 
 $(document).ready(function() {
-    var now = moment()
-    $("#range-end input").val(now.format('YYYY-MM-DD HH:mm:00'));
-    $("#range-start input").val(now.subtract(1, 'days').format('YYYY-MM-DD HH:mm:00'));
     $('#btn-apply').click(applyRange);
     var app = document.getElementById('app_name');
     var app_name = app.dataset.name;
