@@ -21,7 +21,7 @@ the License.
 import os
 
 from lxml import etree, objectify
-
+from omaha.settings import DEFAULT_CHANNEL
 
 __all__ = ['parser', 'parse_request']
 
@@ -79,3 +79,7 @@ def parse_request(request):
         '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}'
     """
     return objectify.fromstring(request, parser)
+
+
+def get_channel(app):
+    return app.get('tag') or app.get('ap') or DEFAULT_CHANNEL
