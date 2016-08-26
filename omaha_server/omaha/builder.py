@@ -31,8 +31,8 @@ from cacheops import cached_as
 from omaha import tasks
 from omaha.models import Version
 from omaha.parser import parse_request
+from omaha import parser
 from omaha.statistics import is_user_active
-from omaha.settings import DEFAULT_CHANNEL
 from omaha.core import (Response, App, Updatecheck_negative, Manifest, Updatecheck_positive,
                   Packages, Package, Actions, Action, Event, Data)
 
@@ -133,7 +133,7 @@ def on_app(apps_list, app, os, userid):
     app_id = app.get('appid')
     version = app.get('version')
     platform = os.get('platform')
-    channel = app.get('tag') or DEFAULT_CHANNEL
+    channel = parser.get_channel(app)
     ping = bool(app.findall('ping'))
     events = reduce(on_event, app.findall('event'), [])
     build_app = partial(App, app_id, status='ok', ping=ping, events=events)
