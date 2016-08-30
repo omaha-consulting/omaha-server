@@ -30,7 +30,7 @@ from bitmapist import setup_redis, mark_event, unmark_event, WeekEvents, MonthEv
 import pytz
 
 from omaha.utils import get_id, is_new_install, valuedispatch, redis
-from omaha.settings import DEFAULT_CHANNEL
+from omaha import parser
 from omaha.models import ACTIVE_USERS_DICT_CHOICES, Request, AppRequest, Os, Hw, Event, Version, Channel
 from sparkle.models import SparkleVersion
 
@@ -52,7 +52,7 @@ def add_app_statistics(userid, platform, app, now=None):
         now = timezone.now()
     appid = app.get('appid')
     version = app.get('version')
-    channel = app.get('tag') or DEFAULT_CHANNEL
+    channel = parser.get_channel(app)
     events = app.findall('event')
     err_events = filter(lambda x: x.get('eventresult') not in ['1', '2', '3'], events)
     if err_events:
