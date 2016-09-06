@@ -30,6 +30,7 @@ from rest_framework import pagination
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+import pytz
 
 from omaha.statistics import (
     get_users_statistics_months,
@@ -59,6 +60,7 @@ from omaha.models import (
     Action,
 )
 from omaha.utils import get_month_range_from_dict
+
 
 class BaseView(mixins.ListModelMixin, mixins.CreateModelMixin,
                mixins.DestroyModelMixin, mixins.RetrieveModelMixin,

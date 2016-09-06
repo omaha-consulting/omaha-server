@@ -17,12 +17,26 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
 """
+from django.utils import timezone
+
 from rest_framework import serializers
+from dateutil import parser
+import pytz
 
 from omaha.models import Application, Platform, Channel, Version, Action, Data
 
 
 __all__ = ['AppSerializer', 'PlatformSerializer', 'ChannelSerializer', 'VersionSerializer']
+
+
+class TimeZoneAwareDateTimeField(serializers.DateTimeField):
+    def to_internal_value(self, value):
+        local_dt = parser.parse(value)
+        if not local_dt.tzinfo:
+            tz = timezone.get_current_timezone()
+            local_dt = tz.localize(local_dt)
+        utc_dt = local_dt.astimezone(pytz.utc)
+        return utc_dt
 
 
 class DataSerializer(serializers.HyperlinkedModelSerializer):
@@ -97,8 +111,8 @@ class MonthInputSerializer(serializers.Serializer):
 
 
 class LiveStatisticsRangeSerializer(serializers.Serializer):
-    start = serializers.DateTimeField(required=False)
-    end = serializers.DateTimeField(required=False)
+    start = TimeZoneAwareDateTimeField(required=False)
+    end = TimeZoneAwareDateTimeField(required=False)
 
 
 class ServerVersionSerializer(serializers.Serializer):
