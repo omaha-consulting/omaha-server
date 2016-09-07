@@ -64,6 +64,21 @@ class VersionFactory(factory.DjangoModelFactory):
     platform = factory.lazy_attribute(lambda x: PlatformFactory())
     channel = factory.lazy_attribute(lambda x: ChannelFactory())
     version = '37.0.2062.124'
+
+    @classmethod
+    def _create(cls, model_class, *args, **kwargs):
+        package_fields = ('file', 'file_hash', 'file_size')
+        version_kwargs = dict(item for item in kwargs.items() if item[0] not in package_fields)
+        result = super(VersionFactory, cls)._create(model_class, *args, **version_kwargs)
+        package_kwargs = dict(item for item in kwargs.items() if item[0] in package_fields)
+        PackageFactory.create(version=result, **package_kwargs)
+        return result
+
+
+class PackageFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = 'omaha.Package'
+
     file = SimpleUploadedFile('./chrome_installer.exe', b' ' * 123)
     file_size = 123
     file_hash = 'ojan8ermbNHlI5czkED+nc01rxk='

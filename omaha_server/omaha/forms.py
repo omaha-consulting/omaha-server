@@ -28,7 +28,7 @@ from suit.widgets import LinkedSelect
 from suit_redactor.widgets import RedactorWidget
 from celery import signature
 
-from omaha.models import Application, Version, Action, Data
+from omaha.models import Application, Version, Action, Data, Package
 
 
 __all__ = ['ApplicationAdminForm', 'VersionAdminForm', 'ActionAdminForm']
@@ -60,6 +60,14 @@ class VersionAdminForm(forms.ModelForm):
             'app': LinkedSelect,
             'release_notes': RedactorWidget(editor_options={'lang': 'en',
                                                             'minHeight': 150}),
+        }
+
+class PackageAdminForm(forms.ModelForm):
+    class Meta:
+        model = Package
+        exclude = []
+        widgets = {
+            'version': LinkedSelect,
             'file_size': widgets.TextInput(attrs=dict(disabled='disabled')),
         }
 

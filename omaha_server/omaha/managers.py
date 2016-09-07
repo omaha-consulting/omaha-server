@@ -27,7 +27,8 @@ class VersionQuerySet(QuerySet):
         return self.filter(is_enabled=True, *args, **kwargs)
 
     def get_size(self):
-        return self.aggregate(size=Sum('file_size'))['size'] or 0
+        from omaha.models import Package
+        return Package.objects.filter(version__in=self).aggregate(size=Sum('file_size'))['size'] or 0
 
 
 class VersionManager(models.Manager):

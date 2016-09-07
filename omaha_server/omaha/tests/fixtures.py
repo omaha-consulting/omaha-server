@@ -33,7 +33,7 @@ request_update_check = b"""<?xml version="1.0" encoding="UTF-8"?>
         <updatecheck/>
         <ping r="1"/>
     </app>
-    <app appid="{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}" version="2.2.2.0" nextversion="" lang="en" brand="GGLS"
+    <app appid="{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}" version="13.0.782.11" nextversion="" lang="en" brand="GGLS"
          client="" installage="6">
         <updatecheck/>
         <ping r="1"/>

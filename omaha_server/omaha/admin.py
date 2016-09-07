@@ -26,8 +26,8 @@ from django.utils.encoding import smart_text
 from dynamic_preferences.models import GlobalPreferenceModel, UserPreferenceModel
 from versionfield import VersionField
 
-from omaha.models import Channel, Platform, Application, Version, Action, PartialUpdate, Data
-from omaha.forms import ApplicationAdminForm, VersionAdminForm, ActionAdminForm, DataAdminForm
+from omaha.models import Channel, Platform, Application, Version, Action, PartialUpdate, Data, Package
+from omaha.forms import ApplicationAdminForm, VersionAdminForm, ActionAdminForm, DataAdminForm, PackageAdminForm
 
 
 admin.site.unregister(GlobalPreferenceModel)
@@ -73,9 +73,15 @@ class VersionAdmin(admin.ModelAdmin):
     list_display = ('created', 'modified', 'app', 'version', 'channel', 'platform', 'is_enabled')
     list_display_links = ('created', 'modified', 'version',)
     list_filter = ('channel__name', 'platform__name', 'app__name',)
-    readonly_fields = ('file_hash',)
     form = VersionAdminForm
 
+@admin.register(Package)
+class PackageAdmin(admin.ModelAdmin):
+    list_display = ('version', 'source_version')
+    list_display_links = ('version', 'source_version')
+    list_filter = ('version__channel__name', 'version__platform__name', 'version__app__name',)
+    readonly_fields = ('file_hash',)
+    form = PackageAdminForm
 
 def my_display_for_field(value, field, *args, **kwargs):
     if isinstance(field, VersionField):

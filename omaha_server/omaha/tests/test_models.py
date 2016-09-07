@@ -23,8 +23,8 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 
 from mock import patch
 
-from omaha.models import Application, Channel, Platform, Version, Action, EVENT_DICT_CHOICES
-from omaha.models import version_upload_to
+from omaha.models import Application, Channel, Platform, Version, Action, EVENT_DICT_CHOICES, \
+    package_upload_to_monkeypatchable
 from omaha.factories import ApplicationFactory, ChannelFactory, PlatformFactory, VersionFactory
 from omaha.tests.utils import temporary_media_root
 
@@ -49,27 +49,28 @@ class PlatformModelTest(test.TestCase):
         self.assertTrue(Platform.objects.get(id=platform.id))
 
 
-class VersionModelTest(test.TestCase):
+class PackageModelTest(test.TestCase):
     @temporary_media_root()
-    def test_version_upload_to(self):
+    def test_package_upload_to(self):
         version = VersionFactory.create(file=SimpleUploadedFile('./chrome_installer.exe', False))
-        self.assertEqual(version_upload_to(version, 'chrome_installer.exe'),
+        package = version.main_package
+        self.assertEqual(package_upload_to_monkeypatchable(package, 'chrome_installer.exe'),
                          'build/{}/{}/{}/{}/chrome_installer.exe'.format(
                              version.app.name,
                              version.channel.name,
                              version.platform.name,
                              version.version,
-                             version.file.name,
+                             package.file.name,
                          ))
 
-
+class VersionModelTest(test.TestCase):
     @temporary_media_root()
     def test_factory(self):
         version = VersionFactory.create(file=SimpleUploadedFile('./chrome_installer.exe', False))
         self.assertTrue(Version.objects.get(id=version.id))
 
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
-    @patch('omaha.models.version_upload_to', lambda o, f: f)
+    @patch('omaha.models.package_upload_to_monkeypatchable', lambda o, f: f)
     def test_property(self):
         version = VersionFactory.create(file=SimpleUploadedFile('./chrome_installer.exe', ''))
         self.assertEqual(version.file_absolute_url,
@@ -91,7 +92,7 @@ class VersionModelTest(test.TestCase):
         self.assertEqual(version.file_url, _url)
 
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
-    @patch('omaha.models.version_upload_to', lambda o, f: f)
+    @patch('omaha.models.package_upload_to_monkeypatchable', lambda o, f: f)
     def test_property_s3_meta_data(self):
         version = VersionFactory.create(file=SimpleUploadedFile('./chrome_installer.exe', ''))
         self.assertEqual(version.file_package_name, 'chrome_installer.exe')

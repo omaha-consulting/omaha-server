@@ -33,7 +33,8 @@ from bitmapist import DayEvents
 from omaha.tests import fixtures
 from omaha.tests.utils import temporary_media_root
 
-from omaha.factories import ApplicationFactory, ChannelFactory, PlatformFactory, VersionFactory
+from omaha.factories import ApplicationFactory, ChannelFactory, PlatformFactory, VersionFactory, \
+    PackageFactory
 from omaha.models import Action, Request, EVENT_DICT_CHOICES, Data, NAME_DATA_DICT_CHOICES
 from omaha.utils import redis, get_id
 
@@ -59,7 +60,7 @@ class UpdateViewTest(TestCase, XmlTestMixin):
 
     @freeze_time('2014-01-01 15:41:48')  # 56508 sec
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
-    @patch('omaha.models.version_upload_to', lambda o, f: f)
+    @patch('omaha.models.package_upload_to_monkeypatchable', lambda o, f: f)
     def test_updatecheck_positive(self):
         app = ApplicationFactory.create(id='{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}', name='chrome')
         platform = PlatformFactory.create(name='win')
@@ -71,8 +72,9 @@ class UpdateViewTest(TestCase, XmlTestMixin):
             version='13.0.782.112',
             file=SimpleUploadedFile('./chrome_installer.exe', b'_' * 23963192),
             file_size=23963192)
-        obj.file_hash = 'VXriGUVI0TNqfLlU02vBel4Q3Zo='
-        obj.save()
+        main_package = obj.main_package
+        main_package.file_hash = 'VXriGUVI0TNqfLlU02vBel4Q3Zo='
+        main_package.save()
 
         Action.objects.create(
             version=obj,
@@ -98,9 +100,10 @@ class UpdateViewTest(TestCase, XmlTestMixin):
         self.assertXmlDocument(response.content)
         self.assertXmlEquivalentOutputs(response.content,
                                         fixtures.response_update_check_positive)
+        return obj
 
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
-    @patch('omaha.models.version_upload_to', lambda o, f: f)
+    @patch('omaha.models.package_upload_to_monkeypatchable', lambda o, f: f)
     def test_userid_counting(self):
         now = datetime.utcnow()
         userid = '{D0BBD725-742D-44ae-8D46-0231E881D58E}'
@@ -129,8 +132,9 @@ class UpdateViewTest(TestCase, XmlTestMixin):
             channel=channel,
             version='13.0.782.112',
             file=SimpleUploadedFile('./chrome_installer.exe', b'_' * 23963192))
-        obj.file_hash = 'VXriGUVI0TNqfLlU02vBel4Q3Zo='
-        obj.save()
+        main_package = obj.main_package
+        main_package.file_hash = 'VXriGUVI0TNqfLlU02vBel4Q3Zo='
+        main_package.save()
 
         Action.objects.create(
             version=obj,
@@ -190,7 +194,7 @@ class UpdateViewTest(TestCase, XmlTestMixin):
 
     @freeze_time('2014-01-01 15:45:54')  # 56754 sec
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
-    @patch('omaha.models.version_upload_to', lambda o, f: f)
+    @patch('omaha.models.package_upload_to_monkeypatchable', lambda o, f: f)
     def test_data(self):
         app = ApplicationFactory.create(id='{430FD4D0-B729-4F61-AA34-91526481799D}', name='chrome')
         platform = PlatformFactory.create(name='win')
@@ -202,8 +206,9 @@ class UpdateViewTest(TestCase, XmlTestMixin):
             version='13.0.782.112',
             file=SimpleUploadedFile('./chrome_installer.exe', b'_' * 23963192),
             file_size=23963192)
-        obj.file_hash = 'VXriGUVI0TNqfLlU02vBel4Q3Zo='
-        obj.save()
+        main_package = obj.main_package
+        main_package.file_hash = 'VXriGUVI0TNqfLlU02vBel4Q3Zo='
+        main_package.save()
 
         Data.objects.create(
             app=app,

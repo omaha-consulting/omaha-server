@@ -90,8 +90,8 @@ class Channel(BaseModel):
 
 
 def version_upload_to(obj, filename):
-    return os.path.join('build', obj.app.name, obj.channel.name,
-                        obj.platform.name, str(obj.version), filename)
+    # Legacy. Left here because some migrations refer to it.
+    pass
 
 
 def _version_upload_to(*args, **kwargs):
@@ -106,9 +106,6 @@ class Version(BaseModel):
     channel = models.ForeignKey(Channel, db_index=True)
     version = VersionField(help_text='Format: 255.255.65535.65535', number_bits=(8, 8, 16, 16), db_index=True)
     release_notes = models.TextField(blank=True, null=True)
-    file = models.FileField(upload_to=_version_upload_to, null=True)
-    file_hash = models.CharField(verbose_name='Hash', max_length=140, null=True, blank=True)
-    file_size = models.PositiveIntegerField(null=True, blank=True)
 
     objects = VersionManager()
 
@@ -124,6 +121,22 @@ class Version(BaseModel):
 
     def __str__(self):
         return "{app} {version}".format(app=self.app, version=self.version)
+
+    @property
+    def main_package(self):
+        return self.package_set.get(source_version__isnull=True)
+
+    @property
+    def file(self):
+        return self.main_package.file
+
+    @property
+    def file_size(self):
+        return self.main_package.file_size
+
+    @property
+    def file_hash(self):
+        return self.main_package.file_hash
 
     @property
     def file_absolute_url(self):
@@ -148,6 +161,37 @@ class Version(BaseModel):
     @property
     def size(self):
          return self.file_size
+
+def package_upload_to_monkeypatchable(obj, filename):
+    version = obj.version
+    return os.path.join('build', version.app.name, version.channel.name,
+                        version.platform.name, str(version.version), filename)
+
+def _package_upload_to(*args, **kwargs):
+    return package_upload_to_monkeypatchable(*args, **kwargs)
+
+
+@python_2_unicode_compatible
+class Package(BaseModel):
+    version = models.ForeignKey(Version)
+    source_version = VersionField(blank=True, null=True, help_text='Format: 255.255.65535.65535', number_bits=(8, 8, 16, 16), db_index=True)
+    file = models.FileField(upload_to=_package_upload_to)
+    file_hash = models.CharField(verbose_name='Hash', max_length=140, null=True, blank=True)
+    file_size = models.PositiveIntegerField(null=True, blank=True)
+
+    class Meta:
+        unique_together = (
+            ('version', 'source_version'),
+        )
+        index_together = (
+            ('version', 'source_version'),
+        )
+        ordering = ['id']
+
+    def __str__(self):
+        if self.source_version:
+            return "{app} {source} -> {version}".format(app=self.version.app, source=self.source_version, version=self.version.version)
+        return "{app} {version}".format(app=self.version.app, version=self.version.version)
 
 EVENT_DICT_CHOICES = dict(
     preinstall=0,
@@ -314,8 +358,8 @@ class AppRequest(models.Model):
     events = models.ManyToManyField(Event)
 
 
-@receiver(pre_save, sender=Version)
-def pre_version_save(sender, instance, *args, **kwargs):
+@receiver(pre_save, sender=Package)
+def pre_package_save(sender, instance, *args, **kwargs):
     if instance.pk:
         old = sender.objects.get(pk=instance.pk)
         if old.file == instance.file:
@@ -326,8 +370,8 @@ def pre_version_save(sender, instance, *args, **kwargs):
     instance.file_hash = base64.b64encode(sha1.digest()).decode()
 
 
-@receiver(pre_delete, sender=Version)
-def pre_version_delete(sender, instance, **kwargs):
+@receiver(pre_delete, sender=Package)
+def pre_package_delete(sender, instance, **kwargs):
     storage, name = instance.file.storage, instance.file.name
     if name:
         storage.delete(name)

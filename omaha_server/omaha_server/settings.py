@@ -57,7 +57,8 @@ SUIT_CONFIG = {
     'ADMIN_NAME': 'Omaha Server [{}]'.format(APP_VERSION),
     'MENU': (
         # 'sites',
-        {'app': 'omaha', 'label': 'Omaha', 'icon': 'icon-refresh'},
+        {'app': 'omaha', 'label': 'Omaha', 'icon': 'icon-refresh',
+         'models': ('application', 'channel', 'platform', 'version', 'package')},
         {'app': 'sparkle', 'label': 'Sparkle', 'icon': 'icon-circle-arrow-down'},
         {'app': 'crash', 'label': 'Crash reports', 'icon': 'icon-fire'},
         {'app': 'feedback', 'label': 'Feedbacks', 'icon': 'icon-comment'},
