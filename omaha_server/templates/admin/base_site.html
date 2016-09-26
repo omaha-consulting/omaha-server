@@ -1,0 +1,15 @@
+{% extends "admin/base.html" %}
+{% load admin_static %}
+
+{# Footer branding name (center) #}
+{% block footer_branding %}
+    {{ block.super }}
+    <br>Copyright &copy; 2014
+{% endblock %}
+
+
+{# Footer copyright (right side) #}
+{% block copyright %}
+  Developed by <a href="https://crystalnix.com/" target="_blank">Crystalnix.com</a>
+  <br>Designed by <a href="http://djangosuit.com/" target="_blank">DjangoSuit.com</a>
+{% endblock %}
