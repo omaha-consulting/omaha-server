@@ -58,7 +58,7 @@ class AppRequestTable(tables.Table):
         model = AppRequest
         attrs = {'class': 'paleblue table table-striped table-bordered table-hover table-condensed',
                  'id': 'apprequest-table'}
-        fields = ('id', 'version', 'platform', 'os', 'sp', 'arch', 'date', 'events',)
+        fields = ('id', 'version', 'nextversion', 'platform', 'os', 'sp', 'arch', 'date', 'events',)
 
 
 class VersionsTable(tables.Table):
