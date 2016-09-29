@@ -206,6 +206,31 @@ class VersionTest(BaseTest, APITestCase):
         self.assertEqual(version.file_size, len(b'content'))
         self.assertTrue(version.is_enabled)
 
+    @is_private()
+    @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
+    def test_update(self):
+        data = dict(
+            app=ApplicationFactory.create().id,
+            platform=PlatformFactory.create().id,
+            channel=ChannelFactory.create().id,
+            version='1.2.3.4',
+            file=SimpleUploadedFile("chrome.exe", b'content'),
+            is_enabled=False,
+        )
+        response = self.client.post(reverse(self.url), data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        obj_id = response.data['id']
+        version = Version.objects.get(id=obj_id)
+        self.assertEqual(response.data, self.serializer(version).data)
+        self.assertEqual(version.file_size, len(b'content'))
+        self.assertFalse(version.is_enabled)
+        url = reverse(self.url_detail, kwargs=dict(pk=obj_id))
+        response = self.client.patch(url, dict(is_enabled=True))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        version = Version.objects.get(id=obj_id)
+        self.assertEqual(version.file_size, len(b'content'))
+        self.assertTrue(version.is_enabled)
+
 
 class ActionTest(BaseTest, APITestCase):
     url = 'action-list'
