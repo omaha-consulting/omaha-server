@@ -167,7 +167,7 @@ class ChannelViewSet(viewsets.ModelViewSet):
     serializer_class = ChannelSerializer
 
 
-class VersionViewSet(BaseView):
+class VersionViewSet(BaseView, mixins.UpdateModelMixin):
     queryset = Version.objects.all().order_by('-id')
     serializer_class = VersionSerializer
 
