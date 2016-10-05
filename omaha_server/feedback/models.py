@@ -31,10 +31,18 @@ from jsonfield import JSONField
 from omaha.models import BaseModel
 from feedback.managers import FeedbackManager
 
+
 def upload_to(directory, obj, filename):
     now = timezone.now()
-    return os.path.join(*map(str, [directory, now.year, now.month,
+    max_length = 100
+    path = os.path.join(*map(str, [directory, now.year, now.month,
                                    now.day, uuid.uuid4(), filename]))
+    if len(path) > max_length:
+        name, ext = os.path.splitext(path)
+        ext_length = len(ext)
+        path = name[:max_length-ext_length] + ext
+    return path
+
 
 def screenshot_upload_to(obj, filename):
     return upload_to('screenshot', obj, filename)
