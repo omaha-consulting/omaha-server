@@ -122,6 +122,20 @@ class AppTest(BaseTest, APITestCase):
         obj = Application.objects.get(id=response.data['id'])
         self.assertEqual(response.data, self.serializer(obj).data)
 
+    @is_private()
+    def test_update(self):
+        data = dict(id='test_id', name='test_name', data_set=[])
+        response = self.client.post(reverse(self.url), data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        obj_id = response.data['id']
+        obj = Application.objects.get(id=obj_id)
+        self.assertEqual(obj.name, 'test_name')
+        url = reverse(self.url_detail, kwargs=dict(pk=obj_id))
+        response = self.client.patch(url, dict(name='test_other_name'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        obj = Application.objects.get(id=obj_id)
+        self.assertEqual(obj.name, 'test_other_name')
+
 
 class DataTest(BaseTest, APITestCase):
     url = 'data-list'
@@ -137,6 +151,21 @@ class DataTest(BaseTest, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         obj = Data.objects.get(id=response.data['id'])
         self.assertEqual(response.data, self.serializer(obj).data)
+
+    @is_private()
+    def test_update(self):
+        app = ApplicationFactory.create()
+        data = dict(name=0, app=app.pk)
+        response = self.client.post(reverse(self.url), data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        obj_id = response.data['id']
+        obj = Data.objects.get(id=obj_id)
+        self.assertEqual(obj.name, 0)
+        url = reverse(self.url_detail, kwargs=dict(pk=obj_id))
+        response = self.client.patch(url, dict(name=1))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        obj = Data.objects.get(id=obj_id)
+        self.assertEqual(obj.name, 1)
 
 
 class PlatformTest(BaseTest, APITestCase):
@@ -157,6 +186,20 @@ class PlatformTest(BaseTest, APITestCase):
         obj = Platform.objects.get(id=response.data['id'])
         self.assertEqual(response.data, self.serializer(obj).data)
 
+    @is_private()
+    def test_create(self):
+        data = dict(name='test_name')
+        response = self.client.post(reverse(self.url), data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        obj_id = response.data['id']
+        obj = Platform.objects.get(id=obj_id)
+        self.assertEqual(obj.name, 'test_name')
+        url = reverse(self.url_detail, kwargs=dict(pk=obj_id))
+        response = self.client.patch(url, dict(name='test_name2'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        obj = Platform.objects.get(id=obj_id)
+        self.assertEqual(obj.name, 'test_name2')
+
 
 class ChannelTest(BaseTest, APITestCase):
     url = 'channel-list'
@@ -172,6 +215,19 @@ class ChannelTest(BaseTest, APITestCase):
         obj = Channel.objects.get(id=response.data['id'])
         self.assertEqual(response.data, self.serializer(obj).data)
 
+    @is_private()
+    def test_update(self):
+        data = dict(name='test_name')
+        response = self.client.post(reverse(self.url), data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        obj_id = response.data['id']
+        obj = Channel.objects.get(id=obj_id)
+        self.assertEqual(response.data, self.serializer(obj).data)
+        url = reverse(self.url_detail, kwargs=dict(pk=obj_id))
+        response = self.client.patch(url, dict(name='test_name2'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        obj = Channel.objects.get(id=obj_id)
+        self.assertEqual(obj.name, 'test_name2')
 
 class VersionTest(BaseTest, APITestCase):
     url = 'version-list'
@@ -221,7 +277,6 @@ class VersionTest(BaseTest, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         obj_id = response.data['id']
         version = Version.objects.get(id=obj_id)
-        self.assertEqual(response.data, self.serializer(version).data)
         self.assertEqual(version.file_size, len(b'content'))
         self.assertFalse(version.is_enabled)
         url = reverse(self.url_detail, kwargs=dict(pk=obj_id))
@@ -246,6 +301,22 @@ class ActionTest(BaseTest, APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         obj = Action.objects.get(id=response.data['id'])
         self.assertEqual(response.data, self.serializer(obj).data)
+
+    @is_private()
+    def test_update(self):
+        version = VersionFactory.create()
+        data = dict(event=1, version=version.pk)
+        response = self.client.post(reverse(self.url), data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        obj_id = response.data['id']
+        obj = Action.objects.get(id=obj_id)
+        self.assertEqual(response.data, self.serializer(obj).data)
+        url = reverse(self.url_detail, kwargs=dict(pk=obj_id))
+        response = self.client.patch(url, dict(event=2))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        obj = Action.objects.get(id=obj_id)
+        self.assertEqual(obj.event, 2)
+
 
 class LiveStatistics(APITestCase):
     maxDiff = None

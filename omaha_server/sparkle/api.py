@@ -18,12 +18,12 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
-from omaha.api import BaseView
+from rest_framework import viewsets
 
 from sparkle.serializers import SparkleVersionSerializer
 from sparkle.models import SparkleVersion
 
 
-class SparkleVersionViewSet(BaseView):
+class SparkleVersionViewSet(viewsets.ModelViewSet):
     queryset = SparkleVersion.objects.all().order_by('-id')
     serializer_class = SparkleVersionSerializer
