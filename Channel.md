@@ -1,6 +1,6 @@
 # Group Channel
 
-## Channel Collection [/api/channel{?name}]
+## Channel Collection [/api/channel{?name}/]
 
 ### List all Channels [GET]
 
@@ -70,6 +70,48 @@
         {
             "id": 11,
             "name": "dev",
+        }
+
+### Patch a Channel [PATCH]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+
+            {
+                "name": "beta",
+            }
+
++ Response 200 (application/json)
+
+        {
+            "id": 11,
+            "name": "beta",
+        }
+
+### Update a Channel [PUT]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+
+            {
+                "name": "beta",
+            }
+
++ Response 200 (application/json)
+
+        {
+            "id": 11,
+            "name": "beta",
         }
 
 ### Remove a Channel [DELETE]

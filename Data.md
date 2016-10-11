@@ -1,6 +1,6 @@
 # Group Data
 
-## Data Collection [/api/data{?id,app,index,name,value}]
+## Data Collection [/api/data{?id,app,index,name,value}/]
 
 ### List all Data [GET]
 
@@ -81,6 +81,55 @@
             "app": "{DB77BFF7-8C02-4D31-A103-5FDE27CF6B3C}",
             "index": null,
             "name": 1,
+            "value": "",
+        }
+
+### Patch a Data [PATCH]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+
+            {
+                "name": 0
+            }
+
++ Response 200 (application/json)
+
+        {
+            "id": 9,
+            "app": "{DB77BFF7-8C02-4D31-A103-5FDE27CF6B3C}",
+            "index": null,
+            "name": 0,
+            "value": "",
+        }
+
+### Update a Data [PUT]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+
+            {
+                "app": {DB77BFF7-8C02-4D31-A103-5FDE27CF6B3C},
+                "name": 0
+            }
+
++ Response 200 (application/json)
+
+        {
+            "id": 9,
+            "app": "{DB77BFF7-8C02-4D31-A103-5FDE27CF6B3C}",
+            "index": null,
+            "name": 0,
             "value": "",
         }
 

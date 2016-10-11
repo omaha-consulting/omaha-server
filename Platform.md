@@ -1,6 +1,6 @@
 # Group Platform
 
-## Platform Collection [/api/platform{?name}]
+## Platform Collection [/api/platform{?name}/]
 
 ### List all Platforms [GET]
 
@@ -66,6 +66,48 @@
         {
             "id": 1,
             "name": "win",
+        }
+
+### Patch a Platform [PATCH]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+
+            {
+                "name": "ios",
+            }
+
++ Response 200 (application/json)
+
+        {
+            "id": 1,
+            "name": "ios",
+        }
+
+### Update a Platform [PUT]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+
+            {
+                "name": "ios",
+            }
+
++ Response 200 (application/json)
+
+        {
+            "id": 1,
+            "name": "ios",
         }
 
 ### Remove a Platform [DELETE]
