@@ -54,7 +54,7 @@ def crash_archive_upload_to(obj, filename):
 
 
 class Crash(BaseModel):
-    upload_file_minidump = models.FileField(upload_to=crash_upload_to, blank=True, null=True, max_length=255)
+    upload_file_minidump = models.FileField(upload_to=crash_upload_to, max_length=255)
     minidump_size = models.PositiveIntegerField(null=True, blank=True)
     archive = models.FileField(upload_to=crash_archive_upload_to, blank=True, null=True, max_length=255)
     archive_size = models.PositiveIntegerField(null=True, blank=True)
