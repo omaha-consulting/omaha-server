@@ -1,6 +1,6 @@
 # Group Sparkle Version
 
-## Version List [/api/sparkle/version{?app,channel,release_notes,file,dsa_signature,version,short_version}]
+## Version List [/api/sparkle/version{?app,channel,release_notes,file,dsa_signature,version,short_version}/]
 
 ### Get versions [GET]
 
@@ -115,6 +115,78 @@
             "file_size": 66243223, 
             "dsa_signature": "MCwCFFjHuSSd/QKCuIJsl7T2GDQd1NeZAhRqnZqXoFdpbfzyaE772N0TISwFzQ==", 
             "created": "2015-01-14T10:50:56.019360Z", 
+            "modified": "2015-01-14T10:50:56.026884Z"
+        }
+
+### Patch a Version [PATCH]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+
+                {
+                    "app": "{43C257D5-533D-462C-8166-E276519687DE}",
+                    "channel": 5,
+                    "version": "4444.0",
+                    "short_version": "41.0.4444.0",
+                    "release_notes": "<p>Version 41.0.4444.0 is out now</p>",
+                    "file": "{FILE}",
+                    "dsa_signature": "MCwCFFjHuSSd/QKCuIJsl7T2GDQd1NeZAhRqnZqXoFdpbfzyaE772N0TISwFzQ=="
+                }
+
++ Response 200 (application/json)
+
+        {
+            "id": 3,
+            "app": "{43C257D5-533D-462C-8166-E276519687DE}",
+            "channel": 5,
+            "version": "4444.0",
+            "short_version": "41.0.4444.0",
+            "release_notes": "<p>Version 41.0.4444.0 is out now</p>",
+            "file": "https://example.com/sparkle/Installer/stable/Chromium-41.0.4444.0.dmg",
+            "file_size": 66243223,
+            "dsa_signature": "MCwCFFjHuSSd/QKCuIJsl7T2GDQd1NeZAhRqnZqXoFdpbfzyaE772N0TISwFzQ==",
+            "created": "2015-01-14T10:50:56.019360Z",
+            "modified": "2015-01-14T10:50:56.026884Z"
+        }
+
+### Update a Version [PUT]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+
+                {
+                    "app": "{43C257D5-533D-462C-8166-E276519687DE}",
+                    "channel": 5,
+                    "version": "4444.0",
+                    "short_version": "41.0.4444.0",
+                    "release_notes": "<p>Version 41.0.4444.0 is out now</p>",
+                    "file": "{FILE}",
+                    "dsa_signature": "MCwCFFjHuSSd/QKCuIJsl7T2GDQd1NeZAhRqnZqXoFdpbfzyaE772N0TISwFzQ=="
+                }
+
++ Response 200 (application/json)
+
+        {
+            "id": 3,
+            "app": "{43C257D5-533D-462C-8166-E276519687DE}",
+            "channel": 5,
+            "version": "4444.0",
+            "short_version": "41.0.4444.0",
+            "release_notes": "<p>Version 41.0.4444.0 is out now</p>",
+            "file": "https://example.com/sparkle/Installer/stable/Chromium-41.0.4444.0.dmg",
+            "file_size": 66243223,
+            "dsa_signature": "MCwCFFjHuSSd/QKCuIJsl7T2GDQd1NeZAhRqnZqXoFdpbfzyaE772N0TISwFzQ==",
+            "created": "2015-01-14T10:50:56.019360Z",
             "modified": "2015-01-14T10:50:56.026884Z"
         }
 

@@ -1,6 +1,6 @@
 # Group Omaha Version
 
-## Version List [/api/omaha/version{?is_enabled,app,channel,platform,release_notes,file}]
+## Version List [/api/omaha/version{?is_enabled,app,channel,platform,release_notes,file}/]
 
 ### Get versions [GET]
 
@@ -70,11 +70,7 @@
                     "platform": 1, 
                     "channel": 2, 
                     "version": "2.0.0.1024", 
-                    "file": "File", 
-                    "file_hash": "u8QB8baBHs45RmKNCTIGGtNHXbc=", 
-                    "file_size": 143963, 
-                    "created": "2014-11-28T11:25:37.213001Z", 
-                    "modified": "2014-12-18T09:00:00.094911Z"
+                    "file": "File",
                 }
 
 + Response 201
@@ -121,6 +117,73 @@
             "file_hash": "u8QB8baBHs45RmKNCTIGGtNHXbc=", 
             "file_size": 143963, 
             "created": "2014-11-28T11:25:37.213001Z", 
+            "modified": "2014-12-18T09:00:00.094911Z"
+        }
+
+### Patch a Version [PATCH]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+
+                {
+                    "is_enabled": false,
+                }
+
++ Response 200 (application/json)
+
+        {
+            "id": 38,
+            "is_enabled": false,
+            "app": "{8A76FC95-0086-4BCE-9517-DC09DDB5652F}",
+            "platform": 1,
+            "channel": 2,
+            "version": "2.0.0.1024",
+            "release_notes": "",
+            "file": "https://example.com/build/UpdateTestApp/beta/win/UpdateTestAppInstaller.2.0.0.1024.beta.exe",
+            "file_hash": "u8QB8baBHs45RmKNCTIGGtNHXbc=",
+            "file_size": 143963,
+            "created": "2014-11-28T11:25:37.213001Z",
+            "modified": "2014-12-18T09:00:00.094911Z"
+        }
+
+### Update a Version [PUT]
+
++ Request (multipart/form-data)
+
+    + Headers
+
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+
+                {
+                    "app": "{8A76FC95-0086-4BCE-9517-DC09DDB5652F}",
+                    "platform": 1,
+                    "channel": 2,
+                    "version": "2.0.0.1024",
+                    "file": "File",
+                    "is_enabled": false,
+                }
+
++ Response 200 (application/json)
+
+        {
+            "id": 38,
+            "is_enabled": false,
+            "app": "{8A76FC95-0086-4BCE-9517-DC09DDB5652F}",
+            "platform": 1,
+            "channel": 2,
+            "version": "2.0.0.1024",
+            "release_notes": "",
+            "file": "https://example.com/build/UpdateTestApp/beta/win/UpdateTestAppInstaller.2.0.0.1024.beta.exe",
+            "file_hash": "u8QB8baBHs45RmKNCTIGGtNHXbc=",
+            "file_size": 143963,
+            "created": "2014-11-28T11:25:37.213001Z",
             "modified": "2014-12-18T09:00:00.094911Z"
         }
 

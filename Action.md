@@ -1,6 +1,6 @@
 # Group Action
 
-## Actions Collection [/api/action{?id,version,event,run,arguments,successurl,terminateallbrowsers,successsaction,other}]
+## Actions Collection [/api/action{?id,version,event,run,arguments,successurl,terminateallbrowsers,successsaction,other}/]
 
 ### List all Actions [GET]
 
@@ -93,14 +93,71 @@
 + Response 200 (application/json)
 
         {
-            "id": 11, 
-            "version": 7, 
-            "event": 1, 
-            "run": "", 
-            "arguments": "--do-not-launch-chrome", 
-            "successurl": "", 
-            "terminateallbrowsers": false, 
-            "successsaction": "default", 
+            "id": 11,
+            "version": 7,
+            "event": 1,
+            "run": "",
+            "arguments": "--do-not-launch-chrome",
+            "successurl": "",
+            "terminateallbrowsers": false,
+            "successsaction": "default",
+            "other": null
+        }
+
+### Patch an Action [PATCH]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+
+            {
+                "event": 0
+            }
+
++ Response 200 (application/json)
+
+        {
+            "id": 11,
+            "version": 7,
+            "event": 0,
+            "run": "",
+            "arguments": "--do-not-launch-chrome",
+            "successurl": "",
+            "terminateallbrowsers": false,
+            "successsaction": "default",
+            "other": null
+        }
+
+### Update an Action [PUT]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+
+            {
+                "version": 7,
+                "event": 0
+            }
+
++ Response 200 (application/json)
+
+        {
+            "id": 11,
+            "version": 7,
+            "event": 0,
+            "run": "",
+            "arguments": "--do-not-launch-chrome",
+            "successurl": "",
+            "terminateallbrowsers": false,
+            "successsaction": "default",
             "other": null
         }
 

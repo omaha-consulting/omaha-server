@@ -1,6 +1,6 @@
 # Group Application
 
-## Applications Collection [/api/app{?id,name}]
+## Applications Collection [/api/app{?id,name}/]
 
 ### List all Applications [GET]
 
@@ -66,8 +66,69 @@
 + Response 200 (application/json)
 
         {
-            "id": "{8A76FC95-0086-4BCE-9517-DC09DDB5652F}",
+            "id": "{F84D2B10-5F37-41F0-8B1F-2566AF2723B2}",
             "name": "Chromium",
+            "data_set": [
+                {
+                    "id": 5,
+                    "app": "{8A76FC95-0086-4BCE-9517-DC09DDB5652F}",
+                    "index": "Test",
+                    "name": 0,
+                    "value": "",
+                }
+            ]
+        }
+
+### Patch an Application [PATCH]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+
+            {
+                "name": "Chrome",
+            }
+
++ Response 200 (application/json)
+
+        {
+            "id": "{F84D2B10-5F37-41F0-8B1F-2566AF2723B2}",
+            "name": "Chrome",
+            "data_set": [
+                {
+                    "id": 5,
+                    "app": "{8A76FC95-0086-4BCE-9517-DC09DDB5652F}",
+                    "index": "Test",
+                    "name": 0,
+                    "value": "",
+                }
+            ]
+        }
+
+### Update an Application [PUT]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+
+            {
+                "id": "{F84D2B10-5F37-41F0-8B1F-2566AF2723B2}",
+                "name": "Chrome",
+            }
+
++ Response 200 (application/json)
+
+        {
+            "id": "{F84D2B10-5F37-41F0-8B1F-2566AF2723B2}",
+            "name": "Chrome",
             "data_set": [
                 {
                     "id": 5,
