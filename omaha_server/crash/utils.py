@@ -113,13 +113,13 @@ def send_stacktrace_sentry(crash):
         crashdump_url=crash.upload_file_minidump.url,
     )
 
+    tags = {}
     if crash.meta:
         extra.update(crash.meta)
-
+        tags['ver'] = crash.meta['ver']
     if crash.archive:
         extra['archive_url'] = crash.archive.url
 
-    tags = {}
     tags.update(stacktrace.get('system_info', {}))
 
     if crash.appid:
