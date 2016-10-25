@@ -116,7 +116,9 @@ def send_stacktrace_sentry(crash):
     tags = {}
     if crash.meta:
         extra.update(crash.meta)
-        tags['ver'] = crash.meta['ver']
+        ver = crash.meta.get('ver')
+        if ver:
+            tags['ver'] = ver
     if crash.archive:
         extra['archive_url'] = crash.archive.url
 
