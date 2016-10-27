@@ -81,6 +81,7 @@ class CrashSerializerTest(TestCase):
             userid=user_id,
             upload_file_minidump=SimpleUploadedFile('./dump.dat', b''),
             meta=meta,
+            stacktrace_json={u'crashing_thread':{}}
         )
         self.assertDictEqual(CrashSerializer(crash).data,
                              dict(id=crash.id,
@@ -90,5 +91,6 @@ class CrashSerializerTest(TestCase):
                                   userid=str(crash.userid),
                                   meta=meta,
                                   signature=crash.signature,
+                                  stacktrace_json=str(crash.stacktrace_json),
                                   created=crash.created.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
                                   modified=crash.modified.strftime('%Y-%m-%dT%H:%M:%S.%fZ')))
