@@ -131,9 +131,6 @@ class VersionsUsageView(StaffMemberRequiredMixin, SingleTableView):
 
     def get_queryset(self):
         qs = super(VersionsUsageView, self).get_queryset()
-
-        qs = qs.select_related('request', 'request__os')
-        qs = qs.order_by('-request__created')
         self.appid = None
 
         try:
@@ -145,7 +142,9 @@ class VersionsUsageView(StaffMemberRequiredMixin, SingleTableView):
 
         qs = qs.filter(events__eventtype__in=[2, 3], events__eventresult=1)
         qs = qs.distinct('request__userid').order_by('request__userid', '-request__created')
-        return list(qs)
+        qs = qs.only('id')
+        sortable_qs = self.model.objects.filter(id__in=qs).select_related('request', 'request__os')
+        return sortable_qs
 
     def get_context_data(self, **kwargs):
         context = super(VersionsUsageView, self).get_context_data(**kwargs)

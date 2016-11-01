@@ -33,16 +33,24 @@ from omaha.models import BaseModel
 from crash.managers import CrashManager, SymbolsManager
 
 
-def crash_upload_to(obj, filename):
+def upload_to(directory, obj, filename):
     now = timezone.now()
-    return os.path.join(*map(str, ['minidump', now.year, now.month,
+    max_length = 255
+    path = os.path.join(*map(str, [directory, now.year, now.month,
                                    now.day, uuid.uuid4(), filename]))
+    if len(path) > max_length:
+        name, ext = os.path.splitext(path)
+        ext_length = len(ext)
+        path = name[:max_length-ext_length] + ext
+    return path
+
+
+def crash_upload_to(obj, filename):
+    return upload_to('minidump', obj, filename)
 
 
 def crash_archive_upload_to(obj, filename):
-    now = timezone.now()
-    return os.path.join(*map(str, ['minidump_archive', now.year, now.month,
-                                   now.day, uuid.uuid4(), filename]))
+    return upload_to('minidump_archive', obj, filename)
 
 
 class Crash(BaseModel):

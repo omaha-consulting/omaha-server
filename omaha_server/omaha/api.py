@@ -74,7 +74,7 @@ class StandardResultsSetPagination(pagination.PageNumberPagination):
     max_page_size = 100
 
 
-class AppViewSet(BaseView):
+class AppViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows applications to be viewed.
 
@@ -152,12 +152,12 @@ class AppViewSet(BaseView):
     serializer_class = AppSerializer
 
 
-class DataViewSet(BaseView):
+class DataViewSet(viewsets.ModelViewSet):
     queryset = Data.objects.all().order_by('-id')
     serializer_class = DataSerializer
 
 
-class PlatformViewSet(BaseView):
+class PlatformViewSet(viewsets.ModelViewSet):
     queryset = Platform.objects.all().order_by('-id')
     serializer_class = PlatformSerializer
 
@@ -167,12 +167,12 @@ class ChannelViewSet(viewsets.ModelViewSet):
     serializer_class = ChannelSerializer
 
 
-class VersionViewSet(BaseView, mixins.UpdateModelMixin):
+class VersionViewSet(viewsets.ModelViewSet):
     queryset = Version.objects.all().order_by('-id')
     serializer_class = VersionSerializer
 
 
-class ActionViewSet(BaseView):
+class ActionViewSet(viewsets.ModelViewSet):
     queryset = Action.objects.all().order_by('-id')
     serializer_class = ActionSerializer
 

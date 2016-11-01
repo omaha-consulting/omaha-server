@@ -59,8 +59,9 @@ class SymbolsSerializer(serializers.HyperlinkedModelSerializer):
 
 class CrashSerializer(serializers.HyperlinkedModelSerializer):
     meta = serializers.DictField()
+    stacktrace_json = serializers.DictField()
 
     class Meta:
         model = Crash
         fields = ('id', 'upload_file_minidump', 'archive', 'appid', 'userid',
-                  'meta', 'signature', 'created', 'modified',)
+                  'meta', 'signature', 'stacktrace_json', 'created', 'modified',)
