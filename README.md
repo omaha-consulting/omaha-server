@@ -7,7 +7,7 @@
 [![Apache License, Version 2.0](https://img.shields.io/badge/license-Apache%202.0-red.svg)](https://github.com/Crystalnix/omaha-server/blob/master/LICENSE)
 [![](https://badge.imagelayers.io/crystalnix/omaha-server:master.svg)](https://imagelayers.io/?images=crystalnix/omaha-server:master 'Get your own badge on imagelayers.io')
 
-Google Omaha server implementation and Sparkle (mac) feed management. 
+Google Omaha server implementation and Sparkle (mac) feed management.
 
 Currently, our implementation is integrated into the updating processes of several organisations for products that require sophisticated update logic and advanced usage statistics. We provide additional support and further enhancement on a contract basis. For a case study and enquiries please refer [our website](http://crystalnix.com/works/google-omaha-server.html)
 
@@ -210,6 +210,7 @@ app:
 | AWS_ACCESS_KEY_ID         | AWS Access Key     |                            |
 | AWS_SECRET_ACCESS_KEY     | AWS Secret Key     |                            |
 | AWS_STORAGE_BUCKET_NAME   | S3 storage bucket  |                            |
+| AWS_S3_ACCELERATION       | S3 Transfer Accceleration | False                            |
 | RAVEN_DNS                 | Sentry url         |                            |
 | RAVEN_DSN_STACKTRACE      | Sentry url         | RAVEN_DNS                  |
 | REDIS_HOST                | Redis host         | 127.0.0.1                  |
@@ -231,7 +232,7 @@ app:
 
 - [uWSGI Options](http://uwsgi-docs.readthedocs.org/en/latest/Options.html) & [Environment variables](http://uwsgi-docs.readthedocs.org/en/latest/Configuration.html#environment-variables)
 - [Sentry](https://github.com/getsentry/sentry)
-- Sentry API key is stored on the way Sentry Organization page -> API Keys 
+- Sentry API key is stored on the way Sentry Organization page -> API Keys
 
 ### Initialize your ElasticBeanstalk application
 
