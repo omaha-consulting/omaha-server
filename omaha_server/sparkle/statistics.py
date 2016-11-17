@@ -37,14 +37,6 @@ def collect_statistics(request, appid, channel):
                tag=channel)
 
     userid_counting(deviceID, app, 'mac')
-    update_live_statistics(deviceID, appid, version)
-
-
-def update_live_statistics(userid, appid, version, now=None):
-    userid = get_id(userid)
-    mark = partial(mark_event, now=now, track_hourly=True)
-    mark('online:{}:{}'.format(appid, version), userid)
-    mark('online:{}:{}:{}'.format(appid, 'mac', version), userid)
 
 
 def userid_counting(userid, app, platform, now=None):
@@ -69,6 +61,6 @@ def add_app_statistics(userid, platform, app, now=None):
         mark('request:%s' % appid, userid)
         mark('request:{}:{}'.format(appid, platform), userid)
 
-    mark('request:{}:{}'.format(appid, version), userid)
+    mark('request:{}:{}'.format(appid, version), userid, track_hourly=True)
     mark('request:{}:{}'.format(appid, channel), userid)
-    mark('request:{}:{}:{}'.format(appid, platform, version), userid)
+    mark('request:{}:{}:{}'.format(appid, platform, version), userid, track_hourly=True)

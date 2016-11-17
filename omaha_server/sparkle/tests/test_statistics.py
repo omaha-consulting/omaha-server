@@ -27,8 +27,7 @@ from bitmapist import DayEvents, HourEvents
 from freezegun import freeze_time
 
 from omaha.utils import get_id
-from sparkle.statistics import update_live_statistics, collect_statistics
-from sparkle.statistics import add_app_statistics
+from sparkle.statistics import add_app_statistics, userid_counting
 
 redis = get_redis_connection('statistics')
 
@@ -121,47 +120,34 @@ class StatisticsTest(TestCase):
 
         appid = '{F97917B1-19AB-48C1-9802-CEF305B10804}'
         version = '0.0.0.1'
+        test_app = dict(appid=appid, version=version)
+        platform = 'mac'
 
-        request_version_events = HourEvents('online:{}:{}'.format(appid, version))
-        request_platform_version_events = HourEvents('online:{}:{}:{}'.format(appid, 'mac', version))
+        request_version_events = HourEvents('request:{}:{}'.format(appid, version))
+        request_platform_version_events = HourEvents('request:{}:{}:{}'.format(appid, 'mac', version))
 
         self.assertFalse(user1_id in request_version_events)
         self.assertEqual(len(request_version_events), 0)
         self.assertFalse(user1_id in request_platform_version_events)
         self.assertEqual(len(request_platform_version_events), 0)
 
-        update_live_statistics(userid1, appid, version)
+        userid_counting(userid1, test_app, platform)
 
         self.assertTrue(user1_id in request_version_events)
         self.assertEqual(len(request_version_events), 1)
         self.assertTrue(user1_id in request_platform_version_events)
         self.assertEqual(len(request_platform_version_events), 1)
 
-        update_live_statistics(userid1, appid, version)
+        userid_counting(userid1, test_app, platform)
 
         self.assertTrue(user1_id in request_version_events)
         self.assertEqual(len(request_version_events), 1)
         self.assertTrue(user1_id in request_platform_version_events)
         self.assertEqual(len(request_platform_version_events), 1)
 
-        update_live_statistics(userid2, appid, version)
+        userid_counting(userid2, test_app, platform)
 
         self.assertTrue(user2_id in request_version_events)
         self.assertEqual(len(request_version_events), 2)
         self.assertTrue(user2_id in request_platform_version_events)
         self.assertEqual(len(request_platform_version_events), 2)
-
-    @mock.patch('sparkle.statistics.update_live_statistics')
-    def test_collect_statistics(self, mock_update_live_statistics):
-        app_id = '00000000-0000-0000-0000-000000000001'
-        app_name = "Sparrow"
-        channel = "test"
-        version = "0.0.0.1"
-        deviceID = "A37152BF-A3CB-5FEC-8230-FACF43BDCDDD"
-        request = RequestFactory().get('/sparkle/%s/%s/appcast.xml?appVersionShort=%s&deviceID=%s' %
-                                       (app_name, channel, version, deviceID))
-
-        collect_statistics(request, app_id, channel)
-
-        mock_update_live_statistics.assert_called_with(deviceID, app_id, version)
-
