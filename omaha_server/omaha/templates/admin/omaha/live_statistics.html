@@ -51,9 +51,9 @@
             format: 'yyyy-MM-dd hh:mm:00',
             pickSeconds: false,
             startDate: function () {
-                var d = new Date();
-                d.setDate(d.getDate() - 7);
-                return d;
+                var d = moment();
+                d.subtract(6, 'M');
+                return new Date(d);
             }(),
             endDate: new Date()
         });

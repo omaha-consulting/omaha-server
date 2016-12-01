@@ -1,4 +1,5 @@
 var macChartData, macChart, winChartData, winChart;
+var daily = false;
 
 function applyRange() {
     var app_name = document.getElementById('app_name').dataset.name;
@@ -6,7 +7,7 @@ function applyRange() {
     var $end = $("#range-end input");
     var start = moment($start.val(), 'YYYY-MM-DD HH:mm:ss', true);
     var end = moment($end.val(), 'YYYY-MM-DD HH:mm:ss', true);
-
+    daily = start < moment().add(-7, 'd')
     if (start > end){
         var tmp = start;
         start = end;
@@ -79,15 +80,22 @@ function makePlatformGraph(chartName, chartDataName, data, platform){
                 .useInteractiveGuideline(true)
                 .showControls(false);
         chart.interactiveLayer.tooltip.headerFormatter(function(d) {
-            var top_limit = moment(d, 'MMMM DD hh:mm a').add(1, 'h');
-            return d + ' - ' + top_limit.format('hh:mm A');
+            var top_limit, res;
+            if (daily) {
+                top_limit = moment(d, 'MMMM DD hh:mm a').add(1, 'd');
+                res = d.substr(0,6) + ' - ' + top_limit.format('MMM DD')
+            } else{
+                top_limit = moment(d, 'MMMM DD hh:mm a').add(1, 'h');
+                res = d + ' - ' + top_limit.format('hh:mm A');
+            }
+            return res;
         });
         chart.xAxis.showMaxMin(false)
             .tickValues(hours.filter(function(d, i){
                 return !(i % tickSize);
             }))
             .tickFormat(function (d) {
-                return d3.utcFormat('%b %d %I:%M %p')(new Date(d));
+                return daily ? d3.utcFormat('%b %d')(new Date(d)) : d3.utcFormat('%b %d %I:%M %p')(new Date(d));
             });
 
         chart.duration(1000);
@@ -103,10 +111,8 @@ function makePlatformGraph(chartName, chartDataName, data, platform){
 }
 
 function fillForm(data) {
-    console.log(data);
     if (Object.keys(data.win).length != 0) {
         data = data.win;
-        console.log(data);
     } else if ((Object.keys(data.mac).length != 0)) {
         data = data.mac;
     } else {
@@ -114,7 +120,6 @@ function fillForm(data) {
     }
     var start = data[Object.keys(data)[0]][0][0];
     var end = data[Object.keys(data)[0]].slice(-1)[0][0];
-    console.log(start);
     $("#range-end input").val(moment(end).utc().format('YYYY-MM-DD HH:mm:00'));
     $("#range-start input").val(moment(start).utc().format('YYYY-MM-DD HH:mm:00'));
 }
