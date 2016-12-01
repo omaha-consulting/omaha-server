@@ -300,7 +300,7 @@ class StatisticsTest(TestCase):
         self.assertEqual(app.version, None)
         self.assertEqual(app.nextversion, Request._meta.get_field_by_name('version')[0].to_python('13.0.782.112'))
         self.assertEqual(app.lang, 'en')
-        self.assertEqual(app.tag, None)
+        self.assertEqual(app.tag, 'stable')
         self.assertEqual(app.installage, 6)
         self.assertEqual(app.appid, '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}')
 
@@ -367,7 +367,7 @@ class StatisticsTest(TestCase):
         self.assertEqual(app_req.version, None)
         self.assertEqual(app_req.nextversion, Request._meta.get_field_by_name('version')[0].to_python('13.0.782.112'))
         self.assertEqual(app_req.lang, 'en')
-        self.assertEqual(app_req.tag, None)
+        self.assertEqual(app_req.tag, 'stable')
         self.assertEqual(app_req.installage, 6)
         self.assertEqual(app_req.appid, '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}')
         self.assertEqual(app_req.request, req)
