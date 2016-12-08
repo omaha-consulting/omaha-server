@@ -124,8 +124,8 @@
             <xs:attribute name="state_cancelled" use="optional" type="xs:integer"/>
             <xs:attribute name="time_since_update_available_ms" use="optional" type="xs:integer"/>
             <xs:attribute name="time_since_download_start_ms" use="optional" type="xs:integer"/>
-            <xs:attribute name="nextversion" use="optional" type="xs:integer"/>
-            <xs:attribute name="previousversion" use="optional" type="xs:integer"/>
+            <xs:attribute name="nextversion" use="optional" type="xs:string"/>
+            <xs:attribute name="previousversion" use="optional" type="xs:string"/>
             <xs:attribute name="url" use="optional" type="xs:string"/>
             <xs:attribute name="is_bundled" use="optional" type="xs:integer"/>
         </xs:complexType>
