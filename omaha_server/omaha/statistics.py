@@ -281,6 +281,7 @@ def parse_apps(apps, request):
         kwargs = get_kwargs_for_model(AppRequest, app, exclude=['request', 'version', 'nextversion', 'id'])
         kwargs['version'] = app.get('version') or None
         kwargs['nextversion'] = app.get('nextversion') or None
+        kwargs['tag'] = parser.get_channel(app)
         app_req = AppRequest.objects.create(request=request, **kwargs)
         event_list = parse_events(events)
         app_req.events.add(*event_list)
