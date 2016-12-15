@@ -25,7 +25,7 @@ import os
 
 from django.db import models
 from django.dispatch import receiver
-from django.db.models.signals import pre_delete
+from django.db.models.signals import pre_delete,pre_save
 
 from omaha.models import BaseModel, Application, Channel
 from sparkle.managers import VersionManager
@@ -75,6 +75,18 @@ class SparkleVersion(BaseModel):
     @property
     def size(self):
         return self.file_size
+
+
+@receiver(pre_save, sender=SparkleVersion)
+def pre_sparkle_save(sender, instance, *args, **kwargs):
+    if instance.pk:
+        old = sender.objects.get(pk=instance.pk)
+        if old.file == instance.file:
+            return
+        else:
+            old.file.delete(save=False)
+            old.file_size = 0
+
 
 @receiver(pre_delete, sender=SparkleVersion)
 def pre_version_delete(sender, instance, **kwargs):

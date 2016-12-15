@@ -320,6 +320,9 @@ def pre_version_save(sender, instance, *args, **kwargs):
         old = sender.objects.get(pk=instance.pk)
         if old.file == instance.file:
             return
+        else:
+            old.file.delete(save=False)
+            old.file_size = 0
     sha1 = hashlib.sha1()
     for chunk in instance.file.chunks():
         sha1.update(chunk)
