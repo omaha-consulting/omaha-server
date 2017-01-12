@@ -21,7 +21,7 @@ the License.
 from django.conf import settings
 from django.conf.urls import url
 
-from omaha.views import UpdateView
+from omaha.views import UpdateView, UsageStatsView
 from omaha.views_admin import (
     StatisticsView,
     StatisticsDetailView,
@@ -37,6 +37,7 @@ from omaha.views_admin import (
 
 urlpatterns = [
     url(r'^service/update2$', UpdateView.as_view(), name='update'),
+    url(r'^tbproxy/usagestats', UsageStatsView.as_view(), name='usage_stats'),
 ]
 
 
