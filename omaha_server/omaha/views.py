@@ -23,15 +23,19 @@ import logging
 from django.views.generic import View
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse
+from django.conf import settings
 
 from django_select2.views import AutoResponseView
 from lxml.etree import XMLSyntaxError
+from raven import Client
 
 from omaha.builder import build_response
 from omaha_server.utils import get_client_ip
 from omaha.models import Request
 
 logger = logging.getLogger(__name__)
+client = Client(getattr(settings, 'RAVEN_DSN_STACKTRACE', None), name=getattr(settings, 'HOST_NAME', None),
+                release=getattr(settings, 'APP_VERSION', None))
 
 
 class UpdateView(View):
@@ -79,3 +83,16 @@ class FilterByUserIDResponseView(AutoResponseView):
                 ],
             'more': False
         })
+
+
+class UsageStatsView(View):
+    http_method_names = ['post', 'get']
+
+    @csrf_exempt
+    def dispatch(self, *args, **kwargs):
+        return super(UsageStatsView, self).dispatch(*args, **kwargs)
+
+    def post(self, request):
+        client.captureMessage('Omaha Clients Usage Statistics: {0}'.format(request.body), tags=request.GET,
+                              data={'level': 20, 'logger': 'usagestats'})
+        return HttpResponse('ok')
