@@ -46,9 +46,15 @@ class AttachedFileFilter(BooleanFilter):
     parameter_name = 'attached_file'
 
 
+def short_url(obj):
+    limit = 60
+    res = obj.page_url
+    return res if len(res) < limit else res[:limit] + '...'
+short_url.short_description = 'Page URL'
+
 @admin.register(Feedback)
 class FeedbackAdmin(admin.ModelAdmin):
-    list_display = ('id', 'description', 'email', 'page_url', 'created_at', 'ip',)
+    list_display = ('id', 'description', 'email', short_url, 'created_at', 'ip',)
     list_display_links = ('id', 'description')
     list_filter = (('id', TextInputFilter,), ScreenshotFilter, BlackboxFilter, SystemLogsFilter, AttachedFileFilter, 'created_at',)
     form = FeedbackForm
@@ -61,7 +67,7 @@ class FeedbackAdmin(admin.ModelAdmin):
 
 @admin.register(FeedbackDescription)
 class FeedbackDescriptionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'description', 'email', 'page_url', 'created_at', 'ip',)
+    list_display = ('id', 'description', 'email', short_url, 'created_at', 'ip',)
     list_display_links = ('id', 'description')
     list_filter = (('id', TextInputFilter,), ScreenshotFilter, BlackboxFilter, SystemLogsFilter, AttachedFileFilter, 'created_at')
     form = FeedbackForm
