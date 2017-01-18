@@ -96,9 +96,11 @@ def configure_nginx():
     splunk_port = os.environ.get('SPLUNK_PORT', '')
     if splunk_host and splunk_port.isdigit():
         sh("sed -i 's/access_log.*;/access_log syslog:server=%s:%s main;/g' /etc/nginx/nginx.conf" % (splunk_host, splunk_port))
+        sh("sed -i 's/access_log.*;/access_log syslog:server=%s:%s body;/g' /etc/nginx/sites-enabled/nginx-app.conf" % (splunk_host, splunk_port))
         sh("sed -i 's/error_log.*;/error_log syslog:server=%s:%s;/g' /etc/nginx/nginx.conf" % (splunk_host, splunk_port))
     else:
         sh("sed -i 's#access_log.*;#access_log /var/log/nginx/access.log main;#g' /etc/nginx/nginx.conf")
+        sh("sed -i 's#access_log.*;#access_log /var/log/nginx/access.log body;#g' /etc/nginx/sites-enabled/nginx-app.conf")
         sh("sed -i 's#error_log.*;#error_log /var/log/nginx/error.log;#g' /etc/nginx/nginx.conf")
     server_name = os.environ.get('HOST_NAME', '_')
     server_name = server_name if server_name != '*' else '_'
