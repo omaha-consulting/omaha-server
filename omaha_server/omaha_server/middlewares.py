@@ -81,3 +81,18 @@ class CUP2Middleware(object):
         signature = self.sk[keyid].sign(message, hashfunc=sha256, sigencode=sigencode_der, k=int(k))
 
         response['ETag'] = '%s:%s' % (signature.encode('hex'), request_hash.encode('hex'))
+
+
+class LoggingMiddleware(object):
+    def process_request(self, request):
+        if 'live' in request.path:
+            logging.info('process_request')
+
+    def process_view(self, request, view_func, view_args, view_kwargs):
+        if 'live' in request.path:
+            logging.info('process_view')
+
+    def process_response(self, request, response):
+        if 'live' in request.path:
+            logging.info('process_response')
+        return response
