@@ -23,6 +23,7 @@ from builtins import range, bytes
 
 import random
 import uuid
+from optparse import make_option
 
 from django.core.management.base import BaseCommand
 from django.utils import timezone
@@ -33,33 +34,40 @@ from omaha.parser import parse_request
 from omaha.statistics import collect_statistics
 from omaha.models import Version
 
-event_install = b"""<?xml version="1.0" encoding="UTF-8"?>
-<request protocol="3.0" version="1.3.23.0" ismachine="1" sessionid="{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}" userid="{%s}" installsource="otherinstallcmd" testsource="ossdev" requestid="{164FC0EC-8EF7-42cb-A49D-474E20E8D352}">
-  <os platform="win" version="6.1" sp="" arch="x64"/>
-  <app appid="%s" version="" nextversion="%s" lang="en" brand="" client="" installage="6">
-    <event eventtype="9" eventresult="1" errorcode="0" extracode1="0"/>
-    <event eventtype="5" eventresult="1" errorcode="0" extracode1="0"/>
-    <event eventtype="2" eventresult="1" errorcode="0" extracode1="0"/>
-  </app>
-</request>
-"""
+event_updatecheck = b"""<?xml version="1.0" encoding="UTF-8"?>
+<request protocol="3.0"
+         version="1.3.23.0"
+         ismachine="0"
+         sessionid="{5FAD27D4-6BFA-4daa-A1B3-5A1F821FEE0F}"
+         userid="{%s}"
+         installsource="scheduler"
+         testsource="ossdev"
+         requestid="{C8F6EDF3-B623-4ee6-B2DA-1D08A0B4C665}">
+    <os platform="win" version="6.1" sp="" arch="x64"/>
+    <app appid="%s" version="%s" nextversion="" lang="en" brand="GGLS"
+         client="someclientid" installage="39">
+        <updatecheck/>
+        <ping r="1"/>
+    </app>
+</request>"""
 
 def generate_events(app_id, **options):
     versions = Version.objects.filter_by_enabled(app__id=app_id)
     versions = map(lambda x: x.version, versions)
+    n_hours = options['n_hours']
 
     def generate_fake_hour():
         for version in versions:
             for i in range(random.randint(0, 20)):
                 id = uuid.UUID(int=i)
-                request = event_install % (id, app_id, version)
+                request = event_updatecheck % (id, app_id, version)
                 request = bytes(request, 'utf8')
                 request = parse_request(request)
                 collect_statistics(request)
 
-    start = timezone.now() - timezone.timedelta(days=1)
+    start = timezone.now() - timezone.timedelta(hours=n_hours)
 
-    for hourdelta in range(1, 25):
+    for hourdelta in range(0, n_hours + 1):
         if hourdelta % 10 == 0:
             print('=> ', hourdelta)
         with freeze_time(start + timezone.timedelta(hours=hourdelta)):
@@ -69,6 +77,13 @@ def generate_events(app_id, **options):
 class Command(BaseCommand):
     args = '<app_id>'
     help = 'A command for generating fake live statistics'
+    option_list = BaseCommand.option_list + (
+        make_option('--hours',
+                    dest='n_hours',
+                    default='24',
+                    type=int,
+                    help='For how many hours will be generated fake data(default: 24)'),
+    )
 
     def handle(self, app_id, *args, **options):
         generate_events(app_id, **options)

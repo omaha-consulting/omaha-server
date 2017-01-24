@@ -322,15 +322,14 @@ class LiveStatistics(APITestCase):
     maxDiff = None
 
     def _generate_fake_statistics(self):
-        # now = datetime(2016, 2, 13)
         date = datetime(2016, 2, 13, 0)
         for i in range(self.n_hours):
             for id in range(0, i):
-                mark_event('online:app:win:2.0.0.0', id, now=date, track_hourly=True)
-                mark_event('online:app:mac:4.0.0.1', id, now=date, track_hourly=True)
+                mark_event('request:app:win:2.0.0.0', id, now=date, track_hourly=True)
+                mark_event('request:app:mac:4.0.0.1', id, now=date, track_hourly=True)
             for id in range(i, self.n_hours):
-                mark_event('online:app:win:1.0.0.0', id, now=date, track_hourly=True)
-                mark_event('online:app:mac:3.0.0.0', id, now=date, track_hourly=True)
+                mark_event('request:app:win:1.0.0.0', id, now=date, track_hourly=True)
+                mark_event('request:app:mac:3.0.0.0', id, now=date, track_hourly=True)
             date += timedelta(hours=1)
 
     def setUp(self):
@@ -384,9 +383,13 @@ class LiveStatistics(APITestCase):
                                             for (i, hour)in enumerate(hours)])]
         self.mac_statistics.append(('4.0.0.1', [[hour.strftime("%Y-%m-%dT%H:%M:%S.%fZ"), i]
                                                 for (i, hour)in enumerate(hours)]))
-
-        self.data = dict(data=dict(win=dict(self.win_statistics),
-                                   mac=dict(self.mac_statistics)))
+        self.data = {}
+        self.data['hourly'] = dict(data=dict(win=dict(self.win_statistics),
+                                             mac=dict(self.mac_statistics)))
+        self.data['daily'] = dict(data=dict(win={'1.0.0.0': [['2016-02-13T00:00:00.000000Z', 36], ['2016-02-14T00:00:00.000000Z', 12]],
+                                                 '2.0.0.0': [['2016-02-13T00:00:00.000000Z', 23], ['2016-02-14T00:00:00.000000Z', 35]]},
+                                            mac={'4.0.0.1': [['2016-02-13T00:00:00.000000Z', 23], ['2016-02-14T00:00:00.000000Z', 35]],
+                                                 '3.0.0.0': [['2016-02-13T00:00:00.000000Z', 36], ['2016-02-14T00:00:00.000000Z', 12]]}))
 
     @is_private()
     def test_unauthorized(self):
@@ -394,15 +397,27 @@ class LiveStatistics(APITestCase):
         response = client.get(reverse('api-statistics-live', args=('app',)), format='json')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
+    @freeze_time("2016-02-16")
     @is_private()
-    def test_list(self):
+    def test_hourly_list(self):
         start = datetime(2016, 2, 13, 0)
         end = start + timedelta(hours=self.n_hours-1)
         response = self.client.get(reverse('api-statistics-live', args=('app',)),
                                    dict(start=start.isoformat(), end=end.isoformat()),
                                    format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertDictEqual(StatisticsMonthsSerializer(self.data).data, response.data)
+        self.assertDictEqual(StatisticsMonthsSerializer(self.data['hourly']).data, response.data)
+
+    @freeze_time("2016-03-16")
+    @is_private()
+    def test_daily_list(self):
+        start = datetime(2016, 2, 13, 0)
+        end = start + timedelta(hours=self.n_hours-1)
+        response = self.client.get(reverse('api-statistics-live', args=('app',)),
+                                   dict(start=start.isoformat(), end=end.isoformat()),
+                                   format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertDictEqual(StatisticsMonthsSerializer(self.data['daily']).data, response.data)
 
 
 class StatisticsMonthsMixin(object):

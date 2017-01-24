@@ -8,7 +8,7 @@ jsonfield==1.0.3
 boto==2.40.0
 django-storages==1.4.1
 django-absolute==0.3
-django-versionfield3==0.1.1
+django-versionfield3==0.1.6
 raven==5.17.0
 django-redis==4.4.3
 bitmapist==3.97
