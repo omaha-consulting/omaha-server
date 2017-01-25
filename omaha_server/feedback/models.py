@@ -85,8 +85,12 @@ class Feedback(BaseModel):
          return self.screenshot_size + self.blackbox_size + self.system_logs_size + self.attached_file_size
 
 
-@receiver(pre_save, sender=Feedback)
-def pre_feedback_save(sender, instance, *args, **kwargs):
+class FeedbackDescription(Feedback):
+    class Meta:
+        proxy = True
+
+
+def pre_feedback_save(sender, instance, **kwargs):
     if instance.pk:
         old = sender.objects.get(pk=instance.pk)
         if old.screenshot != instance.screenshot:
@@ -103,7 +107,6 @@ def pre_feedback_save(sender, instance, *args, **kwargs):
             old.attached_file_size = 0
 
 
-@receiver(pre_delete, sender=Feedback)
 def pre_feedback_delete(sender, instance, **kwargs):
     file_fields = [instance.screenshot, instance.blackbox, instance.system_logs, instance.attached_file]
     for field in file_fields:
@@ -112,6 +115,17 @@ def pre_feedback_delete(sender, instance, **kwargs):
             storage.delete(name)
 
 
-class FeedbackDescription(Feedback):
-    class Meta:
-        proxy = True
+def get_subclasses(cls):
+    result = [cls]
+    classes_to_inspect = [cls]
+    while classes_to_inspect:
+        class_to_inspect = classes_to_inspect.pop()
+        for subclass in class_to_inspect.__subclasses__():
+            if subclass not in result:
+                result.append(subclass)
+                classes_to_inspect.append(subclass)
+    return result
+
+for subclass in get_subclasses(Feedback):
+    pre_delete.connect(pre_feedback_delete, subclass)
+    pre_save.connect(pre_feedback_save, subclass)
