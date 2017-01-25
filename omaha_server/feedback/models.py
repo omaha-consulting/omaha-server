@@ -22,7 +22,7 @@ import os
 import uuid
 
 from django.db import models
-from django.db.models.signals import pre_delete
+from django.db.models.signals import pre_delete, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 
@@ -83,6 +83,25 @@ class Feedback(BaseModel):
     @property
     def size(self):
          return self.screenshot_size + self.blackbox_size + self.system_logs_size + self.attached_file_size
+
+
+@receiver(pre_save, sender=Feedback)
+def pre_feedback_save(sender, instance, *args, **kwargs):
+    if instance.pk:
+        old = sender.objects.get(pk=instance.pk)
+        if old.screenshot != instance.screenshot:
+            old.screenshot.delete(save=False)
+            old.screenshot_size = 0
+        if old.blackbox != instance.blackbox:
+            old.blackbox.delete(save=False)
+            old.blackbox_size = 0
+        if old.system_logs != instance.system_logs:
+            old.system_logs.delete(save=False)
+            old.system_logs_size = 0
+        if old.attached_file != instance.attached_file:
+            old.attached_file.delete(save=False)
+            old.attached_file_size = 0
+
 
 @receiver(pre_delete, sender=Feedback)
 def pre_feedback_delete(sender, instance, **kwargs):
