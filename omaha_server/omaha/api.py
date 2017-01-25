@@ -236,6 +236,8 @@ class StatisticsVersionsLiveView(APIView):
             raise Http404
 
     def get(self, request, app_name, format=None):
+        import logging
+        logging.info('Starting working in view')
         app = self.get_object(app_name)
 
         now = timezone.now()
@@ -246,6 +248,7 @@ class StatisticsVersionsLiveView(APIView):
         start = dates.validated_data.get('start', end - datetime.timedelta(hours=24))
 
         data = get_users_live_versions(app.id, start, end, tz=request.session.get('django_timezone', 'UTC'))
+        logging.info('Getting data is finished')
         serializer = StatisticsMonthsSerializer(dict(data=dict(data)))
         return Response(serializer.data)
 

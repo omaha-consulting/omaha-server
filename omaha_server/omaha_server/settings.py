@@ -134,6 +134,7 @@ if IS_PRIVATE:
         'django.contrib.auth.middleware.AuthenticationMiddleware',
         'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
         'django.contrib.messages.middleware.MessageMiddleware',
+        'omaha_server.middlewares.LoggingMiddleware',
         'omaha_server.middlewares.TimezoneMiddleware',
         'omaha_server.middlewares.CUP2Middleware',
     ) + MIDDLEWARE_CLASSES

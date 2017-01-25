@@ -206,9 +206,11 @@ def get_daily_data_by_platform(app_id, end, n_days, versions, platform):
 
 
 def get_users_live_versions(app_id, start, end, tz='UTC'):
+    import logging
+    logging.info("Getting active versions from DB")
     win_versions = [str(v.version) for v in Version.objects.filter_by_enabled(app__id=app_id)]
     mac_versions = [str(v.short_version) for v in SparkleVersion.objects.filter_by_enabled(app__id=app_id)]
-
+    logging.info("Getting statistics from Redis")
     if start < timezone.now() - timedelta(days=7):
         n_days = (end-start).days
         win_data = get_daily_data_by_platform(app_id, end, n_days, win_versions, 'win')
