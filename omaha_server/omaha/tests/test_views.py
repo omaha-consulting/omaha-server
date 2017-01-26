@@ -24,11 +24,13 @@ from django.test import TestCase
 from django.test.client import Client
 from django.core.urlresolvers import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.db.models import signals
 
 from xmlunittest import XmlTestMixin
 from freezegun import freeze_time
 from mock import patch
 from bitmapist import DayEvents
+import factory
 
 from omaha.tests import fixtures
 from omaha.tests.utils import temporary_media_root
@@ -37,7 +39,7 @@ from omaha.factories import ApplicationFactory, ChannelFactory, PlatformFactory,
 from omaha.models import Action, Request, EVENT_DICT_CHOICES, Data, NAME_DATA_DICT_CHOICES
 from omaha.utils import redis, get_id
 
-
+@factory.django.mute_signals(signals.post_save)
 class UpdateViewTest(TestCase, XmlTestMixin):
     def setUp(self):
         self.client = Client()

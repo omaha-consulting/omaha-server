@@ -28,7 +28,7 @@ import base64
 from django.db import models
 from django.conf import settings
 from django.dispatch import receiver
-from django.db.models.signals import pre_save, pre_delete
+from django.db.models.signals import pre_save, pre_delete, post_save
 from django.utils.timezone import now as datetime_now
 
 from omaha.managers import VersionManager
@@ -327,6 +327,13 @@ def pre_version_save(sender, instance, *args, **kwargs):
     for chunk in instance.file.chunks():
         sha1.update(chunk)
     instance.file_hash = base64.b64encode(sha1.digest()).decode()
+
+
+@receiver(post_save, sender=Version)
+def post_version_save(sender, instance, created, **kwargs):
+    if created:
+        instance.actions.create(event=1)
+        instance.actions.create(event=3)
 
 
 @receiver(pre_delete, sender=Version)

@@ -105,6 +105,15 @@ class VersionModelTest(test.TestCase):
         self.assertEqual(version.file.size, 0)
         self.assertEqual(version.file_hash, '2jmj7l5rSw0yVb/vlWAYkK/YBwk=')
 
+    def test_post_save_callback(self):
+        version = VersionFactory.create(file=SimpleUploadedFile('./chrome_installer.exe', b''))
+        install_actions = Action.objects.filter(version=version, event=1)
+        self.assertEqual(len(install_actions), 1)
+        self.assertEqual(install_actions.first().event, 1)
+        update_actions = Action.objects.filter(version=version, event=1)
+        self.assertEqual(len(update_actions), 1)
+        self.assertEqual(update_actions.first().event, 1)
+
 
 class ActionModelTest(test.TestCase):
     @temporary_media_root()
