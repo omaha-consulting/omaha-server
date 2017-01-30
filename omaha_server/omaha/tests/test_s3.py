@@ -22,7 +22,7 @@ class BaseS3Test(object):
     file_fields = None
 
     @moto.mock_s3
-    def test_model_save_delete(self):
+    def test_model_delete(self):
         conn = boto.connect_s3()
         conn.create_bucket('test')
         obj = self.factory()
@@ -35,6 +35,24 @@ class BaseS3Test(object):
         obj.delete()
         keys = conn.get_bucket('test').get_all_keys()
         self.assertFalse(keys)
+
+    @moto.mock_s3
+    def test_model_update(self):
+        conn = boto.connect_s3()
+        conn.create_bucket('test')
+        obj = self.factory()
+        new_obj = self.factory()
+
+        old_keys = conn.get_bucket('test').get_all_keys()
+        old_keys = [key.name for key in old_keys]
+
+        for field in self.file_fields:
+            self.assertIn(getattr(obj, field).name, old_keys)
+            setattr(obj, field, getattr(new_obj, field))
+            obj.save()
+
+        new_keys = conn.get_bucket('test').get_all_keys()
+        self.assertFalse(set(old_keys) & set(new_keys))
 
     @moto.mock_s3
     def test_bulk_delete(self):
