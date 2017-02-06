@@ -22,7 +22,7 @@ import os
 import uuid
 
 from django.db import models
-from django.db.models.signals import post_save, pre_delete
+from django.db.models.signals import post_save, pre_delete, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 
@@ -86,6 +86,7 @@ class CrashDescription(BaseModel):
     summary = models.CharField(max_length=500)
     description = models.TextField(null=True, blank=True)
 
+
 def symbols_upload_to(obj, filename):
     sym_filename = os.path.splitext(os.path.basename(obj.debug_file))[0]
     sym_filename = '%s.sym' % sym_filename
@@ -110,6 +111,21 @@ class Symbols(BaseModel):
     def size(self):
          return self.file_size
 
+
+@receiver(pre_save, sender=Crash)
+def pre_crash_save(sender, instance, *args, **kwargs):
+    if instance.pk:
+        old = sender.objects.get(pk=instance.pk)
+        if old.upload_file_minidump != instance.upload_file_minidump:
+            old.upload_file_minidump.delete(save=False)
+            old.minidump_size = 0
+            old.archive.delete(save=False)
+            old.archive_size = 0
+        elif old.archive != instance.archive:
+            old.archive.delete(save=False)
+            old.archive_size = 0
+
+
 @receiver(post_save, sender=Crash)
 def crash_post_save(sender, instance, created, *args, **kwargs):
     if created and instance.upload_file_minidump:
@@ -123,6 +139,17 @@ def pre_crash_delete(sender, instance, **kwargs):
         storage, name = field.storage, field.name
         if name:
             storage.delete(name)
+
+
+@receiver(pre_save, sender=Symbols)
+def pre_symbol_save(sender, instance, *args, **kwargs):
+    if instance.pk:
+        old = sender.objects.get(pk=instance.pk)
+        if old.file == instance.file:
+            return
+        else:
+            old.file.delete(save=False)
+            old.file_size = 0
 
 
 @receiver(pre_delete, sender=Symbols)

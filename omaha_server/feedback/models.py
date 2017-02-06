@@ -22,7 +22,7 @@ import os
 import uuid
 
 from django.db import models
-from django.db.models.signals import pre_delete
+from django.db.models.signals import pre_delete, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 
@@ -84,7 +84,29 @@ class Feedback(BaseModel):
     def size(self):
          return self.screenshot_size + self.blackbox_size + self.system_logs_size + self.attached_file_size
 
-@receiver(pre_delete, sender=Feedback)
+
+class FeedbackDescription(Feedback):
+    class Meta:
+        proxy = True
+
+
+def pre_feedback_save(sender, instance, **kwargs):
+    if instance.pk:
+        old = sender.objects.get(pk=instance.pk)
+        if old.screenshot != instance.screenshot:
+            old.screenshot.delete(save=False)
+            old.screenshot_size = 0
+        if old.blackbox != instance.blackbox:
+            old.blackbox.delete(save=False)
+            old.blackbox_size = 0
+        if old.system_logs != instance.system_logs:
+            old.system_logs.delete(save=False)
+            old.system_logs_size = 0
+        if old.attached_file != instance.attached_file:
+            old.attached_file.delete(save=False)
+            old.attached_file_size = 0
+
+
 def pre_feedback_delete(sender, instance, **kwargs):
     file_fields = [instance.screenshot, instance.blackbox, instance.system_logs, instance.attached_file]
     for field in file_fields:
@@ -93,6 +115,17 @@ def pre_feedback_delete(sender, instance, **kwargs):
             storage.delete(name)
 
 
-class FeedbackDescription(Feedback):
-    class Meta:
-        proxy = True
+def get_subclasses(cls):
+    result = [cls]
+    classes_to_inspect = [cls]
+    while classes_to_inspect:
+        class_to_inspect = classes_to_inspect.pop()
+        for subclass in class_to_inspect.__subclasses__():
+            if subclass not in result:
+                result.append(subclass)
+                classes_to_inspect.append(subclass)
+    return result
+
+for subclass in get_subclasses(Feedback):
+    pre_delete.connect(pre_feedback_delete, subclass)
+    pre_save.connect(pre_feedback_save, subclass)
