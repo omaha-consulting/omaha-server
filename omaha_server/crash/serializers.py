@@ -34,7 +34,7 @@ class SymbolsSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Symbols
-        fields = ('id', 'file', 'debug_id', 'debug_file',
+        fields = ('id', 'file', 'file_size', 'debug_id', 'debug_file',
                   'created', 'modified')
         read_only_fields = ('created', 'modified')
         validators = [
@@ -54,6 +54,9 @@ class SymbolsSerializer(serializers.HyperlinkedModelSerializer):
                 validated_data.update(meta)
             except:
                 raise serializers.ValidationError(u"The file contains invalid data.")
+        if not validated_data.get('file_size'):
+            file = validated_data['file']
+            validated_data['file_size'] = file.size
         return super(SymbolsSerializer, self).create(validated_data)
 
 

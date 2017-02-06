@@ -47,6 +47,7 @@ class SymbolsSerializerTest(TestCase):
                                   debug_id='C1C0FA629EAA4B4D9DD2ADE270A231CC1',
                                   debug_file='BreakpadTestApp.pdb',
                                   file=symbols.file.url,
+                                  file_size=symbols.file_size,
                                   created=symbols.created.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
                                   modified=symbols.modified.strftime('%Y-%m-%dT%H:%M:%S.%fZ'), ))
 
@@ -60,6 +61,7 @@ class SymbolsSerializerTest(TestCase):
         symbols_instance = symbols.save()
         self.assertEqual(symbols_instance.debug_id, 'C1C0FA629EAA4B4D9DD2ADE270A231CC1')
         self.assertEqual(symbols_instance.debug_file, 'BreakpadTestApp.pdb')
+        self.assertEqual(symbols_instance.file_size, 68149)
 
 
 class CrashSerializerTest(TestCase):
