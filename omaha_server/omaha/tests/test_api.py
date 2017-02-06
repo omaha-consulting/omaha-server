@@ -28,6 +28,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings
+from django.db.models import signals
 
 from lxml.builder import E
 from rest_framework import status
@@ -35,6 +36,7 @@ from rest_framework.test import APITestCase, APIClient
 from bitmapist import mark_event
 from freezegun import freeze_time
 import pytz
+import factory
 
 from omaha_server.utils import is_private
 from omaha.statistics import userid_counting, get_users_versions, get_channel_statistics
@@ -287,6 +289,7 @@ class VersionTest(BaseTest, APITestCase):
         self.assertTrue(version.is_enabled)
 
 
+@factory.django.mute_signals(signals.post_save)
 class ActionTest(BaseTest, APITestCase):
     url = 'action-list'
     url_detail = 'action-detail'
