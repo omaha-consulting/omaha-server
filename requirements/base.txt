@@ -2,7 +2,7 @@ six==1.10.0
 future==0.15.2
 django==1.9.6
 django-extensions==1.6.7
-django-suit==0.2.18
+django-suit==0.2.24
 django-suit-redactor==0.0.4
 jsonfield==1.0.3
 boto==2.40.0
