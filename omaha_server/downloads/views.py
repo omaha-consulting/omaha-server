@@ -55,7 +55,7 @@ class OmahaLatestVersionRedirectView(RedirectView):
         channel = self.kwargs['channel']
         platform = self.kwargs['platform']
         try:
-            version = self.model.objects.filter(app__name=app,
+            version = self.model.objects.filter_by_enabled(app__name=app,
                                                 channel__name=channel,
                                                 platform__name=platform).latest('version')
         except self.model.DoesNotExist:
@@ -71,8 +71,8 @@ class SparkleLatestVersionRedirectView(RedirectView):
         app = self.kwargs['app']
         channel = self.kwargs['channel']
         try:
-            version = self.model.objects.filter(app__name=app,
-                                                channel__name=channel).latest('created')
+            version = self.model.objects.filter_by_enabled(app__name=app,
+                                                           channel__name=channel).latest('created')
         except self.model.DoesNotExist:
             raise Http404
         return version.file.url
