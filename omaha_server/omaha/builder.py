@@ -92,6 +92,7 @@ def _get_version(partialupdate, app_id, platform, channel, version, date=None):
             qs = qs.filter(partialupdate__is_enabled=True,
                            partialupdate__start_date__lte=date,
                            partialupdate__end_date__gte=date)
+            critical_version = qs.filter(is_critical=True).order_by('version').cache().first()
             new_version = qs.cache().latest('version')
         except Version.DoesNotExist:
             return None
@@ -99,10 +100,12 @@ def _get_version(partialupdate, app_id, platform, channel, version, date=None):
         qs = qs.filter(Q(partialupdate__isnull=True)
                        | Q(partialupdate__is_enabled=False))
         try:
+            critical_version = qs.filter(is_critical=True).order_by('version').cache().first()
             new_version = qs.cache().latest('version')
         except:
             raise Version.DoesNotExist
-
+    if not is_new_user(version) and critical_version:
+        return critical_version
     return new_version
 
 
