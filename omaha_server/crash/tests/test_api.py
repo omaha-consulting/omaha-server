@@ -32,7 +32,8 @@ from crash.factories import SymbolsFactory, CrashFactory
 
 from omaha.tests.utils import temporary_media_root
 from omaha.tests.test_api import BaseTest
-from omaha_server.utils import is_private
+from omaha_server.utils import is_private, storage_with_spaces_instance
+
 
 
 BASE_DIR = os.path.dirname(__file__)
@@ -45,6 +46,12 @@ class SymbolsTest(BaseTest, APITestCase):
     url_detail = 'symbols-detail'
     factory = SymbolsFactory
     serializer = SymbolsSerializer
+
+    @is_private()
+    @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
+    def setUp(self):
+        storage_with_spaces_instance._setup()
+        super(SymbolsTest, self).setUp()
 
     @is_private()
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
