@@ -13,8 +13,9 @@ from crash.models import Crash, Symbols
 from feedback.models import Feedback
 from omaha.models import Version
 from sparkle.models import SparkleVersion
-
+from omaha_server.utils import storage_with_spaces_instance
 from omaha.limitation import bulk_delete
+
 
 class BaseS3Test(object):
     model = None
@@ -92,6 +93,10 @@ class SymbolsS3Test(BaseS3Test, TestCase):
     model = Symbols
     factory = SymbolsFactory
     file_fields = ['file']
+
+    def setUp(self):
+        storage_with_spaces_instance._setup()
+
 
 
 @override_settings(DEFAULT_FILE_STORAGE='storages.backends.s3boto.S3BotoStorage')
