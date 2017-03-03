@@ -30,7 +30,7 @@ from crash.factories import CrashFactory, SymbolsFactory
 from feedback.models import Feedback
 from feedback.factories import FeedbackFactory
 from omaha.dynamic_preferences_registry import global_preferences_manager as gpm
-from omaha_server.utils import is_private, storage_with_spaces_instance
+from omaha_server.utils import is_private
 from omaha.models import Version
 from omaha.factories import VersionFactory
 from omaha.tasks import (
@@ -243,7 +243,6 @@ class ManualCleanupTest(TestCase):
     @patch('logging.getLogger')
     @is_private()
     def test_symbols(self, mocked_get_logger):
-        storage_with_spaces_instance._setup()
         gpm['Feedback__limit_size'] = 1
         symbols_size = 100*1024*1023
         symbols = SymbolsFactory.create_batch(20, file_size=symbols_size)
