@@ -61,7 +61,7 @@ class CrashModelTest(test.TestCase):
         CELERY_ALWAYS_EAGER=False,
         CELERY_EAGER_PROPAGATES_EXCEPTIONS=False,
     )
-    def test_property(self):
+    def test_propertiy(self):
         app_id = '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}'
         user_id = '{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}'
         obj = Crash.objects.create(
@@ -103,7 +103,7 @@ class SymbolsModelTest(test.TestCase):
         self.assertTrue(obj)
 
     @temporary_media_root()
-    def test_property(self):
+    def test_propertiy(self):
         with open(SYM_FILE, 'rb') as f:
             obj = Symbols.objects.create(
                 debug_file='BreakpadTestApp.pdb',
@@ -121,7 +121,7 @@ class SymbolsModelTest(test.TestCase):
                 debug_id='C1C0FA629EAA4B4D9DD2ADE270A231CC1',
                 file=SimpleUploadedFile(f.name, f.read()),
             )
-        self.assertIn('symbols/BreakpadTestApp.pdb/C1C0FA629EAA4B4D9DD2ADE270A231CC1/BreakpadTestApp',
+        self.assertIn('symbols/BreakpadTestApp.pdb/C1C0FA629EAA4B4D9DD2ADE270A231CC1/BreakpadTestApp.sym',
                       obj.file.url)
 
         self.assertEqual(symbols_upload_to(obj, 'BreakpadTestApp.pdb'),
