@@ -1,7 +1,7 @@
 # coding: utf8
 
 from functools import wraps
-from django.core.files.storage import DefaultStorage
+import logging.handlers
 
 from django.conf import settings
 
@@ -74,10 +74,3 @@ def get_sentry_project_slug(domain, organization, project_id, api_key):
     projects = filter(lambda x: x['id'] == project_id, projects)
 
     return projects[0]['slug']
-
-
-class StorageWithSpaces(DefaultStorage):
-    def get_valid_name(self, name):
-        return name
-
-storage_with_spaces_instance = StorageWithSpaces()
