@@ -330,11 +330,6 @@ def pre_version_save(sender, instance, *args, **kwargs):
     instance.file_hash = base64.b64encode(sha1.digest()).decode()
 
 
-@receiver(post_save, sender=Version)
-def post_version_save(sender, instance, created, **kwargs):
-    if created:
-        instance.actions.create(event=1)
-        instance.actions.create(event=3)
 
 
 @receiver(pre_delete, sender=Version)
