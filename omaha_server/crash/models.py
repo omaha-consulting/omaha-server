@@ -30,6 +30,7 @@ from celery import signature
 from jsonfield import JSONField
 
 from omaha.models import BaseModel
+from omaha_server.utils import storage_with_spaces_instance
 from crash.managers import CrashManager, SymbolsManager
 
 
@@ -96,7 +97,7 @@ def symbols_upload_to(obj, filename):
 class Symbols(BaseModel):
     debug_id = models.CharField(verbose_name='Debug ID', max_length=255, db_index=True, null=True, blank=True)
     debug_file = models.CharField(verbose_name='Debug file name', max_length=140, null=True, blank=True)
-    file = models.FileField(upload_to=symbols_upload_to, null=True)
+    file = models.FileField(upload_to=symbols_upload_to, null=True, storage=storage_with_spaces_instance)
     file_size = models.PositiveIntegerField(null=True, blank=True)
 
     objects = SymbolsManager()
