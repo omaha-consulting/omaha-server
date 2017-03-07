@@ -85,7 +85,7 @@ class VersionSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Version
-        fields = ('id', 'is_enabled', 'app', 'platform', 'channel',
+        fields = ('id', 'is_enabled', 'is_critical', 'app', 'platform', 'channel',
                   'version', 'release_notes', 'file', 'file_hash', 'file_size',
                   'created', 'modified')
         read_only_fields = ('created', 'modified')
