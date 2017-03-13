@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.utils import timezone
 
 import pytz
+from omaha.dynamic_preferences_registry import global_preferences_manager as gpm
 from ecdsa import SigningKey
 from ecdsa.util import sigencode_der
 
@@ -18,7 +19,7 @@ class CUP2Exception(Exception):
 
 class TimezoneMiddleware(object):
     def process_request(self, request):
-        tzname = request.session.get('django_timezone')
+        tzname = gpm['Timezone__timezone']
         if tzname:
             timezone.activate(pytz.timezone(tzname))
         else:
