@@ -38,6 +38,7 @@ def version_upload_to(obj, filename):
 @python_2_unicode_compatible
 class SparkleVersion(BaseModel):
     is_enabled = models.BooleanField(default=True)
+    is_critical = models.BooleanField(default=False)
     app = models.ForeignKey(Application)
     channel = models.ForeignKey(Channel, db_index=True)
     version = models.CharField(max_length=32)

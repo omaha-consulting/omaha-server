@@ -37,7 +37,7 @@ class SparkleVersionSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = SparkleVersion
-        fields = ('id', 'is_enabled', 'app', 'channel', 'version', 'short_version',
+        fields = ('id', 'is_enabled', 'is_critical', 'app', 'channel', 'version', 'short_version',
                   'release_notes', 'file', 'file_size', 'dsa_signature',
                   'created', 'modified')
         read_only_fields = ('created', 'modified')

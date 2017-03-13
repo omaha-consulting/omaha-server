@@ -101,6 +101,7 @@ def _version_upload_to(*args, **kwargs):
 @python_2_unicode_compatible
 class Version(BaseModel):
     is_enabled = models.BooleanField(default=True)
+    is_critical = models.BooleanField(default=False)
     app = models.ForeignKey(Application)
     platform = models.ForeignKey(Platform, db_index=True)
     channel = models.ForeignKey(Channel, db_index=True)
