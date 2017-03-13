@@ -20,7 +20,6 @@ the License.
 
 from uuid import UUID
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.db.models import signals
 
 import factory
 
@@ -56,7 +55,7 @@ class ChannelFactory(factory.DjangoModelFactory):
 
     name = factory.Sequence(lambda n: 'channel%s' % n)
 
-@factory.django.mute_signals(signals.post_save)
+
 class VersionFactory(factory.DjangoModelFactory):
     class Meta:
         model = 'omaha.Version'
