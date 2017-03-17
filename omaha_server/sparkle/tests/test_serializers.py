@@ -55,7 +55,7 @@ class SparkleVersionSerializerTest(TestCase):
         data = dict(
             app=version.app.id,
             channel=version.channel.id,
-            version='4.3.2.1',
+            version='2.1',
             release_notes=version.release_notes,
             file=version.file,
         )

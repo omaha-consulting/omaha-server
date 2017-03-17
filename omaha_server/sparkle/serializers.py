@@ -34,6 +34,7 @@ class SparkleVersionSerializer(serializers.HyperlinkedModelSerializer):
     app = serializers.PrimaryKeyRelatedField(queryset=Application.objects.all())
     channel = serializers.PrimaryKeyRelatedField(queryset=Channel.objects.all())
     version = serializers.CharField()
+    short_version = serializers.CharField(required=False)
 
     class Meta:
         model = SparkleVersion
