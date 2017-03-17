@@ -30,13 +30,13 @@ class VersionManagerTest(TestCase):
     @temporary_media_root()
     def test_filter_by_enabled(self):
         version = SparkleVersionFactory.create(
-            version='37.0.2062.125',
+            version='2062.125',
             file=SimpleUploadedFile('./chrome_installer.exe', False))
         version_disabled = SparkleVersionFactory.create(
             app=version.app,
             channel=version.channel,
             is_enabled=False,
-            version='38.0.2062.125',
+            version='2062.126',
             file=SimpleUploadedFile('./chrome_installer2.exe', False))
 
         self.assertEqual(SparkleVersion.objects.all().count(), 2)
