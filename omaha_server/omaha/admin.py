@@ -27,7 +27,7 @@ from dynamic_preferences.models import GlobalPreferenceModel, UserPreferenceMode
 from versionfield import VersionField
 
 from omaha.models import Channel, Platform, Application, Version, Action, PartialUpdate, Data
-from omaha.forms import ApplicationAdminForm, VersionAdminForm, BaseActionFormset, DataAdminForm
+from omaha.forms import ApplicationAdminForm, VersionAdminForm, ActionAdminForm, DataAdminForm
 
 
 admin.site.unregister(GlobalPreferenceModel)
@@ -57,8 +57,8 @@ class ApplicationAdmin(admin.ModelAdmin):
 
 class ActionInline(admin.StackedInline):
     model = Action
-    extra = 2
-    formset = BaseActionFormset
+    extra = 0
+    formset = ActionAdminForm
 
 
 class PartialUpdateInline(admin.StackedInline):

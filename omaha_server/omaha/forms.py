@@ -22,7 +22,6 @@ from collections import OrderedDict
 
 from django import forms
 from django.forms import widgets, ValidationError
-from django.forms.models import BaseInlineFormSet
 
 from django_ace import AceWidget
 from suit.widgets import LinkedSelect
@@ -82,16 +81,6 @@ class ActionAdminForm(forms.ModelForm):
     class Meta:
         model = Action
         exclude = []
-
-
-class BaseActionFormset(BaseInlineFormSet):
-
-    def __init__(self, *args, **kwargs):
-        kwargs['initial'] = [
-            {'event': 1}, {'event': 3}
-        ]
-        self.form = ActionAdminForm
-        super(BaseActionFormset, self).__init__(*args, **kwargs)
 
 
 class ManualCleanupForm(forms.Form):
