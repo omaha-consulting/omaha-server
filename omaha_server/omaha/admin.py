@@ -58,7 +58,7 @@ class ApplicationAdmin(admin.ModelAdmin):
 class ActionInline(admin.StackedInline):
     model = Action
     extra = 0
-    formset = ActionAdminForm
+    form = ActionAdminForm
 
 
 class PartialUpdateInline(admin.StackedInline):
