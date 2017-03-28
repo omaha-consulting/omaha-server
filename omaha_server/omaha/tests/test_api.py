@@ -28,7 +28,6 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings
-from django.db.models import signals
 
 from lxml.builder import E
 from rest_framework import status
@@ -289,7 +288,6 @@ class VersionTest(BaseTest, APITestCase):
         self.assertTrue(version.is_enabled)
 
 
-@factory.django.mute_signals(signals.post_save)
 class ActionTest(BaseTest, APITestCase):
     url = 'action-list'
     url_detail = 'action-detail'

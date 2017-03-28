@@ -101,6 +101,7 @@ def _version_upload_to(*args, **kwargs):
 @python_2_unicode_compatible
 class Version(BaseModel):
     is_enabled = models.BooleanField(default=True)
+    is_critical = models.BooleanField(default=False)
     app = models.ForeignKey(Application)
     platform = models.ForeignKey(Platform, db_index=True)
     channel = models.ForeignKey(Channel, db_index=True)
@@ -329,11 +330,6 @@ def pre_version_save(sender, instance, *args, **kwargs):
     instance.file_hash = base64.b64encode(sha1.digest()).decode()
 
 
-@receiver(post_save, sender=Version)
-def post_version_save(sender, instance, created, **kwargs):
-    if created:
-        instance.actions.create(event=1)
-        instance.actions.create(event=3)
 
 
 @receiver(pre_delete, sender=Version)

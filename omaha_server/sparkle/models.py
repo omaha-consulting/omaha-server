@@ -27,6 +27,8 @@ from django.db import models
 from django.dispatch import receiver
 from django.db.models.signals import pre_delete,pre_save
 
+from versionfield import VersionField
+
 from omaha.models import BaseModel, Application, Channel
 from sparkle.managers import VersionManager
 
@@ -38,10 +40,13 @@ def version_upload_to(obj, filename):
 @python_2_unicode_compatible
 class SparkleVersion(BaseModel):
     is_enabled = models.BooleanField(default=True)
+    is_critical = models.BooleanField(default=False)
     app = models.ForeignKey(Application)
     channel = models.ForeignKey(Channel, db_index=True)
-    version = models.CharField(max_length=32)
-    short_version = models.CharField(max_length=32, blank=True, null=True)
+    version = VersionField(help_text='Format: 65535.65535',
+                           number_bits=(16, 16), db_index=True)
+    short_version = VersionField(help_text='Format: 255.255.65535.65535',
+                                 number_bits=(8, 8, 16, 16), blank=True, null=True)
     release_notes = models.TextField(blank=True, null=True)
     file = models.FileField(upload_to=version_upload_to, null=True)
     file_size = models.PositiveIntegerField(null=True, blank=True)

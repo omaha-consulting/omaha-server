@@ -134,6 +134,28 @@ response_update_check_positive = b"""<?xml version="1.0" encoding="UTF-8"?>
   </app>
 </response>"""
 
+response_update_check_postitive_critical = b"""<?xml version="1.0" encoding="UTF-8"?>
+<response protocol="3.0" server="prod">
+  <daystart elapsed_seconds="56508" elapsed_days="2557"/>
+  <app appid="{430FD4D0-B729-4F61-AA34-91526481799D}" status="ok">
+    <updatecheck status="noupdate"/>
+    <ping status="ok"/>
+  </app>
+  <app appid="{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}" status="ok">
+    <updatecheck status="ok">
+      <urls>
+        <url codebase="http://cache.pack.google.com/edgedl/chrome/install/782.112/"/>
+      </urls>
+      <manifest version="13.0.782.111">
+        <packages>
+          <package hash="VXriGUVI0TNqfLlU02vBel4Q3Zo=" name="chrome_installer_critical.exe" required="true" size="23963192"/>
+        </packages>
+      </manifest>
+    </updatecheck>
+    <ping status="ok"/>
+  </app>
+</response>"""
+
 response_event = b"""<?xml version="1.0" encoding="UTF-8"?>
 <response protocol="3.0" server="prod">
   <daystart elapsed_seconds="56754" elapsed_days="2557"/>

@@ -51,8 +51,16 @@ class SparkleView(ListView):
 
     def get_queryset(self):
         qs = super(SparkleView, self).get_queryset()
-        return qs.filter(channel__name=self.channel,
-                         app__name=self.appname)
+        qs = qs.filter(channel__name=self.channel,
+                  app__name=self.appname).order_by('short_version')
+        cur_short_version = self.request.GET.get('appVersionShort')
+        if cur_short_version:
+            cur_version = '.'.join(cur_short_version.split('.')[-2:])
+            upper_version = SparkleVersion.objects.filter(version__gt=cur_version).filter(is_critical=True).order_by('version').first() or \
+                            SparkleVersion.objects.all().order_by('-version').first()
+            return qs.filter(version__lte=upper_version.version, version__gte=cur_version)
+        else:
+            return qs
 
     def get_context_data(self, **kwargs):
         context = super(SparkleView, self).get_context_data(**kwargs)

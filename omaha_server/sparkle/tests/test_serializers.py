@@ -36,6 +36,7 @@ class SparkleVersionSerializerTest(TestCase):
         self.assertDictEqual(SparkleVersionSerializer(version).data, dict(
             id=version.id,
             is_enabled=version.is_enabled,
+            is_critical=version.is_critical,
             app=version.app.id,
             channel=version.channel.id,
             version=version.version,
@@ -54,7 +55,7 @@ class SparkleVersionSerializerTest(TestCase):
         data = dict(
             app=version.app.id,
             channel=version.channel.id,
-            version='4.3.2.1',
+            version='2.1',
             release_notes=version.release_notes,
             file=version.file,
         )

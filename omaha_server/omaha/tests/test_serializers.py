@@ -87,6 +87,7 @@ class VersionSerializerTest(TestCase):
         self.assertDictEqual(VersionSerializer(version).data, dict(
             id=version.id,
             is_enabled=version.is_enabled,
+            is_critical=version.is_critical,
             app=version.app.id,
             platform=version.platform.id,
             channel=version.channel.id,

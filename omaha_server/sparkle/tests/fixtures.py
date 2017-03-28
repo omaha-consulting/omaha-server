@@ -42,6 +42,89 @@ response_sparkle = b"""<?xml version="1.0" encoding="utf-8"?>
     </channel>
 </rss>"""
 
+first_crit_response_sparkle = b"""<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <channel>
+        <title>chrome</title>
+        <link>http://example.com/sparkle/chrome/stable/appcast.xml</link>
+        <description>Most recent changes with links to updates.</description>
+        <language>en</language>
+
+            <item>
+                <title>chrome 782.110</title>
+                <description><![CDATA[
+
+                ]]>
+                </description>
+                <pubDate>Tue, 14 Oct 2014 08:28:05 +0000</pubDate>
+                <enclosure url="http://cache.pack.google.com/edgedl/chrome/install/782.112/sparkle/chrome/stable/782.110/chrome1.dmg"
+                           sparkle:version="782.110"
+                           sparkle:shortVersionString="13.0.782.110"
+                           length="23963192" type="application/octet-stream"/>
+            </item>
+            <item>
+                <title>chrome 782.111</title>
+                <description><![CDATA[
+
+                ]]>
+                </description>
+                <pubDate>Tue, 14 Oct 2014 08:28:05 +0000</pubDate>
+                <enclosure url="http://cache.pack.google.com/edgedl/chrome/install/782.112/sparkle/chrome/stable/782.111/chrome2.dmg"
+                           sparkle:version="782.111"
+                           sparkle:shortVersionString="13.0.782.111"
+                           length="23963192" type="application/octet-stream"/>
+            </item>
+
+    </channel>
+</rss>"""
+
+second_crit_response_sparkle = b"""<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <channel>
+        <title>chrome</title>
+        <link>http://example.com/sparkle/chrome/stable/appcast.xml</link>
+        <description>Most recent changes with links to updates.</description>
+        <language>en</language>
+            <item>
+                <title>chrome 782.111</title>
+                <description><![CDATA[
+
+                ]]>
+                </description>
+                <pubDate>Tue, 14 Oct 2014 08:28:05 +0000</pubDate>
+                <enclosure url="http://cache.pack.google.com/edgedl/chrome/install/782.112/sparkle/chrome/stable/782.111/chrome2.dmg"
+                           sparkle:version="782.111"
+                           sparkle:shortVersionString="13.0.782.111"
+                           length="23963192" type="application/octet-stream"/>
+            </item>
+            <item>
+                <title>chrome 782.112</title>
+                <description><![CDATA[
+
+                ]]>
+                </description>
+                <pubDate>Tue, 14 Oct 2014 08:28:05 +0000</pubDate>
+                <enclosure url="http://cache.pack.google.com/edgedl/chrome/install/782.112/sparkle/chrome/stable/782.112/chrome3.dmg"
+                           sparkle:version="782.112"
+                           sparkle:shortVersionString="13.0.782.112"
+                           length="23963192" type="application/octet-stream"/>
+            </item>
+            <item>
+                <title>chrome 782.113</title>
+                <description><![CDATA[
+
+                ]]>
+                </description>
+                <pubDate>Tue, 14 Oct 2014 08:28:05 +0000</pubDate>
+                <enclosure url="http://cache.pack.google.com/edgedl/chrome/install/782.112/sparkle/chrome/stable/782.113/chrome4.dmg"
+                           sparkle:version="782.113"
+                           sparkle:shortVersionString="13.0.782.113"
+                           length="23963192" type="application/octet-stream"/>
+            </item>
+
+    </channel>
+</rss>"""
+
 response_sparkle_with_dsa = b"""<?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
     <channel>
