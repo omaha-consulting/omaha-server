@@ -98,10 +98,10 @@ class CrashDescriptionInline(admin.StackedInline):
 
 @admin.register(Crash)
 class CrashAdmin(admin.ModelAdmin):
-    list_display = ('id', 'created', 'modified', 'archive_field', 'signature', 'appid', 'userid', 'summary_field', 'os_field', 'cpu_architecture_field',)
+    list_display = ('id', 'created', 'modified', 'archive_field', 'signature', 'appid', 'userid', 'summary_field', 'os', 'cpu_architecture_field',)
     list_select_related = ['crash_description']
-    list_display_links = ('id', 'created', 'modified', 'signature', 'appid', 'userid', 'os_field', 'cpu_architecture_field',)
-    list_filter = (('id', TextInputFilter,), 'created', CrashArchiveFilter)
+    list_display_links = ('id', 'created', 'modified', 'signature', 'appid', 'userid', 'os', 'cpu_architecture_field',)
+    list_filter = (('id', TextInputFilter,), 'created', CrashArchiveFilter, 'os')
     search_fields = ('appid', 'userid', 'archive',)
     form = CrashFrom
     readonly_fields = ('sentry_link_field',)
@@ -113,9 +113,9 @@ class CrashAdmin(admin.ModelAdmin):
         return bool(obj.archive)
     archive_field.short_description = 'Instrumental file'
 
-    def os_field(self, obj):
-        return obj.stacktrace_json.get('system_info', {}).get('os', '') if obj.stacktrace_json else ''
-    os_field.short_description = 'OS'
+    # def os_field(self, obj):
+    #     return obj.stacktrace_json.get('system_info', {}).get('os', '') if obj.stacktrace_json else ''
+    # os_field.short_description = 'OS'
 
     def cpu_architecture_field(self, obj):
         return obj.stacktrace_json.get('system_info', {}).get('cpu_arch', '') if obj.stacktrace_json else ''
