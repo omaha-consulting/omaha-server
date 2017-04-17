@@ -98,4 +98,6 @@ class CrashSerializerTest(TestCase):
                                   signature=crash.signature,
                                   stacktrace_json=crash.stacktrace_json,
                                   created=crash.created.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
-                                  modified=crash.modified.strftime('%Y-%m-%dT%H:%M:%S.%fZ')))
+                                  modified=crash.modified.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
+                                  os=None,
+                                  build_number=None,))
