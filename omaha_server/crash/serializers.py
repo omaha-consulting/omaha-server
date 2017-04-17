@@ -66,5 +66,5 @@ class CrashSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Crash
-        fields = ('id', 'upload_file_minidump', 'archive', 'appid', 'userid',
+        fields = ('id', 'upload_file_minidump', 'archive', 'appid', 'userid', 'os', 'build_number',
                   'meta', 'signature', 'stacktrace_json', 'created', 'modified',)
