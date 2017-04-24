@@ -35,6 +35,7 @@ from crash.utils import (
     FileNotFoundError,
     parse_stacktrace,
     get_signature,
+    get_os,
     send_stacktrace_sentry,
 )
 
@@ -56,6 +57,8 @@ def processing_crash_dump(self, crash_pk):
         crash.stacktrace = stacktrace
         crash.stacktrace_json = parse_stacktrace(stacktrace)
         crash.signature = get_signature(crash.stacktrace_json)
+        crash.os = get_os(crash.stacktrace_json)
+        crash.build_number = crash.meta.get('ver')
         crash.save()
         send_stacktrace_sentry(crash)
     except FileNotFoundError as exc:

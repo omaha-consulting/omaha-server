@@ -89,6 +89,10 @@ def get_signature(stacktrace):
     return signature
 
 
+def get_os(stacktrace):
+    return stacktrace.get('system_info', {}).get('os', '') if stacktrace else ''
+
+
 def send_stacktrace_sentry(crash):
     stacktrace = crash.stacktrace_json
     exception = {

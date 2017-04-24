@@ -65,6 +65,7 @@ SUIT_CONFIG = {
         {'label': 'Preferences', 'url': reverse_lazy('set_preferences', args=['']), 'icon': 'icon-wrench'},
         {'label': 'Storage monitoring', 'url': 'monitoring', 'icon': 'icon-hdd'},
     ),
+    'CONFIRM_UNSAVED_CHANGES': False,
 }
 
 

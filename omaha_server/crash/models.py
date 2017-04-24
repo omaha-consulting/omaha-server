@@ -68,6 +68,8 @@ class Crash(BaseModel):
     ip = models.GenericIPAddressField(blank=True, null=True, protocol="ipv4")
     groupid = models.CharField(max_length=38, null=True, blank=True)
     eventid = models.CharField(max_length=38, null=True, blank=True)
+    os = models.CharField(max_length=32, null=True, blank=True)
+    build_number = models.CharField(max_length=32, null=True, blank=True)
 
     objects = CrashManager()
 

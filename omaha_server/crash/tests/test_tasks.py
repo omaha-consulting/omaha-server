@@ -56,7 +56,7 @@ class CrashModelTest(test.TestCase):
     def test_model(self, mock_send_stacktrace_sentry, mock_client):
         meta = dict(
             lang='en',
-            version='1.0.0.1',
+            ver='1.0.0.1',
         )
         app_id = '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}'
         user_id = '{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}'
@@ -79,6 +79,8 @@ class CrashModelTest(test.TestCase):
         self.assertIsNotNone(crash.stacktrace_json)
         self.assertEqual(crash.stacktrace_json['crash_info']['type'], 'EXCEPTION_ACCESS_VIOLATION_WRITE')
         self.assertEqual(crash.signature, 'crashedFunc()')
+        self.assertEqual(crash.os, 'Windows NT')
+        self.assertEqual(crash.build_number, '1.0.0.1')
 
     @temporary_media_root(
         MEDIA_URL='http://omaha-test.s3.amazonaws.com/',
@@ -92,7 +94,7 @@ class CrashModelTest(test.TestCase):
     def test_incorrect_dump(self, mock_send_stacktrace_sentry, mock_client):
         meta = dict(
             lang='en',
-            version='1.0.0.1',
+            ver='1.0.0.1',
         )
         app_id = '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}'
         user_id = '{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}'
@@ -118,7 +120,7 @@ class CrashModelTest(test.TestCase):
     def test_get_sentry_link(self, mock_client):
         meta = dict(
             lang='en',
-            version='1.0.0.1',
+            ver='1.0.0.1',
         )
         app_id = '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}'
         user_id = '{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}'
