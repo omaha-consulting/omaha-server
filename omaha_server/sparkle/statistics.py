@@ -61,6 +61,7 @@ def add_app_statistics(userid, platform, app, now=None):
         mark('request:%s' % appid, userid)
         mark('request:{}:{}'.format(appid, platform), userid)
 
-    mark('request:{}:{}'.format(appid, version), userid, track_hourly=True)
     mark('request:{}:{}'.format(appid, channel), userid)
+    mark('request:{}:{}'.format(appid, version), userid, track_hourly=True)
     mark('request:{}:{}:{}'.format(appid, platform, version), userid, track_hourly=True)
+    mark('request:{}:{}:{}:{}'.format(appid, platform, channel, version), userid, track_hourly=True)

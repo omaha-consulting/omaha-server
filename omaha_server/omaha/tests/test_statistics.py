@@ -134,7 +134,10 @@ class StatisticsTest(TestCase):
         events_request_appid_platform = lambda date=now: DayEvents.from_date('request:{}:{}'.format(appid, platform), date)
         events_new_appid_platform = lambda date=now: DayEvents.from_date('new_install:{}:{}'.format(appid, platform), date)
         events_request_appid_channel = lambda date=now: DayEvents.from_date('request:{}:{}'.format(appid, channel), date)
-        events_request_appid_platform_version = lambda date=now: DayEvents.from_date('request:{}:{}:{}'.format(appid, platform, version), date)
+        events_request_appid_platform_version = lambda date=now: DayEvents.from_date(
+            'request:{}:{}:{}'.format(appid, platform, version), date)
+        events_request_appid_platform_channel_version = lambda date=now: DayEvents.from_date(
+            'request:{}:{}:{}:{}'.format(appid, platform, channel, version), date)
 
         self.assertEqual(len(events_new_appid()), 0)
         self.assertEqual(len(events_request_appid()), 0)
@@ -143,6 +146,7 @@ class StatisticsTest(TestCase):
         self.assertEqual(len(events_new_appid_platform()), 0)
         self.assertEqual(len(events_request_appid_channel()), 0)
         self.assertEqual(len(events_request_appid_platform_version()), 0)
+        self.assertEqual(len(events_request_appid_platform_channel_version()), 0)
 
         add_app_statistics(userid, platform, error_app)
 
@@ -153,6 +157,7 @@ class StatisticsTest(TestCase):
         self.assertEqual(len(events_new_appid_platform()), 0)
         self.assertEqual(len(events_request_appid_channel()), 0)
         self.assertEqual(len(events_request_appid_platform_version()), 0)
+        self.assertEqual(len(events_request_appid_platform_channel_version()), 0)
 
         add_app_statistics(userid, platform, success_app)
         self.assertEqual(len(events_new_appid()), 1)
@@ -162,12 +167,14 @@ class StatisticsTest(TestCase):
         self.assertEqual(len(events_request_appid_platform()), 0)
         self.assertEqual(len(events_request_appid_channel()), 1)
         self.assertEqual(len(events_request_appid_platform_version()), 1)
+        self.assertEqual(len(events_request_appid_platform_channel_version()), 1)
 
         self.assertIn(userid, events_new_appid())
         self.assertIn(userid, events_request_appid_version())
         self.assertIn(userid, events_new_appid_platform())
         self.assertIn(userid, events_request_appid_channel())
         self.assertIn(userid, events_request_appid_platform_version())
+        self.assertIn(userid, events_request_appid_platform_channel_version())
 
         add_app_statistics(userid, platform, success_app)
         self.assertEqual(len(events_new_appid()), 1)
@@ -192,8 +199,9 @@ class StatisticsTest(TestCase):
         self.assertEqual(len(events_new_appid(next_month)), 0)
         self.assertEqual(len(events_request_appid_version(next_month)), 1)
         self.assertEqual(len(events_new_appid_platform(next_month)), 0)
-        self.assertEqual(len(events_request_appid_channel()), 1)
-        self.assertEqual(len(events_request_appid_platform_version()), 1)
+        self.assertEqual(len(events_request_appid_channel(next_month)), 1)
+        self.assertEqual(len(events_request_appid_platform_version(next_month)), 1)
+        self.assertEqual(len(events_request_appid_platform_channel_version(next_month)), 1)
 
         self.assertIn(userid, events_request_appid(next_month))
         self.assertIn(userid, events_request_appid_platform(next_month))
@@ -369,7 +377,7 @@ class StatisticsTest(TestCase):
         request = parse_request(fixtures.request_event_install_success)
         apps = request.findall('app')
         app = apps[0]
-
+        channel = DEFAULT_CHANNEL
         now = datetime.utcnow()
         userid = 1
         platform = 'win'
@@ -379,14 +387,18 @@ class StatisticsTest(TestCase):
         version_2 = '0.0.0.2'
 
         events_appid_version = lambda version: HourEvents('request:{}:{}'.format(appid, version), now.year, now.month, now.day, now.hour)
-        events_appid_platform_version = lambda version: HourEvents('request:{}:{}'.format(appid, version), now.year, now.month, now.day, now.hour)
+        events_appid_platform_version = lambda version: HourEvents('request:{}:{}:{}'.format(appid, platform, version), now.year, now.month, now.day, now.hour)
+        events_appid_platform_channel_version = lambda version: HourEvents(
+            'request:{}:{}:{}:{}'.format(appid, platform, channel, version), now.year, now.month, now.day, now.hour)
 
         self.assertEqual(len(events_appid_version(version_1)), 0)
         self.assertEqual(len(events_appid_platform_version(version_1)), 0)
+        self.assertEqual(len(events_appid_platform_channel_version(version_1)), 0)
         userid_counting(userid, apps, platform)
 
         self.assertEqual(len(events_appid_version(version_1)), 1)
         self.assertEqual(len(events_appid_platform_version(version_1)), 1)
+        self.assertEqual(len(events_appid_platform_channel_version(version_1)), 1)
 
         request = parse_request(fixtures.request_event_update_success)
         apps = request.findall('app')
@@ -395,8 +407,10 @@ class StatisticsTest(TestCase):
 
         self.assertEqual(len(events_appid_version(version_1)), 0)
         self.assertEqual(len(events_appid_platform_version(version_1)), 0)
+        self.assertEqual(len(events_appid_platform_channel_version(version_1)), 0)
         self.assertEqual(len(events_appid_version(version_2)), 1)
         self.assertEqual(len(events_appid_platform_version(version_2)), 1)
+        self.assertEqual(len(events_appid_platform_channel_version(version_2)), 1)
 
         request = parse_request(fixtures.request_event_uninstall_success)
         apps = request.findall('app')
@@ -405,12 +419,13 @@ class StatisticsTest(TestCase):
 
         self.assertEqual(len(events_appid_version(version_2)), 1)
         self.assertEqual(len(events_appid_platform_version(version_2)), 1)
+        self.assertEqual(len(events_appid_platform_channel_version(version_2)), 1)
 
     def test_live_statistics_updatecheck(self):
         request = parse_request(fixtures.request_update_check)
         apps = request.findall('app')
         app = apps[0]
-
+        channel = DEFAULT_CHANNEL
         now = datetime.utcnow()
         userid = 1
         platform = 'win'
@@ -420,14 +435,18 @@ class StatisticsTest(TestCase):
 
         events_appid_version = HourEvents('request:{}:{}'.format(appid, version), now.year, now.month, now.day, now.hour)
         events_appid_platform_version = HourEvents('request:{}:{}:{}'.format(appid, platform, version), now.year, now.month, now.day, now.hour)
+        events_appid_platform_channel_version = HourEvents(
+            'request:{}:{}:{}:{}'.format(appid, platform, channel, version), now.year, now.month, now.day, now.hour)
 
         self.assertEqual(len(events_appid_version), 0)
         self.assertEqual(len(events_appid_platform_version), 0)
+        self.assertEqual(len(events_appid_platform_channel_version), 0)
 
         userid_counting(userid, apps, platform)
 
         self.assertEqual(len(events_appid_version), 1)
         self.assertEqual(len(events_appid_platform_version), 1)
+        self.assertEqual(len(events_appid_platform_channel_version), 1)
 
 
 class GetStatisticsTest(TestCase):

@@ -61,6 +61,16 @@
     <script>
         $(document).ready(function(){
             $('[data-toggle="popover"]').popover();
+            $.ajax({
+                url: '/api/channel/',
+                success: function(data) {
+                    var options = '<option value="" selected>Select channel(All by default)</option>';
+                    for (var x = 0; x < data.length; x++) {
+                       options += '<option value="' + data[x]['name'] + '">' + data[x]['name'] + '</option>';
+                    }
+                    $('#channel-select').html(options)
+                }
+            });
         });
     </script>
 
@@ -89,6 +99,8 @@
             <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
           </span>
         </span>
+        <select id='channel-select'>
+        </select>
         <button id="btn-apply" class="btn">
             <span id="ajax-completed">Apply</span>
             <img id="ajax-loading" src="{% static "statistics/gif/ajax_loader.gif" %}" hidden/>

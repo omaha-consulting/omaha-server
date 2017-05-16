@@ -49,7 +49,7 @@ from omaha.serializers import (
     MonthRangeSerializer,
     MonthInputSerializer,
     ServerVersionSerializer,
-    LiveStatisticsRangeSerializer,
+    LiveStatisticsInputSerializer,
 )
 from omaha.models import (
     Application,
@@ -241,13 +241,14 @@ class StatisticsVersionsLiveView(APIView):
         app = self.get_object(app_name)
 
         now = timezone.now()
-        dates = LiveStatisticsRangeSerializer(data=request.GET)
-        dates.is_valid()
+        data = LiveStatisticsInputSerializer(data=request.GET)
+        data.is_valid()
 
-        end = dates.validated_data.get('end', now)
-        start = dates.validated_data.get('start', end - datetime.timedelta(hours=24))
+        end = data.validated_data.get('end', now)
+        start = data.validated_data.get('start', end - datetime.timedelta(hours=24))
+        channel = data.validated_data.get('channel')
 
-        data = get_users_live_versions(app.id, start, end, tz=request.session.get('django_timezone', 'UTC'))
+        data = get_users_live_versions(app.id, start, end, channel, tz=request.session.get('django_timezone', 'UTC'))
         logging.info('Getting data is finished')
         serializer = StatisticsMonthsSerializer(dict(data=dict(data)))
         return Response(serializer.data)
