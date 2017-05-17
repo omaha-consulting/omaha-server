@@ -64,6 +64,8 @@ class StatisticsTest(TestCase):
                                                                             date)
         events_request_appid_platform_version = lambda date=now: DayEvents.from_date(
             'request:{}:{}:{}'.format(appid, platform, version), date)
+        events_request_appid_platform_channel_version = lambda date=now: DayEvents.from_date(
+            'request:{}:{}:{}:{}'.format(appid, platform, channel, version), date)
 
         self.assertEqual(len(events_new_appid()), 0)
         self.assertEqual(len(events_request_appid()), 0)
@@ -72,6 +74,7 @@ class StatisticsTest(TestCase):
         self.assertEqual(len(events_new_appid_platform()), 0)
         self.assertEqual(len(events_request_appid_channel()), 0)
         self.assertEqual(len(events_request_appid_platform_version()), 0)
+        self.assertEqual(len(events_request_appid_platform_channel_version()), 0)
 
         add_app_statistics(userid, platform, test_app)
         self.assertEqual(len(events_new_appid()), 1)
@@ -81,12 +84,14 @@ class StatisticsTest(TestCase):
         self.assertEqual(len(events_request_appid_platform()), 0)
         self.assertEqual(len(events_request_appid_channel()), 1)
         self.assertEqual(len(events_request_appid_platform_version()), 1)
+        self.assertEqual(len(events_request_appid_platform_channel_version()), 1)
 
         self.assertIn(userid, events_new_appid())
         self.assertIn(userid, events_request_appid_version())
         self.assertIn(userid, events_new_appid_platform())
         self.assertIn(userid, events_request_appid_channel())
         self.assertIn(userid, events_request_appid_platform_version())
+        self.assertIn(userid, events_request_appid_platform_channel_version())
 
         add_app_statistics(userid, platform, test_app)
         self.assertEqual(len(events_new_appid()), 1)
@@ -96,6 +101,7 @@ class StatisticsTest(TestCase):
         self.assertEqual(len(events_request_appid_platform()), 0)
         self.assertEqual(len(events_request_appid_channel()), 1)
         self.assertEqual(len(events_request_appid_platform_version()), 1)
+        self.assertEqual(len(events_request_appid_platform_channel_version()), 1)
 
         with freeze_time(next_month):
             add_app_statistics(userid, platform, test_app)
@@ -105,11 +111,13 @@ class StatisticsTest(TestCase):
         self.assertEqual(len(events_new_appid(next_month)), 0)
         self.assertEqual(len(events_request_appid_version(next_month)), 1)
         self.assertEqual(len(events_new_appid_platform(next_month)), 0)
-        self.assertEqual(len(events_request_appid_channel()), 1)
-        self.assertEqual(len(events_request_appid_platform_version()), 1)
+        self.assertEqual(len(events_request_appid_channel(next_month)), 1)
+        self.assertEqual(len(events_request_appid_platform_version(next_month)), 1)
+        self.assertEqual(len(events_request_appid_platform_channel_version(next_month)), 1)
 
         self.assertIn(userid, events_request_appid(next_month))
         self.assertIn(userid, events_request_appid_platform(next_month))
+        self.assertIn(userid, events_request_appid_platform_channel_version(next_month))
 
     def test_update_live_statistics(self):
         userid1 = '{F07B3878-CD6F-4B96-B52F-95C4D23077E0}'
@@ -120,16 +128,20 @@ class StatisticsTest(TestCase):
 
         appid = '{F97917B1-19AB-48C1-9802-CEF305B10804}'
         version = '0.0.0.1'
-        test_app = dict(appid=appid, version=version)
+        channel = 'test'
+        test_app = dict(appid=appid, version=version, tag=channel)
         platform = 'mac'
 
         request_version_events = HourEvents('request:{}:{}'.format(appid, version))
         request_platform_version_events = HourEvents('request:{}:{}:{}'.format(appid, 'mac', version))
+        request_appid_platform_channel_version = HourEvents('request:{}:{}:{}:{}'.format(appid, 'mac', channel, version))
 
         self.assertFalse(user1_id in request_version_events)
         self.assertEqual(len(request_version_events), 0)
         self.assertFalse(user1_id in request_platform_version_events)
         self.assertEqual(len(request_platform_version_events), 0)
+        self.assertFalse(user1_id in request_appid_platform_channel_version)
+        self.assertEqual(len(request_appid_platform_channel_version), 0)
 
         userid_counting(userid1, test_app, platform)
 
@@ -137,6 +149,8 @@ class StatisticsTest(TestCase):
         self.assertEqual(len(request_version_events), 1)
         self.assertTrue(user1_id in request_platform_version_events)
         self.assertEqual(len(request_platform_version_events), 1)
+        self.assertTrue(user1_id in request_appid_platform_channel_version)
+        self.assertEqual(len(request_appid_platform_channel_version), 1)
 
         userid_counting(userid1, test_app, platform)
 
@@ -144,6 +158,8 @@ class StatisticsTest(TestCase):
         self.assertEqual(len(request_version_events), 1)
         self.assertTrue(user1_id in request_platform_version_events)
         self.assertEqual(len(request_platform_version_events), 1)
+        self.assertTrue(user1_id in request_appid_platform_channel_version)
+        self.assertEqual(len(request_appid_platform_channel_version), 1)
 
         userid_counting(userid2, test_app, platform)
 
@@ -151,3 +167,5 @@ class StatisticsTest(TestCase):
         self.assertEqual(len(request_version_events), 2)
         self.assertTrue(user2_id in request_platform_version_events)
         self.assertEqual(len(request_platform_version_events), 2)
+        self.assertTrue(user2_id in request_appid_platform_channel_version)
+        self.assertEqual(len(request_appid_platform_channel_version), 2)

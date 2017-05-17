@@ -34,10 +34,9 @@ from sparkle.statistics import collect_statistics
 from sparkle.models import SparkleVersion
 from omaha.models import Application
 
-def generate_events(app_name, channel, **options):
+def generate_events(app_name,  **options):
     app_id = Application.objects.get(name=app_name).id
     versions = SparkleVersion.objects.filter_by_enabled(app__name=app_name)
-    versions = map(lambda x: x.short_version, versions)
     request_factory = RequestFactory()
 
     def generate_fake_hour():
@@ -46,11 +45,11 @@ def generate_events(app_name, channel, **options):
                 id = uuid.UUID(int=i)
                 request = request_factory.get('/sparkle/%s/%s/appcast.xml?appVersionShort=%s&deviceID=%s' % (
                     app_name,
-                    channel,
-                    version,
+                    version.channel,
+                    version.short_version,
                     id
                 ))
-                collect_statistics(request, app_id, channel)
+                collect_statistics(request, app_id, version.channel)
 
     start = timezone.now() - timezone.timedelta(days=1)
 
@@ -62,8 +61,8 @@ def generate_events(app_name, channel, **options):
 
 
 class Command(BaseCommand):
-    args = '<app_name> <channel>'
+    args = '<app_name>'
     help = 'A command for generating fake live statistics'
 
-    def handle(self, app_name, channel, *args, **options):
-        generate_events(app_name, channel, **options)
+    def handle(self, app_name, *args, **options):
+        generate_events(app_name, **options)

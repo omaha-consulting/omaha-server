@@ -68,6 +68,7 @@ def add_app_statistics(userid, platform, app, now=None):
             redis.setbit("known_users:%s" % appid, userid, 1)
             mark('request:{}:{}'.format(appid, nextversion), userid, track_hourly=True)
             mark('request:{}:{}:{}'.format(appid, platform, nextversion), userid, track_hourly=True)
+            mark('request:{}:{}:{}:{}'.format(appid, platform, channel, nextversion), userid, track_hourly=True)
             mark('request:{}:{}'.format(appid, channel), userid)
             return
 
@@ -77,6 +78,7 @@ def add_app_statistics(userid, platform, app, now=None):
         if nextversion:
             mark('request:{}:{}'.format(appid, nextversion), userid, track_hourly=True)
             mark('request:{}:{}:{}'.format(appid, platform, nextversion), userid, track_hourly=True)
+            mark('request:{}:{}:{}:{}'.format(appid, platform, channel, nextversion), userid, track_hourly=True)
 
     uninstall_event = filter(lambda x: x.get('eventtype') == '4', events)
     if uninstall_event:
@@ -86,11 +88,14 @@ def add_app_statistics(userid, platform, app, now=None):
     if update_event:
         unmark_event('request:{}:{}'.format(appid, version), userid, track_hourly=True)
         unmark_event('request:{}:{}:{}'.format(appid, platform, version), userid, track_hourly=True)
+        unmark_event('request:{}:{}:{}:{}'.format(appid, platform, channel, version), userid, track_hourly=True)
         mark('request:{}:{}'.format(appid, nextversion), userid, track_hourly=True)
         mark('request:{}:{}:{}'.format(appid, platform, nextversion), userid, track_hourly=True)
+        mark('request:{}:{}:{}:{}'.format(appid, platform, channel, nextversion), userid, track_hourly=True)
     else:
         mark('request:{}:{}'.format(appid, version), userid, track_hourly=True)
         mark('request:{}:{}:{}'.format(appid, platform, version), userid, track_hourly=True)
+        mark('request:{}:{}:{}:{}'.format(appid, platform, channel, version), userid, track_hourly=True)
     mark('request:{}:{}'.format(appid, channel), userid)
 
 
@@ -177,35 +182,46 @@ def get_users_versions(app_id, date=None):
 
 
 
-def get_hourly_data_by_platform(app_id, end, n_hours, versions, platform, tz='UTC'):
+def get_hourly_data_by_platform(app_id, end, n_hours, versions, platform, channel, tz='UTC'):
+    def build_event_name(app_id, platform, channel, v):
+        if channel:
+            return "request:{}:{}:{}:{}".format(app_id, platform, channel, v)
+        else:
+            return "request:{}:{}:{}".format(app_id, platform, v)
+
     tzinfo = pytz.timezone(tz)
     start = end - timezone.timedelta(hours=n_hours)
-    event_name = "request:{}:{}:{}"
 
     hours = [datetime(start.year, start.month, start.day, start.hour, tzinfo=pytz.UTC)
              + timezone.timedelta(hours=x) for x in range(1, n_hours + 1)]
 
     data = [(v, [[hour.astimezone(tzinfo).strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
-                  len(HourEvents.from_date(event_name.format(app_id, platform, v), hour))]
+                  len(HourEvents.from_date(build_event_name(app_id, platform, channel, v), hour))]
                  for hour in hours])
             for v in versions]
     data = filter(lambda version_data: sum([data[1] for data in version_data[1]]), data)
     return dict(data)
 
 
-def get_daily_data_by_platform(app_id, end, n_days, versions, platform):
+def get_daily_data_by_platform(app_id, end, n_days, versions, platform, channel):
+    def build_event_name(app_id, platform, channel, v):
+        if channel:
+            return "request:{}:{}:{}:{}".format(app_id, platform, channel, v)
+        else:
+            return "request:{}:{}:{}".format(app_id, platform, v)
+
     start = end - timezone.timedelta(days=n_days)
-    event_name = "request:{}:{}:{}"
 
     days = [start + timezone.timedelta(days=x) for x in range(0, n_days+1)]
-    data = [(v, [[day.strftime("%Y-%m-%dT00:%M:%S.%fZ"), len(DayEvents.from_date(event_name.format(app_id, platform, v), day))]
+    data = [(v, [[day.strftime("%Y-%m-%dT00:%M:%S.%fZ"),
+                  len(DayEvents.from_date(build_event_name(app_id, platform, channel, v), day))]
                  for day in days])
             for v in versions]
     data = filter(lambda version_data: sum([data[1] for data in version_data[1]]), data)
     return dict(data)
 
 
-def get_users_live_versions(app_id, start, end, tz='UTC'):
+def get_users_live_versions(app_id, start, end, channel, tz='UTC'):
     import logging
     logging.info("Getting active versions from DB")
     win_versions = [str(v.version) for v in Version.objects.filter_by_enabled(app__id=app_id)]
@@ -213,14 +229,14 @@ def get_users_live_versions(app_id, start, end, tz='UTC'):
     logging.info("Getting statistics from Redis")
     if start < timezone.now() - timedelta(days=7):
         n_days = (end-start).days
-        win_data = get_daily_data_by_platform(app_id, end, n_days, win_versions, 'win')
-        mac_data = get_daily_data_by_platform(app_id, end, n_days, mac_versions, 'mac')
+        win_data = get_daily_data_by_platform(app_id, end, n_days, win_versions, 'win', channel)
+        mac_data = get_daily_data_by_platform(app_id, end, n_days, mac_versions, 'mac', channel)
     else:
-        tmp_hours = divmod((end - start).total_seconds(), 60*60)
-        n_hours = tmp_hours[0]+1
+        tmp_hours = divmod((end - start).total_seconds(), 60 * 60)
+        n_hours = tmp_hours[0] + 1
         n_hours = int(n_hours)
-        win_data = get_hourly_data_by_platform(app_id, end, n_hours, win_versions, 'win', tz=tz)
-        mac_data = get_hourly_data_by_platform(app_id, end, n_hours, mac_versions, 'mac', tz=tz)
+        win_data = get_hourly_data_by_platform(app_id, end, n_hours, win_versions, 'win', channel, tz=tz)
+        mac_data = get_hourly_data_by_platform(app_id, end, n_hours, mac_versions, 'mac', channel, tz=tz)
 
     data = dict(win=win_data, mac=mac_data)
 
@@ -316,4 +332,3 @@ def collect_statistics(request, ip=None):
     req.save()
 
     parse_apps(apps, req)
-

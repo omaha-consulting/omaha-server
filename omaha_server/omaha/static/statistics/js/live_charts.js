@@ -5,6 +5,7 @@ function applyRange() {
     var app_name = document.getElementById('app_name').dataset.name;
     var $start = $("#range-start input");
     var $end = $("#range-end input");
+    var $channel = $("#channel-select");
     var start = moment($start.val(), 'YYYY-MM-DD HH:mm:ss', true);
     var end = moment($end.val(), 'YYYY-MM-DD HH:mm:ss', true);
     daily = start < moment().add(-7, 'd')
@@ -16,6 +17,7 @@ function applyRange() {
         $end.val(end.format('YYYY-MM-DD HH:mm:ss'));
     }
     updateGraph({
+        channel: $channel.val(),
         app_name: app_name,
         start: start.isValid() ? start.format('YYYY-MM-DDTHH:mm:ss'): '',
         end: end.isValid() ? end.format('YYYY-MM-DDTHH:mm:ss'): ''
@@ -60,11 +62,10 @@ function getLiveStatisticsAPIurl(options){
     var url = "/api/statistics/live/" + options['app_name'] + "/";
     var start = options['start'];
     var end = options['end'];
-    if (start || end){
-        url += "?";
-        url += start ? 'start=' + start + '&': '';
-        url += end ? 'end=' + end: '';
-    }
+    var channel = options['channel']
+    delete options['app_name'];
+    params = $.param(options);
+    url += "?" + params;
     return url.replace(/\+/g, '%2B');
 }
 

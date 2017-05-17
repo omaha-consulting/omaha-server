@@ -110,9 +110,10 @@ class MonthInputSerializer(serializers.Serializer):
     date = serializers.DateTimeField(input_formats=['%Y-%m'], required=False)
 
 
-class LiveStatisticsRangeSerializer(serializers.Serializer):
+class LiveStatisticsInputSerializer(serializers.Serializer):
     start = TimeZoneAwareDateTimeField(required=False)
     end = TimeZoneAwareDateTimeField(required=False)
+    channel = serializers.CharField(required=False)
 
 
 class ServerVersionSerializer(serializers.Serializer):

@@ -328,9 +328,17 @@ class LiveStatistics(APITestCase):
             for id in range(0, i):
                 mark_event('request:app:win:2.0.0.0', id, now=date, track_hourly=True)
                 mark_event('request:app:mac:4.0.0.1', id, now=date, track_hourly=True)
+                mark_event('request:app:win:%s:2.0.0.0' % self.channel2.name,
+                           id, now=date, track_hourly=True)
+                mark_event('request:app:mac:%s:4.0.0.1' % self.channel2.name,
+                           id, now=date, track_hourly=True)
             for id in range(i, self.n_hours):
                 mark_event('request:app:win:1.0.0.0', id, now=date, track_hourly=True)
                 mark_event('request:app:mac:3.0.0.0', id, now=date, track_hourly=True)
+                mark_event('request:app:win:%s:1.0.0.0' % self.channel.name,
+                           id, now=date, track_hourly=True)
+                mark_event('request:app:mac:%s:3.0.0.0' % self.channel.name,
+                           id, now=date, track_hourly=True)
             date += timedelta(hours=1)
 
     def setUp(self):
@@ -341,6 +349,7 @@ class LiveStatistics(APITestCase):
         redis.flushdb()
         self.app = Application.objects.create(id='app', name='app')
         self.channel = Channel.objects.create(name='stable')
+        self.channel2 = Channel.objects.create(name='alpha')
         self.platform = Platform.objects.create(name='win')
         self.version1 = Version.objects.create(
             app=self.app,
@@ -352,7 +361,7 @@ class LiveStatistics(APITestCase):
         self.version2 = Version.objects.create(
             app=self.app,
             platform=self.platform,
-            channel=self.channel,
+            channel=self.channel2,
             version='2.0.0.0',
             file=SimpleUploadedFile('./chrome_installer.exe', False))
 
@@ -365,7 +374,7 @@ class LiveStatistics(APITestCase):
 
         self.sparkle_version2 = SparkleVersion.objects.create(
             app=self.app,
-            channel=self.channel,
+            channel=self.channel2,
             version='0.1',
             short_version='4.0.0.1',
             file=SimpleUploadedFile('./chrome_installer.dmg', False))
@@ -375,22 +384,41 @@ class LiveStatistics(APITestCase):
 
         hours = [datetime(2016, 2, 13, 0, tzinfo=pytz.UTC) + timedelta(hours=hour)
                  for hour in range(self.n_hours)]
-        self.win_statistics = [('1.0.0.0', [[hour.strftime("%Y-%m-%dT%H:%M:%S.%fZ"), self.n_hours - i]
+        self.win_statistics_ch1  = [('1.0.0.0', [[hour.strftime("%Y-%m-%dT%H:%M:%S.%fZ"), self.n_hours - i]
                                             for (i, hour)in enumerate(hours)])]
-        self.win_statistics.append(('2.0.0.0', [[hour.strftime("%Y-%m-%dT%H:%M:%S.%fZ"), i]
-                                                for (i, hour)in enumerate(hours)]))
+        self.win_statistics_ch2 = [('2.0.0.0', [[hour.strftime("%Y-%m-%dT%H:%M:%S.%fZ"), i]
+                                                for (i, hour)in enumerate(hours)])]
+        self.win_statistics = self.win_statistics_ch1 + self.win_statistics_ch2
 
-        self.mac_statistics = [('3.0.0.0', [[hour.strftime("%Y-%m-%dT%H:%M:%S.%fZ"), self.n_hours - i]
+        self.mac_statistics_ch1 = [('3.0.0.0', [[hour.strftime("%Y-%m-%dT%H:%M:%S.%fZ"), self.n_hours - i]
                                             for (i, hour)in enumerate(hours)])]
-        self.mac_statistics.append(('4.0.0.1', [[hour.strftime("%Y-%m-%dT%H:%M:%S.%fZ"), i]
-                                                for (i, hour)in enumerate(hours)]))
-        self.data = {}
-        self.data['hourly'] = dict(data=dict(win=dict(self.win_statistics),
+        self.mac_statistics_ch2 = [('4.0.0.1', [[hour.strftime("%Y-%m-%dT%H:%M:%S.%fZ"), i]
+                                                for (i, hour)in enumerate(hours)])]
+        self.mac_statistics = self.mac_statistics_ch1 + self.mac_statistics_ch2
+
+        self.win_daily_stat_ch1 = [('1.0.0.0', [['2016-02-13T00:00:00.000000Z', 36], ['2016-02-14T00:00:00.000000Z', 12]])]
+        self.win_daily_stat_ch2 = [('2.0.0.0', [['2016-02-13T00:00:00.000000Z', 23], ['2016-02-14T00:00:00.000000Z', 35]])]
+        self.win_daily_statistics = self.win_daily_stat_ch1 + self.win_daily_stat_ch2
+
+        self.mac_daily_stat_ch1 = [('3.0.0.0', [['2016-02-13T00:00:00.000000Z', 36], ['2016-02-14T00:00:00.000000Z', 12]])]
+        self.mac_daily_stat_ch2 = [('4.0.0.1', [['2016-02-13T00:00:00.000000Z', 23], ['2016-02-14T00:00:00.000000Z', 35]])]
+        self.mac_daily_statistics = self.mac_daily_stat_ch1 + self.mac_daily_stat_ch2
+
+        self.data = {'hourly': {}, 'daily':{}}
+        self.data['hourly']['channel1'] = dict(data=dict(win=dict(self.win_statistics_ch1),
+                                             mac=dict(self.mac_statistics_ch1)))
+        self.data['hourly']['channel2'] = dict(data=dict(win=dict(self.win_statistics_ch2),
+                                             mac=dict(self.mac_statistics_ch2)))
+        self.data['hourly']['all'] = dict(data=dict(win=dict(self.win_statistics),
                                              mac=dict(self.mac_statistics)))
-        self.data['daily'] = dict(data=dict(win={'1.0.0.0': [['2016-02-13T00:00:00.000000Z', 36], ['2016-02-14T00:00:00.000000Z', 12]],
-                                                 '2.0.0.0': [['2016-02-13T00:00:00.000000Z', 23], ['2016-02-14T00:00:00.000000Z', 35]]},
-                                            mac={'4.0.0.1': [['2016-02-13T00:00:00.000000Z', 23], ['2016-02-14T00:00:00.000000Z', 35]],
-                                                 '3.0.0.0': [['2016-02-13T00:00:00.000000Z', 36], ['2016-02-14T00:00:00.000000Z', 12]]}))
+        self.data['hourly']['channel1'] = dict(data=dict(win=dict(self.win_statistics_ch1),
+                                                         mac=dict(self.mac_statistics_ch1)))
+        self.data['daily']['channel1'] = dict(data=dict(win=dict(self.win_daily_stat_ch1),
+                                             mac=dict(self.mac_daily_stat_ch1)))
+        self.data['daily']['channel2'] = dict(data=dict(win=dict(self.win_daily_stat_ch2),
+                                             mac=dict(self.mac_daily_stat_ch2)))
+        self.data['daily']['all'] = dict(data=dict(win=dict(self.win_daily_statistics),
+                                                            mac=dict(self.mac_daily_statistics)))
 
     @is_private()
     def test_unauthorized(self):
@@ -407,7 +435,19 @@ class LiveStatistics(APITestCase):
                                    dict(start=start.isoformat(), end=end.isoformat()),
                                    format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertDictEqual(StatisticsMonthsSerializer(self.data['hourly']).data, response.data)
+        self.assertDictEqual(StatisticsMonthsSerializer(self.data['hourly']['all']).data, response.data)
+
+        response = self.client.get(reverse('api-statistics-live', args=('app',)),
+                                   dict(start=start.isoformat(), end=end.isoformat(), channel=self.channel.name),
+                                   format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertDictEqual(StatisticsMonthsSerializer(self.data['hourly']['channel1']).data, response.data)
+
+        response = self.client.get(reverse('api-statistics-live', args=('app',)),
+                                   dict(start=start.isoformat(), end=end.isoformat(), channel=self.channel2.name),
+                                   format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertDictEqual(StatisticsMonthsSerializer(self.data['hourly']['channel2']).data, response.data)
 
     @freeze_time("2016-03-16")
     @is_private()
@@ -418,8 +458,19 @@ class LiveStatistics(APITestCase):
                                    dict(start=start.isoformat(), end=end.isoformat()),
                                    format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertDictEqual(StatisticsMonthsSerializer(self.data['daily']).data, response.data)
+        self.assertDictEqual(StatisticsMonthsSerializer(self.data['daily']['all']).data, response.data)
 
+        response = self.client.get(reverse('api-statistics-live', args=('app',)),
+                                   dict(start=start.isoformat(), end=end.isoformat(), channel=self.channel.name),
+                                   format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertDictEqual(StatisticsMonthsSerializer(self.data['daily']['channel1']).data, response.data)
+
+        response = self.client.get(reverse('api-statistics-live', args=('app',)),
+                                   dict(start=start.isoformat(), end=end.isoformat(), channel=self.channel2.name),
+                                   format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertDictEqual(StatisticsMonthsSerializer(self.data['daily']['channel2']).data, response.data)
 
 class StatisticsMonthsMixin(object):
     url = None

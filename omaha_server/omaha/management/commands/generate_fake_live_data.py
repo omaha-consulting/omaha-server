@@ -45,7 +45,7 @@ event_updatecheck = b"""<?xml version="1.0" encoding="UTF-8"?>
          requestid="{C8F6EDF3-B623-4ee6-B2DA-1D08A0B4C665}">
     <os platform="win" version="6.1" sp="" arch="x64"/>
     <app appid="%s" version="%s" nextversion="" lang="en" brand="GGLS"
-         client="someclientid" installage="39">
+         client="someclientid" installage="39" tag="%s">
         <updatecheck/>
         <ping r="1"/>
     </app>
@@ -53,14 +53,13 @@ event_updatecheck = b"""<?xml version="1.0" encoding="UTF-8"?>
 
 def generate_events(app_id, **options):
     versions = Version.objects.filter_by_enabled(app__id=app_id)
-    versions = map(lambda x: x.version, versions)
     n_hours = options['n_hours']
 
     def generate_fake_hour():
         for version in versions:
             for i in range(random.randint(0, 20)):
                 id = uuid.UUID(int=i)
-                request = event_updatecheck % (id, app_id, version)
+                request = event_updatecheck % (id, app_id, version.version, version.channel)
                 request = bytes(request, 'utf8')
                 request = parse_request(request)
                 collect_statistics(request)
