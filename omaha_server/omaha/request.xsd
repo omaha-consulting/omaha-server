@@ -13,13 +13,6 @@
             <xs:enumeration value="1"/>
         </xs:restriction>
     </xs:simpleType>
-    <xs:simpleType name="PlatformType">
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="win"/>
-            <xs:enumeration value="mac"/>
-            <xs:enumeration value="ios"/>
-        </xs:restriction>
-    </xs:simpleType>
     <xs:simpleType name="ArchType">
         <xs:restriction base="xs:string">
             <xs:enumeration value="x86"/>
@@ -69,7 +62,7 @@
     </xs:element>
     <xs:element name='os'>
         <xs:complexType>
-            <xs:attribute name='platform' use='required' type='PlatformType'/>
+            <xs:attribute name='platform' use='required' type='xs:string'/>
             <xs:attribute name='version' use='required' type='xs:string'/>
             <xs:attribute name='sp' type="xs:string" use='required'/>
             <xs:attribute name='arch' use='required' type='xs:NCName'/>
