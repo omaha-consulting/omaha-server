@@ -46,6 +46,7 @@
             <xs:attribute name='shell_version' type='xs:string' use="optional"/>
             <xs:attribute name='periodoverridesec' type='xs:integer' use="optional"/>
             <xs:attribute name='dlpref' type='xs:string' use="optional"/>
+            <xs:anyAttribute namespace="##any" processContents="skip"/>
         </xs:complexType>
     </xs:element>
     <xs:element name="hw">
