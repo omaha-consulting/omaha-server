@@ -98,13 +98,13 @@ class CrashDescriptionInline(admin.StackedInline):
 
 @admin.register(Crash)
 class CrashAdmin(admin.ModelAdmin):
-    list_display = ('id', 'created', 'modified', 'archive_field', 'signature', 'appid', 'userid', 'summary_field', 'os', 'build_number', 'cpu_architecture_field',)
+    list_display = ('id', 'created', 'modified', 'archive_field', 'signature', 'appid', 'userid', 'summary_field', 'os', 'build_number', 'channel', 'cpu_architecture_field',)
     list_select_related = ['crash_description']
     list_display_links = ('id', 'created', 'modified', 'signature', 'appid', 'userid', 'cpu_architecture_field',)
-    list_filter = (('id', TextInputFilter,), 'created', CrashArchiveFilter, 'os', 'build_number',)
+    list_filter = (('id', TextInputFilter,), 'created', CrashArchiveFilter, 'os', 'build_number', 'channel')
     search_fields = ('appid', 'userid', 'archive',)
     form = CrashFrom
-    readonly_fields = ('sentry_link_field', 'os', 'build_number',)
+    readonly_fields = ('sentry_link_field', 'os', 'build_number', 'channel',)
     exclude = ('groupid', 'eventid', )
     actions = ('regenerate_stacktrace',)
     inlines = [CrashDescriptionInline]
