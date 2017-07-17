@@ -57,6 +57,7 @@ class CrashModelTest(test.TestCase):
         meta = dict(
             lang='en',
             ver='1.0.0.1',
+            channel='alpha'
         )
         app_id = '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}'
         user_id = '{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}'
@@ -81,6 +82,7 @@ class CrashModelTest(test.TestCase):
         self.assertEqual(crash.signature, 'crashedFunc()')
         self.assertEqual(crash.os, 'Windows NT')
         self.assertEqual(crash.build_number, '1.0.0.1')
+        self.assertEqual(crash.channel, 'alpha')
 
     @temporary_media_root(
         MEDIA_URL='http://omaha-test.s3.amazonaws.com/',

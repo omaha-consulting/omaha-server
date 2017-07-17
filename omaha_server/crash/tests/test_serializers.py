@@ -100,4 +100,5 @@ class CrashSerializerTest(TestCase):
                                   created=crash.created.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
                                   modified=crash.modified.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
                                   os=None,
-                                  build_number=None,))
+                                  build_number=None,
+                                  channel=''))

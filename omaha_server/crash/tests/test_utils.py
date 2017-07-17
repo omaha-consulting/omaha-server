@@ -34,13 +34,17 @@ from crash.utils import (
     add_signature_to_frame,
     parse_stacktrace,
     get_signature,
+    get_channel,
     send_stacktrace_sentry,
     parse_debug_meta_info,
 )
 
 from crash.models import Crash
 from crash.tests.test_stacktrace_to_json import stacktrace
-
+from omaha.factories import VersionFactory
+from omaha.models import Version
+from sparkle.factories import SparkleVersionFactory
+from sparkle.models import SparkleVersion
 
 BASE_DIR = os.path.dirname(__file__)
 TEST_DATA_DIR = os.path.join(BASE_DIR, 'testdata')
@@ -246,3 +250,47 @@ class UtilsTest(test.TestCase):
         self.assertDictEqual(parse_debug_meta_info(head),
                              dict(debug_id='476350E1D4033CF180A2A7E388A7B6E40',
                                   debug_file='Chromium Framework'))
+
+
+class BaseGetChannelTest(object):
+    factory = None
+    os = None
+
+    def get_number_version(self, version):
+        if isinstance(version, Version):
+            return version.version
+        else:
+            return version.short_version
+
+    def test_version(self):
+        version = self.factory()
+        build_number = self.get_number_version(version)
+        channel = get_channel(build_number, self.os)
+        self.assertEqual(channel, version.channel.name)
+
+    def test_ambiguity(self):
+        version = self.factory.create_batch(2)[0]
+        build_number = self.get_number_version(version)
+        channel = get_channel(build_number, self.os)
+        self.assertEqual(channel, 'undefined')
+
+    def test_not_version(self):
+        build_number = '0.0.0.1'
+        channel = get_channel(build_number, self.os)
+        self.assertEqual(channel, 'undefined')
+
+    def test_invalid_build_number(self):
+        version = self.factory()
+        build_number = "%s-devel" % self.get_number_version(version)
+        channel = get_channel(build_number, self.os)
+        self.assertEqual(channel, 'undefined')
+
+
+class OmahaGetChannelTest(test.TestCase, BaseGetChannelTest):
+    factory = VersionFactory
+    os = 'Windows NT'
+
+
+class SparkleGetChannelTest(test.TestCase, BaseGetChannelTest):
+    factory = SparkleVersionFactory
+    os = 'Mac OS X'

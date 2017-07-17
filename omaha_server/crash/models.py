@@ -70,6 +70,7 @@ class Crash(BaseModel):
     eventid = models.CharField(max_length=38, null=True, blank=True)
     os = models.CharField(max_length=32, null=True, blank=True)
     build_number = models.CharField(max_length=32, null=True, blank=True)
+    channel = models.CharField(max_length=32, null=True, blank=True, default='')
 
     objects = CrashManager()
 

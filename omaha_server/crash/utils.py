@@ -24,6 +24,7 @@ import os
 import re
 
 from django.conf import settings
+from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist, ValidationError
 
 from clom import clom
 from raven import Client
@@ -31,7 +32,8 @@ from celery import signature
 
 from crash.settings import MINIDUMP_STACKWALK_PATH, SYMBOLS_PATH
 from crash.stacktrace_to_json import pipe_dump_to_json_dump
-
+from omaha.models import Version
+from sparkle.models import SparkleVersion
 
 client = Client(getattr(settings, 'RAVEN_DSN_STACKTRACE', None), name=getattr(settings, 'HOST_NAME', None),
                 release=getattr(settings, 'APP_VERSION', None))
@@ -123,6 +125,8 @@ def send_stacktrace_sentry(crash):
         ver = crash.meta.get('ver')
         if ver:
             tags['ver'] = ver
+    if crash.channel:
+        tags['channel'] = crash.channel
     if crash.archive:
         extra['archive_url'] = crash.archive.url
 
@@ -148,3 +152,14 @@ def parse_debug_meta_info(head, exception=Exception):
         raise exception(u"The file contains invalid data.")
     return dict(debug_id=head_list[-2],
                 debug_file=head_list[-1])
+
+
+def get_channel(build_number, os):
+    try:
+        if os == 'Mac OS X':      # We expect that sparkle supports only Mac platform
+            version = SparkleVersion.objects.select_related('channel').get(short_version=build_number)
+        else:                       # All other platforms will be related to Omaha
+            version = Version.objects.select_related('channel').get(version=build_number)
+    except (MultipleObjectsReturned, ObjectDoesNotExist, ValidationError):
+        return 'undefined'
+    return version.channel.name
