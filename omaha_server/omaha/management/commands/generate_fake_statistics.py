@@ -43,16 +43,11 @@ events = [dict(eventtype="2", eventresult="1", errorcode="0", extracode1="0"),
           dict(eventtype="4", eventresult="1", errorcode="0", extracode1="0")]
 
 NUMBER_UNIQUE = 1000
-uuids = dict(
-    win=["{%s}" % uuid4() for i in range(NUMBER_UNIQUE)],
-    mac=["{%s}" % uuid4() for i in range(NUMBER_UNIQUE)]
-)
+uuids = ["{%s}" % uuid4() for i in range(NUMBER_UNIQUE)]
 
-COUNTING = dict(win=userid_counting,
-                mac=mac_userid_counting)
 
 def get_random_uuid(platform):
-    return random.choice(uuids[platform])
+    return random.choice(uuids)
 
 
 def generate_statistics(i, versions, channels, year):
@@ -63,7 +58,7 @@ def generate_statistics(i, versions, channels, year):
     version = random.choice(versions)
     platform = version.platform.name if getattr(version, 'platform', None) else 'mac'
     channel = random.choice(channels)
-    if platform == 'win':
+    if platform != 'mac':
         app = create_app_xml(appid=version.app.id,
                        version=str(version.version),
                        tag=channel.name,
@@ -79,7 +74,10 @@ def generate_statistics(i, versions, channels, year):
     day = random.choice(range(1, 28))
     date = datetime(year, month, day)
     userid = get_random_uuid(platform)
-    COUNTING[platform](userid, app_list, platform, now=date)
+    if platform == 'mac':
+        mac_userid_counting(userid, app_list, platform, now=date)
+    else:
+        userid_counting(userid, app_list, platform, now=date)
 
 
 def run_worker(data, versions, channels, year):

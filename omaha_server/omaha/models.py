@@ -70,6 +70,7 @@ class Application(BaseModel):
 @python_2_unicode_compatible
 class Platform(BaseModel):
     name = models.CharField(verbose_name='Platform', max_length=10, unique=True, db_index=True)
+    verbose_name = models.CharField(max_length=20, blank=True)
 
     class Meta:
         db_table = 'platforms'

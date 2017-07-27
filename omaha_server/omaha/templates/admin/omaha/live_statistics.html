@@ -77,7 +77,7 @@
 {% endblock %}
 
 {% block content %}
-    <h1 data-name='{{ app.name }}' id="app_name">{{ app.name|title }}</h1>
+    <h1 data-name='{{ app.name }}' data-platforms="{{ platforms_list }}" id="app_name">{{ app.name|title }}</h1>
 
     <h2 class="inline-middle">Live Statistics</h2>
     <span data-toggle="popover" data-content="This shows how many users are active during a particular hour. The data is stored only for the last 7 days. These statistics are based on update check requests.">
@@ -107,13 +107,12 @@
         </button>
     </div>
 
-    <h2 align="center">Windows users</h2>
-    <div class="stacked-chart" id="win-chart">
-        <svg></svg>
-    </div>
-
-    <h2 align="center">Mac users</h2>
-    <div class="stacked-chart" id="mac-chart">
-        <svg></svg>
+    <div>
+        {% for platform in platforms %}
+        <h2 align="center">{%  firstof platform.verbose_name platform.name %} users</h2>
+        <div class="stacked-chart" id="{{ platform.name }}-chart">
+            <svg></svg>
+        </div>
+        {% endfor %}
     </div>
 {% endblock %}

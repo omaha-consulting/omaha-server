@@ -6,7 +6,9 @@
         app = $('#app_name'),
         appName = app.data('name'),
         appStartDate = moment(app.data('startDate')),
-        scope = {};
+        appPlatforms = app.data('platforms'),
+        charts = {},
+        chartDatas = {};
 
     function applyRange() {
         var start = moment.utc($start.val(), 'YYYY-MM', true);
@@ -49,7 +51,7 @@
     }
 
 
-    function makeGraphForPlatform(chartName, chartDataName, data, platform){
+    function makeGraphForPlatform(data, platform){
         nv.addGraph(function() {
             var months = getMonths(data);
             var chart = nv.models.multiBarChart()
@@ -71,9 +73,8 @@
                 .datum(getData(data)).call(chart);
 
             nv.utils.windowResize(chart.update);
-            scope[chartName] = chart;
-            scope[chartDataName] = chartData;
-            return chart;
+            charts[platform] = chart;
+            chartDatas[platform] = chartData;
         });
     }
 
@@ -83,16 +84,18 @@
             data: options,
             success: function (result) {
                 var data = result.data;
-                makeGraphForPlatform('winChart', 'winChartData', data.win, 'win');
-                makeGraphForPlatform('macChart', 'macChartData', data.mac, 'mac');
+                appPlatforms.forEach(function (platform) {
+                    makeGraphForPlatform(data[platform], platform);
+                })
             }
         });
     }
 
 
-    function updateGraphForPlatform(chart, chartData, data) {
-        var months = getMonths(data);
-
+    function updateGraphForPlatform(platform, data) {
+        var months = getMonths(data),
+            chart = charts[platform],
+            chartData = chartDatas[platform];
         chart.xAxis.showMaxMin(false)
             .tickValues(months);
 
@@ -111,8 +114,9 @@
             data: options,
             success: function (result) {
                 var data = result.data;
-                updateGraphForPlatform(scope['winChart'], scope['winChartData'], data.win);
-                updateGraphForPlatform(scope['macChart'], scope['macChartData'], data.mac);
+                appPlatforms.forEach(function (platform){
+                    updateGraphForPlatform(platform, data[platform]);
+                });
             },
             complete: function () {
                 $ajaxLoading.hide();

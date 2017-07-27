@@ -178,6 +178,9 @@ class ActionViewSet(viewsets.ModelViewSet):
 
 
 class StatisticsMonthsDetailView(APIView):
+    MAC_KEYS = ['new', 'updates']
+    OMAHA_KEYS = MAC_KEYS + ['uninstalls']
+
     def get_object(self, name):
         try:
             return Application.objects.get(name=name)
@@ -194,18 +197,22 @@ class StatisticsMonthsDetailView(APIView):
         diapasons = [((start.month if year == start.year else 1, end.month if year == end.year else 12), year)
                      for year in range(start.year, end.year+1)]
 
-        win_data = dict(new=[], updates=[], uninstalls=[])
-        mac_data = dict(new=[], updates=[])
-        for diapason in diapasons:
-            step = get_users_statistics_months(app_id=app.id, platform='win', year=diapason[1], start=diapason[0][0], end=diapason[0][1])
-            win_data['new'] += step['new']
-            win_data['updates'] += step['updates']
-            win_data['uninstalls'] += step['uninstalls']
-            step = get_users_statistics_months(app_id=app.id, platform='mac', year=diapason[1], start=diapason[0][0], end=diapason[0][1])
-            mac_data['new'] += step['new']
-            mac_data['updates'] += step['updates']
+        data = {}
+        platforms = Platform.objects.values_list('name', flat=True)
+        for platform in platforms:
+            if platform == 'mac':
+                platform_keys = self.MAC_KEYS
+            else:
+                platform_keys = self.OMAHA_KEYS
+            platform_data = {key: [] for key in platform_keys}
+            for diapason in diapasons:
+                step = get_users_statistics_months(app_id=app.id, platform=platform, year=diapason[1],
+                                                   start=diapason[0][0], end=diapason[0][1])
+                for key in platform_data:
+                    platform_data[key] += step[key]
+            data.update({platform: platform_data})
 
-        serializer = StatisticsMonthsSerializer(dict(data=dict(win=win_data, mac=mac_data)))
+        serializer = StatisticsMonthsSerializer(dict(data=data))
         return Response(serializer.data)
 
 class StatisticsVersionsView(APIView):

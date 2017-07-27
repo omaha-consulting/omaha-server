@@ -5,9 +5,10 @@
         $ajaxButton = $statistics.find('button'),
         app = $('#app_name'),
         appName = app.data('name'),
+        appPlatforms = app.data('platforms'),
         charts = {},
-        winTable,
-        macTable;
+        chartDatas = {},
+        tables = {};
 
     function applyRange() {
         var date = moment.utc($date.val(), 'YYYY-MM', true);
@@ -34,7 +35,7 @@
     }
 
 
-    function makeGraphForPlatform(chartName, chartDataName, data, platform) {
+    function makeGraphForPlatform(data, platform) {
         nv.addGraph(function () {
             var chart = nv.models.pieChart()
                 .x(function (d) {
@@ -49,9 +50,8 @@
                 .datum(getData(data))
                 .call(chart);
             nv.utils.windowResize(chart.update);
-            charts[chartName] = chart;
-            charts[chartDataName] = chartData;
-            return chart;
+            charts[platform] = chart;
+            chartDatas[platform] = chartData;
         });
     }
 
@@ -61,16 +61,18 @@
             url: "/api/statistics/versions/" + appName + '/',
             success: function (result) {
                 var data = result.data;
-                makeGraphForPlatform('winChart', 'winChartData', data.win, 'win');
-                winTable.rows.add(getRows(data.win)).draw();
-                makeGraphForPlatform('macChart', 'macChartData', data.mac, 'mac');
-                macTable.rows.add(getRows(data.mac)).draw();
+                appPlatforms.forEach(function (platform) {
+                    makeGraphForPlatform(data[platform], platform);
+                    tables[platform].rows.add(getRows(data[platform])).draw();
+                });
             }
         });
     }
 
 
-    function updateGraphForPlatform(chart, chartData, data) {
+    function updateGraphForPlatform(platform, data) {
+        var chart = charts[platform],
+            chartData = chartDatas[platform];
         chartData.html("").datum(getData(data)).transition().duration(1000).call(chart);
     }
 
@@ -86,10 +88,11 @@
             data: options,
             success: function (result) {
                 var data = result.data;
-                updateGraphForPlatform(charts['winChart'], charts['winChartData'], data.win);
-                winTable.clear().rows.add(getRows(data.win)).draw();
-                updateGraphForPlatform(charts['macChart'], charts['macChartData'], data.mac);
-                macTable.clear().rows.add(getRows(data.mac)).draw();
+                appPlatforms.forEach(function (platform) {
+                    updateGraphForPlatform(platform, data[platform]);
+                    tables[platform].clear().rows.add(getRows(data[platform])).draw();
+                });
+
             },
             complete: function () {
                 $ajaxLoading.hide();
@@ -106,7 +109,8 @@
         $ajaxButton.prop("disabled", false);
         $ajaxButton.click(applyRange);
         makeGraph();
-        winTable = $('#win-table table').DataTable( {
+        appPlatforms.forEach(function (platform) {
+            tables[platform] = $("#" + platform + "-table table").DataTable( {
             "paging":   false,
             "info": false,
             "scrollY": "300px",
@@ -116,18 +120,11 @@
                 { className: "dt-center", "targets": [ 0, 1 ] }
             ]
             } );
-        macTable = $('#mac-table table').DataTable( {
-            "paging":   false,
-            "info": false,
-            "scrollY": "300px",
-            "scrollCollapse": true,
-            "searching": false,
-            "columnDefs": [
-                { className: "dt-center", "targets": [ 0, 1 ] }
-            ]
-            } );
+        });
     });
     window.onresize = function () {
-        macTable.columns.adjust();
+        appPlatforms.forEach(function(platform){
+            tables[platform].columns.adjust();
+        });
     }
 })();

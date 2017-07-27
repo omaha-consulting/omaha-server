@@ -26,12 +26,21 @@ from datetime import datetime, timedelta
 from django.conf import settings
 from django.db import transaction
 from django.utils import timezone
-from bitmapist import setup_redis, mark_event, unmark_event, WeekEvents, MonthEvents, DayEvents, HourEvents
+from bitmapist import (
+    setup_redis, mark_event, unmark_event,
+    WeekEvents, MonthEvents, DayEvents, HourEvents
+)
 import pytz
 
-from omaha.utils import get_id, is_new_install, valuedispatch, redis
+from omaha.utils import (
+    get_id, is_new_install, valuedispatch,
+    redis, get_platforms_by_appid
+)
 from omaha import parser
-from omaha.models import ACTIVE_USERS_DICT_CHOICES, Request, AppRequest, Os, Hw, Event, Version, Channel
+from omaha.models import (
+    ACTIVE_USERS_DICT_CHOICES, Request, AppRequest,
+    Os, Hw, Event, Version, Channel, Platform
+)
 from sparkle.models import SparkleVersion
 
 __all__ = ['userid_counting', 'is_user_active']
@@ -157,26 +166,25 @@ def get_channel_statistics(app_id, date=None):
 
 
 def get_users_versions_by_platform(app_id, platform, date):
-    if platform == 'win':
-        versions = [str(v.version) for v in Version.objects.filter_by_enabled(app__id=app_id)]
+    if platform == 'mac':
+        versions = [str(v) for v in SparkleVersion.objects.filter_by_enabled(app_id=app_id).values_list('short_version', flat=True)]
     else:
-        versions = [str(v.short_version) for v in SparkleVersion.objects.filter_by_enabled(app__id=app_id)]
+        versions = [str(v) for v in Version.objects.filter_by_enabled(app__id=app_id, platform__name=platform).values_list('version', flat=True)]
     event_name = 'request:{}:{}:{}'
     data = [(v, len(MonthEvents(event_name.format(app_id, platform, v), date.year, date.month))) for v in versions]
-    return data
+    data = filter(lambda x: x[1], data)
+    return dict(data)
 
 
 def get_users_versions(app_id, date=None):
     if not date:
         date = timezone.now()
 
-    win_data = get_users_versions_by_platform(app_id, 'win', date)
-    win_data = filter(lambda x: x[1], win_data)
-
-    mac_data = get_users_versions_by_platform(app_id, 'mac', date)
-    mac_data = filter(lambda x: x[1], mac_data)
-
-    data = dict(win=dict(win_data), mac=dict(mac_data))
+    platforms = Platform.objects.values_list('name', flat=True)
+    data = dict()                   # try to move it in the separate function
+    for platform in platforms:
+        platform_data = get_users_versions_by_platform(app_id, platform, date)
+        data.update({platform: platform_data})
 
     return data
 
@@ -224,22 +232,34 @@ def get_daily_data_by_platform(app_id, end, n_days, versions, platform, channel)
 def get_users_live_versions(app_id, start, end, channel, tz='UTC'):
     import logging
     logging.info("Getting active versions from DB")
-    win_versions = [str(v.version) for v in Version.objects.filter_by_enabled(app__id=app_id)]
-    mac_versions = [str(v.short_version) for v in SparkleVersion.objects.filter_by_enabled(app__id=app_id)]
+    platforms = [x.name for x in get_platforms_by_appid(app_id)]
+    versions = {}
+
+    for platform in platforms:
+        if platform == 'mac':
+            platform_data = [str(v) for v in SparkleVersion.objects.filter_by_enabled(app_id=app_id).values_list('short_version', flat=True)]
+        else:
+            platform_data = [str(v) for v in Version.objects.filter_by_enabled(app__id=app_id, platform__name=platform).values_list('version', flat=True)]
+        versions.update({platform: platform_data})
+
     logging.info("Getting statistics from Redis")
     if start < timezone.now() - timedelta(days=7):
         n_days = (end-start).days
-        win_data = get_daily_data_by_platform(app_id, end, n_days, win_versions, 'win', channel)
-        mac_data = get_daily_data_by_platform(app_id, end, n_days, mac_versions, 'mac', channel)
+
+        data = dict()
+        for platform in platforms:
+            platform_data = get_daily_data_by_platform(app_id, end, n_days, versions[platform], platform, channel)
+            data.update({platform: platform_data})
+
     else:
         tmp_hours = divmod((end - start).total_seconds(), 60 * 60)
         n_hours = tmp_hours[0] + 1
         n_hours = int(n_hours)
-        win_data = get_hourly_data_by_platform(app_id, end, n_hours, win_versions, 'win', channel, tz=tz)
-        mac_data = get_hourly_data_by_platform(app_id, end, n_hours, mac_versions, 'mac', channel, tz=tz)
 
-    data = dict(win=win_data, mac=mac_data)
-
+        data = dict()
+        for platform in platforms:
+            platform_data = get_hourly_data_by_platform(app_id, end, n_hours, versions[platform], platform, channel, tz=tz)
+            data.update({platform: platform_data})
     return data
 
 

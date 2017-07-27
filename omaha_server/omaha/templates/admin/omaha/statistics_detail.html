@@ -59,7 +59,7 @@
 {% endblock %}
 
 {% block content %}
-    <h1 data-name='{{ app.name }}' data-start-date={{ start_date }} id="app_name">{{ app.name|title }}</h1>
+    <h1 data-name='{{ app.name }}' data-start-date={{ start_date }} data-platforms="{{ platforms_list }}" id="app_name">{{ app.name|title }}</h1>
 
     <a href="{% url "omaha_live_statistics" app.name %}" class="btn">Live Statistics</a>
     <a href="{% url "omaha_request_list" app.name %}" class="btn">View Requests & Events</a>
@@ -83,16 +83,14 @@
         </button>
     </form>
 
-    <h2 align="center">Windows users</h2>
-    <div id="win-months-chart" class="bar-chart">
-      <svg></svg>
+    <div>
+        {% for platform in platforms %}
+            <h2 align="center">{%  firstof platform.verbose_name platform.name %} users</h2>
+            <div id="{{ platform.name }}-months-chart" class="bar-chart">
+              <svg></svg>
+            </div>
+        {% endfor %}
     </div>
-
-    <h2 align="center">Mac users</h2>
-    <div id="mac-months-chart" class="bar-chart">
-      <svg></svg>
-    </div>
-
     <hr/>
 
     <h2 class="inline-middle">Versions</h2>
@@ -108,41 +106,28 @@
             <img class="ajax-loading" src="{% static "statistics/gif/ajax_loader.gif" %}" hidden/>
         </button>
     </form>
-
+    <div>
         <div class="row">
-            <div class="span6 versions-stat-container">
-                <h3 align="center">Windows users</h3>
-                <div id="win-versions-chart" class="pie-chart">
-                    <svg></svg>
+            {% for platform in platforms %}
+                 <div class="span6 versions-stat-container">
+                    <h3 align="center">{%  firstof platform.verbose_name platform.name %} users</h3>
+                    <div id="{{ platform }}-versions-chart" class="pie-chart">
+                        <svg></svg>
+                    </div>
+                    <div id="{{ platform }}-table" class="datatable">
+                        <table class="stripe">
+                            <thead>
+                            <tr>
+                                <th>Version</th>
+                                <th>Amount</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
                 </div>
-                <div id="win-table" class="datatable">
-                    <table class="stripe">
-                        <thead>
-                        <tr>
-                            <th>Version</th>
-                            <th>Amount</th>
-                        </tr>
-                        </thead>
-                    </table>
-                </div>
-            </div>
-            <div class="span6 versions-stat-container">
-                <h3 align="center">Mac users</h3>
-                <div id="mac-versions-chart" class="pie-chart">
-                    <svg></svg>
-                </div>
-                <div id="mac-table" class="datatable">
-                    <table class="stripe" cellspacing="0">
-                        <thead>
-                        <tr>
-                            <th>Version</th>
-                            <th>Amount</th>
-                        </tr>
-                        </thead>
-                    </table>
-                </div>
-            </div>
+            {% endfor %}
         </div>
+    </div>
     <hr/>
 
     <h2 class="inline-middle">Channels</h2>
@@ -178,6 +163,5 @@
             </div>
         </div>
     </div>
-
 
 {% endblock %}
