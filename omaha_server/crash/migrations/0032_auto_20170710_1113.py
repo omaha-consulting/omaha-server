@@ -18,6 +18,8 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('crash', '0031_crash_channel'),
+        ('sparkle', '0012_auto_20170317_0844'),
+        ('omaha', '0030_version_is_critical'),
     ]
 
     operations = [
