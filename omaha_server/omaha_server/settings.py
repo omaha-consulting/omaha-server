@@ -211,7 +211,8 @@ CACHES = {
     },
     'statistics': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': '{REDIS_HOST}:{REDIS_PORT}:{REDIS_DB}'.format(
+        'LOCATION': '{REDIS_AUTH}{REDIS_HOST}:{REDIS_PORT}:{REDIS_DB}'.format(
+            REDIS_AUTH=REDIS_AUTH,
             REDIS_PORT=os.environ.get('REDIS_STAT_PORT', REDIS_PORT),
             REDIS_HOST=os.environ.get('REDIS_STAT_HOST', REDIS_HOST),
             REDIS_DB=os.environ.get('REDIS_STAT_DB', 15)),
@@ -241,7 +242,7 @@ BOWER_INSTALLED_APPS = (
 
 from kombu import Queue
 
-BROKER_URL = CELERY_RESULT_BACKEND = 'redis://{}:{}/{}'.format(REDIS_HOST, REDIS_PORT, 3)
+BROKER_URL = CELERY_RESULT_BACKEND = 'redis://{}{}:{}/{}'.format(REDIS_AUTH, REDIS_HOST, REDIS_PORT, 3)
 CELERY_DISABLE_RATE_LIMITS = True
 CELERY_RESULT_SERIALIZER = 'msgpack'
 CELERY_MESSAGE_COMPRESSION = 'zlib'
@@ -286,6 +287,7 @@ CACHEOPS_REDIS = {
     'port': REDIS_PORT,
     'db': 1,
     'socket_timeout': 3,
+    'password': REDIS_PASSWORD,
 }
 
 CACHEOPS = {
