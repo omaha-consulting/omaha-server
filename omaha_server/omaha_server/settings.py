@@ -193,9 +193,9 @@ STATICFILES_DIRS = (
 
 REDIS_PORT = os.environ.get('REDIS_PORT', '6379')
 REDIS_HOST = os.environ.get('REDIS_HOST', '127.0.0.1')
-REDIS_PASSWORD = os.environ.get('REDIS_USER', '')
+REDIS_USER = os.environ.get('REDIS_USER', '')
 REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD', None)
-REDIS_AUTH = '{REDIS_USER}:{REDIS_PASSWORD}@' if REDIS_PASSWORD else ''
+REDIS_AUTH = '{}:{}@'.format(REDIS_USER, REDIS_PASSWORD) if REDIS_PASSWORD else ''
 
 CACHES = {
     'default': {
