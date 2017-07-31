@@ -18,6 +18,8 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
+import os
+
 from builtins import range
 
 from functools import partial
@@ -36,8 +38,11 @@ from sparkle.models import SparkleVersion
 
 __all__ = ['userid_counting', 'is_user_active']
 
-host, port, db = settings.CACHES['statistics']['LOCATION'].split(':')
-setup_redis('default', host, port, db=db)
+setup_redis('default', 
+            settings.REDIS_HOST, 
+            settings.REDIS_PORT, 
+            db=os.environ.get('REDIS_STAT_DB', 15), 
+            password=settings.REDIS_PASSWORD)
 
 
 def userid_counting(userid, apps_list, platform, now=None):
