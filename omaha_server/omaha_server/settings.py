@@ -193,11 +193,15 @@ STATICFILES_DIRS = (
 
 REDIS_PORT = os.environ.get('REDIS_PORT', '6379')
 REDIS_HOST = os.environ.get('REDIS_HOST', '127.0.0.1')
+REDIS_PASSWORD = os.environ.get('REDIS_USER', '')
+REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD', None)
+REDIS_AUTH = '{REDIS_USER}:{REDIS_PASSWORD}@' if REDIS_PASSWORD else ''
 
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': '{REDIS_HOST}:{REDIS_PORT}:{REDIS_DB}'.format(
+        'LOCATION': '{REDIS_AUTH}{REDIS_HOST}:{REDIS_PORT}:{REDIS_DB}'.format(
+            REDIS_AUTH=REDIS_AUTH,
             REDIS_PORT=REDIS_PORT,
             REDIS_HOST=REDIS_HOST,
             REDIS_DB=os.environ.get('REDIS_DB', 1)),
