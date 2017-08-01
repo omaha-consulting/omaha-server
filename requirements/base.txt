@@ -6,7 +6,7 @@ django-suit==0.2.24
 django-suit-redactor==0.0.4
 jsonfield==1.0.3
 boto==2.40.0
-django-storages==1.4.1
+django-storages==1.6.5
 django-absolute==0.3
 django-versionfield3==0.1.6
 raven==5.17.0
