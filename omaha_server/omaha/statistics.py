@@ -39,9 +39,9 @@ from sparkle.models import SparkleVersion
 __all__ = ['userid_counting', 'is_user_active']
 
 setup_redis('default', 
-            settings.REDIS_HOST, 
-            settings.REDIS_PORT, 
-            db=os.environ.get('REDIS_STAT_DB', 15), 
+            settings.REDIS_STAT_HOST,
+            settings.REDIS_STAT_PORT, 
+            db=settings.REDIS_STAT_DB, 
             password=settings.REDIS_PASSWORD)
 
 

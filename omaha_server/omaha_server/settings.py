@@ -196,6 +196,11 @@ REDIS_HOST = os.environ.get('REDIS_HOST', '127.0.0.1')
 REDIS_USER = os.environ.get('REDIS_USER', '')
 REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD', None)
 REDIS_AUTH = '{}:{}@'.format(REDIS_USER, REDIS_PASSWORD) if REDIS_PASSWORD else ''
+REDIS_AUTH = ''
+
+REDIS_STAT_PORT = os.environ.get('REDIS_STAT_PORT', REDIS_PORT)
+REDIS_STAT_HOST = os.environ.get('REDIS_STAT_HOST', REDIS_HOST)
+REDIS_STAT_DB = os.environ.get('REDIS_STAT_DB', 15)
 
 CACHES = {
     'default': {
@@ -213,9 +218,9 @@ CACHES = {
         'BACKEND': 'django_redis.cache.RedisCache',
         'LOCATION': '{REDIS_AUTH}{REDIS_HOST}:{REDIS_PORT}:{REDIS_DB}'.format(
             REDIS_AUTH=REDIS_AUTH,
-            REDIS_PORT=os.environ.get('REDIS_STAT_PORT', REDIS_PORT),
-            REDIS_HOST=os.environ.get('REDIS_STAT_HOST', REDIS_HOST),
-            REDIS_DB=os.environ.get('REDIS_STAT_DB', 15)),
+            REDIS_PORT=REDIS_STAT_PORT,
+            REDIS_HOST=REDIS_STAT_HOST,
+            REDIS_DB=REDIS_STAT_DB),
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
