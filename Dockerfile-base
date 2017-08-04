@@ -12,16 +12,16 @@ RUN \
   rm -rf /var/lib/{apt,dpkg,cache,log}/  && \
   pip install uwsgi
 
-RUN \
-  wget https://github.com/s3fs-fuse/s3fs-fuse/archive/v1.78.tar.gz -O /usr/src/v1.78.tar.gz && \
-  tar xvz -C /usr/src -f /usr/src/v1.78.tar.gz && \
-  cd /usr/src/s3fs-fuse-1.78 && \
-  ./autogen.sh && \
-  ./configure --prefix=/usr && \
-  make && \
-  make install && \
-  mkdir /srv/omaha_s3 && \
-  rm /usr/src/v1.78.tar.gz
+# RUN \
+#   wget https://github.com/s3fs-fuse/s3fs-fuse/archive/v1.78.tar.gz -O /usr/src/v1.78.tar.gz && \
+#   tar xvz -C /usr/src -f /usr/src/v1.78.tar.gz && \
+#   cd /usr/src/s3fs-fuse-1.78 && \
+#   ./autogen.sh && \
+#   ./configure --prefix=/usr && \
+#   make && \
+#   make install && \
+#   mkdir /srv/omaha_s3 && \
+#   rm /usr/src/v1.78.tar.gz
 
 
 RUN mkdir -p $omaha/requirements
