@@ -12,4 +12,5 @@ RUN \
   ln -s /srv/omaha/conf/supervisord.conf /etc/supervisor/conf.d/
 
 EXPOSE 80
+EXPOSE 8080
 CMD ["paver", "docker_run"]
