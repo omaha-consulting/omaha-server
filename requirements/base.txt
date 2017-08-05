@@ -28,9 +28,8 @@ Markdown==2.6.6
 pytz==2016.4
 Django-Select2==5.8.4
 django-bootstrap3==7.0.1
-protobuf==3.0.0a3
+protobuf==3.3.0
 protobuf-to-dict==0.1.0
 django-dynamic-preferences==0.8.1
 ecdsa==0.13
-gcloud==0.18.3
-google-cloud==0.26.1
+google-cloud
