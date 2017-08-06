@@ -193,10 +193,8 @@ STATICFILES_DIRS = (
 
 REDIS_PORT = os.environ.get('REDIS_PORT', '6379')
 REDIS_HOST = os.environ.get('REDIS_HOST', '127.0.0.1')
-REDIS_USER = os.environ.get('REDIS_USER', '')
 REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD', None)
-REDIS_AUTH = '{}:{}@'.format(REDIS_USER, REDIS_PASSWORD) if REDIS_PASSWORD else ''
-REDIS_AUTH = ''
+REDIS_AUTH = 'redis://:{}@'.format(REDIS_PASSWORD) if REDIS_PASSWORD else ''
 
 REDIS_STAT_PORT = os.environ.get('REDIS_STAT_PORT', REDIS_PORT)
 REDIS_STAT_HOST = os.environ.get('REDIS_STAT_HOST', REDIS_HOST)
@@ -292,7 +290,7 @@ CACHEOPS_REDIS = {
     'port': REDIS_PORT,
     'db': 1,
     'socket_timeout': 3,
-    'password': REDIS_PASSWORD,
+    'password': REDIS_PASSWORD or '',
 }
 
 CACHEOPS = {
