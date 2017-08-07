@@ -22,13 +22,16 @@ from functools import wraps
 import datetime
 import calendar
 
+from django.db.models import Q
+
 from singledispatch import singledispatch
 from django_redis import get_redis_connection
 from redis.exceptions import WatchError
 from django.utils import timezone
 
 from omaha.settings import KEY_PREFIX, KEY_LAST_ID
-
+from omaha.models import Platform
+from sparkle.models import SparkleVersion
 __all__ = ['get_sec_since_midnight', 'get_id']
 
 redis = get_redis_connection('statistics')
@@ -153,3 +156,11 @@ def get_month_range_from_dict(source):
 def is_new_install(appid, userid):
     event = "known_users:{}"
     return not redis.getbit(event.format(appid), userid)
+
+
+def get_platforms_by_appid(app_id):
+    filter_kwargs = Q(version__app=app_id)
+    is_add_mac = SparkleVersion.objects.filter(app=app_id).exists()
+    if is_add_mac:
+        filter_kwargs |= Q(name='mac')
+    return Platform.objects.filter(filter_kwargs).order_by('created').distinct()

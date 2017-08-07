@@ -19,7 +19,7 @@ INSTALLED_APPS += (
 )
 
 MIDDLEWARE_CLASSES += (
-    'debug_panel.middleware.DebugPanelMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 #

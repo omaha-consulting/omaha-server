@@ -21,6 +21,13 @@ the License.
 from datetime import datetime
 from unittest import TestCase
 
+import django
+
+from omaha.factories import (
+    PlatformFactory, VersionFactory,
+    ApplicationFactory,
+)
+from omaha.models import Version, Platform, Application
 from omaha.settings import KEY_PREFIX, KEY_LAST_ID
 from omaha.utils import (
     get_sec_since_midnight,
@@ -28,8 +35,10 @@ from omaha.utils import (
     get_id,
     create_id,
     make_piechart,
+    get_platforms_by_appid,
 )
-
+from sparkle.factories import SparkleVersionFactory
+from sparkle.models import SparkleVersion
 
 class UtilsTest(TestCase):
     def test_get_seconds_since_midnight(self):
@@ -118,3 +127,35 @@ class ChartsTest(TestCase):
                                         'x_axis_format': '',
                                         'x_is_date': False}})
 
+class GetPlatformTest(django.test.TestCase):
+    def setUp(self):
+        self.app = ApplicationFactory()
+        self.a_platform = PlatformFactory(name='a')
+        self.b_platform = PlatformFactory(name='b')
+        self.empty_platform = PlatformFactory(name='empty')
+        self.mac_platform = PlatformFactory(name='mac')
+        VersionFactory(platform=self.a_platform, app=self.app)
+        VersionFactory(platform=self.b_platform, app=self.app)
+
+    def test_without_mac_versions(self):
+        self.assertEqual(Platform.objects.count(), 4)
+        self.assertEqual(Version.objects.count(), 2)
+        self.assertEqual(SparkleVersion.objects.filter(app=self.app).count(), 0)
+        platforms = get_platforms_by_appid(self.app)
+        self.assertEqual(len(platforms), 2)
+        assert self.a_platform in platforms
+        assert self.b_platform in platforms
+        assert self.mac_platform not in platforms
+        assert self.empty_platform not in platforms
+
+    def test_with_mac_versions(self):
+        self.assertEqual(Platform.objects.count(), 4)
+        self.assertEqual(Version.objects.count(), 2)
+        mac_version = SparkleVersionFactory(app=self.app)
+        self.assertEqual(SparkleVersion.objects.filter(app=self.app).count(), 1)
+        platforms = get_platforms_by_appid(self.app)
+        self.assertEqual(len(platforms), 3)
+        assert self.a_platform in platforms
+        assert self.b_platform in platforms
+        assert self.mac_platform in platforms
+        assert self.empty_platform not in platforms

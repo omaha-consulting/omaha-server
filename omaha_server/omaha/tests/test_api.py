@@ -351,6 +351,7 @@ class LiveStatistics(APITestCase):
         self.channel = Channel.objects.create(name='stable')
         self.channel2 = Channel.objects.create(name='alpha')
         self.platform = Platform.objects.create(name='win')
+        Platform.objects.create(name='mac')
         self.version1 = Version.objects.create(
             app=self.app,
             platform=self.platform,
@@ -508,6 +509,7 @@ class StatisticsMonthsMixin(object):
         self.app = Application.objects.create(id='app', name='app')
         self.channel = Channel.objects.create(name='stable')
         self.platform = Platform.objects.create(name='win')
+        Platform.objects.create(name='mac')
         self.version1 = Version.objects.create(
             app=self.app,
             platform=self.platform,

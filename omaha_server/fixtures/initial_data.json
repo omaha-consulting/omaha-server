@@ -3,6 +3,7 @@
     "fields": {
         "modified": "2014-11-06T09:50:08.368Z",
         "name": "win",
+        "verbose_name": "Windows",
         "created": "2014-11-06T09:50:08.356Z"
     },
     "model": "omaha.platform",
@@ -12,6 +13,7 @@
     "fields": {
         "modified": "2014-11-26T12:02:38.321Z",
         "name": "mac",
+        "verbose_name": "Mac OS X",
         "created": "2014-11-26T12:02:38.293Z"
     },
     "model": "omaha.platform",

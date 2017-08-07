@@ -1,5 +1,7 @@
-var macChartData, macChart, winChartData, winChart;
-var daily = false;
+var charts = {},
+    chartDatas = {},
+    appPlatforms = $('#app_name').data('platforms');
+    daily = false;
 
 function applyRange() {
     var app_name = document.getElementById('app_name').dataset.name;
@@ -8,7 +10,7 @@ function applyRange() {
     var $channel = $("#channel-select");
     var start = moment($start.val(), 'YYYY-MM-DD HH:mm:ss', true);
     var end = moment($end.val(), 'YYYY-MM-DD HH:mm:ss', true);
-    daily = start < moment().add(-7, 'd')
+    daily = start < moment().add(-7, 'd');
     if (start > end){
         var tmp = start;
         start = end;
@@ -70,7 +72,7 @@ function getLiveStatisticsAPIurl(options){
 }
 
 
-function makePlatformGraph(chartName, chartDataName, data, platform){
+function makePlatformGraph(data, platform){
     nv.addGraph(function () {
         var graphSelector = ''.concat('#', platform, '-chart svg');
         var hours = getHours(data);
@@ -105,22 +107,25 @@ function makePlatformGraph(chartName, chartDataName, data, platform){
 
         nv.utils.windowResize(chart.update);
 
-        window[chartName] = chart;
-        window[chartDataName] = chartData;
-        return chart;
+        charts[platform] = chart;
+        chartDatas[platform] = chartData;
     });
 }
 
 function fillForm(data) {
-    if (Object.keys(data.win).length != 0) {
-        data = data.win;
-    } else if ((Object.keys(data.mac).length != 0)) {
-        data = data.mac;
-    } else {
-        return
+    let platform_data;
+    for (let i=0; i<appPlatforms.length; i++){
+        let platform = appPlatforms[i]
+        if (Object.keys(data[platform]).length != 0){
+            platform_data = data[platform];
+            break;
+        }
     }
-    var start = data[Object.keys(data)[0]][0][0];
-    var end = data[Object.keys(data)[0]].slice(-1)[0][0];
+    if (!platform_data) {
+        return;
+    }
+    let start = platform_data[Object.keys(platform_data)[0]][0][0],
+        end = platform_data[Object.keys(platform_data)[0]].slice(-1)[0][0];
     $("#range-end input").val(moment(end).utc().format('YYYY-MM-DD HH:mm:00'));
     $("#range-start input").val(moment(start).utc().format('YYYY-MM-DD HH:mm:00'));
 }
@@ -131,8 +136,9 @@ function makeGraph(options){
         success: function (result) {
             var data = result.data;
             fillForm(data);
-            makePlatformGraph('winChart', 'winChartData', data.win, 'win');
-            makePlatformGraph('macChart', 'macChartData', data.mac, 'mac');
+            appPlatforms.forEach(function (platform) {
+                makePlatformGraph(data[platform], platform);
+            });
         }
     });
 }
@@ -163,8 +169,9 @@ function updateGraph(options){
         url: getLiveStatisticsAPIurl(options),
         success: function (result) {
             var data = result.data;
-            updatePlatformGraph(winChart, winChartData, data.win);
-            updatePlatformGraph(macChart, macChartData, data.mac);
+            appPlatforms.forEach(function (platform) {
+                updatePlatformGraph(charts[platform], chartDatas[platform], data[platform]);
+            });
         },
         complete: function() {
             $ajaxLoading.hide();

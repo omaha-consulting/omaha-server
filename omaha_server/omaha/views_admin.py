@@ -21,6 +21,7 @@ the License.
 import logging
 import datetime
 import pytz
+import json
 from collections import OrderedDict
 
 from django.contrib.admin.views.decorators import staff_member_required
@@ -37,9 +38,9 @@ from django.core.cache import cache
 from dynamic_preferences.forms import global_preference_form_builder
 from dynamic_preferences_registry import global_preferences_manager as gpm
 
-from omaha.models import Application, AppRequest, Version
+from omaha.models import Application, AppRequest, Version, Platform
 from omaha.filters import AppRequestFilter
-from omaha.utils import make_piechart
+from omaha.utils import make_piechart, get_platforms_by_appid
 from omaha.filters import EVENT_RESULT, EVENT_TYPE
 from omaha.tables import AppRequestTable, VersionsUsageTable
 from omaha.forms import CrashManualCleanupForm, ManualCleanupForm
@@ -97,12 +98,16 @@ class StatisticsDetailView(StaffMemberRequiredMixin, DetailView):
 
         app = self.object
 
-        first_win_version = Version.objects.all().filter(app=app).order_by('created').first()
-        win_start_date = getattr(first_win_version, 'created', datetime.datetime(1970, 1, 1, tzinfo=pytz.UTC))
+        first_omaha_version = Version.objects.all().filter(app=app).order_by('created').first()
+        omaha_start_date = getattr(first_omaha_version, 'created', datetime.datetime(1970, 1, 1, tzinfo=pytz.UTC))
 
         first_mac_version = SparkleVersion.objects.all().filter(app=app).order_by('created').first()
         mac_start_date = getattr(first_mac_version, 'created', datetime.datetime(1970, 1, 1, tzinfo=pytz.UTC))
-        context['start_date'] = min(win_start_date, mac_start_date).isoformat()
+        context['start_date'] = min(omaha_start_date, mac_start_date).isoformat()
+        platforms = list(get_platforms_by_appid(app))
+        context['platforms'] = platforms
+        context['platforms_list'] = json.dumps([p.name for p in platforms])
+
         return context
 
 
@@ -120,6 +125,10 @@ class LiveStatisticsView(StaffMemberRequiredMixin, DetailView):
         app = self.object
 
         context['app_name'] = app.name
+        platforms = list(get_platforms_by_appid(app))
+        context['platforms'] = platforms
+        context['platforms_list'] = json.dumps([p.name for p in platforms])
+
         return context
 
 
