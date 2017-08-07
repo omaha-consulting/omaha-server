@@ -43,6 +43,7 @@ env:
   global:
     - HOST_NAME: 'travis-ci'
     - SECRET_KEY: 'SECRET_KEY'
+    - GRPC_PYTHON_BUILD_WITH_CYTHON: 1
 
 services:
   - redis-server
