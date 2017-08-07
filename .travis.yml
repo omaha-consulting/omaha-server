@@ -1,4 +1,5 @@
 language: python
+dist: trusty
 matrix:
   allow_failures:
     - env: TOX_ENV=py34
@@ -38,7 +39,6 @@ addons:
     - python-lxml
     - python-psycopg2
     - python-dev
-    - python-pil
 
 env:
   global:
