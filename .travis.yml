@@ -38,6 +38,7 @@ addons:
     - python-lxml
     - python-psycopg2
     - python-dev
+    - python-pil
 
 env:
   global:
