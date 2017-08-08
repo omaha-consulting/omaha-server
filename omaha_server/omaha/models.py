@@ -323,11 +323,16 @@ def pre_version_save(sender, instance, *args, **kwargs):
         if old.file == instance.file:
             return
         else:
-            old.file.delete(save=False)
-            old.file_size = 0
+            try:
+                old.file.delete(save=False)
+            except:
+                pass
+            finally:
+                old.file_size = 0
     sha1 = hashlib.sha1()
     for chunk in instance.file.chunks():
         sha1.update(chunk)
+    instance.file.seek(0)
     instance.file_hash = base64.b64encode(sha1.digest()).decode()
 
 
