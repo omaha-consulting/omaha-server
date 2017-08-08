@@ -33,6 +33,8 @@ RUN \
   ln -s /srv/omaha/conf/nginx-app.conf /etc/nginx/sites-enabled/ && \
   ln -s /srv/omaha/conf/supervisord.conf /etc/supervisor/conf.d/
 
+ENV AWS_STORAGE_BUCKET_NAME="" AWS_ROLE=""
+
 EXPOSE 80
 EXPOSE 8080
 CMD ["paver", "docker_run"]
