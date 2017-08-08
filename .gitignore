@@ -29,5 +29,8 @@ deploy/*.zip
 deploy/ebs.config
 deploy/settings.yml
 
+deploy/google/app.yaml
+!deploy/google/app.yaml.example
+
 ### Vagrant ###
 .vagrant/

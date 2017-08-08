@@ -1,4 +1,5 @@
 language: python
+dist: trusty
 matrix:
   allow_failures:
     - env: TOX_ENV=py34
@@ -37,11 +38,13 @@ addons:
     packages:
     - python-lxml
     - python-psycopg2
+    - python-dev
 
 env:
   global:
     - HOST_NAME: 'travis-ci'
     - SECRET_KEY: 'SECRET_KEY'
+    - GRPC_PYTHON_BUILD_WITH_CYTHON: 1
 
 services:
   - redis-server
