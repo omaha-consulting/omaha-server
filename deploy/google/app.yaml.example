@@ -46,7 +46,3 @@ env_variables:
   # Google Cloud
   GS_PROJECT_ID: google-project-name
   GS_BUCKET_NAME: google-file-storage-bucket-name
-
-  # UWSGI
-  UWSGI_THREADS: 8
-  UWSGI_PROCESSES: 10
