@@ -272,6 +272,10 @@ $ ebs-deploy deploy -e omaha-server-dev
 
 - Presentation: [omaha-server High Fidelity, High Velocity Deployments in the Cloud](http://slides.com/andreylisin/omaha-server/#/)
 
+## Contributors
+
+Thanks to Abiral Shrestha <abiralshrestha100@gmail.com> for the security reports and suggestions.
+
 ## Copyright and license
 
 This software is licensed under the Apache 2 license, quoted below.
