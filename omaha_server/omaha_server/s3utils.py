@@ -23,5 +23,9 @@ class StaticS3Storage(BaseS3Storage):
         return url
 
 
+class AuthS3Storage(S3BotoStorage):
+    querystring_auth = True
+
+
 class S3Storage(BaseS3Storage):
     pass
