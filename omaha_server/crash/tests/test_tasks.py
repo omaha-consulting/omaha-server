@@ -22,8 +22,8 @@ import os
 
 from django import test
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.files.storage import DefaultStorage
 
-# import requests
 from clom.shell import CommandError
 from mock import patch
 from freezegun import freeze_time
@@ -43,6 +43,18 @@ STACKTRACE_PATH = os.path.join(TEST_DATA_DIR, 'stacktrace.txt')
 
 
 class CrashModelTest(test.TestCase):
+    def setUp(self):
+        self._file_field = Crash._meta.get_field_by_name('upload_file_minidump')[0]
+        self._archive_field = Crash._meta.get_field_by_name('archive')[0]
+        self._default_storage = self._file_field.storage
+        test_storage = DefaultStorage()
+        self._file_field.storage = test_storage
+        self._archive_field.storage = test_storage
+
+    def tearDown(self):
+        self._file_field.storage = self._default_storage
+        self._archive_field.storage = self._default_storage
+
     @temporary_media_root(
         MEDIA_URL='http://omaha-test.s3.amazonaws.com/',
         CRASH_S3_MOUNT_PATH=TEST_DATA_DIR,
