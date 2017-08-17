@@ -15,6 +15,7 @@ from omaha.models import Version
 from sparkle.models import SparkleVersion
 from omaha_server.utils import storage_with_spaces_instance
 from omaha.limitation import bulk_delete
+from storages.backends.s3boto import S3BotoStorage
 
 
 class BaseS3Test(object):
@@ -77,6 +78,18 @@ class BaseS3Test(object):
 
 @override_settings(DEFAULT_FILE_STORAGE='storages.backends.s3boto.S3BotoStorage')
 class CrashS3Test(BaseS3Test, TestCase):
+    def setUp(self):
+        self._file_field = self.model._meta.get_field_by_name('upload_file_minidump')[0]
+        self._archive_field = self.model._meta.get_field_by_name('archive')[0]
+        self._default_storage = self._file_field.storage
+        test_storage = S3BotoStorage()
+        self._file_field.storage = test_storage
+        self._archive_field.storage = test_storage
+
+    def tearDown(self):
+        self._file_field.storage = self._default_storage
+        self._archive_field.storage = self._default_storage
+
     model = Crash
     factory = CrashFactoryWithFiles
     file_fields = ['archive', 'upload_file_minidump']
