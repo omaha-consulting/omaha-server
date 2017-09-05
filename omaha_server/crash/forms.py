@@ -52,7 +52,9 @@ class CrashFrom(forms.ModelForm):
     def clean_upload_file_minidump(self):
         file = self.cleaned_data["upload_file_minidump"]
 
-        if file and file.name.endswith('.tar'):
+        if not file:
+            return
+        if file.name.endswith('.tar') or file.name.endswith('.tar.gz'):
             try:
                 t_file = BytesIO(file.read())
                 t_file = tarfile.open(fileobj=t_file, mode='r')

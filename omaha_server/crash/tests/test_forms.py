@@ -32,6 +32,7 @@ BASE_DIR = os.path.dirname(__file__)
 TEST_DATA_DIR = os.path.join(BASE_DIR, 'testdata')
 SYM_FILE = os.path.join(TEST_DATA_DIR, 'BreakpadTestApp.sym')
 TAR_FILE = os.path.join(TEST_DATA_DIR, 'foo.tar')
+TAR_GZ_FILE = os.path.join(TEST_DATA_DIR, 'foo.tar.gz')
 
 
 def string_generator(size, chars=string.ascii_uppercase + string.ascii_lowercase + string.digits):
@@ -84,6 +85,23 @@ class CrashFormTest(TestCase):
         self.assertEqual(form.cleaned_data['upload_file_minidump'].name, '7b05e196-7e23-416b-bd13-99287924e214.dmp')
         self.assertEqual(form.cleaned_data['archive'].name, 'foo.tar')
         self.assertEqual(form.cleaned_data['archive_size'], 85504)
+        self.assertEqual(form.cleaned_data['minidump_size'], 14606)
+
+    def test_form_tar_gz_file(self):
+        with open(TAR_GZ_FILE, 'rb') as f:
+            form_file_data = dict(upload_file_minidump=SimpleUploadedFile(
+                "foo.tar.gz", f.read()))
+        form_data = dict(
+            appid='{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}',
+            userid='{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}',
+        )
+
+        form = CrashFrom(form_data, form_file_data)
+
+        self.assertTrue(form.is_valid())
+        self.assertEqual(form.cleaned_data['upload_file_minidump'].name, '7b05e196-7e23-416b-bd13-99287924e214.dmp')
+        self.assertEqual(form.cleaned_data['archive'].name, 'foo.tar.gz')
+        self.assertEqual(form.cleaned_data['archive_size'], 18791)
         self.assertEqual(form.cleaned_data['minidump_size'], 14606)
 
     def test_invalid_data(self):
