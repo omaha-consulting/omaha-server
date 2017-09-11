@@ -15,7 +15,6 @@ class BaseS3Storage(S3BotoStorage):
 
 class StaticS3Storage(BaseS3Storage):
     location = 'static'
-    default_acl = 'public-read'
 
     def url(self, name):
         url = super(StaticS3Storage, self).url(name)
