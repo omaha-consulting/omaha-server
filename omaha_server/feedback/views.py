@@ -72,7 +72,7 @@ class FeedbackFormView(FormView):
         if submit.screenshot.binary_content:
             files['screenshot'] = SimpleUploadedFile('screenshot.png', submit.screenshot.binary_content)
         if submit.blackbox.data:
-            files['blackbox'] = SimpleUploadedFile('blackbox.tar', submit.blackbox.data)
+            files['blackbox'] = SimpleUploadedFile('blackbox.tar.gz', submit.blackbox.data)
         for attach in submit.product_specific_binary_data:
             key = 'attached_file'
             logs_key = 'system_logs'
