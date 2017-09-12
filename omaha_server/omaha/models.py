@@ -137,7 +137,10 @@ class Version(BaseModel):
     @property
     def file_package_name(self):
         url = furl(self.file_absolute_url)
-        return os.path.basename(url.pathstr)
+        package_url = os.path.basename(url.pathstr)
+        if url.query:
+            package_url += r'?%s' % (url.query)
+        return package_url
 
     @property
     def file_url(self):
