@@ -182,4 +182,4 @@ def build_response(request, pretty_print=True, ip=None):
     apps_list = reduce(partial(on_app, os=obj.os, userid=userid), apps, [])
     response = Response(apps_list, date=now())
     return etree.tostring(response, pretty_print=pretty_print,
-                          xml_declaration=True, encoding='UTF-8')
+                          xml_declaration=True, encoding='UTF-8').replace('&amp;','&')
