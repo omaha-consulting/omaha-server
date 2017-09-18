@@ -1,6 +1,9 @@
 from storages.backends.s3boto import S3BotoStorage
 from furl import furl
 
+from django.utils.module_loading import import_string
+from django.conf import settings
+
 
 class BaseS3Storage(S3BotoStorage):
     def url(self, name):
@@ -15,6 +18,7 @@ class BaseS3Storage(S3BotoStorage):
 
 class StaticS3Storage(BaseS3Storage):
     location = 'static'
+    default_acl = 'public-read'
 
     def url(self, name):
         url = super(StaticS3Storage, self).url(name)
@@ -23,9 +27,17 @@ class StaticS3Storage(BaseS3Storage):
         return url
 
 
-class AuthS3Storage(S3BotoStorage):
-    querystring_auth = True
+class PublicReadS3Storage(BaseS3Storage):
+    querystring_auth = False
+    default_acl = 'public-read'
 
 
 class S3Storage(BaseS3Storage):
     pass
+
+
+def get_public_read_storage_class():
+    return import_string(getattr(settings, 'PUBLIC_READ_FILE_STORAGE', settings.DEFAULT_FILE_STORAGE))
+
+
+public_read_storage = get_public_read_storage_class()()

@@ -16,7 +16,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY') or crypto.get_random_string(50)
 
 STATICFILES_STORAGE = 'omaha_server.s3utils.StaticS3Storage'
 DEFAULT_FILE_STORAGE = 'omaha_server.s3utils.S3Storage'
-CRASH_FILE_STORAGE = 'omaha_server.s3utils.AuthS3Storage'
+PUBLIC_READ_FILE_STORAGE = 'omaha_server.s3utils.PublicReadS3Storage'
 
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
@@ -25,8 +25,8 @@ S3_URL = 'https://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
 
 STATIC_URL = ''.join([S3_URL, 'static/'])
 AWS_PRELOAD_METADATA = True
-AWS_QUERYSTRING_AUTH = False
 AWS_IS_GZIPPED = True
+AWS_DEFAULT_ACL = 'authenticated-read'
 
 
 RAVEN_CONFIG = {

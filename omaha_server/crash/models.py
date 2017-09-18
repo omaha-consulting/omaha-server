@@ -25,8 +25,6 @@ from django.db import models
 from django.db.models.signals import post_save, pre_delete, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
-from django.utils.module_loading import import_string
-from django.conf import settings
 
 from celery import signature
 from jsonfield import JSONField
@@ -56,19 +54,12 @@ def crash_archive_upload_to(obj, filename):
     return upload_to('minidump_archive', obj, filename)
 
 
-def get_crash_storage_class():
-    return import_string(getattr(settings, 'CRASH_FILE_STORAGE', settings.DEFAULT_FILE_STORAGE))
-
-
-crash_storage = get_crash_storage_class()()
-
-
 class Crash(BaseModel):
     upload_file_minidump = models.FileField(upload_to=crash_upload_to, blank=True, null=True,
-                                            max_length=255, storage=crash_storage)
+                                            max_length=255)
     minidump_size = models.PositiveIntegerField(null=True, blank=True)
     archive = models.FileField(upload_to=crash_archive_upload_to, blank=True, null=True,
-                               max_length=255, storage=crash_storage)
+                               max_length=255)
     archive_size = models.PositiveIntegerField(null=True, blank=True)
     appid = models.CharField(max_length=38, null=True, blank=True)
     userid = models.CharField(max_length=38, null=True, blank=True)
