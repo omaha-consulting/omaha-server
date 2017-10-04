@@ -12,6 +12,7 @@ from sparkle.factories import SparkleVersionFactory
 from crash.models import Crash, Symbols
 from feedback.models import Feedback
 from omaha.models import Version
+from omaha.tests import OverloadTestStorageMixin
 from sparkle.models import SparkleVersion
 from omaha_server.utils import storage_with_spaces_instance
 from omaha.limitation import bulk_delete
@@ -78,18 +79,6 @@ class BaseS3Test(object):
 
 @override_settings(DEFAULT_FILE_STORAGE='storages.backends.s3boto.S3BotoStorage')
 class CrashS3Test(BaseS3Test, TestCase):
-    def setUp(self):
-        self._file_field = self.model._meta.get_field_by_name('upload_file_minidump')[0]
-        self._archive_field = self.model._meta.get_field_by_name('archive')[0]
-        self._default_storage = self._file_field.storage
-        test_storage = S3BotoStorage()
-        self._file_field.storage = test_storage
-        self._archive_field.storage = test_storage
-
-    def tearDown(self):
-        self._file_field.storage = self._default_storage
-        self._archive_field.storage = self._default_storage
-
     model = Crash
     factory = CrashFactoryWithFiles
     file_fields = ['archive', 'upload_file_minidump']
@@ -113,14 +102,14 @@ class SymbolsS3Test(BaseS3Test, TestCase):
 
 
 @override_settings(DEFAULT_FILE_STORAGE='storages.backends.s3boto.S3BotoStorage')
-class OmahaVersionS3Test(BaseS3Test, TestCase):
+class OmahaVersionS3Test(OverloadTestStorageMixin, BaseS3Test, TestCase):
     model = Version
     factory = VersionFactory
     file_fields = ['file']
 
 
 @override_settings(DEFAULT_FILE_STORAGE='storages.backends.s3boto.S3BotoStorage')
-class SparkleVersionS3Test(BaseS3Test, TestCase):
+class SparkleVersionS3Test(OverloadTestStorageMixin, BaseS3Test, TestCase):
     model = SparkleVersion
     factory = SparkleVersionFactory
     file_fields = ['file']

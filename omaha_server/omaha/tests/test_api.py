@@ -52,7 +52,7 @@ from omaha.serializers import (
 )
 from omaha.factories import ApplicationFactory, DataFactory, PlatformFactory, ChannelFactory, VersionFactory, ActionFactory
 from omaha.models import Application, Data, Channel, Platform, Version, Action
-from omaha.tests import fixtures
+from omaha.tests import fixtures, OverloadTestStorageMixin
 from omaha.tests.utils import temporary_media_root, create_app_xml
 from sparkle.models import SparkleVersion
 from sparkle.statistics import userid_counting as mac_userid_counting
@@ -230,11 +230,17 @@ class ChannelTest(BaseTest, APITestCase):
         obj = Channel.objects.get(id=obj_id)
         self.assertEqual(obj.name, 'test_name2')
 
-class VersionTest(BaseTest, APITestCase):
+
+class VersionTest(OverloadTestStorageMixin, BaseTest, APITestCase):
     url = 'version-list'
     url_detail = 'version-detail'
     factory = VersionFactory
     serializer = VersionSerializer
+    model = Version
+
+    @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
+    def setUp(self):
+        super(VersionTest, self).setUp()
 
     @is_private()
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')

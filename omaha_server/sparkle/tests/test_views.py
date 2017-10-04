@@ -27,16 +27,19 @@ from xmlunittest import XmlTestMixin
 from freezegun import freeze_time
 
 from omaha.tests.utils import temporary_media_root
+from omaha.tests import OverloadTestStorageMixin
 from omaha.factories import ApplicationFactory, ChannelFactory
 
+from sparkle.models import SparkleVersion
 from sparkle.tests import fixtures
 from sparkle.factories import SparkleVersionFactory
 
 
-
-class SparkleViewTest(TestCase, XmlTestMixin):
+class SparkleViewTest(OverloadTestStorageMixin, TestCase, XmlTestMixin):
+    model = SparkleVersion
     def setUp(self):
         self.client = Client()
+        super(SparkleViewTest, self).setUp()
 
     @freeze_time('2014-10-14 08:28:05')
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')

@@ -27,6 +27,7 @@ from omaha.models import Application, Channel, Platform, Version, Action, EVENT_
 from omaha.models import version_upload_to
 from omaha.factories import ApplicationFactory, ChannelFactory, PlatformFactory, VersionFactory
 from omaha.tests.utils import temporary_media_root
+from omaha.tests import OverloadTestStorageMixin
 
 
 class ApplicationModelTest(test.SimpleTestCase):
@@ -49,7 +50,9 @@ class PlatformModelTest(test.TestCase):
         self.assertTrue(Platform.objects.get(id=platform.id))
 
 
-class VersionModelTest(test.TestCase):
+class VersionModelTest(OverloadTestStorageMixin, test.TestCase):
+    model = Version
+
     @temporary_media_root()
     def test_version_upload_to(self):
         version = VersionFactory.create(file=SimpleUploadedFile('./chrome_installer.exe', False))
