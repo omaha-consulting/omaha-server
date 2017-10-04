@@ -9,6 +9,7 @@ RUN \
   rm /etc/nginx/nginx.conf && \
   ln -s /srv/omaha/conf/nginx.conf /etc/nginx/ && \
   ln -s /srv/omaha/conf/nginx-app.conf /etc/nginx/sites-enabled/ && \
+  ln -s /srv/omaha/conf/inflate_request.lua /usr/share/nginx/ && \
   ln -s /srv/omaha/conf/supervisord.conf /etc/supervisor/conf.d/
 
 EXPOSE 80
