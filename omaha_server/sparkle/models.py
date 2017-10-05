@@ -31,6 +31,7 @@ from versionfield import VersionField
 
 from omaha.models import BaseModel, Application, Channel
 from sparkle.managers import VersionManager
+from omaha_server.s3utils import public_read_storage
 
 
 def version_upload_to(obj, filename):
@@ -48,9 +49,11 @@ class SparkleVersion(BaseModel):
     short_version = VersionField(help_text='Format: 255.255.65535.65535',
                                  number_bits=(8, 8, 16, 16), blank=True, null=True)
     release_notes = models.TextField(blank=True, null=True)
-    file = models.FileField(upload_to=version_upload_to, null=True)
+    file = models.FileField(upload_to=version_upload_to, null=True,
+                            storage=public_read_storage)
     file_size = models.PositiveIntegerField(null=True, blank=True)
-    dsa_signature = models.CharField(verbose_name='DSA signature', max_length=140, null=True, blank=True)
+    dsa_signature = models.CharField(verbose_name='DSA signature',
+                                     max_length=140, null=True, blank=True)
 
     objects = VersionManager()
 

@@ -28,11 +28,12 @@ import base64
 from django.db import models
 from django.conf import settings
 from django.dispatch import receiver
-from django.db.models.signals import pre_save, pre_delete, post_save
+from django.db.models.signals import pre_save, pre_delete
 from django.utils.timezone import now as datetime_now
 
 from omaha.managers import VersionManager
 from omaha.fields import PercentField
+from omaha_server.s3utils import public_read_storage
 
 from django_extensions.db.fields import (
     CreationDateTimeField, ModificationDateTimeField,
@@ -108,8 +109,10 @@ class Version(BaseModel):
     channel = models.ForeignKey(Channel, db_index=True)
     version = VersionField(help_text='Format: 255.255.65535.65535', number_bits=(8, 8, 16, 16), db_index=True)
     release_notes = models.TextField(blank=True, null=True)
-    file = models.FileField(upload_to=_version_upload_to, null=True)
-    file_hash = models.CharField(verbose_name='Hash', max_length=140, null=True, blank=True)
+    file = models.FileField(upload_to=_version_upload_to, null=True,
+                            storage=public_read_storage)
+    file_hash = models.CharField(verbose_name='Hash', max_length=140,
+                                 null=True, blank=True)
     file_size = models.PositiveIntegerField(null=True, blank=True)
 
     objects = VersionManager()
