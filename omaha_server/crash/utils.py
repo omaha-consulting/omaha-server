@@ -27,16 +27,15 @@ from django.conf import settings
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist, ValidationError
 
 from clom import clom
-from raven import Client
 from celery import signature
 
 from crash.settings import MINIDUMP_STACKWALK_PATH, SYMBOLS_PATH
 from crash.stacktrace_to_json import pipe_dump_to_json_dump
+from crash.senders import get_sender
 from omaha.models import Version
 from sparkle.models import SparkleVersion
 
-client = Client(getattr(settings, 'RAVEN_DSN_STACKTRACE', None), name=getattr(settings, 'HOST_NAME', None),
-                release=getattr(settings, 'APP_VERSION', None))
+crash_sender = get_sender()
 
 
 class FileNotFoundError(Exception):
@@ -135,14 +134,7 @@ def send_stacktrace_sentry(crash):
     if crash.appid:
         tags['appid'] = crash.appid
 
-    event_id = client.capture(
-        'raven.events.Message',
-        message=crash.signature,
-        extra=extra,
-        tags=tags,
-        data=data
-    )
-    signature("tasks.get_sentry_link", args=(crash.pk, event_id)).apply_async(queue='private', countdown=1)
+    crash_sender.send(crash.signature, extra=extra, tags=tags, data=data, crash_obj=crash)
 
 
 def parse_debug_meta_info(head, exception=Exception):

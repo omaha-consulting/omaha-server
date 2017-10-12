@@ -228,6 +228,9 @@ app:
 | SENTRY_STACKTRACE_API_KEY | Auth API token     |                            |
 | OMAHA_ONLY_HTTPS          | HTTPS-only         | False                      |
 | CUP_REQUEST_VALIDATION    |                    | False                      |
+| CRASH_TRACKER             | Sentry, ELK        | Sentry                     |
+| LOGSTASH_HOST             | Logstash host      |                            |
+| LOGSTASH_PORT             | Logstash TCP port  |                            |
 
 - [uWSGI Options](http://uwsgi-docs.readthedocs.org/en/latest/Options.html) & [Environment variables](http://uwsgi-docs.readthedocs.org/en/latest/Configuration.html#environment-variables)
 - [Sentry](https://github.com/getsentry/sentry)

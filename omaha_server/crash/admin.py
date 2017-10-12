@@ -32,7 +32,7 @@ from crash.forms import TextInputForm
 SENTRY_DOMAIN = getattr(settings, 'SENTRY_STACKTRACE_DOMAIN', None)
 SENTRY_ORG_SLUG = getattr(settings, 'SENTRY_STACKTRACE_ORG_SLUG', None)
 SENTRY_PROJ_SLUG = getattr(settings, 'SENTRY_STACKTRACE_PROJ_SLUG', None)
-
+CRASH_TRACKER = getattr(settings, 'CRASH_TRACKER', None)
 
 class BooleanFilter(admin.SimpleListFilter):
     title = None
@@ -104,7 +104,7 @@ class CrashAdmin(admin.ModelAdmin):
     list_filter = (('id', TextInputFilter,), 'created', CrashArchiveFilter, 'os', 'build_number', 'channel')
     search_fields = ('appid', 'userid', 'archive',)
     form = CrashFrom
-    readonly_fields = ('sentry_link_field', 'os', 'build_number', 'channel',)
+    readonly_fields = ['sentry_link_field', 'os', 'build_number', 'channel',]
     exclude = ('groupid', 'eventid', )
     actions = ('regenerate_stacktrace',)
     inlines = [CrashDescriptionInline]
@@ -146,6 +146,13 @@ class CrashAdmin(admin.ModelAdmin):
             signature("tasks.processing_crash_dump", args=(i.pk,)).apply_async(queue='default')
     regenerate_stacktrace.short_description = 'Regenerate stacktrace'
 
+    def get_form(self, request, obj=None, **kwargs):
+        if CRASH_TRACKER != 'Sentry':
+            try:
+                self.readonly_fields.remove('sentry_link_field')
+            except ValueError:
+                pass
+        return super(CrashAdmin, self).get_form(request, obj, **kwargs)
 
 
 @admin.register(Symbols)

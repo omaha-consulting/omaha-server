@@ -328,3 +328,8 @@ CUP_REQUEST_VALIDATION = os.environ.get('CUP_REQUEST_VALIDATION', False)
 CUP_PEM_KEYS = {
     # 'keyid': 'private_key_path',
 }
+
+CRASH_TRACKER = os.environ.get('CRASH_TRACKER', 'Sentry')
+
+LOGSTASH_HOST = os.environ.get('LOGSTASH_HOST')
+LOGSTASH_PORT = os.environ.get('LOGSTASH_PORT')
