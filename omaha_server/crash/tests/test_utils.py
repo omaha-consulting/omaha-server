@@ -111,7 +111,7 @@ class SignatureTest(test.TestCase):
 
 
 class SendStackTraceTest(test.TestCase):
-    @patch('crash.utils.client')
+    @patch('crash.utils.crash_sender')
     @test.override_settings(HOST_NAME='example.com',
                             CELERY_EAGER_PROPAGATES_EXCEPTIONS=False,)
     @is_private(False)
@@ -231,11 +231,12 @@ class SendStackTraceTest(test.TestCase):
             'os_ver': '6.1.7600'
         }
 
-        mock_client.capture.assert_called_once_with(
-            'raven.events.Message', message='signature',
+        mock_client.send.assert_called_once_with(
+            'signature',
             extra=extra,
             data=data,
             tags=tags,
+            crash_obj=crash
         )
 
 
