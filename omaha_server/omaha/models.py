@@ -243,7 +243,7 @@ class Data(BaseModel):
 
 class Os(models.Model):
     platform = models.CharField(max_length=10, null=True, blank=True)
-    version = models.CharField(max_length=10, null=True, blank=True)
+    version = models.CharField(max_length=16, null=True, blank=True)
     sp = models.CharField(max_length=40, null=True, blank=True)
     arch = models.CharField(max_length=10, null=True, blank=True)
 
