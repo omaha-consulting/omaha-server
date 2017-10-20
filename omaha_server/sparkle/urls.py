@@ -24,6 +24,6 @@ from sparkle.views import SparkleView
 
 
 urlpatterns = [
-    url(r'^(?P<app_name>[a-zA-Z0-9_ ]+)/(?P<channel>[\w-]+)/appcast.xml$',
+    url(r'^(?P<app_name>[a-zA-Z0-9_ -]+)/(?P<channel>[\w-]+)/appcast.xml$',
         SparkleView.as_view(), name='sparkle_appcast'),
 ]
