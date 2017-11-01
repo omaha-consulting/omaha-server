@@ -1,6 +1,7 @@
 # coding: utf8
 
 import os
+import socket
 
 from django.utils import crypto
 
@@ -116,7 +117,19 @@ if SPLUNK_HOST and SPLUNK_PORT:
         'level': os.environ.get('SPLUNK_LOGGING_LEVEL', 'INFO'),
         'class': 'logging.handlers.SysLogHandler',
         'formatter': 'splunk_format',
-        'address': (SPLUNK_HOST, int(SPLUNK_PORT))
+        'address': (SPLUNK_HOST, int(SPLUNK_PORT)),
+        'socktype': socket.SOCK_STREAM,  # TCP. Replace with SOCK_DGRAM for UDP
     }
     LOGGING['root']['handlers'].append('splunk')
     LOGGING['loggers']['django.request']['handlers'].append('splunk')
+
+if LOGSTASH_HOST:
+    LOGGING['handlers']['logstash'] = {
+        'level': os.environ.get('LOGSTASH_LOGGING_LEVEL', 'INFO'),
+        'class': 'logstash.handler_tcp.TCPLogstashHandler',
+        'host': LOGSTASH_HOST,
+    }
+    if LOGSTASH_PORT:  # if omitted, the default port is 5959
+        LOGGING['handlers']['logstash']['port'] = int(LOGSTASH_PORT)
+    LOGGING['root']['handlers'].append('logstash')
+    LOGGING['loggers']['django.request']['handlers'].append('logstash')
