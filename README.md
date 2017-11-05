@@ -277,7 +277,7 @@ $ ebs-deploy deploy -e omaha-server-dev
 
 ## Contributors
 
-Thanks to Abiral Shrestha <abiralshrestha100@gmail.com> for the security reports and suggestions.
+Thanks to [Abiral Shrestha](https://twitter.com/proabiral) for the security reports and suggestions.
 
 ## Copyright and license
 
