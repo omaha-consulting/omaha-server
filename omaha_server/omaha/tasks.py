@@ -20,6 +20,8 @@ the License.
 import time
 import logging
 import uuid
+import boto
+
 
 from django.template import defaultfilters as filters
 
@@ -27,7 +29,18 @@ from omaha_server.celery import app
 from omaha_server.utils import add_extra_to_log_message, get_splunk_url
 from omaha import statistics
 from omaha.parser import parse_request
-from omaha.limitation import delete_older_than, delete_size_is_exceeded, delete_duplicate_crashes, monitoring_size, raven
+from omaha.limitation import (
+    delete_older_than,
+    delete_size_is_exceeded,
+    delete_duplicate_crashes,
+    monitoring_size,
+    raven,
+    handle_dangling_files
+)
+from omaha.models import Version
+from sparkle.models import SparkleVersion
+from crash.models import Crash, Symbols
+from feedback.models import Feedback
 
 logger = logging.getLogger(__name__)
 
@@ -156,3 +169,45 @@ def deferred_manual_cleanup(model, limit_size=None, limit_days=None, limit_dupli
 @app.task(name='tasks.auto_monitoring_size', ignore_result=True)
 def auto_monitoring_size():
     monitoring_size()
+
+
+def get_prefix(model_name):
+    model_path_prefix = {
+        Crash: ('minidump', 'minidump_archive'),
+        Feedback: ('blackbox', 'system_logs', 'feedback_attach', 'screenshot'),
+        Symbols: ('symbols',),
+        Version: ('build',),
+        SparkleVersion: ('sparkle',)
+    }
+    return model_path_prefix[model_name]
+
+
+@app.task(name='tasks.auto_delete_dangling_files', ignore_result=True)
+def auto_delete_dangling_files():
+    logger = logging.getLogger('limitation')
+    model_kwargs_list = [
+        {'model': Crash, 'file_fields': ('upload_file_minidump', 'archive')},
+        {'model': Feedback, 'file_fields': ('blackbox', 'system_logs', 'attached_file', 'screenshot')},
+        {'model': Symbols, 'file_fields': ('file', )},
+        {'model': Version, 'file_fields': ('file', )},
+        {'model': SparkleVersion, 'file_fields': ('file', )}
+    ]
+    for model_kwargs in model_kwargs_list:
+        result = handle_dangling_files(
+            prefix=get_prefix(model_kwargs['model']),
+            **model_kwargs
+        )
+        if result['mark'] == 'db':
+            logger.info('Dangling files detected in db [%d], files path: %s' % (result['count'], result['data']))
+            raven.captureMessage(
+                "[Limitation]Dangling files detected in db, total: %d" % result['count'],
+                data=dict(level=20, logger='limitation')
+            )
+        elif result['mark'] == 's3':
+            logger.info('Dangling files deleted from s3 [%d], files path: %s' % (result['count'], result['data']))
+            raven.captureMessage(
+                "[Limitation]Dangling files deleted from s3, cleaned up %d files" % result['count'],
+                data=dict(level=20, logger='limitation')
+            )
+        else:
+            logger.info('Dangling files not detected')

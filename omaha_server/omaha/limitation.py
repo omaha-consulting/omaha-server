@@ -11,7 +11,9 @@ from django.core.cache import cache
 from django.template import defaultfilters as filters
 
 import boto
+from boto.s3.key import Key
 from raven import Client
+
 
 from omaha.models import Version as OmahaVersion
 from omaha.utils import valuedispatch
@@ -234,3 +236,59 @@ def monitoring_size():
                              (filters.filesizeformat(size).replace(u'\xa0', u' '), time.time()),
                              data={'level': 30, 'logger': 'limitation'})
     cache.set('symbols_size', size)
+
+
+def handle_dangling_files(model, prefix, file_fields):
+    conn = boto.connect_s3(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
+    bucket = conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME)
+    result = dict()
+    dangling_files_in_db, dangling_files_in_s3 = check_dangling_files(model, prefix, file_fields, bucket)
+    if dangling_files_in_db:
+        # send notifications
+        result['mark'] = 'db'
+        result['data'] = dangling_files_in_db
+        result['status'] = 'Send notifications'
+        result['count'] = len(dangling_files_in_db)
+        result['cleaned_space'] = 0
+    elif dangling_files_in_s3:
+        # delete files from s3
+        result['mark'] = 's3'
+        result['data'] = dangling_files_in_s3
+        result['status'] = 'Delete files'
+        result.update(delete_dangling_files_s3(bucket, result['data']))
+    else:
+        # not detected dangling files
+        result['mark'] = 'Nothing'
+        result['data'] = []
+        result['status'] = 'Nothing'
+        result['count'] = 0
+        result['cleaned_space'] = 0
+    return result
+
+
+def check_dangling_files(model, prefix, file_fields, bucket):
+    keys_from_s3 = list()
+    for pref in prefix:
+        key_from_s3 = bucket.list(prefix="%s/" % pref)
+        keys_from_s3.append(key_from_s3)
+    obj_from_s3 = [x for x in chain(*keys_from_s3)]
+    urls_from_s3 = list()
+    for obj in obj_from_s3:
+        urls_from_s3.append(obj.key)
+    all_objects = model.objects.all()
+    urls = list(filter(None, [filed for filed in chain(*all_objects.values_list(*file_fields))]))
+    dangling_files_in_db = list(set(urls) - set(urls_from_s3))
+    dangling_files_in_s3 = list(set(urls_from_s3) - set(urls))
+    return dangling_files_in_db, dangling_files_in_s3
+
+
+def delete_dangling_files_s3(bucket, file_paths):
+    result = dict()
+    result['cleaned_space'] = 0
+    result['count'] = 0
+    for path in file_paths:
+        _file = bucket.lookup(path)
+        result['cleaned_space'] += _file.size
+        result['count'] += 1
+        bucket.delete_key(_file.key)
+    return result

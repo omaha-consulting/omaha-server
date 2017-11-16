@@ -18,12 +18,15 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
+import os
 import uuid
 
 from django.test import TestCase
 
 from mock import patch
 from freezegun import freeze_time
+
+import omaha
 
 from crash.models import Crash, Symbols
 from crash.factories import CrashFactory, SymbolsFactory
@@ -37,11 +40,14 @@ from omaha.tasks import (
     auto_delete_duplicate_crashes,
     auto_delete_older_than,
     auto_delete_size_is_exceeded,
-    deferred_manual_cleanup
+    deferred_manual_cleanup,
+    auto_delete_dangling_files
 )
 from omaha_server.utils import add_extra_to_log_message
 from sparkle.models import SparkleVersion
 from sparkle.factories import SparkleVersionFactory
+from omaha.tasks import get_prefix
+
 
 class DuplicatedCrashesTest(TestCase):
     @freeze_time("2012-12-21 12:00:00")
@@ -316,4 +322,48 @@ class ManualCleanupTest(TestCase):
             deferred_manual_cleanup(['sparkle', 'SparkleVersion'], limit_size=1)
         self.assertEqual(mocked_logger.info.call_count, 2)
         mocked_logger.info.assert_any_call(log_extra_msg)
+        mocked_logger.info.assert_any_call(log_msg)
+
+
+class DeleteDanglingTest(TestCase):
+
+    @patch('omaha.limitation.raven.captureMessage')
+    @patch('logging.getLogger')
+    @patch('omaha.tasks.handle_dangling_files')
+    def test_dangling_delete_db(self, mock_obj, mocked_get_logger, mocked_raven):
+        mocked_logger = mocked_get_logger.return_value
+        mock_obj.return_value = {
+            'mark': 'db',
+            'status': 'Send notifications',
+            'data': [],
+            'count': 0,
+            'cleaned_space': 0
+        }
+        auto_delete_dangling_files()
+        self.assertEqual(mocked_logger.info.call_count, 5)
+        self.assertEqual(mocked_raven.call_count, 5)
+        log_msg = 'Dangling files detected in db [%d], files path: %s' % (
+            mock_obj.return_value['count'], mock_obj.return_value['data']
+        )
+        mocked_logger.info.assert_any_call(log_msg)
+
+    @patch('omaha.limitation.raven.captureMessage')
+    @patch('logging.getLogger')
+    @patch('omaha.tasks.handle_dangling_files')
+    def test_dangling_delete_s3(self, mock_obj, mocked_get_logger, mocked_get_raven):
+        mocked_logger = mocked_get_logger.return_value
+        file_path = os.path.abspath('crash/tests/testdata/7b05e196-7e23-416b-bd13-99287924e214.dmp')
+        mock_obj.return_value = {
+            'mark': 's3',
+            'status': 'Delete files',
+            'data': ['minidump_archive%s' % file_path],
+            'count': 1,
+            'cleaned_space': 100
+        }
+        auto_delete_dangling_files()
+        self.assertEqual(mocked_logger.info.call_count, 5)
+        self.assertEqual(mocked_get_raven.call_count, 5)
+        log_msg = 'Dangling files deleted from s3 [%d], files path: %s' % (
+            mock_obj.return_value['count'], mock_obj.return_value['data']
+        )
         mocked_logger.info.assert_any_call(log_msg)
