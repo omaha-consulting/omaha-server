@@ -7,7 +7,7 @@ from django.utils import crypto
 from furl import furl
 
 from .settings import *
-from utils import get_sentry_organization_slug, get_sentry_project_slug
+from omaha_server.utils import get_sentry_organization_slug, get_sentry_project_slug
 
 DEBUG = False
 
@@ -47,8 +47,8 @@ if RAVEN_DSN_STACKTRACE:
         SENTRY_STACKTRACE_PROJ_SLUG = get_sentry_project_slug(SENTRY_STACKTRACE_DOMAIN, SENTRY_STACKTRACE_ORG_SLUG,
                                                               project_id, SENTRY_STACKTRACE_API_KEY)
 
-SPLUNK_HOST = os.environ.get('SPLUNK_HOST')
-SPLUNK_PORT = os.environ.get('SPLUNK_PORT', None)
+FILEBEAT_HOST = os.environ.get('FILEBEAT_HOST', 'localhost')
+FILEBEAT_PORT = os.environ.get('FILEBEAT_PORT', 9021)
 
 INSTALLED_APPS = INSTALLED_APPS + (
     'raven.contrib.django.raven_compat',
@@ -111,12 +111,12 @@ LOGGING = {
     },
 }
 
-if SPLUNK_HOST and SPLUNK_PORT:
+if FILEBEAT_HOST and FILEBEAT_PORT:
     LOGGING['handlers']['splunk'] = {
-        'level': os.environ.get('SPLUNK_LOGGING_LEVEL', 'INFO'),
+        'level': os.environ.get('FILEBEAT_LOGGING_LEVEL', 'INFO'),
         'class': 'logging.handlers.SysLogHandler',
         'formatter': 'splunk_format',
-        'address': (SPLUNK_HOST, int(SPLUNK_PORT))
+        'address': (FILEBEAT_HOST, int(FILEBEAT_PORT))
     }
     LOGGING['root']['handlers'].append('splunk')
     LOGGING['loggers']['django.request']['handlers'].append('splunk')
