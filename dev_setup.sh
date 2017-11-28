@@ -8,9 +8,10 @@ set -x # Echo on
 sudo apt-get update
 
 # Install docker, paver, and virtualenv.
-sudo apt-get -y install docker.io docker-compose
+sudo apt-get -y install docker.io
 sudo apt-get -y install python-paver python-pip python-virtualenv
 sudo pip install -U docker-compose
+sudo usermod -aG docker $USER
 
 # Install postgres, redis, libraries.
 sudo apt-get -y install postgresql postgresql-contrib
