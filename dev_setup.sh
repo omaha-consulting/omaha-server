@@ -23,5 +23,5 @@ virtualenv venv
 venv/bin/pip install -r requirements/dev.txt
 
 # Run unit tests.
-venv/bin/activate
+. venv/bin/activate
 paver test
