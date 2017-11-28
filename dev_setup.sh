@@ -3,6 +3,8 @@
 # Runs on a clean Ubuntu Server 14.04 LTS system.
 # Runs unit tests to verify success.
 
+set -x # Echo on
+
 sudo apt-get update
 sudo apt-get -y install docker.io docker-compose
 sudo apt-get -y install python-paver python-pip python-virtualenv
