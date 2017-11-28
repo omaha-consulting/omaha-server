@@ -234,7 +234,7 @@ class SendStackTraceTest(test.TestCase):
         mock_client.send.assert_called_once_with(
             'signature',
             extra=extra,
-            data=data,
+            sentry_data=data,
             tags=tags,
             crash_obj=crash
         )
