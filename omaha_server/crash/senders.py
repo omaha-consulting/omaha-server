@@ -56,6 +56,8 @@ class ELKSender(BaseSender):
             extra['exception'] = sentry_data['sentry.interfaces.Exception']
             # The "message" is actually a crash signature, not appropriate for the ELK "message" field.
             extra['signature'] = message
+            # All ELK messages are expected to include logger_name.
+            extra['logger_name'] = 'omahaserver'
             # Send message with logger.
             logger.info("Sparrow Crashes", extra=extra)
         else:
