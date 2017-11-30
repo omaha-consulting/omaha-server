@@ -40,6 +40,24 @@ Open `http://{DOCKER_HOST}:9090/admin/`
 
 ## Setting up a development environment
 
+**Recommended: Use dev_setup.sh**
+
+The following works even on a completely clean Ubuntu Server 14.04 LTS.
+```shell
+$ sudo apt-get install git
+$ git clone https://github.com/Crystalnix/omaha-server.git
+$ cd omaha-server
+$ ./dev_setup.sh
+```
+This will first install ALL neccessary libraries, including postgres, redis, etc.
+It will then create a virtual environment called "venv", install dev requirements there, and run unit tests to confirm everything is working.
+Afterward, you should immediately be able to activate the virtual environment and successfuly run tests there yourself.
+```shell
+$ source venv/bin/activate
+$ paver test
+```
+Alternately, try the instructions below to setup your dev environment manually.
+
 **Requirements:**
 
 - python 2.7
