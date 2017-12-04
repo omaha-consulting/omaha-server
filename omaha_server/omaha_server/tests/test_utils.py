@@ -50,7 +50,7 @@ class UtilsTest(TestCase):
         actual_msg = add_extra_to_log_message(msg, extra)
         self.assertEqual(actual_msg, expected_msg)
 
-    @override_settings(SPLUNK_HOST='splunk.example.com')
+    @override_settings(FILEBEAT_HOST='splunk.example.com')
     def test_add_extra_to_log_message(self):
         params = dict(a=1, c=3, b=2, d=4)
         actual_msg = get_splunk_url(params)

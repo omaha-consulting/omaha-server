@@ -4,7 +4,8 @@ from django.conf import settings
 
 from raven import Client
 from celery import signature
-from logstash import TCPLogstashHandler
+
+from omaha_server.utils import add_extra_to_log_message
 
 
 class BaseSender(object):
@@ -40,34 +41,11 @@ class ELKSender(BaseSender):
     name="ELK"
     handler = None
 
-    def __init__(self):
-        host = getattr(settings, 'LOGSTASH_HOST', None)
-        port = getattr(settings, 'LOGSTASH_PORT', None)
-        if host and port:
-            self.handler = TCPLogstashHandler(host, int(port))
-        else:
-            logging.error("Logstash settings are not configured")
-
     def send(self, message, extra={}, tags={}, data={}, crash_obj=None):
-        if self.handler:
-            logger = self._prepare_logger()
-            extra.update(tags)
-            extra.update(data)
-            logger.info(message, extra=extra)
-        else:
-            logging.error("Logstash settings are not configured")
-
-    def _prepare_logger(self):
-        """It's a workaround.
-
-        If we do it in __init__ then logger won't send messages to Logstash
-        """
-        logger = logging.getLogger('crash_sender')
-        logger.setLevel(logging.INFO)
-        logger.handlers = []
-        logger.addHandler(self.handler)
-        return logger
-
+        logger = logging.getLogger('crashes')
+        extra.update(tags)
+        extra.update(data)
+        logger.info(add_extra_to_log_message(message, extra=extra))
 
 senders_dict = {
     "Sentry": SentrySender,
