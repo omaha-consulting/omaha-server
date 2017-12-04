@@ -33,4 +33,3 @@ protobuf-to-dict==0.1.0
 django-dynamic-preferences==0.8.1
 ecdsa==0.13
 google-cloud
-python-logstash==0.4.6

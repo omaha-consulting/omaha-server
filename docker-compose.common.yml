@@ -29,3 +29,8 @@ web:
     DB_PUBLIC_PASSWORD: 'omaha_public_password'
     UWSGI_PROCESSES: 10
     UWSGI_THREADS: 8
+    FILEBEAT_HOST: 'localhost'
+    FILEBEAT_PORT: '9021'
+    ELK_HOST: ''
+    ELK_PORT: ''
+    FILEBEAT_DESTINATION: ''
