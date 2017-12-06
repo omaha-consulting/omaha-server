@@ -25,7 +25,7 @@ from django.forms import widgets, ValidationError
 
 from django_ace import AceWidget
 from suit.widgets import LinkedSelect
-from suit_redactor.widgets import RedactorWidget
+from tinymce.widgets import TinyMCE
 from celery import signature
 
 from omaha.models import Application, Version, Action, Data
@@ -58,8 +58,7 @@ class VersionAdminForm(forms.ModelForm):
         exclude = []
         widgets = {
             'app': LinkedSelect,
-            'release_notes': RedactorWidget(editor_options={'lang': 'en',
-                                                            'minHeight': 150}),
+            'release_notes': TinyMCE(),
             'file_size': widgets.TextInput(attrs=dict(disabled='disabled')),
         }
 
