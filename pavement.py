@@ -92,17 +92,54 @@ def create_admin():
 
 @task
 def configure_nginx():
-    splunk_host = os.environ.get('SPLUNK_HOST')
-    splunk_port = os.environ.get('SPLUNK_PORT', '')
-    if splunk_host and splunk_port.isdigit():
-        sh("sed -i 's/access_log.*;/access_log syslog:server=%s:%s main;/g' /etc/nginx/nginx.conf" % (splunk_host, splunk_port))
-        sh("sed -i 's/error_log.*;/error_log syslog:server=%s:%s;/g' /etc/nginx/nginx.conf" % (splunk_host, splunk_port))
+    filebeat_host = os.environ.get('FILEBEAT_HOST', '')
+    filebeat_port = os.environ.get('FILEBEAT_PORT', '')
+    if filebeat_host and filebeat_port.isdigit():
+        sh("sed -i 's/access_log.*;/access_log syslog:server=%s:%s main;/g' /etc/nginx/nginx.conf" % (filebeat_host, filebeat_port))
+        sh("sed -i 's/error_log.*;/error_log syslog:server=%s:%s;/g' /etc/nginx/nginx.conf" % (filebeat_host, filebeat_port))
     else:
         sh("sed -i 's#access_log.*;#access_log /var/log/nginx/access.log main;#g' /etc/nginx/nginx.conf")
         sh("sed -i 's#error_log.*;#error_log /var/log/nginx/error.log;#g' /etc/nginx/nginx.conf")
     server_name = os.environ.get('HOST_NAME', '_')
     server_name = server_name if server_name != '*' else '_'
     sh("sed -i 's/server_name.*;/server_name %s;/g' /etc/nginx/sites-enabled/nginx-app.conf" % (server_name))
+
+
+def elasticsearch_output(elasticsearch_host, elasticsearch_port):
+    sh("sed -i 's/hosts: \[\"localhost:9200\"]/hosts: \[\"%s:%s\"]/g' /etc/filebeat/filebeat.yml" % (elasticsearch_host, elasticsearch_port))
+
+
+def logstash_output(logstash_host, logstash_port):
+    elasticsearch_output_disabled()
+    sh("sed -i 's/#output.logstash:/output.logstash:/g' /etc/filebeat/filebeat.yml")
+    sh("sed -i 's/#hosts: \[\"localhost:5044\"]/hosts: \[\"%s:%s\"]/g' /etc/filebeat/filebeat.yml" % (logstash_host, logstash_port))
+
+
+def filename_output():
+    elasticsearch_output_disabled()
+    sh("sed -i 's/#output.file:/output.file:/g' /etc/filebeat/filebeat.yml")
+    sh("sed -i 's@#path: \"/tmp/filebeat\"@path: \"/tmp/filebeat\"@g' /etc/filebeat/filebeat.yml")
+    sh("sed -i 's/#filename: filebeat/filename: filebeat/g' /etc/filebeat/filebeat.yml")
+
+
+def elasticsearch_output_disabled():
+    sh("sed -i 's/setup.template.enabled: true/setup.template.enabled: false/g' /etc/filebeat/filebeat.yml")
+    sh("sed -i 's/output.elasticsearch:/#output.elasticsearch:/g' /etc/filebeat/filebeat.yml")
+    sh("sed -i 's/hosts: \[\"localhost:9200\"]/#hosts: \[\"localhost:9200\"]/g' /etc/filebeat/filebeat.yml")
+
+
+@task
+def configure_filebeat():
+    elk_host = os.environ.get('ELK_HOST', '')
+    elk_port = os.environ.get('ELK_PORT', '')
+    filebeat_destination = os.environ.get('FILEBEAT_DESTINATION', '')
+    filebeat_destination = filebeat_destination.lower()
+    if filebeat_destination == 'elasticsearch' and elk_host and elk_port.isdigit():
+        elasticsearch_output(elk_host, elk_port)
+    elif filebeat_destination == 'logstash' and elk_host and elk_port.isdigit():
+        logstash_output(elk_host, elk_port)
+    else:
+        filename_output()
 
 
 @task
@@ -117,11 +154,12 @@ def docker_run():
             collectstatic()
 
         configure_nginx()
+        configure_filebeat()
         sh('/usr/bin/supervisord')
     except:
         client.captureException()
         raise
-
+        
 
 @task
 def docker_run_test():

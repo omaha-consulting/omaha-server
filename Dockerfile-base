@@ -23,6 +23,11 @@ RUN \
   mkdir /srv/omaha_s3 && \
   rm /usr/src/v1.78.tar.gz
 
+RUN \
+  apt-get install -y --fix-missing curl && \
+  curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.0.0-amd64.deb && \
+  dpkg -i filebeat-6.0.0-amd64.deb && \
+  mkdir /tmp/filebeat/
 
 RUN mkdir -p $omaha/requirements
 WORKDIR ${omaha}
