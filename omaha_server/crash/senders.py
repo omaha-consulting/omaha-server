@@ -44,7 +44,11 @@ class ELKSender(BaseSender):
     def send(self, message, extra={}, tags={}, data={}, crash_obj=None):
         logger = logging.getLogger('crashes')
         extra.update(tags)
+        # sentry.interfaces.Exception
         extra.update(data)
+        extra.update({
+            'signature': message
+        })
         logger.info(add_extra_to_log_message(message, extra=extra))
 
 senders_dict = {
