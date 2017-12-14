@@ -225,7 +225,6 @@ CACHES = {
     }
 }
 
-SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 SESSION_CACHE_ALIAS = 'default'
 
 STATICFILES_FINDERS = ("django.contrib.staticfiles.finders.FileSystemFinder",
