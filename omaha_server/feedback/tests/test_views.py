@@ -29,7 +29,8 @@ from feedback.models import Feedback
 
 BASE_DIR = os.path.dirname(__file__)
 TEST_DATA_DIR = os.path.join(BASE_DIR, 'testdata')
-PB_FILE = os.path.join(TEST_DATA_DIR, 'request.pb')
+PB_FILE = os.path.join(TEST_DATA_DIR, 'request_tar.pb')
+PB_GZ_FILE = os.path.join(TEST_DATA_DIR, 'request_gz.pb')
 DESC_ONLY_FILE = os.path.join(TEST_DATA_DIR, 'description_only.pb')
 NO_DESC_FILE = os.path.join(TEST_DATA_DIR, 'no_description.pb')
 
@@ -38,8 +39,8 @@ class FeedbackViewTest(test.TestCase):
     def test_view(self):
         with open(PB_FILE, 'rb') as f:
             body = f.read()
-        description = 'Testable issue\nwith multiple lines\nof code'
-        email = 'user@example.com'
+        description = 'Test tar'
+        email = ''
         page_url = 'chrome://newtab/'
 
         self.assertEqual(Feedback.objects.all().count(), 0)
@@ -56,19 +57,53 @@ class FeedbackViewTest(test.TestCase):
         self.assertEqual(obj.description, description)
         self.assertEqual(obj.email, email)
         self.assertEqual(obj.page_url, page_url)
-        self.assertTrue(obj.screenshot)
+        self.assertFalse(obj.screenshot)
         self.assertTrue(obj.blackbox)
         self.assertTrue(obj.system_logs)
         self.assertTrue(obj.attached_file)
         self.assertTrue(obj.feedback_data)
         self.assertEqual(obj.ip, "8.8.8.8")
+        self.assertEqual(os.path.basename(obj.blackbox.name), 'blackbox.tar')
+
+    def test_view_gz(self):
+        with open(PB_GZ_FILE, 'rb') as f:
+            body = f.read()
+        description = 'Test tar gz'
+        email = ''
+        page_url = 'chrome://newtab/'
+
+        self.assertEqual(Feedback.objects.all().count(), 0)
+        response = self.client.post(
+            reverse('feedback'),
+            data=body,
+            content_type='application/x-protobuf',
+            REMOTE_ADDR="8.8.8.8"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Feedback.objects.all().count(), 1)
+        obj = Feedback.objects.get()
+        self.assertEqual(response.content.decode(), str(obj.pk))
+        self.assertEqual(obj.description, description)
+        self.assertEqual(obj.email, email)
+        self.assertEqual(obj.page_url, page_url)
+        self.assertFalse(obj.screenshot)
+        self.assertTrue(obj.blackbox)
+        self.assertTrue(obj.system_logs)
+        self.assertTrue(obj.attached_file)
+        self.assertTrue(obj.feedback_data)
+        self.assertEqual(obj.ip, "8.8.8.8")
+        self.assertEqual(
+            os.path.basename(obj.blackbox.name),
+            'blackbox.tar.gz'
+        )
 
     def test_view_empty_ip(self):
-        if settings.DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql_psycopg2':
+        db_engine = 'django.db.backends.postgresql_psycopg2'
+        if settings.DATABASES['default']['ENGINE'] == db_engine:
             with open(PB_FILE, 'rb') as f:
                 body = f.read()
-            description = 'Testable issue\nwith multiple lines\nof code'
-            email = 'user@example.com'
+            description = 'Test tar'
+            email = ''
             page_url = 'chrome://newtab/'
 
             self.assertEqual(Feedback.objects.all().count(), 0)
@@ -85,7 +120,7 @@ class FeedbackViewTest(test.TestCase):
             self.assertEqual(obj.description, description)
             self.assertEqual(obj.email, email)
             self.assertEqual(obj.page_url, page_url)
-            self.assertTrue(obj.screenshot)
+            self.assertFalse(obj.screenshot)
             self.assertTrue(obj.blackbox)
             self.assertTrue(obj.system_logs)
             self.assertTrue(obj.attached_file)
