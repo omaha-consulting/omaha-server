@@ -91,7 +91,6 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = (
     'cacheops',
     'suit',
-    'suit_redactor',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -120,6 +119,7 @@ INSTALLED_APPS = (
     'sparkle',
     'downloads',
     'healthcheck',
+    'tinymce',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -332,3 +332,36 @@ CRASH_TRACKER = os.environ.get('CRASH_TRACKER', 'Sentry')
 
 LOGSTASH_HOST = os.environ.get('LOGSTASH_HOST')
 LOGSTASH_PORT = os.environ.get('LOGSTASH_PORT')
+
+TINYMCE_BUTTONS = [
+    'bold',
+    'italic',
+    'underline',
+    'strikethrough',
+    'separator',
+    'bullist',
+    'numlist',
+    'outdent',
+    'indent',
+    'separator',
+    'image',
+    'media',
+    'table',
+    'link',
+    'unlink',
+    'separator',
+    'forecolor',
+    'backcolor',
+    'separator',
+    'hr',
+]
+
+TINYMCE_DEFAULT_CONFIG = {
+    'theme': 'advanced',
+    'theme_advanced_buttons1': TINYMCE_BUTTONS,
+    'theme_advanced_toolbar_location': 'top',
+    'theme_advanced_toolbar_align': 'left',
+    'paste_text_sticky': True,
+    'paste_text_sticky_default': True,
+    'plugins': 'table,media'
+}

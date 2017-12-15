@@ -24,7 +24,7 @@ from django.core.files.uploadedfile import UploadedFile
 
 
 from suit.widgets import LinkedSelect
-from suit_redactor.widgets import RedactorWidget
+from tinymce.widgets import TinyMCE
 
 from sparkle.models import SparkleVersion
 
@@ -38,8 +38,7 @@ class SparkleVersionAdminForm(forms.ModelForm):
         exclude = []
         widgets = {
             'app': LinkedSelect,
-            'release_notes': RedactorWidget(editor_options={'lang': 'en',
-                                                            'minHeight': 150}),
+            'release_notes': TinyMCE(),
             'file_size': widgets.TextInput(attrs=dict(disabled='disabled')),
         }
 
