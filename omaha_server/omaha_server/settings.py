@@ -280,6 +280,11 @@ if IS_PRIVATE:
             'schedule': timedelta(seconds=60),
             'options': {'queue': 'limitation'},
         },
+        'auto_delete_dangling_files': {
+            'task': 'tasks.auto_delete_dangling_files',
+            'schedule': timedelta(hours=24),
+            'options': {'queue': 'limitation'},
+        },
     }
 
 # Cache
