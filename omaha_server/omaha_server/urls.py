@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'^healthcheck/', include('healthcheck.urls')),
     url(r'^sparkle/', include('sparkle.urls')),
     url(r'^api/downloads', downloads.api.LatestVersionView.as_view(), name='api-downloads'),
+    url(r'^tinymce/', include('tinymce.urls')),
 ]
 
 if settings.IS_PRIVATE:

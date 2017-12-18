@@ -3,7 +3,6 @@ future==0.15.2
 django==1.9.6
 django-extensions==1.6.7
 django-suit==0.2.24
-django-suit-redactor==0.0.4
 jsonfield==1.0.3
 boto==2.40.0
 django-storages==1.6.5
@@ -33,3 +32,4 @@ protobuf-to-dict==0.1.0
 django-dynamic-preferences==0.8.1
 ecdsa==0.13
 google-cloud
+django-tinymce==2.6.0
