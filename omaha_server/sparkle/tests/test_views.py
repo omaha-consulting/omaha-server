@@ -121,7 +121,7 @@ class SparkleViewTest(OverloadTestStorageMixin, TestCase, XmlTestMixin):
             file_size=23963192)
         last_version.save()
 
-        last_version = SparkleVersionFactory.create(
+        second_crit_version = SparkleVersionFactory.create(
             app=app,
             channel=channel,
             version='782.113',
@@ -129,7 +129,7 @@ class SparkleViewTest(OverloadTestStorageMixin, TestCase, XmlTestMixin):
             is_critical=True,
             file=SimpleUploadedFile('./chrome4.dmg', b'_' * 23963192),
             file_size=23963192)
-        first_version.save()
+        second_crit_version.save()
 
         response = self.client.get("%s?appVersionShort=13.0.782.110" % reverse('sparkle_appcast', args=(app.name, channel.name)),
                                    HTTP_HOST='example.com')
@@ -148,3 +148,47 @@ class SparkleViewTest(OverloadTestStorageMixin, TestCase, XmlTestMixin):
         self.assertXmlDocument(response.content)
         self.assertXmlEquivalentOutputs(response.content,
                                         fixtures.second_crit_response_sparkle)
+
+
+    @freeze_time('2014-10-14 08:28:05')
+    @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
+    def test_sparkle_critical_on_other_channel(self):
+        app = ApplicationFactory.create(id='{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}', name='chrome')
+        channel = ChannelFactory.create(name='stable')
+        channel2 = ChannelFactory.create(name='beta')
+        first_version = SparkleVersionFactory.create(
+            app=app,
+            channel=channel,
+            version='782.110',
+            short_version='13.0.782.110',
+            file=SimpleUploadedFile('./chrome0.dmg', b'_' * 23963192),
+            file_size=23963192)
+        first_version.save()
+
+        first_crit_version = SparkleVersionFactory.create(
+            app=app,
+            channel=channel2,
+            version='782.111',
+            short_version='13.0.782.111',
+            is_critical=True,
+            file=SimpleUploadedFile('./chrome2.dmg', b'_' * 23963192),
+            file_size=23963192)
+        first_crit_version.save()
+
+        last_version = SparkleVersionFactory.create(
+            app=app,
+            channel=channel,
+            version='782.112',
+            short_version='13.0.782.112',
+            file=SimpleUploadedFile('./chrome.dmg', b'_' * 23963192),
+            file_size=23963192)
+        last_version.save()
+
+        response = self.client.get("%s?appVersionShort=13.0.782.111" % reverse('sparkle_appcast', args=(app.name, channel.name)),
+                                   HTTP_HOST='example.com')
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertXmlDocument(response.content)
+        self.assertXmlEquivalentOutputs(response.content,
+                                        fixtures.response_sparkle)

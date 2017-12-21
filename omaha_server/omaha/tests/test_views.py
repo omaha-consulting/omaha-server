@@ -155,6 +155,71 @@ class UpdateViewTest(OverloadTestStorageMixin, TestCase, XmlTestMixin):
                                         fixtures.response_update_check_postitive_critical)
 
 
+    @freeze_time('2014-01-01 15:41:48')  # 56508 sec
+    @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
+    @patch('omaha.models.version_upload_to', lambda o, f: f)
+    def test_updatecheck_positive_critical_on_other_channel(self):
+        app = ApplicationFactory.create(id='{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}', name='chrome')
+        platform = PlatformFactory.create(name='win')
+        channel = ChannelFactory.create(name='stable')
+        channel2 = ChannelFactory.create(name='alpha')
+        first_version = VersionFactory.create(
+            app=app,
+            platform=platform,
+            channel=channel,
+            version='13.0.782.110',
+            file=SimpleUploadedFile('./chrome_installer_first.exe', b'_' * 23963192),
+            file_size=23963192)
+        first_version.file_hash = 'VXriGUVI0TNqfLlU02vBel4Q3Zo='
+        first_version.save()
+
+        critical_version = VersionFactory.create(
+            is_critical=True,
+            app=app,
+            platform=platform,
+            channel=channel2,
+            version='13.0.782.111',
+            file=SimpleUploadedFile('./chrome_installer_critical.exe', b'_' * 23963192),
+            file_size=23963192)
+        critical_version.file_hash = 'VXriGUVI0TNqfLlU02vBel4Q3Zo='
+        critical_version.save()
+
+        last_version = VersionFactory.create(
+            app=app,
+            platform=platform,
+            channel=channel,
+            version='13.0.782.112',
+            file=SimpleUploadedFile('./chrome_installer.exe', b'_' * 23963192),
+            file_size=23963192)
+        last_version.file_hash = 'VXriGUVI0TNqfLlU02vBel4Q3Zo='
+        last_version.save()
+
+        Action.objects.create(
+            version=last_version,
+            arguments='--do-not-launch-chrome',
+            event=EVENT_DICT_CHOICES['install'],
+            run='chrome_installer.exe'
+        )
+
+        Action.objects.create(
+            version=last_version,
+            event=EVENT_DICT_CHOICES['postinstall'],
+            other=dict(
+                version='13.0.782.112',
+                onsuccess='exitsilentlyonlaunchcmd',
+            )
+        )
+
+        response = self.client.post(reverse('update'),
+                                    fixtures.request_update_check, content_type='text/xml')
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertXmlDocument(response.content)
+        self.assertXmlEquivalentOutputs(response.content,
+                                        fixtures.response_update_check_positive)
+
+
 
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
     @patch('omaha.models.version_upload_to', lambda o, f: f)
