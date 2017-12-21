@@ -19,6 +19,8 @@ the License.
 """
 
 from copy import copy
+import StringIO
+
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.views.generic import FormView
@@ -33,11 +35,16 @@ from raven import Client
 from feedback.forms import FeedbackForm
 from feedback.proto_gen.extension_pb2 import ExtensionSubmit
 from omaha_server.utils import get_client_ip
+from utils import get_file_extension
 
 dsn = getattr(settings, 'RAVEN_CONFIG', None)
 if dsn:
     dsn = dsn['dsn']
-raven = Client(dsn, name=getattr(settings, 'HOST_NAME', None), release=getattr(settings, 'APP_VERSION', None))
+raven = Client(
+    dsn,
+    name=getattr(settings, 'HOST_NAME', None),
+    release=getattr(settings, 'APP_VERSION', None)
+)
 
 
 class FeedbackFormView(FormView):
@@ -53,13 +60,16 @@ class FeedbackFormView(FormView):
             'initial': self.get_initial(),
             'prefix': self.get_prefix(),
         }
-
         submit = ExtensionSubmit()
         submit.ParseFromString(self.request.body)
 
         type_callable_map = copy(TYPE_CALLABLE_MAP)
         type_callable_map[FieldDescriptor.TYPE_BYTES] = lambda x: '[binary content]'
-        pb_dict = protobuf_to_dict(submit, type_callable_map=type_callable_map, use_enum_labels=True)
+        pb_dict = protobuf_to_dict(
+            submit,
+            type_callable_map=type_callable_map,
+            use_enum_labels=True
+        )
 
         data = dict(
             description=submit.common_data.description,
@@ -70,9 +80,17 @@ class FeedbackFormView(FormView):
         )
         files = dict()
         if submit.screenshot.binary_content:
-            files['screenshot'] = SimpleUploadedFile('screenshot.png', submit.screenshot.binary_content)
+            files['screenshot'] = SimpleUploadedFile(
+                'screenshot.png',
+                submit.screenshot.binary_content
+            )
         if submit.blackbox.data:
-            files['blackbox'] = SimpleUploadedFile('blackbox.tar.gz', submit.blackbox.data)
+            blackbox_name = self.handle_file_extension(
+                StringIO.StringIO(submit.blackbox.data).read(1024)
+            )
+            files['blackbox'] = SimpleUploadedFile(
+                blackbox_name, submit.blackbox.data
+            )
         for attach in submit.product_specific_binary_data:
             key = 'attached_file'
             logs_key = 'system_logs'
@@ -82,6 +100,17 @@ class FeedbackFormView(FormView):
 
         kwargs.update(dict(data=data, files=files))
         return kwargs
+
+    def handle_file_extension(self, file_header):
+        file_description = get_file_extension(file_header)
+        blackbox_name = 'blackbox'
+        if file_description['file_extension']:
+            blackbox_name += '.%s' % file_description['file_extension']
+        else:
+            raven.captureMessage(
+                'This is file type not supported, mime type: %s' % file_description['mime_type']
+            )
+        return blackbox_name
 
     def form_valid(self, form):
         obj = form.save()

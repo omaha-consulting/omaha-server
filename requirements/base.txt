@@ -33,3 +33,4 @@ django-dynamic-preferences==0.8.1
 ecdsa==0.13
 google-cloud
 django-tinymce==2.6.0
+python-magic==0.4.15
