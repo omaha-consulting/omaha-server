@@ -12,7 +12,7 @@ class BaseSender(object):
     name = None
     client = None
 
-    def send(self, message, extra={}, tags={}, data={}, crash_obj=None):
+    def send(self, message, extra={}, tags={}, sentry_data={}, crash_obj=None):
         pass
 
 
@@ -26,7 +26,7 @@ class SentrySender(BaseSender):
             release=getattr(settings, 'APP_VERSION', None)
         )
 
-    def send(self, message, extra={}, tags={}, data={}, crash_obj=None):
+    def send(self, message, extra={}, tags={}, sentry_data={}, crash_obj=None):
         event_id = self.client.capture(
             'raven.events.Message',
             message=message,
@@ -42,10 +42,11 @@ class ELKSender(BaseSender):
     handler = None
 
 
-    def send(self, message, extra={}, tags={}, data={}, crash_obj=None):
+    def send(self, message, extra={}, tags={}, sentry_data={}, crash_obj=None):
             logger = logging.getLogger('crashes')
             extra.update(tags)
-            # We don't want "sentry.interfaces" as part of a field name.
+            # We don't want "sentry.interfaces" or other sentry specific things as part of a field name.
+            # 
             extra['exception'] = data['sentry.interfaces.Exception']
             # The "message" is actually a crash signature, not appropriate for the ELK "message" field.
             extra['signature'] = message
