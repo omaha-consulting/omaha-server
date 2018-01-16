@@ -71,7 +71,7 @@ def processing_crash_dump(self, crash_pk):
         crash.channel = channel
         crash.save()
 
-        # Send the crash to .
+        # Send the crash to the configured logger.
         send_stacktrace(crash)
 
     except FileNotFoundError as exc:
