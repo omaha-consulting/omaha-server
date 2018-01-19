@@ -47,7 +47,7 @@ class ELKSender(BaseSender):
             extra.update(tags)
             # We don't want "sentry.interfaces" or other sentry specific things as part of a field name.
             # 
-            extra['exception'] = data['sentry.interfaces.Exception']
+            extra['exception'] = sentry_data['sentry.interfaces.Exception']
             # The "message" is actually a crash signature, not appropriate for the ELK "message" field.
             extra['signature'] = message
             # All ELK messages are expected to include logger_name.

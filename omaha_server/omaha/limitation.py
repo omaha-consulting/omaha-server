@@ -148,7 +148,7 @@ def delete_duplicate_crashes(limit=None):
         limit = gpm[preference_key]
     duplicated = Crash.objects.values('signature').annotate(count=Count('signature'))
     duplicated = filter(lambda x: x['count'] > limit, duplicated)
-    logger.info('Duplicated signatures: %r' % duplicated)
+    logger.info('Duplicated signatures', extra={'duplicated':duplicated})
     for group in duplicated:
         qs = Crash.objects.filter(signature=group['signature']).order_by('created')
         dup_elements = []
