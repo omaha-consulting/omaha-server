@@ -13,7 +13,9 @@ RUN \
   ln -s /srv/omaha/conf/inflate_request.lua /etc/nginx/ && \
   ln -s /srv/omaha/conf/supervisord.conf /etc/supervisor/conf.d/ && \
   ln -s /srv/omaha/conf/filebeat.yml /etc/filebeat/ && \
-  chmod go-w /etc/filebeat/filebeat.yml
+  ln -s /srv/omaha/conf/filebeat.template.json /etc/filebeat/ && \
+  chmod go-w /etc/filebeat/filebeat.yml && \
+  chmod go-w /etc/filebeat/filebeat.template.json
 
 EXPOSE 80
 EXPOSE 8080
