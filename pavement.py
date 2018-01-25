@@ -135,11 +135,16 @@ def configure_filebeat():
     filebeat_destination = os.environ.get('FILEBEAT_DESTINATION', '')
     filebeat_destination = filebeat_destination.lower()
     if filebeat_destination == 'elasticsearch' and elk_host and elk_port.isdigit():
+        configure_elasticsearch(elk_host, elk_port)
         elasticsearch_output(elk_host, elk_port)
     elif filebeat_destination == 'logstash' and elk_host and elk_port.isdigit():
         logstash_output(elk_host, elk_port)
     else:
         filename_output()
+
+def configure_elasticsearch(elk_host, elk_port):
+   filter_path = os.path.abspath("conf/standard_filter.json")
+   sh("curl -XPUT '%s:%s/_ingest/pipeline/standard_filter?pretty' -H 'Content-Type: application/json' -d @%s" % (elk_host, elk_port, filter_path))
 
 
 @task
@@ -152,7 +157,6 @@ def docker_run():
             loaddata()
             create_admin()
             collectstatic()
-
         configure_nginx()
         configure_filebeat()
         sh('/usr/bin/supervisord')
