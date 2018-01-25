@@ -141,6 +141,11 @@ def configure_filebeat():
     else:
         filename_output()
 
+@task
+def configure_elasticsearch():
+   filter_path = os.path.abspath("conf/standart_filter.json")
+   sh("curl -XPUT 'elk.viasat.omaha-server.com:9200/_ingest/pipeline/standart_filter?pretty' -H 'Content-Type: application/json' -d @%s" % filter_path)
+
 
 @task
 def docker_run():
@@ -155,6 +160,7 @@ def docker_run():
 
         configure_nginx()
         configure_filebeat()
+        configure_elasticsearch()
         sh('/usr/bin/supervisord')
     except:
         client.captureException()
