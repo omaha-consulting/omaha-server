@@ -41,7 +41,6 @@ class ELKSender(BaseSender):
     name="ELK"
     handler = None
 
-
     def send(self, message, extra={}, tags={}, sentry_data={}, crash_obj=None):
             logger = logging.getLogger('crashes')
             extra.update(tags)
@@ -53,7 +52,7 @@ class ELKSender(BaseSender):
             # All ELK messages are expected to include logger_name.
             extra['logger_name'] = 'omahaserver'
             # Send message with logger.
-            logger.info("Sparrow Crashes", extra=extra)
+            logger.info(add_extra_to_log_message("Sparrow Crashes", extra=extra))
 
 senders_dict = {
     "Sentry": SentrySender,
