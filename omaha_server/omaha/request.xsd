@@ -92,6 +92,7 @@
             <xs:attribute name='cohort' use='optional' type='xs:string'/>
             <xs:attribute name='cohorthint' use='optional' type='xs:string'/>
             <xs:attribute name='cohortname' use='optional' type='xs:string'/>
+            <xs:attribute name='machineid' use='optional' type='xs:string'/>
             <xs:anyAttribute namespace="##any" processContents="skip"/>
         </xs:complexType>
     </xs:element>

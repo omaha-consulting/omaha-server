@@ -78,7 +78,14 @@ def parse_request(request):
         '{430FD4D0-B729-4F61-AA34-91526481799D}'
         '{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}'
     """
-    return objectify.fromstring(request, parser)
+
+    obj = objectify.fromstring(request, parser)
+
+    # Check if this is coming from update_engine, which handles machines not applications
+    if obj.get('userid') == None and obj.app.get('machineid') != None:
+        obj.set('userid', obj.app.get('machineid'))
+
+    return obj
 
 
 def get_channel(app):
