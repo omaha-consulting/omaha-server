@@ -1,0 +1,40 @@
+{
+  "description": "standard filter. You can modify it.",
+  "processors": [
+    {
+      "rename": {
+        "field": "message",
+        "target_field": "incoming_message"
+      }
+    },
+    {
+      "gsub": {
+        "field": "incoming_message",
+        "pattern": "<\\d+>",
+        "replacement": ""
+      }
+    },
+    {
+      "kv": {
+        "field": "incoming_message",
+        "field_split": "\\|",
+        "value_split": "=",
+        "ignore_missing": true,
+        "on_failure" : [
+          {
+            "rename" : {
+              "field" : "incoming_message",
+              "target_field" : "message"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "remove": {
+        "field": "incoming_message",
+        "ignore_failure": true
+      }
+    }
+  ]
+}

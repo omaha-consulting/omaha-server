@@ -155,7 +155,7 @@ setup.kibana:
 output.elasticsearch:
   # Array of hosts to connect to.
   hosts: ["localhost:9200"]
-  pipeline: "standart_filter"
+  pipeline: "standard_filter"
 
   # Optional protocol and basic auth credentials.
   #protocol: "https"
