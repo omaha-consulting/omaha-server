@@ -43,14 +43,18 @@ class ELKSender(BaseSender):
 
     def send(self, message, extra={}, tags={}, sentry_data={}, crash_obj=None):
             logger = logging.getLogger('crashes')
+
             extra.update(tags)
-            # We don't want "sentry.interfaces" or other sentry specific things as part of a field name.
-            # 
+            extra['sparrow_version'] = tags['ver'] if 'ver' in tags else 'unknown'
+
+            # We don't want "sentry.interfaces" or other sentry specific things as part of any field name.
+            #
             extra['exception'] = sentry_data['sentry.interfaces.Exception']
+            extra['user'] = sentry_data['sentry.interfaces.User']
             # The "message" is actually a crash signature, not appropriate for the ELK "message" field.
             extra['signature'] = message
             # All ELK messages are expected to include logger_name.
-            extra['logger_name'] = 'omahaserver'
+            extra['logger_name'] = 'omaha_server'
             # Send message with logger.
             logger.info(add_extra_to_log_message("Sparrow Crashes", extra=extra))
 
