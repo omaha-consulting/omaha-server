@@ -3,6 +3,7 @@ import os
 from .settings_prod import *
 
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+PUBLIC_READ_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 STATIC_URL = '/static/'
 

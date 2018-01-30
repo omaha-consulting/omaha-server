@@ -46,8 +46,10 @@ def get_client_ip(request):
     return ip
 
 
+# Link the message and extras into a '|' separated list. 
 def add_extra_to_log_message(msg, extra):
-    return msg + ' '.join(", %s=%s" % (key, val) for (key, val) in sorted(extra.items()))
+    return msg + '|' + '|'.join("%s=%s" % (key, val) for (key, val) in sorted(extra.items()))
+
 
 def get_splunk_url(params):
     SEARCH_TEMPLATE = 'http://%s/en-US/app/search/search?q=search %s'

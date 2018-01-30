@@ -52,6 +52,10 @@ class UtilsTest(TestCase):
 
     @override_settings(FILEBEAT_HOST='splunk.example.com')
     def test_add_extra_to_log_message(self):
+        ''' This terrible function produces an unreadalbe message by 
+            munging it with the extras, which are then discarded so
+            that no one can search or index log points by them either.
+        '''
         params = dict(a=1, c=3, b=2, d=4)
         actual_msg = get_splunk_url(params)
         expected_msg = 'http://splunk.example.com/en-US/app/search/search?q=search a=1 b=2 c=3 d=4'

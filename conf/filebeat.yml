@@ -21,6 +21,12 @@ filebeat.prospectors:
 - type: udp
   host: "localhost:9021"
 
+processors:
+ - drop_event:
+     when:
+        regexp:
+           message: "(/healthcheck/status/)|(auto_monitoring_size)"
+
 #- type: log
 #  enabled: false
 
@@ -149,6 +155,7 @@ setup.kibana:
 output.elasticsearch:
   # Array of hosts to connect to.
   hosts: ["localhost:9200"]
+  pipeline: "standard_filter"
 
   # Optional protocol and basic auth credentials.
   #protocol: "https"

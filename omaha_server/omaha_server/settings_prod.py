@@ -67,8 +67,8 @@ LOGGING = {
         'verbose': {
             'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
         },
-        'splunk_format':{
-            'format': 'hostname={} level=%(levelname)s logger=%(name)s timestamp=%(asctime)s module=%(module)s process=%(process)d thread=%(thread)d message=%(message)s\n\r'.format(HOST_NAME)
+        'filebeat_format': {
+            'format': 'hostname={}|level=%(levelname)s|logger=%(name)s|timestamp=%(asctime)s|module=%(module)s|process=%(process)d|thread=%(thread)d|message=%(message)s'.format(HOST_NAME)
         }
     },
     'handlers': {
@@ -112,11 +112,11 @@ LOGGING = {
 }
 
 if FILEBEAT_HOST and FILEBEAT_PORT:
-    LOGGING['handlers']['splunk'] = {
+    LOGGING['handlers']['filebeat'] = {
         'level': os.environ.get('FILEBEAT_LOGGING_LEVEL', 'INFO'),
         'class': 'logging.handlers.SysLogHandler',
-        'formatter': 'splunk_format',
+        'formatter': 'filebeat_format',
         'address': (FILEBEAT_HOST, int(FILEBEAT_PORT))
     }
-    LOGGING['root']['handlers'].append('splunk')
-    LOGGING['loggers']['django.request']['handlers'].append('splunk')
+    LOGGING['root']['handlers'].append('filebeat')
+    LOGGING['loggers']['django.request']['handlers'].append('filebeat')

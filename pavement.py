@@ -94,7 +94,8 @@ def create_admin():
 def configure_nginx():
     filebeat_host = os.environ.get('FILEBEAT_HOST', '')
     filebeat_port = os.environ.get('FILEBEAT_PORT', '')
-    if filebeat_host and filebeat_port.isdigit():
+    log_nginx_to_filebeat = True if os.environ.get('LOG_NGINX_TO_FILEBEAT', 'True').title() == 'True' else False
+    if log_nginx_to_filebeat and filebeat_host and filebeat_port.isdigit():
         sh("sed -i 's/access_log.*;/access_log syslog:server=%s:%s main;/g' /etc/nginx/nginx.conf" % (filebeat_host, filebeat_port))
         sh("sed -i 's/error_log.*;/error_log syslog:server=%s:%s;/g' /etc/nginx/nginx.conf" % (filebeat_host, filebeat_port))
     else:
@@ -135,11 +136,16 @@ def configure_filebeat():
     filebeat_destination = os.environ.get('FILEBEAT_DESTINATION', '')
     filebeat_destination = filebeat_destination.lower()
     if filebeat_destination == 'elasticsearch' and elk_host and elk_port.isdigit():
+        configure_elasticsearch(elk_host, elk_port)
         elasticsearch_output(elk_host, elk_port)
     elif filebeat_destination == 'logstash' and elk_host and elk_port.isdigit():
         logstash_output(elk_host, elk_port)
     else:
         filename_output()
+
+def configure_elasticsearch(elk_host, elk_port):
+   filter_path = os.path.abspath("conf/standard_filter.json")
+   sh("curl -XPUT '%s:%s/_ingest/pipeline/standard_filter?pretty' -H 'Content-Type: application/json' -d @%s" % (elk_host, elk_port, filter_path))
 
 
 @task
@@ -152,7 +158,6 @@ def docker_run():
             loaddata()
             create_admin()
             collectstatic()
-
         configure_nginx()
         configure_filebeat()
         sh('/usr/bin/supervisord')
