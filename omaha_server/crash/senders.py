@@ -59,12 +59,6 @@ class ELKSender(BaseSender):
             # All ELK messages are expected to include logger_name.
             extra['logger_name'] = 'omaha_server'
 
-            # DEBUG: These fields are not really wanted - suspect that logger is adding them, but just 
-            # make sure they are not slipping in through extra fields. 
-            extra.pop('hostname', None)
-            extra.pop('level', None)
-            extra.pop('logger', None)
-
             # Send message with logger.
             logger.info(add_extra_to_log_message("Sparrow Crashes", extra=extra))
 
