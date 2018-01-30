@@ -49,7 +49,10 @@ class ELKSender(BaseSender):
 
             # We don't want "sentry.interfaces" or other sentry specific things as part of any field name.
             extra['exception'] = str(sentry_data.get('sentry.interfaces.Exception'))
-            extra['user'] = str(sentry_data.get('sentry.interfaces.User')) # will be 'None' if no user in sentry_data.
+            extra['user'] = sentry_data.get('sentry.interfaces.User') # will be 'None' if no user in sentry_data.
+            # User is passed in as "dict(id=crash.userid)". Unpack.
+            if type(extra['user']) is dict: 
+                extra['user'] = extra['user'].get('id')
 
             # The "message" is actually a crash signature, not appropriate for the ELK "message" field.
             extra['signature'] = message
