@@ -111,7 +111,7 @@ $ ./manage.py generate_fake_mac_live_data Application alpha
 - [Elastic Beanstalk command line tools](http://aws.amazon.com/code/6752709412171743)
 - [ebs-deploy](https://github.com/briandilley/ebs-deploy)
 - [Sentry](https://github.com/getsentry/sentry)
-    + [SetUp Sentry as self-hosted solution](http://sentry.readthedocs.org/en/latest/quickstart/index.html)
+    + [SetUp Sentry as self-hosted solution](https://docs.sentry.io/server/installation/)
     + [Sentry as SaaS solution](https://www.getsentry.com/)
 - AWS RDS: [Creating a DB Instance Running the PostgreSQL Database Engine](http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_CreatePostgreSQLInstance.html)
 - Redis instance in AWS ElasticCache: [Documentation](http://docs.aws.amazon.com/AmazonElastiCache/latest/UserGuide/GettingStarted.CreateCluster.Redis.html)
