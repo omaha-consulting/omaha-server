@@ -32,5 +32,8 @@ deploy/settings.yml
 deploy/google/app.yaml
 !deploy/google/app.yaml.example
 
+# Virtual environment
+venv/
+
 ### Vagrant ###
 .vagrant/
