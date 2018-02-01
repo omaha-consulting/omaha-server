@@ -45,7 +45,7 @@ class ELKSender(BaseSender):
             logger = logging.getLogger('crashes')
 
             extra.update(tags)
-            extra['sparrow_version'] = tags['ver'] if 'ver' in tags else 'unknown'
+            extra['app_version'] = tags['ver'] if 'ver' in tags else 'unknown'
 
             # We don't want "sentry.interfaces" or other sentry specific things as part of any field name.
             extra['exception'] = str(sentry_data.get('sentry.interfaces.Exception'))
@@ -60,7 +60,7 @@ class ELKSender(BaseSender):
             extra['logger_name'] = 'omaha_server'
 
             # Send message with logger.
-            logger.info(add_extra_to_log_message("Sparrow Crashes", extra=extra))
+            logger.info(add_extra_to_log_message("received crash report", extra=extra))
 
 senders_dict = {
     "Sentry": SentrySender,
