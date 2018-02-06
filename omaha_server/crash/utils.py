@@ -35,6 +35,8 @@ from crash.senders import get_sender
 from omaha.models import Version
 from sparkle.models import SparkleVersion
 
+
+# This gets either a SentrySender or an ELKSender depending on config.
 crash_sender = get_sender()
 
 
@@ -49,8 +51,8 @@ def get_stacktrace(crashdump_path):
     if not os.path.isfile(crashdump_path):
         raise FileNotFoundError
 
-    rezult = minidump_stackwalk(crashdump_path, SYMBOLS_PATH).shell()
-    return rezult, rezult.stderr
+    result = minidump_stackwalk(crashdump_path, SYMBOLS_PATH).shell()
+    return result
 
 
 def add_signature_to_frame(frame):
@@ -94,7 +96,7 @@ def get_os(stacktrace):
     return stacktrace.get('system_info', {}).get('os', '') if stacktrace else ''
 
 
-def send_stacktrace_sentry(crash):
+def send_stacktrace(crash):
     stacktrace = crash.stacktrace_json
     exception = {
         "values": [
@@ -106,10 +108,10 @@ def send_stacktrace_sentry(crash):
         ]
     }
 
-    data = {'sentry.interfaces.Exception': exception}
+    sentry_data = {'sentry.interfaces.Exception': exception}
 
     if crash.userid:
-        data['sentry.interfaces.User'] = dict(id=crash.userid)
+        sentry_data['sentry.interfaces.User'] = dict(id=crash.userid)
 
     extra = dict(
         crash_admin_panel_url='http://{}{}'.format(
@@ -134,7 +136,7 @@ def send_stacktrace_sentry(crash):
     if crash.appid:
         tags['appid'] = crash.appid
 
-    crash_sender.send(crash.signature, extra=extra, tags=tags, data=data, crash_obj=crash)
+    crash_sender.send(crash.signature, extra=extra, tags=tags, sentry_data=sentry_data, crash_obj=crash)
 
 
 def parse_debug_meta_info(head, exception=Exception):

@@ -35,7 +35,7 @@ from crash.utils import (
     parse_stacktrace,
     get_signature,
     get_channel,
-    send_stacktrace_sentry,
+    send_stacktrace,
     parse_debug_meta_info,
 )
 
@@ -58,9 +58,9 @@ class ShTest(test.TestCase):
         with open(STACKTRACE_PATH, 'rb') as f:
             stacktrace = f.read()
 
-        rezult, stderr = get_stacktrace(CRASH_DUMP_PATH)
+        result = get_stacktrace(CRASH_DUMP_PATH)
 
-        self.assertEqual(bytes(rezult.stdout, 'utf8'), stacktrace)
+        self.assertEqual(bytes(result.stdout, 'utf8'), stacktrace)
 
 
 class SignatureTest(test.TestCase):
@@ -115,7 +115,7 @@ class SendStackTraceTest(test.TestCase):
     @test.override_settings(HOST_NAME='example.com',
                             CELERY_EAGER_PROPAGATES_EXCEPTIONS=False,)
     @is_private(False)
-    def test_send_stacktrace_sentry(self, mock_client):
+    def test_send_stacktrace(self, mock_client):
         meta = dict(
             lang='en',
             version='1.0.0.1',
@@ -131,7 +131,7 @@ class SendStackTraceTest(test.TestCase):
             signature='signature',
         )
 
-        send_stacktrace_sentry(crash)
+        send_stacktrace(crash)
 
         extra = {
             'crash_admin_panel_url': 'http://{}{}'.format(
@@ -234,7 +234,7 @@ class SendStackTraceTest(test.TestCase):
         mock_client.send.assert_called_once_with(
             'signature',
             extra=extra,
-            data=data,
+            sentry_data=data,
             tags=tags,
             crash_obj=crash
         )

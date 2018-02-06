@@ -50,10 +50,10 @@ class CrashModelTest(test.TestCase):
     )
     @test.override_settings(CELERY_EAGER_PROPAGATES_EXCEPTIONS=False,)
     @freeze_time("2014-12-11")
-    @patch('crash.utils.send_stacktrace_sentry')
+    @patch('crash.utils.send_stacktrace')
     @patch('crash.utils.crash_sender')
     @patch('uuid.uuid4', lambda: '92d51f8b-f67a-4d80-ac7f-9ab8018297d9')
-    def test_model(self, mock_send_stacktrace_sentry, mock_client):
+    def test_model(self, mock_send_stacktrace, mock_client):
         meta = dict(
             lang='en',
             ver='1.0.0.1',
@@ -90,10 +90,10 @@ class CrashModelTest(test.TestCase):
         CRASH_SYMBOLS_PATH=SYMBOLS_PATH,
     )
     @freeze_time("2014-12-11")
-    @patch('crash.utils.send_stacktrace_sentry')
+    @patch('crash.utils.send_stacktrace')
     @patch('crash.utils.crash_sender')
     @patch('uuid.uuid4', lambda: '92d51f8b-f67a-4d80-ac7f-9ab8018297d9')
-    def test_incorrect_dump(self, mock_send_stacktrace_sentry, mock_client):
+    def test_incorrect_dump(self, mock_send_stacktrace, mock_client):
         meta = dict(
             lang='en',
             ver='1.0.0.1',
@@ -116,7 +116,7 @@ class CrashModelTest(test.TestCase):
     )
     @test.override_settings(CELERY_ALWAYS_EAGER=False,)
     @freeze_time("2014-12-11")
-    @patch('crash.utils.send_stacktrace_sentry', lambda: None)
+    @patch('crash.utils.send_stacktrace', lambda: None)
     @patch('crash.utils.crash_sender')
     @patch('uuid.uuid4', lambda: '92d51f8b-f67a-4d80-ac7f-9ab8018297d9')
     def test_get_sentry_link(self, mock_client):
