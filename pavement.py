@@ -96,11 +96,7 @@ def configure_nginx():
     filebeat_port = os.environ.get('FILEBEAT_PORT', '')
     log_nginx_to_filebeat = True if os.environ.get('LOG_NGINX_TO_FILEBEAT', 'True').title() == 'True' else False
     if log_nginx_to_filebeat and filebeat_host and filebeat_port.isdigit():
-        sh("sed -i 's/access_log.*;/access_log syslog:server=%s:%s main;/g' /etc/nginx/nginx.conf" % (filebeat_host, filebeat_port))
-        sh("sed -i 's/error_log.*;/error_log syslog:server=%s:%s;/g' /etc/nginx/nginx.conf" % (filebeat_host, filebeat_port))
-    else:
-        sh("sed -i 's#access_log.*;#access_log /var/log/nginx/access.log main;#g' /etc/nginx/nginx.conf")
-        sh("sed -i 's#error_log.*;#error_log /var/log/nginx/error.log;#g' /etc/nginx/nginx.conf")
+        filebeat_read_nginx_logs()
     server_name = os.environ.get('HOST_NAME', '_')
     server_name = server_name if server_name != '*' else '_'
     sh("sed -i 's/server_name.*;/server_name %s;/g' /etc/nginx/sites-enabled/nginx-app.conf" % (server_name))
@@ -108,6 +104,13 @@ def configure_nginx():
 
 def elasticsearch_output(elasticsearch_host, elasticsearch_port):
     sh("sed -i 's/hosts: \[\"localhost:9200\"]/hosts: \[\"%s:%s\"]/g' /etc/filebeat/filebeat.yml" % (elasticsearch_host, elasticsearch_port))
+
+
+def filebeat_read_nginx_logs():
+    sh("sed -i 's|#- type: log|- type: log|g' /etc/filebeat/filebeat.yml")
+    sh("sed -i 's|#  enabled: false|  enabled: true|g' /etc/filebeat/filebeat.yml")
+    sh("sed -i 's|#  paths:|  paths:|g' /etc/filebeat/filebeat.yml")
+    sh("sed -i 's|# path_to_logs|    - /var/log/nginx/*.log|g' /etc/filebeat/filebeat.yml")
 
 
 def logstash_output(logstash_host, logstash_port):
@@ -164,7 +167,7 @@ def docker_run():
     except:
         client.captureException()
         raise
-        
+
 
 @task
 def docker_run_test():
