@@ -21,18 +21,21 @@ filebeat.prospectors:
 - type: udp
   host: "localhost:9021"
 
+#- type: log
+#  enabled: false
+
+# Paths that should be crawled and fetched. Glob based paths.
+#  paths:
+# path_to_logs
+
+
 processors:
  - drop_event:
      when:
         regexp:
            message: "(/healthcheck/status/)|(auto_monitoring_size)"
 
-#- type: log
-#  enabled: false
 
-  # Paths that should be crawled and fetched. Glob based paths.
-#  paths:
-#    - /var/*.log
 
   # Exclude lines. A list of regular expressions to match. It drops the lines that are
   # matching any regular expression from the list.
