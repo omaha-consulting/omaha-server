@@ -21,7 +21,7 @@ from __future__ import unicode_literals
 from builtins import bytes, range
 
 import base64
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from uuid import UUID
 
 from django.core.urlresolvers import reverse
@@ -49,9 +49,10 @@ from omaha.serializers import (
     ActionSerializer,
     StatisticsMonthsSerializer,
     ServerVersionSerializer,
+    PartialUpdateSerializer,
 )
-from omaha.factories import ApplicationFactory, DataFactory, PlatformFactory, ChannelFactory, VersionFactory, ActionFactory
-from omaha.models import Application, Data, Channel, Platform, Version, Action
+from omaha.factories import ApplicationFactory, DataFactory, PlatformFactory, ChannelFactory, VersionFactory, ActionFactory, PartialUpdateFactory
+from omaha.models import Application, Data, Channel, Platform, Version, Action, PartialUpdate
 from omaha.tests import fixtures, OverloadTestStorageMixin
 from omaha.tests.utils import temporary_media_root, create_app_xml
 from sparkle.models import SparkleVersion
@@ -640,3 +641,51 @@ class ServerVersionTest(APITestCase):
         response = self.client.get(reverse(self.url), format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(self.serializer(self.data).data, response.data)
+
+
+
+class PartialUpdateTest(BaseTest, APITestCase):
+    url = 'partialupdate-list'
+    url_detail = 'partialupdate-detail'
+    factory = PartialUpdateFactory
+    serializer = PartialUpdateSerializer
+
+    @is_private()
+    def test_create(self):
+        version = VersionFactory.create()
+        data = dict(
+            is_enabled=True,
+            exclude_new_users=True,
+            version=version.pk,
+            end_date=str(date.today()),
+            percent=51.0,
+            start_date=str(date.today()),
+            active_users=1,
+        )
+        response = self.client.post(reverse(self.url), data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        obj = PartialUpdate.objects.get(id=response.data['id'])
+        self.assertEqual(response.data, self.serializer(obj).data)
+
+    @is_private()
+    def test_update(self):
+        version = VersionFactory.create()
+        data = dict(
+            is_enabled=True,
+            exclude_new_users=True,
+            version=version.pk,
+            end_date=str(date.today()),
+            percent=51.0,
+            start_date=str(date.today()),
+            active_users=1,
+        )
+        response = self.client.post(reverse(self.url), data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        obj_id = response.data['id']
+        obj = PartialUpdate.objects.get(id=obj_id)
+        self.assertEqual(response.data, self.serializer(obj).data)
+        url = reverse(self.url_detail, kwargs=dict(pk=obj_id))
+        response = self.client.patch(url, dict(event=2))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        obj = PartialUpdate.objects.get(id=obj_id)
+        self.assertEqual(obj.percent, 51.0)

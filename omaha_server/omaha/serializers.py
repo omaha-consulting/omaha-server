@@ -23,7 +23,7 @@ from rest_framework import serializers
 from dateutil import parser
 import pytz
 
-from omaha.models import Application, Platform, Channel, Version, Action, Data
+from omaha.models import Application, Platform, Channel, Version, Action, Data, PartialUpdate
 
 
 __all__ = ['AppSerializer', 'PlatformSerializer', 'ChannelSerializer', 'VersionSerializer']
@@ -118,3 +118,18 @@ class LiveStatisticsInputSerializer(serializers.Serializer):
 
 class ServerVersionSerializer(serializers.Serializer):
     version = serializers.CharField()
+
+
+class PartialUpdateSerializer(serializers.ModelSerializer):
+    version = serializers.PrimaryKeyRelatedField(queryset=Version.objects.all())
+
+    class Meta:
+        model = PartialUpdate
+        filelds = (
+            'active_users',
+            'is_enabled',
+            'percent',
+            'version',
+            'start_date',
+            'exclude_new_users',
+        )

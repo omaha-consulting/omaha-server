@@ -22,9 +22,39 @@ from django.test import TestCase
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 from omaha.tests.utils import temporary_media_root
+from omaha.models import Version
+from omaha.factories import ApplicationFactory, DataFactory, PlatformFactory, ChannelFactory, VersionFactory, ActionFactory, PartialUpdateFactory
+from omaha.serializers import AppSerializer, DataSerializer, PlatformSerializer, ChannelSerializer, VersionSerializer, ActionSerializer, PartialUpdateSerializer
+from datetime import date
 
-from omaha.factories import ApplicationFactory, DataFactory, PlatformFactory, ChannelFactory, VersionFactory, ActionFactory
-from omaha.serializers import AppSerializer, DataSerializer, PlatformSerializer, ChannelSerializer, VersionSerializer, ActionSerializer
+
+class PartialUpdateSerializerTest(TestCase):
+    def test_serializer(self):
+        today = date.today()
+        version = VersionFactory()
+        data = dict(
+            is_enabled=True,
+            exclude_new_users=True,
+            version=version,
+            end_date=str(date(today.year, today.month, today.day)),
+            percent=51.0,
+            start_date=str(date(today.year, today.month, today.day)),
+            active_users=1,
+        )
+        partial = PartialUpdateFactory(**data)
+        self.assertDictEqual(
+            PartialUpdateSerializer(partial).data,
+            dict(
+                id=partial.pk,
+                is_enabled=partial.is_enabled,
+                exclude_new_users=partial.exclude_new_users,
+                version=partial.version.pk,
+                end_date=partial.end_date,
+                percent=partial.percent,
+                start_date=partial.start_date,
+                active_users=partial.active_users,
+            )
+        )
 
 
 class AppSerializerTest(TestCase):
