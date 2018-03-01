@@ -22,6 +22,7 @@ router.register(r'sparkle/version', sparkle.api.SparkleVersionViewSet)
 router.register(r'symbols', crash.api.SymbolsViewSet)
 router.register(r'crash_report', crash.api.CrashViewSet)
 router.register(r'feedback', feedback.api.FeedbackViewSet)
+router.register(r'partialupdate', omaha.api.PartialUpdateViewSet)
 router.register(r'statistics/live', omaha.api.StatisticsVersionsLiveView, 'api-statistics-live')
 
 urlpatterns = [

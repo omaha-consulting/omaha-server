@@ -50,6 +50,7 @@ from omaha.serializers import (
     MonthInputSerializer,
     ServerVersionSerializer,
     LiveStatisticsInputSerializer,
+    PartialUpdateSerializer
 )
 from omaha.models import (
     Application,
@@ -58,6 +59,7 @@ from omaha.models import (
     Channel,
     Version,
     Action,
+    PartialUpdate
 )
 from omaha.utils import get_month_range_from_dict
 
@@ -150,6 +152,11 @@ class AppViewSet(viewsets.ModelViewSet):
     """
     queryset = Application.objects.all().order_by('-id')
     serializer_class = AppSerializer
+
+
+class PartialUpdateViewSet(viewsets.ModelViewSet):
+    queryset = PartialUpdate.objects.all().order_by('-id')
+    serializer_class = PartialUpdateSerializer
 
 
 class DataViewSet(viewsets.ModelViewSet):

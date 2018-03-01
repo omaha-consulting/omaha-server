@@ -18,6 +18,7 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
+from datetime import date
 from uuid import UUID
 from django.core.files.uploadedfile import SimpleUploadedFile
 
@@ -108,3 +109,16 @@ class EventFactory(factory.DjangoModelFactory):
 
     eventtype = 1
     eventresult = 1
+
+
+class PartialUpdateFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = 'omaha.PartialUpdate'
+
+    is_enabled = factory.Sequence(lambda n: True)
+    version = factory.lazy_attribute(lambda n: VersionFactory())
+    percent = factory.Sequence(lambda n: 50.0)
+    start_date = factory.Sequence(lambda n: date.today())
+    end_date = factory.Sequence(lambda n: date.today())
+    exclude_new_users = factory.Sequence(lambda n: True)
+    active_users = factory.Sequence(lambda n: 1)
