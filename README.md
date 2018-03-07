@@ -10,6 +10,8 @@ FORMAT: 1A
 
 <!-- include(Platform.md) -->
 
+<!-- include(Partial_update.md) -->
+
 <!-- include(Channel.md) -->
 
 <!-- include(Omaha_version.md) -->
