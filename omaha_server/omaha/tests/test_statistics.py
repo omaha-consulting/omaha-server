@@ -20,7 +20,8 @@ the License.
 
 from builtins import range
 
-from datetime import datetime
+from django.utils import timezone
+from datetime import datetime, timedelta
 from uuid import UUID
 
 from django.test import TestCase
@@ -46,6 +47,7 @@ from omaha.statistics import (
     get_users_statistics_months,
     get_channel_statistics,
     get_users_versions,
+    get_users_live_versions,
 )
 
 from omaha.tests.utils import temporary_media_root, create_app_xml
@@ -73,6 +75,38 @@ class StatisticsTest(TestCase):
 
     def tearDown(self):
         redis.flushdb()
+
+    def generate_version(self, is_enabled):
+        app = Application.objects.create(id='{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}', name='app')
+        platform = Platform.objects.create(name='win')
+        channel = Channel.objects.create(name='stable')
+        userid = 1
+        Version.objects.create(
+            is_enabled=is_enabled,
+            app=app,
+            platform=platform,
+            channel=channel,
+            version='0.0.0.2',
+            file=SimpleUploadedFile('./chrome_installer.exe', False))
+        start = timezone.now() - timedelta(3)
+        end = timezone.now()
+        request = parse_request(fixtures.request_event_uninstall_success)
+        apps = request.findall('app')
+        userid_counting(userid, apps, platform)
+        return get_users_live_versions(
+            app_id=app.pk,
+            channel=channel,
+            start=start,
+            end=end,
+        )
+
+    def test_get_live_statistics_with_enabled_version(self):
+        data = self.generate_version(is_enabled=True)
+        assert len(data['win'].keys()) == 1
+
+    def test_get_live_statistics_with_disabled_version(self):
+        data = self.generate_version(is_enabled=False)
+        assert len(data['win'].keys()) == 1
 
     @patch('omaha.statistics.add_app_statistics')
     def test_userid_counting(self, mock_add_app_statistics):
@@ -385,7 +419,6 @@ class StatisticsTest(TestCase):
         appid = app.get('appid')
         version_1 = '0.0.0.1'
         version_2 = '0.0.0.2'
-
         events_appid_version = lambda version: HourEvents('request:{}:{}'.format(appid, version), now.year, now.month, now.day, now.hour)
         events_appid_platform_version = lambda version: HourEvents('request:{}:{}:{}'.format(appid, platform, version), now.year, now.month, now.day, now.hour)
         events_appid_platform_channel_version = lambda version: HourEvents(
@@ -395,7 +428,6 @@ class StatisticsTest(TestCase):
         self.assertEqual(len(events_appid_platform_version(version_1)), 0)
         self.assertEqual(len(events_appid_platform_channel_version(version_1)), 0)
         userid_counting(userid, apps, platform)
-
         self.assertEqual(len(events_appid_version(version_1)), 1)
         self.assertEqual(len(events_appid_platform_version(version_1)), 1)
         self.assertEqual(len(events_appid_platform_channel_version(version_1)), 1)

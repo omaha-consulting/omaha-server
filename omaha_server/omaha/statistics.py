@@ -47,10 +47,10 @@ from sparkle.models import SparkleVersion
 
 __all__ = ['userid_counting', 'is_user_active']
 
-setup_redis('default', 
+setup_redis('default',
             settings.REDIS_STAT_HOST,
-            settings.REDIS_STAT_PORT, 
-            db=settings.REDIS_STAT_DB, 
+            settings.REDIS_STAT_PORT,
+            db=settings.REDIS_STAT_DB,
             password=settings.REDIS_PASSWORD)
 
 
@@ -242,9 +242,9 @@ def get_users_live_versions(app_id, start, end, channel, tz='UTC'):
 
     for platform in platforms:
         if platform == 'mac':
-            platform_data = [str(v) for v in SparkleVersion.objects.filter_by_enabled(app_id=app_id).values_list('short_version', flat=True)]
+            platform_data = [str(v) for v in SparkleVersion.objects.filter(app_id=app_id).values_list('short_version', flat=True)]
         else:
-            platform_data = [str(v) for v in Version.objects.filter_by_enabled(app__id=app_id, platform__name=platform).values_list('version', flat=True)]
+            platform_data = [str(v) for v in Version.objects.filter(app__id=app_id, platform__name=platform).values_list('version', flat=True)]
         versions.update({platform: platform_data})
 
     logging.info("Getting statistics from Redis")
