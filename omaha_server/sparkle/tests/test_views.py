@@ -37,6 +37,7 @@ from sparkle.factories import SparkleVersionFactory
 
 class SparkleViewTest(OverloadTestStorageMixin, TestCase, XmlTestMixin):
     model = SparkleVersion
+
     def setUp(self):
         self.client = Client()
         super(SparkleViewTest, self).setUp()
@@ -63,6 +64,30 @@ class SparkleViewTest(OverloadTestStorageMixin, TestCase, XmlTestMixin):
         self.assertXmlDocument(response.content)
         self.assertXmlEquivalentOutputs(response.content,
                                         fixtures.response_sparkle)
+
+    @freeze_time('2014-10-14 08:28:05')
+    @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')
+    def test_sparkle(self):
+        app = ApplicationFactory.create(id='{D0AB2EBC-931B-4013-9FEB-C9C4C2225C8C}', name='chrome')
+        channel = ChannelFactory.create(name='stable')
+        obj = SparkleVersionFactory.create(
+            app=app,
+            channel=channel,
+            version='782.112',
+            short_version='13.0.782.112',
+            minimum_system_version='10.8.6',
+            file=SimpleUploadedFile('./chrome.dmg', b'_' * 23963192),
+            file_size=23963192)
+        obj.save()
+
+        response = self.client.get(reverse('sparkle_appcast', args=(app.name, channel.name)),
+                                   HTTP_HOST='example.com')
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertXmlDocument(response.content)
+        self.assertXmlEquivalentOutputs(response.content,
+                                        fixtures.response_sparkle_with_minimum_system_version)
 
     @freeze_time('2014-10-14 08:28:05')
     @temporary_media_root(MEDIA_URL='http://cache.pack.google.com/edgedl/chrome/install/782.112/')

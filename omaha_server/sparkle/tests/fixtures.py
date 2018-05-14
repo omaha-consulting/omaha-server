@@ -149,3 +149,28 @@ response_sparkle_with_dsa = b"""<?xml version="1.0" encoding="utf-8"?>
 
     </channel>
 </rss>"""
+
+response_sparkle_with_minimum_system_version = b"""<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <channel>
+        <title>chrome</title>
+        <link>http://example.com/sparkle/chrome/stable/appcast.xml</link>
+        <description>Most recent changes with links to updates.</description>
+        <language>en</language>
+
+            <item>
+                <title>chrome 782.112</title>
+                <sparkle:minimumSystemVersion>10.8.6</sparkle:minimumSystemVersion>
+                <description><![CDATA[
+
+                ]]>
+                </description>
+                <pubDate>Tue, 14 Oct 2014 08:28:05 +0000</pubDate>
+                <enclosure url="http://cache.pack.google.com/edgedl/chrome/install/782.112/sparkle/chrome/stable/782.112/chrome.dmg"
+                           sparkle:version="782.112"
+                           sparkle:shortVersionString="13.0.782.112"
+                           length="23963192" type="application/octet-stream"/>
+            </item>
+
+    </channel>
+</rss>"""

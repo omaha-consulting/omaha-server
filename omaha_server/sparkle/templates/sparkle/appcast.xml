@@ -10,6 +10,7 @@
         {% for version in object_list %}
             <item>
                 <title>{{ version }}</title>
+                {% if version.minimum_system_version %}<sparkle:minimumSystemVersion>{{ version.minimum_system_version }}</sparkle:minimumSystemVersion>{% endif %}
                 <description><![CDATA[
                     {% if version.release_notes %}{{ version.release_notes }}{% endif %}
                 ]]>
