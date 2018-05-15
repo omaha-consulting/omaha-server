@@ -48,6 +48,8 @@ class SparkleVersion(BaseModel):
                            number_bits=(16, 16), db_index=True)
     short_version = VersionField(help_text='Format: 255.255.65535.65535',
                                  number_bits=(8, 8, 16, 16), blank=True, null=True)
+    minimum_system_version = VersionField(help_text='Format: 255.255.255',
+                                          number_bits=(8, 8, 8), blank=True, null=True)
     release_notes = models.TextField(blank=True, null=True)
     file = models.FileField(upload_to=version_upload_to, null=True,
                             storage=public_read_storage)

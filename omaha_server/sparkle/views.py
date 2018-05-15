@@ -46,7 +46,7 @@ class SparkleView(ListView):
         except Application.DoesNotExist:
             raise Http404
 
-        collect_statistics(request, self.appid, self.channel)
+        collect_statistics(request, self.appid, self.channel)   # It should be a celery task
         return super(SparkleView, self).get(self, request, *args, **kwargs)
 
     def get_queryset(self):
