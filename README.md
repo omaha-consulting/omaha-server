@@ -66,6 +66,9 @@ $ paver run_test_in_docker
 
 ## Statistics
 
+All statistics are stored in Redis. In order not to lose all data, we recommend to set up the backing up process. The proposed solution uses ElastiCache which supports [automatic backups](https://aws.amazon.com/en/blogs/aws/backup-and-restore-elasticache-redis-nodes/). 
+In the case of a self-hosted solution do not forget to set up backups.
+
 Required `userid`. [Including user id into request](https://github.com/Crystalnix/omaha/wiki/Omaha-Client-working-with-protocol#including-user-id-into-request)
 
 ## Utils
