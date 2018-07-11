@@ -26,7 +26,7 @@ S3_URL = 'https://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
 STATIC_URL = ''.join([S3_URL, 'static/'])
 AWS_PRELOAD_METADATA = True
 AWS_IS_GZIPPED = True
-AWS_DEFAULT_ACL = 'authenticated-read'
+AWS_DEFAULT_ACL = 'private'
 
 
 RAVEN_CONFIG = {
