@@ -18,7 +18,8 @@ class UtilsTest(test.TestCase):
             file_header = file.read(1024)
         file_description = get_file_extension(file_header)
         self.assertEqual(file_description['file_extension'], "tar.gz")
-        self.assertEqual(file_description['mime_type'], "application/gzip")
+        self.assertIn(file_description['mime_type'],
+                      ["application/x-gzip", "application/gzip"])
 
     def test_get_file_extension_from_tar_file(self):
         with open(TAR_FILE, 'rb') as file:

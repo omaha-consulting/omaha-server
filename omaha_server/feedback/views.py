@@ -21,6 +21,10 @@ the License.
 from copy import copy
 import StringIO
 
+from google.protobuf.descriptor import FieldDescriptor
+from protobuf_to_dict import protobuf_to_dict, TYPE_CALLABLE_MAP
+from raven import Client
+from celery import signature
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.views.generic import FormView
@@ -28,11 +32,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.conf import settings
 
-from google.protobuf.descriptor import FieldDescriptor
-from protobuf_to_dict import protobuf_to_dict, TYPE_CALLABLE_MAP
-from raven import Client
-
 from feedback.forms import FeedbackForm
+from feedback.tasks import send_email_feedback
 from feedback.proto_gen.extension_pb2 import ExtensionSubmit
 from omaha_server.utils import get_client_ip
 from utils import get_file_extension
@@ -113,7 +114,13 @@ class FeedbackFormView(FormView):
         return blackbox_name
 
     def form_valid(self, form):
+        email_sender = getattr(settings, 'EMAIL_SENDER', None)
+        email_recipients = getattr(settings, 'EMAIL_RECIPIENTS', None)
         obj = form.save()
+        if email_sender and email_recipients:
+            (signature("tasks.send_email_feedback",
+                       args=(obj.pk, email_sender, email_recipients))
+             .apply_async(queue='private', countdown=1))
         return HttpResponse(obj.pk, status=200)
 
     def form_invalid(self, form):

@@ -9,6 +9,7 @@ def get_file_extension(file_header):
         'application/x-tar': 'tar',
         'application/x-rar-compressed': 'rar',
         'application/gzip': 'gz',
+        'application/x-gzip': 'gz',
         'application/x-bzip2': 'bz2',
         'application/x-7z-compressed': '7z',
         'application/x-xz': 'xz',

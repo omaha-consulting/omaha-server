@@ -19,6 +19,7 @@ the License.
 """
 
 import os
+import mock
 
 from django import test
 from django.core.urlresolvers import reverse
@@ -36,7 +37,14 @@ NO_DESC_FILE = os.path.join(TEST_DATA_DIR, 'no_description.pb')
 
 
 class FeedbackViewTest(test.TestCase):
-    def test_view(self):
+
+    @test.override_settings(
+        EMAIL_SENDER='sender@test.com',
+        EMAIL_RECIPIENTS='recepient1@test.com, recepient2@test.com',
+    )
+    @mock.patch('feedback.views.signature')
+    def test_view(self, mock_celery):
+        mock_apply_async = mock_celery.return_value.apply_async
         with open(PB_FILE, 'rb') as f:
             body = f.read()
         description = 'Test tar'
@@ -64,6 +72,33 @@ class FeedbackViewTest(test.TestCase):
         self.assertTrue(obj.feedback_data)
         self.assertEqual(obj.ip, "8.8.8.8")
         self.assertEqual(os.path.basename(obj.blackbox.name), 'blackbox.tar')
+        mock_celery.assert_called_once_with(
+            'tasks.send_email_feedback',
+            args=(
+                 obj.pk, 'sender@test.com',
+                 'recepient1@test.com, recepient2@test.com'
+            )
+        )
+        mock_apply_async.assert_called_once_with(countdown=1, queue='private')
+
+    @mock.patch('feedback.views.signature')
+    def test_disabled_emails(self, mock_celery):
+        with open(PB_FILE, 'rb') as f:
+            body = f.read()
+        description = 'Test tar'
+        email = ''
+        page_url = 'chrome://newtab/'
+
+        self.assertEqual(Feedback.objects.all().count(), 0)
+        response = self.client.post(
+            reverse('feedback'),
+            data=body,
+            content_type='application/x-protobuf',
+            REMOTE_ADDR="8.8.8.8"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Feedback.objects.all().count(), 1)
+        mock_celery.assert_not_called()
 
     def test_view_gz(self):
         with open(PB_GZ_FILE, 'rb') as f:
