@@ -5,4 +5,4 @@ django-debug-toolbar==1.5
 django-debug-panel==0.8.2
 ebs-deploy==2.0.1
 bumpversion==0.5.3
-Pillow==3.2.0
+Pillow~=3.3.2
