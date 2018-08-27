@@ -20,8 +20,16 @@ PUBLIC_READ_FILE_STORAGE = 'omaha_server.s3utils.PublicReadS3Storage'
 
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_SES_REGION_NAME = os.environ.get('AWS_SES_REGION_NAME', 'us-east-1')
+AWS_SES_REGION_ENDPOINT = os.environ.get(
+    'AWS_SES_REGION_ENDPOINT', 'email.us-east-1.amazonaws.com'
+)
 AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
 S3_URL = 'https://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
+
+EMAIL_BACKEND = 'django_ses.SESBackend'
+EMAIL_SENDER = os.environ.get('EMAIL_SENDER')
+EMAIL_RECIPIENTS = os.environ.get('EMAIL_RECIPIENTS')
 
 STATIC_URL = ''.join([S3_URL, 'static/'])
 AWS_PRELOAD_METADATA = True

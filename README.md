@@ -240,6 +240,9 @@ app:
 | ELK_PORT                  | Logstash TCP port    | ''                         |
 | FILEBEAT_DESTINATION      | filebeat output type | ''                         |
 | LOG_NGINX_TO_FILEBEAT     | Send logs to filebeat| 'True'                     |
+| EMAIL_SENDER              | Verified SES email   |                            |
+| EMAIL_RECIPIENTS          | Feedback recepients  |                            |
+
 
 
 - [uWSGI Options](http://uwsgi-docs.readthedocs.org/en/latest/Options.html) & [Environment variables](http://uwsgi-docs.readthedocs.org/en/latest/Configuration.html#environment-variables)
