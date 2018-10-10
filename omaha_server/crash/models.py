@@ -21,6 +21,7 @@ the License.
 import os
 import uuid
 
+from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_save, pre_delete, pre_save
 from django.dispatch import receiver
@@ -32,6 +33,8 @@ from jsonfield import JSONField
 from omaha.models import BaseModel
 from omaha_server.utils import storage_with_spaces_instance
 from crash.managers import CrashManager, SymbolsManager
+from encryption.models import DecryptionData
+
 
 
 def upload_to(directory, obj, filename):
@@ -73,6 +76,9 @@ class Crash(BaseModel):
     os = models.CharField(max_length=32, null=True, blank=True)
     build_number = models.CharField(max_length=32, null=True, blank=True)
     channel = models.CharField(max_length=32, null=True, blank=True, default='')
+    decryption_data = models.OneToOneField(
+        DecryptionData, on_delete=models.SET_NULL, blank=True, null=True
+    )
 
     objects = CrashManager()
 

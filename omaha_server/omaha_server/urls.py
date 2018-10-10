@@ -10,6 +10,7 @@ import sparkle.api
 import crash.api
 import feedback.api
 import downloads.api
+import encryption.api
 
 router = routers.DefaultRouter()
 router.register(r'app', omaha.api.AppViewSet)
@@ -32,6 +33,8 @@ urlpatterns = [
     url(r'^healthcheck/', include('healthcheck.urls')),
     url(r'^sparkle/', include('sparkle.urls')),
     url(r'^api/downloads', downloads.api.LatestVersionView.as_view(), name='api-downloads'),
+    url(r'^api/latest_public_key', encryption.api.GetLatestPublicKeyAPIView.as_view(),
+        name='latest_public_key'),
     url(r'^tinymce/', include('tinymce.urls')),
 ]
 
@@ -52,6 +55,11 @@ if settings.IS_PRIVATE:
         url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
         url(r'select2_userid_filter/', omaha.views.FilterByUserIDResponseView.as_view(),
             name='select2_userid_filter'),
+    ]
+
+if settings.ENABLE_BLACKBOX_ENCRYPTION:
+    urlpatterns += [
+        url(r'', include('encryption.urls')),
     ]
 
 if settings.DEBUG:

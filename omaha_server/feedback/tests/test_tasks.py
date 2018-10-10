@@ -67,7 +67,7 @@ class FeedbackTaskTest(test.TestCase):
 
         sender = 'sender@test.com'
         recipients = 'recepient1@test.com, recepient2@test.com'
-        send_email_feedback(obj.pk, sender, recipients)
+        send_email_feedback(obj.pk, sender, recipients, 'http://test.com')
 
         # mock_email.assert_called_with('Feedback # %s' % obj.pk,
         #                               u"\nDescription: Test description\nPage URL: http://google.com/\nUser email: me@example.com\nUser IP: None\nFeedback JSON data: {u'web_data': {u'url': u'http://google.com/'}, u'common_data': {u'description': u'Test description', u'user_email': u'me@example.com'}}\n",
@@ -76,7 +76,7 @@ class FeedbackTaskTest(test.TestCase):
         mock_email_obj.send.assert_called_once()
         expected_attach_calls = [
             call(u'screenshot.png', ''),
-            call(u'blackbox.tar', ''),
+            # call(u'blackbox.tar', ''),
             call(u'sys_logs.zip', ''),
             call(u'attach.zip', '')
         ]

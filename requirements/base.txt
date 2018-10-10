@@ -35,3 +35,7 @@ google-cloud
 django-tinymce==2.6.0
 python-magic==0.4.15
 django_ses==0.8.2
+pyOpenSSL==18.0.0
+enum34==1.1.6
+ipaddress==1.0.22
+requests==2.18.4

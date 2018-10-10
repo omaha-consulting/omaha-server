@@ -25,10 +25,11 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.db import DataError
+from mock import patch
 
 from crash.models import Crash, CrashDescription
 from crash.factories import CrashFactory, CrashDescriptionFactory
-
+from encryption.factories import GeneratedKeyFactory
 
 BASE_DIR = os.path.dirname(__file__)
 TEST_DATA_DIR = os.path.join(BASE_DIR, 'testdata')
@@ -37,11 +38,17 @@ TAR_FILE_ONLY_INSTRUMENTAL_FILE = os.path.join(TEST_DATA_DIR, 'foo_only_instrume
 
 
 class CrashViewTest(test.TestCase):
+
+    def setUp(self):
+        self.key = GeneratedKeyFactory.create()
+        self.headers = {'X-KEY-ID': self.key.pk, 'X-AES-KEY': 'test_key'}
+
     @test.override_settings(
         CELERY_ALWAYS_EAGER=False,
         CELERY_EAGER_PROPAGATES_EXCEPTIONS=False,
     )
-    def test_view(self):
+    @patch('crash.views.signature')
+    def test_view(self, mock_celery):
         meta = dict(
             lang='en',
             version='1.0.0.1',
@@ -66,6 +73,7 @@ class CrashViewTest(test.TestCase):
         self.assertEqual(obj.userid, form_data['userid'])
         self.assertIsNotNone(obj.upload_file_minidump)
         self.assertEquals(obj.ip, '8.8.8.8')
+        mock_celery.assert_not_called()
 
     @test.override_settings(
         CELERY_ALWAYS_EAGER=False,
@@ -102,7 +110,8 @@ class CrashViewTest(test.TestCase):
         CELERY_ALWAYS_EAGER=False,
         CELERY_EAGER_PROPAGATES_EXCEPTIONS=False,
     )
-    def test_view_tar_file(self):
+    @patch('crash.views.signature')
+    def test_view_tar_file(self, mock_celery):
         meta = dict(
             lang='en',
             version='1.0.0.1',
@@ -120,7 +129,7 @@ class CrashViewTest(test.TestCase):
         form_data.update(meta)
 
         self.assertEqual(Crash.objects.all().count(), 0)
-        response = self.client.post(reverse('crash'), form_data)
+        response = self.client.post(reverse('crash'), form_data, **self.headers)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Crash.objects.all().count(), 1)
         obj = Crash.objects.get()
@@ -129,7 +138,11 @@ class CrashViewTest(test.TestCase):
         self.assertEqual(obj.appid, form_data['appid'])
         self.assertEqual(obj.userid, form_data['userid'])
         self.assertIsNotNone(obj.upload_file_minidump)
+        self.assertTrue(obj.decryption_data)
         self.assertIsNotNone(obj.archive)
+        mock_celery.assert_called_once_with(
+            'tasks.decrypt', args=(obj.pk, Crash)
+        )
 
     @test.override_settings(
         CELERY_ALWAYS_EAGER=False,

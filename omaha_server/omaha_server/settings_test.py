@@ -3,6 +3,7 @@
 import os
 
 os.environ.setdefault('OMAHA_SERVER_PRIVATE', 'True')
+os.environ.setdefault('ENABLE_BLACKBOX_ENCRYPTION', 'True')
 
 from .settings import *
 

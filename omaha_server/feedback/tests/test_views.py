@@ -26,7 +26,7 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 
 from feedback.models import Feedback
-
+from encryption.factories import GeneratedKeyFactory
 
 BASE_DIR = os.path.dirname(__file__)
 TEST_DATA_DIR = os.path.join(BASE_DIR, 'testdata')
@@ -37,6 +37,10 @@ NO_DESC_FILE = os.path.join(TEST_DATA_DIR, 'no_description.pb')
 
 
 class FeedbackViewTest(test.TestCase):
+
+    def setUp(self):
+        self.key = GeneratedKeyFactory.create()
+        self.headers = {'X-KEY-ID': self.key.pk, 'X-AES-KEY': 'test_key'}
 
     @test.override_settings(
         EMAIL_SENDER='sender@test.com',
@@ -56,7 +60,8 @@ class FeedbackViewTest(test.TestCase):
             reverse('feedback'),
             data=body,
             content_type='application/x-protobuf',
-            REMOTE_ADDR="8.8.8.8"
+            REMOTE_ADDR="8.8.8.8",
+            **self.headers
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Feedback.objects.all().count(), 1)
@@ -70,19 +75,29 @@ class FeedbackViewTest(test.TestCase):
         self.assertTrue(obj.system_logs)
         self.assertTrue(obj.attached_file)
         self.assertTrue(obj.feedback_data)
+        self.assertTrue(obj.decryption_data)
         self.assertEqual(obj.ip, "8.8.8.8")
         self.assertEqual(os.path.basename(obj.blackbox.name), 'blackbox.tar')
-        mock_celery.assert_called_once_with(
-            'tasks.send_email_feedback',
-            args=(
-                 obj.pk, 'sender@test.com',
-                 'recepient1@test.com, recepient2@test.com'
-            )
+        feedback_url = 'http://testserver/admin/feedback/feedbackdescription/%s/change/' % obj.pk
+        mock_calls = [
+            mock.call('tasks.send_email_feedback',
+                 args=(obj.pk, 'sender@test.com',
+                       'recepient1@test.com, recepient2@test.com',
+                       feedback_url,
+                       )),
+            mock.call('tasks.decrypt',
+                 args=(obj.pk, Feedback)),
+        ]
+        mock_celery.assert_has_calls(
+            mock_calls, any_order=True
         )
-        mock_apply_async.assert_called_once_with(countdown=1, queue='private')
+        mock_apply_async.assert_called_with(countdown=1, queue='private')
 
+    @test.override_settings(
+        ENABLE_BLACKBOX_ENCRYPTION=False,
+    )
     @mock.patch('feedback.views.signature')
-    def test_disabled_emails(self, mock_celery):
+    def test_disabled_emails_no_encryption(self, mock_celery):
         with open(PB_FILE, 'rb') as f:
             body = f.read()
         description = 'Test tar'

@@ -31,12 +31,14 @@ from django.views.generic import FormView
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.conf import settings
+from django.core.urlresolvers import reverse
 
 from feedback.forms import FeedbackForm
 from feedback.tasks import send_email_feedback
 from feedback.proto_gen.extension_pb2 import ExtensionSubmit
 from omaha_server.utils import get_client_ip
-from utils import get_file_extension
+from encryption.models import DecryptionData
+from feedback.utils import get_file_extension
 
 dsn = getattr(settings, 'RAVEN_CONFIG', None)
 if dsn:
@@ -116,11 +118,27 @@ class FeedbackFormView(FormView):
     def form_valid(self, form):
         email_sender = getattr(settings, 'EMAIL_SENDER', None)
         email_recipients = getattr(settings, 'EMAIL_RECIPIENTS', None)
-        obj = form.save()
+        obj = form.save(commit=False)
+        if settings.ENABLE_BLACKBOX_ENCRYPTION:
+            obj.decryption_data = DecryptionData.create_from_headers(self.request.META)
+
+        obj.save()
         if email_sender and email_recipients:
-            (signature("tasks.send_email_feedback",
-                       args=(obj.pk, email_sender, email_recipients))
-             .apply_async(queue='private', countdown=1))
+            if obj.description.startswith('BlackBox'):
+                model_name = 'feedback'
+            else:
+                model_name = 'feedbackdescription'
+            uri = reverse('admin:feedback_%s_change' % model_name,
+                          args=(obj.pk,))
+            feedback_url = self.request.build_absolute_uri(uri)
+            (signature(
+                "tasks.send_email_feedback",
+                args=(obj.pk, email_sender, email_recipients, feedback_url)
+            ).apply_async(queue='private', countdown=1))
+        if settings.ENABLE_BLACKBOX_ENCRYPTION and obj.blackbox:
+            signature(
+                "tasks.decrypt", args=(obj.pk, type(obj))
+            ).apply_async(queue='private', countdown=1)
         return HttpResponse(obj.pk, status=200)
 
     def form_invalid(self, form):

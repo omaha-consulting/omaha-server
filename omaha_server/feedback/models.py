@@ -21,16 +21,15 @@ the License.
 import os
 import uuid
 
+from jsonfield import JSONField
 from django.db import models
 from django.db.models.signals import pre_delete, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 
-from jsonfield import JSONField
-
 from omaha.models import BaseModel
 from feedback.managers import FeedbackManager
-
+from encryption.models import DecryptionData
 
 def upload_to(directory, obj, filename):
     now = timezone.now()
@@ -74,6 +73,9 @@ class Feedback(BaseModel):
     attached_file_size = models.PositiveIntegerField(null=True, blank=True)
     feedback_data = JSONField(verbose_name='Feedback data', help_text='JSON format', null=True, blank=True)
     ip = models.GenericIPAddressField(blank=True, null=True)
+    decryption_data = models.OneToOneField(
+        DecryptionData, blank=True, null=True, on_delete=models.SET_NULL
+    )
 
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)

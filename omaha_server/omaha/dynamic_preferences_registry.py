@@ -28,6 +28,9 @@ from dynamic_preferences.types import IntegerPreference, ChoicePreference
 from dynamic_preferences.registries import global_preferences_registry
 from django_select2.forms import Select2Widget
 
+from encryption.models import STORAGE_CHOICES
+
+
 class PositiveIntegerField(IntegerField):
     min_value = 1
     default_validators = [MinValueValidator(min_value)]
@@ -104,6 +107,7 @@ class SymbolsLimitSize(PositiveIntegerPreference):
     name = "limit_size"
     default = 100
 
+
 @global_preferences_registry.register
 class TimeZone(ChoicePreference):
     choices = [(tz, ' '.join([tz, datetime.now(pytz.timezone(tz)).strftime('%z')]))
@@ -114,6 +118,14 @@ class TimeZone(ChoicePreference):
     name = "timezone"
     default = "UTC"
 
+
+@global_preferences_registry.register
+class KeyStorage(ChoicePreference):
+    choices = STORAGE_CHOICES
+    section = 'Encryption'
+    verbose_name = "Generated keys storage"
+    name = 'key_storage'
+    default = 'db'
 
 global_preferences = global_preferences_registry
 global_preferences_manager = global_preferences.manager()

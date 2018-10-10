@@ -19,6 +19,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_DIR = BASE_DIR
 
 IS_PRIVATE = True if os.getenv('OMAHA_SERVER_PRIVATE', '').title() == 'True' else False
+ENABLE_BLACKBOX_ENCRYPTION = True if os.getenv('ENABLE_BLACKBOX_ENCRYPTION', '').title() == 'True' else False
 
 RAVEN_CONFIG = {
     'dsn': os.environ.get('RAVEN_DNS'),
@@ -55,19 +56,24 @@ APP_VERSION = "0.7.0"
 
 SUIT_CONFIG = {
     'ADMIN_NAME': 'Omaha Server [{}]'.format(APP_VERSION),
-    'MENU': (
+    'MENU': [
         # 'sites',
         {'app': 'omaha', 'label': 'Omaha', 'icon': 'icon-refresh'},
         {'app': 'sparkle', 'label': 'Sparkle', 'icon': 'icon-circle-arrow-down'},
+        {'app': 'encryption', 'label': 'Generated keys', 'icon': 'icon-lock'},
         {'app': 'crash', 'label': 'Crash reports', 'icon': 'icon-fire'},
         {'app': 'feedback', 'label': 'Feedbacks', 'icon': 'icon-comment'},
         {'label': 'Statistics', 'url': 'omaha_statistics', 'icon': 'icon-star'},
         {'label': 'Preferences', 'url': reverse_lazy('set_preferences', args=['']), 'icon': 'icon-wrench'},
         {'label': 'Storage monitoring', 'url': 'monitoring', 'icon': 'icon-hdd'},
-    ),
+    ],
     'CONFIRM_UNSAVED_CHANGES': False,
 }
 
+if not ENABLE_BLACKBOX_ENCRYPTION:
+    encryption_label = filter(lambda x: x['label'] == 'Generated keys', SUIT_CONFIG['MENU'])
+    if encryption_label:
+        SUIT_CONFIG['MENU'].remove(encryption_label[0])
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
@@ -119,6 +125,8 @@ INSTALLED_APPS = (
     'sparkle',
     'downloads',
     'healthcheck',
+    'encryption',
+
     'tinymce',
 )
 
@@ -287,6 +295,13 @@ if IS_PRIVATE:
         },
     }
 
+    if ENABLE_BLACKBOX_ENCRYPTION:
+        CELERYBEAT_SCHEDULE['auto_generate_key'] = {
+            'task': 'tasks.generate_key',
+            'schedule': timedelta(minutes=60),
+            'options': {'queue': 'private'},
+        }
+
 # Cache
 
 CACHEOPS_REDIS = {
@@ -301,6 +316,7 @@ CACHEOPS = {
     'omaha.*': {'ops': (), 'timeout': 10},
     'sparkle.*': {'ops': (), 'timeout': 10},
     'crash.*': {'ops': (), 'timeout': 10},
+    'encryption.generatedkey': {'ops': (), 'timeout': 1},
 }
 
 # Crash
@@ -332,6 +348,8 @@ CUP_REQUEST_VALIDATION = os.environ.get('CUP_REQUEST_VALIDATION', False)
 CUP_PEM_KEYS = {
     # 'keyid': 'private_key_path',
 }
+
+GENERATED_KEYS_SIZE = os.environ.get('GENERATED_KEYS_SIZE', 2048)
 
 CRASH_TRACKER = os.environ.get('CRASH_TRACKER', 'Sentry')
 
@@ -370,3 +388,10 @@ TINYMCE_DEFAULT_CONFIG = {
     'paste_text_sticky_default': True,
     'plugins': 'table,media'
 }
+
+ENCRYPTION_FETCHER_CLASS = "encryption.fetchers.DefaultKeyFetcher"
+CACHE_TIMEOUT_SEC = {
+    'latest_public_key': 1 * 60,
+    'private_key_by_hash': 24 * 60 * 60,
+}
+# IS_CUSTOM_FETCHER = ENCRYPTION_FETCHER_CLASS == "encryption.fetchers.DefaultKeyFetcher"

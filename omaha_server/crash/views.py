@@ -20,14 +20,19 @@ the License.
 
 import json
 
+from celery import signature
+
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import FormView
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseBadRequest
+
 from crash.forms import CrashFrom, CrashDescriptionForm
 from crash.models import Crash
 from omaha_server.utils import get_client_ip
+from encryption.models import DecryptionData
 
 
 class CrashFormView(FormView):
@@ -46,7 +51,12 @@ class CrashFormView(FormView):
         if meta:
             obj.meta = meta
         obj.ip = get_client_ip(self.request)
+        if settings.ENABLE_BLACKBOX_ENCRYPTION:
+            obj.decryption_data = DecryptionData.create_from_headers(self.request.META)
+
         obj.save()
+        if settings.ENABLE_BLACKBOX_ENCRYPTION and obj.archive and obj.decryption_data:
+            signature("tasks.decrypt", args=(obj.pk, type(obj))).apply_async(queue='private', countdown=1)
         return HttpResponse(obj.pk, status=200)
 
     def form_invalid(self, form):

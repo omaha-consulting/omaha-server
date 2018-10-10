@@ -239,7 +239,9 @@ class PreferenceFormView(StaffMemberRequiredMixin, FormView):
         form = context['form']
         order_fields = ['Crash__limit_size', 'Crash__limit_storage_days', 'Crash__duplicate_number',
                         'Feedback__limit_size', 'Feedback__limit_storage_days', 'SparkleVersion__limit_size',
-                        'Symbols__limit_size', 'Version__limit_size', 'Timezone__timezone']
+                        'Symbols__limit_size', 'Version__limit_size', 'Timezone__timezone',
+                        # 'Encryption__key_storage'
+                        ]
         form.fields = OrderedDict((k, form.fields[k]) for k in order_fields if k in form.fields.keys())
         return context
 

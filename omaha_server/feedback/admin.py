@@ -20,6 +20,7 @@ the License.
 
 from django.contrib import admin
 
+from django.conf import settings
 from crash.admin import TextInputFilter, BooleanFilter
 
 from feedback.models import Feedback, FeedbackDescription
@@ -49,29 +50,43 @@ class AttachedFileFilter(BooleanFilter):
 def short_url(obj):
     limit = 60
     res = obj.page_url
+    if not res:
+        return ''
     return res if len(res) < limit else res[:limit] + '...'
 short_url.short_description = 'Page URL'
 
-@admin.register(Feedback)
-class FeedbackAdmin(admin.ModelAdmin):
-    list_display = ('id', 'description', 'email', short_url, 'created_at', 'ip',)
-    list_display_links = ('id', 'description')
+
+class BaseFeedbackAdmin(admin.ModelAdmin):
     list_filter = (('id', TextInputFilter,), ScreenshotFilter, BlackboxFilter, SystemLogsFilter, AttachedFileFilter, 'created_at',)
     form = FeedbackForm
     readonly_fields = ('created_at',)
 
+    def get_list_display(self, request):
+        fields = [
+            'id', 'description', 'email', short_url, 'created_at', 'ip'
+        ]
+        if settings.ENABLE_BLACKBOX_ENCRYPTION:
+            fields.append('is_decrypted')
+        return tuple(fields)
+
+    def get_list_display_links(self, request, list_display):
+        return ('id', 'description',)
+
+    def is_decrypted(self, obj):
+        return bool(obj.decryption_data and obj.decryption_data.is_decrypted)
+
+    is_decrypted.short_description = 'Is blackbox decrypted'
+
+
+@admin.register(Feedback)
+class FeedbackAdmin(BaseFeedbackAdmin):
     def get_queryset(self, request):
         qs = super(FeedbackAdmin, self).get_queryset(request)
         return qs.filter(description__startswith='BlackBox')
 
 
 @admin.register(FeedbackDescription)
-class FeedbackDescriptionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'description', 'email', short_url, 'created_at', 'ip',)
-    list_display_links = ('id', 'description')
-    list_filter = (('id', TextInputFilter,), ScreenshotFilter, BlackboxFilter, SystemLogsFilter, AttachedFileFilter, 'created_at')
-    form = FeedbackForm
-    readonly_fields = ('created_at',)
+class FeedbackDescriptionAdmin(BaseFeedbackAdmin):
 
     def get_queryset(self, request):
         qs = super(FeedbackDescriptionAdmin, self).get_queryset(request)

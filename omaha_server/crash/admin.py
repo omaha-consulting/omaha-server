@@ -98,9 +98,7 @@ class CrashDescriptionInline(admin.StackedInline):
 
 @admin.register(Crash)
 class CrashAdmin(admin.ModelAdmin):
-    list_display = ('id', 'created', 'modified', 'archive_field', 'signature', 'appid', 'userid', 'summary_field', 'os', 'build_number', 'channel', 'cpu_architecture_field',)
     list_select_related = ['crash_description']
-    list_display_links = ('id', 'created', 'modified', 'signature', 'appid', 'userid', 'cpu_architecture_field',)
     list_filter = (('id', TextInputFilter,), 'created', CrashArchiveFilter, 'os', 'build_number', 'channel')
     search_fields = ('appid', 'userid', 'archive',)
     form = CrashFrom
@@ -109,6 +107,22 @@ class CrashAdmin(admin.ModelAdmin):
     actions = ('regenerate_stacktrace',)
     inlines = [CrashDescriptionInline]
 
+    def get_list_display(self, request):
+        fields = [
+            'id', 'created', 'modified', 'archive_field', 'signature',
+            'appid', 'userid', 'summary_field', 'os', 'build_number',
+            'channel', 'cpu_architecture_field',
+        ]
+        if settings.ENABLE_BLACKBOX_ENCRYPTION:
+            fields.append('is_decrypted')
+        return tuple(fields)
+
+    def get_list_display_links(self, request, list_display):
+        return (
+            'id', 'created', 'modified', 'signature',
+            'appid', 'userid', 'cpu_architecture_field',
+        )
+
     def archive_field(self, obj):
         return bool(obj.archive)
     archive_field.short_description = 'Instrumental file'
@@ -116,6 +130,10 @@ class CrashAdmin(admin.ModelAdmin):
     def cpu_architecture_field(self, obj):
         return obj.stacktrace_json.get('system_info', {}).get('cpu_arch', '') if obj.stacktrace_json else ''
     cpu_architecture_field.short_description = "CPU Architecture"
+
+    def is_decrypted(self, obj):
+        return bool(obj.decryption_data and obj.decryption_data.is_decrypted)
+    is_decrypted.short_description = 'Is blackbox decrypted'
 
     def sentry_link_field(self, obj):
         if not SENTRY_DOMAIN or not SENTRY_ORG_SLUG or not SENTRY_PROJ_SLUG:

@@ -71,6 +71,16 @@ In the case of a self-hosted solution do not forget to set up backups.
 
 Required `userid`. [Including user id into request](https://github.com/Crystalnix/omaha/wiki/Omaha-Client-working-with-protocol#including-user-id-into-request)
 
+
+## Blackbox encryption
+
+There is an ability to encrypt a blackbox file from crashes/feedbacks. 
+
+Encryption algorithm: AESGCM.
+
+AESGCM key encrypted with public key.
+
+To enable blackbox decryption on the server side set up the `ENABLE_BLACKBOX_ENCRYPTION` environment variable to `'True'`
 ## Utils
 
 A command for generating fake data such as requests, events and statistics:
@@ -242,7 +252,7 @@ app:
 | LOG_NGINX_TO_FILEBEAT     | Send logs to filebeat| 'True'                     |
 | EMAIL_SENDER              | Verified SES email   |                            |
 | EMAIL_RECIPIENTS          | Feedback recepients  |                            |
-
+| ENABLE_BLACKBOX_ENCRYPTION| Encrypted blackboxes | False
 
 
 - [uWSGI Options](http://uwsgi-docs.readthedocs.org/en/latest/Options.html) & [Environment variables](http://uwsgi-docs.readthedocs.org/en/latest/Configuration.html#environment-variables)

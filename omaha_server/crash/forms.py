@@ -80,7 +80,10 @@ class CrashFrom(forms.ModelForm):
 
     def clean_archive_size(self):
         if 'archive_file' not in self.cleaned_data:
-            return 0
+            if self.instance.archive:
+                return self.instance.archive.size
+            else:
+                return 0
         _file = self.cleaned_data.get('archive_file', 0)
         if isinstance(_file, UploadedFile):
             return _file.size

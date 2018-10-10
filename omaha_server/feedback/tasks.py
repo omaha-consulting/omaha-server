@@ -32,6 +32,7 @@ from feedback.models import Feedback
 logger =logging.getLogger(__name__)
 
 email_body_tmpl = """
+Feedback URL on Omaha Server: %s
 Description: %s
 Page URL: %s
 User email: %s
@@ -40,24 +41,24 @@ Feedback JSON data: %s
 """
 
 @app.task(name='tasks.send_email_feedback', ignore_result=True, max_retries=12, bind=True)
-def send_email_feedback(self, feedback_pk, sender, recipents):
+def send_email_feedback(self, feedback_pk, sender, recipents, feedback_url):
     try:
         feedback = Feedback.objects.get(pk=feedback_pk)
     except Feedback.DoesNotExist as exc:
-        logger.error('Failed processing_crash_dump',
+        logger.error('Feedback not found',
                      exc_info=True,
                      extra=dict(crash_pk=feedback_pk))
         raise self.retry(exc=exc, countdown=2 ** send_email_feedback.request.retries)
     recipients = [x.strip() for x in recipents.split(',')]
     body = email_body_tmpl % (
-        feedback.description, feedback.page_url, feedback.email,
+        feedback_url, feedback.description, feedback.page_url, feedback.email,
         feedback.ip, feedback.feedback_data,
     )
     email = EmailMessage("Feedback # %s" % feedback_pk, body, sender, recipients)
 
     attachments = [
         feedback.screenshot,
-        feedback.blackbox,
+        # feedback.blackbox,
         feedback.system_logs,
         feedback.attached_file
     ]
