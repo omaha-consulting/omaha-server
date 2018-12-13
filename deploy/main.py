@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# coding: utf8
+# coding: utf-8
 
 """
 This software is licensed under the Apache 2 license, quoted below.

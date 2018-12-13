@@ -96,15 +96,15 @@ app:
           {% if env.environment -%}
           'aws:elasticbeanstalk:application:environment':
             HOST_NAME: {{ env_name }}.elasticbeanstalk.com
-            {% for key, value in env.environment.iteritems() -%}
+            {% for key, value in env.environment.items() -%}
             {{ key }}: {{ value }}
             {% endfor -%}
           {% endif -%}
 
           {% if env.option_settings %}
-          {% for key, value in env.option_settings.iteritems() -%}
+          {% for key, value in env.option_settings.items() -%}
           '{{ key }}':
-            {% for k, v in value.iteritems() -%}
+            {% for k, v in value.items() -%}
             '{{ k }}': {{ v }}
             {% endfor %}
           {% endfor -%}
