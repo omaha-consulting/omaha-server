@@ -51,6 +51,7 @@ services:
 
 install:
   - pip install tox==2.2.1
+  - pip install google-compute-engine
 
 script:
   - tox -e $TOX_ENV
