@@ -57,9 +57,7 @@ class ShTest(test.TestCase):
     def test_get_stacktrace(self):
         with open(STACKTRACE_PATH, 'rb') as f:
             stacktrace = f.read()
-
         result = get_stacktrace(CRASH_DUMP_PATH)
-
         self.assertEqual(bytes(result.stdout, 'utf8'), stacktrace)
 
 
