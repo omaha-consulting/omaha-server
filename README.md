@@ -7,7 +7,7 @@
 [![Apache License, Version 2.0](https://img.shields.io/badge/license-Apache%202.0-red.svg)](https://github.com/Crystalnix/omaha-server/blob/master/LICENSE)
 [![](https://badge.imagelayers.io/crystalnix/omaha-server:master.svg)](https://imagelayers.io/?images=crystalnix/omaha-server:master 'Get your own badge on imagelayers.io')
 
-Google Omaha server implementation and Sparkle (mac) feed management. 
+Google Omaha server implementation and Sparkle (mac) feed management.
 
 Currently, our implementation is integrated into the updating processes of several organisations for products that require sophisticated update logic and advanced usage statistics. We provide additional support and further enhancement on a contract basis. For a case study and enquiries please refer [our website](https://www.crystalnix.com/case-study/google-omaha)
 
@@ -66,7 +66,7 @@ $ paver run_test_in_docker
 
 ## Statistics
 
-All statistics are stored in Redis. In order not to lose all data, we recommend to set up the backing up process. The proposed solution uses ElastiCache which supports [automatic backups](https://aws.amazon.com/en/blogs/aws/backup-and-restore-elasticache-redis-nodes/). 
+All statistics are stored in Redis. In order not to lose all data, we recommend to set up the backing up process. The proposed solution uses ElastiCache which supports [automatic backups](https://aws.amazon.com/en/blogs/aws/backup-and-restore-elasticache-redis-nodes/).
 In the case of a self-hosted solution do not forget to set up backups.
 
 Required `userid`. [Including user id into request](https://github.com/Crystalnix/omaha/wiki/Omaha-Client-working-with-protocol#including-user-id-into-request)
@@ -247,7 +247,7 @@ app:
 
 - [uWSGI Options](http://uwsgi-docs.readthedocs.org/en/latest/Options.html) & [Environment variables](http://uwsgi-docs.readthedocs.org/en/latest/Configuration.html#environment-variables)
 - [Sentry](https://github.com/getsentry/sentry)
-- Sentry API key is stored on the way Sentry Organization page -> API Keys 
+- Sentry API key is stored on the way Sentry Organization page -> API Keys
 
 ### Initialize your ElasticBeanstalk application
 
@@ -282,7 +282,7 @@ $ ebs-deploy deploy -e omaha-server-dev
 
 1. Use [Omaha eckeytool](https://github.com/google/omaha/tree/master/omaha/tools/eckeytool) to generate private.pem key and cup_ecdsa_pubkey.{KEYID}.h files.
 2. Add cup_ecdsa_pubkey.{KEYID}.h to Omaha source directory /path/to/omaha/omaha/net/, set CupEcdsaRequestImpl::kCupProductionPublicKey in /path/to/omaha/omaha/net/cup_ecdsa_request.cc to new key and build Omaha client.
-3. Add private.pem keyid and path to omaha CUP_PEM_KEYS dictionary.
+3. Add private.pem keyid and path to omaha CUP_PEM_KEYS dictionary in the [settings.py](https://github.com/Crystalnix/omaha-server/blob/master/omaha_server/omaha_server/settings.py). If you run the server on AWS, create a `cups_pem_keys` folder in the S3 Bucket (AWS_STORAGE_BUCKET_NAME) and put the keys with the index as filename (e.g.: `1.pem`) in there.
 
 ## Links
 
