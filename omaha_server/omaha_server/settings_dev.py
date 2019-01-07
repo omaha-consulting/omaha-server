@@ -2,3 +2,4 @@
 
 from .settings_prod import *
 
+DEBUG = True

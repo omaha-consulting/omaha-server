@@ -15,7 +15,6 @@ Currently, our implementation is integrated into the updating processes of sever
 
 **Requirements:**
 
-- Ubuntu Trusty 14.04 (LTS) (64-bit)
 - [paver](http://paver.github.io/paver/)
 - [docker](docker.com) or [boot2docker](https://github.com/boot2docker/boot2docker) for OS X & Windows
 - [docker-compose](https://docs.docker.com/compose/install/)

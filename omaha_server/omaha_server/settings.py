@@ -43,6 +43,7 @@ TEMPLATES = [
         ],
         'APP_DIRS': True,
         'OPTIONS': {
+            'debug': True,
             'context_processors': TCP + [
                 'django.core.context_processors.request',
                 'absolute.context_processors.absolute',
@@ -80,8 +81,6 @@ OMAHA_URL_PREFIX = os.environ.get('OMAHA_URL_PREFIX') # no trailing slash!
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 

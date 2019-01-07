@@ -1,17 +1,25 @@
-db:
-  extends:
-    file: docker-compose.common.yml
-    service: db
+version: '2'
+services:
+  db:
+    extends:
+      file: docker-compose.common.yml
+      service: db
+    volumes:
+      - postgres-data:/var/lib/postgresql
 
-redis:
-  extends:
-    file: docker-compose.common.yml
-    service: redis
+  redis:
+    extends:
+      file: docker-compose.common.yml
+      service: redis
 
-web:
-  extends:
-    file: docker-compose.common.yml
-    service: web
-  links:
-    - db
-    - redis
+  django:
+    extends:
+      file: docker-compose.common.yml
+      service: django
+    links:
+      - db
+      - redis
+    volumes:
+      - ./omaha_server/:/usr/src/app
+volumes:
+  postgres-data:

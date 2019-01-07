@@ -3,6 +3,7 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+.virtual_env
 
 # Unit test / coverage reports
 htmlcov/

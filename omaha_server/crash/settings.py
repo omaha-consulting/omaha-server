@@ -30,6 +30,8 @@ if sys.platform == "linux" or sys.platform == "linux2":
     os_type = 'linux64' if platform.architecture()[0] == '64bit' else 'linux'
 elif sys.platform == "darwin":
     os_type = 'osx'
+else:
+    os_type = sys.platform
 
 MINIDUMP_STACKWALK_PATH = os.path.join(BASE_DIR, 'breakpad/%s/minidump_stackwalk' % os_type)
 
