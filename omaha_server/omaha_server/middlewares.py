@@ -40,7 +40,7 @@ class CUP2Middleware(object):
 
         # try to load keys from AWS S3 bucket, use filename as keyid
         if os.getenv('AWS_STORAGE_BUCKET_NAME'):
-            conn = boto.connect_s3(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
+            conn = boto.connect_s3()
             bucket = conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME)
             for key in bucket.list(prefix='cups_pem_keys/'):
                 if key.name.endswith(".pem"):

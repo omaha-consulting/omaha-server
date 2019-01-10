@@ -18,9 +18,7 @@ STATICFILES_STORAGE = 'omaha_server.s3utils.StaticS3Storage'
 DEFAULT_FILE_STORAGE = 'omaha_server.s3utils.S3Storage'
 PUBLIC_READ_FILE_STORAGE = 'omaha_server.s3utils.PublicReadS3Storage'
 
-AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-AWS_SES_REGION_NAME = os.environ.get('AWS_SES_REGION_NAME', 'us-east-1')
+AWS_SES_REGION_NAME = os.environ.get('AWS_SES_REGION_NAME', 'us-west-1')
 AWS_SES_REGION_ENDPOINT = os.environ.get(
     'AWS_SES_REGION_ENDPOINT', 'email.us-east-1.amazonaws.com'
 )

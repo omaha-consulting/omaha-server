@@ -2,7 +2,7 @@ amqp==1.4.9
 anyjson==0.3.3
 billiard==3.3.0.23
 bitmapist==3.97
-boto==2.40.0
+boto==2.49.0
 celery==3.1.23
 certifi==2018.11.29
 chardet==3.0.4
@@ -53,7 +53,7 @@ python-magic==0.4.15
 python-nvd3==0.14.2
 python-slugify==1.1.4
 pytz==2016.4
-raven==5.17.0
+raven==6.10.0
 redis==2.10.6
 requests==2.21.0
 singledispatch==3.4.0.3

@@ -150,11 +150,11 @@ WSGI_APPLICATION = 'omaha_server.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('DB_NAME', 'postgres'),
-        'USER': os.environ.get('DB_USER', 'postgres'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
-        'HOST': os.environ.get('DB_HOST', '127.0.0.1'),
-        'PORT': os.environ.get('DB_PORT', '5432'),
+        'NAME': os.environ.get('DB_NAME', os.environ.get('RDS_DB_NAME', 'postgres')),
+        'USER': os.environ.get('DB_USER', os.environ.get('RDS_USERNAME', 'postgres')),
+        'PASSWORD': os.environ.get('DB_PASSWORD', os.environ.get('RDS_PASSWORD', '')),
+        'HOST': os.environ.get('DB_HOST', os.environ.get('RDS_HOSTNAME', '127.0.0.1')),
+        'PORT': os.environ.get('DB_PORT', os.environ.get('RDS_PORT', '5432')),
         'CONN_MAX_AGE': 60,
     }
 }

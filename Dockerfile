@@ -2,8 +2,8 @@ FROM python:2
 
 WORKDIR /usr/src/app
 
-COPY ./requirements/base.txt ./
-RUN pip install --no-cache-dir -r base.txt
+COPY omaha_server/requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
 
 
-CMD [ "python", "/usr/src/app/manage.py", "runserver", "0.0.0.0:8000" ]
+CMD [ "python", "manage.py", "runserver", "0.0.0.0:8000" ]
