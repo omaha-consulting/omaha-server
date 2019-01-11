@@ -22,14 +22,14 @@ services:
       DJANGO_SETTINGS_MODULE: 'omaha_server.settings_dev'
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
-      AWS_STORAGE_BUCKET_NAME: 'us-west-1-omaha1-omaha-s3bucket'
+      AWS_STORAGE_BUCKET_NAME: ''
       REDIS_HOST: redis
       REDIS_PORT: 6379
       OMAHA_SERVER_PRIVATE: 'True'
-      AWS_ROLE: 'us-west-1-omaha1-omaha-role'
+      AWS_ROLE: ''
       DB_PUBLIC_USER: 'omaha_public'
       DB_PUBLIC_PASSWORD: 'omaha_public_password'
-      RAVEN_DNS: 'https://2b426b31861249db9e68d7ac755976b9:a562b533c3884fb5a0da8bc1b84af8f4@sentry.aws.dwos.com/3'
+      RAVEN_DNS: ''
       UWSGI_PROCESSES: 10
       UWSGI_THREADS: 8
       FILEBEAT_HOST: 'localhost'

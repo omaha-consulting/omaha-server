@@ -95,7 +95,7 @@ docker-compose exec django python manage.py generate_fake_mac_live_data Applicat
 
 **Requirements:**
 - [Setup a Route53 HostedZone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/CreatingHostedZone.html)
-- Launch this CloudFormation Template [![Launch Stack](assets/launch-stack.png)](https://console.aws.amazon.com/cloudformation/home#/stacks/new?stackName=sentry&templateURL=https%3A%2F%2Fs3.ca-central-1.amazonaws.com%2Fdentalwings-cloudformation-templates%2Fomaha-server%2Fcloudformation_omaha.yml)
+- Launch this CloudFormation Template [![Launch Stack](assets/launch-stack.png)](https://console.aws.amazon.com/cloudformation/home#/stacks/new?stackName=omaha&templateURL=https%3A%2F%2Fs3.ca-central-1.amazonaws.com%2Fdentalwings-cloudformation-templates%2Fomaha-server%2Fcloudformation_omaha.yml)
 - [Elastic Beanstalk command line tools](https://docs.aws.amazon.com/de_de/elasticbeanstalk/latest/dg/eb-cli3-install.html)
 
 **Optional:**

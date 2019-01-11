@@ -5,7 +5,7 @@ from .settings import *
 DEBUG = True
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = ('localhost', '127.0.0.1', '.xip.io',)
+ALLOWED_HOSTS = ('localhost', '127.0.0.1',)
 
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'

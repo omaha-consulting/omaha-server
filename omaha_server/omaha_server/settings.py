@@ -126,6 +126,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'omaha_server.middlewares.CUP2Middleware',
 )
 
 if IS_PRIVATE:
@@ -136,7 +137,6 @@ if IS_PRIVATE:
         'django.contrib.messages.middleware.MessageMiddleware',
         'omaha_server.middlewares.LoggingMiddleware',
         'omaha_server.middlewares.TimezoneMiddleware',
-        'omaha_server.middlewares.CUP2Middleware',
     ) + MIDDLEWARE_CLASSES
 
 ROOT_URLCONF = 'omaha_server.urls'

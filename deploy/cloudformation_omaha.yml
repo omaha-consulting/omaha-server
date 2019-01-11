@@ -23,13 +23,29 @@ Metadata:
           - RavenDSN
           - CustomPublicDNSHostname
           - CustomPrivateDNSHostname
+          - CUPRequestValidation
+          - RavenDSNStacktrace
+          - SentryStacktraceApiKey
+          - CrashTracker
+          - LogStashHost
+          - LogStashPort
+          - ELKHost
+          - ELKPort
+          - EmailSender
+          - EmailRecipients
+          - RedisDB
+          - RedisStatDB
       -
         Label:
           default: "Optional Scaling/Security Parameters"
         Parameters:
           - RedisClusterNodes
           - RedisInstanceType
+          - OmahaInstanceType
+          - OmahaASGMinSize
+          - OmahaASGMaxSize
           - OmahaSecretKey
+          - DBInstanceType
           - DBUsername
           - DBName
           - DBPassword
@@ -38,11 +54,11 @@ Metadata:
 
 Parameters:
   DNSZoneId:
-    Type: String
+    Type: AWS::Route53::HostedZone::Id
     Description: HostZoneID from DNS
   DNSZoneDomain:
     Type: String
-    Description: HostZoneDomain from DNS
+    Description: HostZoneDomain of DNSZoneId
   CustomPublicDNSHostname:
     Type: String
     Default: ''
@@ -56,10 +72,41 @@ Parameters:
     MinValue: 1
     Default: 1
     Description: Number of Redis Cluster Nodes
+  OmahaASGMinSize:
+    Type: Number
+    MinValue: 1
+    Default: 1
+    Description: MinSize of Beanstalk Autoscaling Group
+  OmahaASGMaxSize:
+    Type: Number
+    MinValue: 1
+    Default: 1
+    Description: MaxSize of Beanstalk Autoscaling Group
+  OmahaInstanceType:
+    Type: String
+    Default: t2.small
+    Description: InstanceClass for Beanstalk Autoscaling Group
+  DBInstanceType:
+    Type: String
+    Default: db.t2.small
+    Description: InstanceClass for PostgreSQL DB
+  RedisStatDB:
+    Type: Number
+    Default: 15
+    MinValue: 1
+    MaxValue: 15
+    Description: REDIS_STAT_DB
+  RedisDB:
+    Type: Number
+    Default: 1
+    MinValue: 1
+    MaxValue: 15
+    Description: REDIS_DB
   OmahaSecretKey:
     Type: String
     Default: 'asdfghjklqwertzuiop'
     Description: Secret Key for Django Session Encryption
+    NoEcho: true
   RedisInstanceType:
     Type: String
     Default: cache.t2.micro
@@ -93,6 +140,48 @@ Parameters:
     Type: String
     Default: ''
     Description: RavenDSN
+  RavenDSNStacktrace:
+    Type: String
+    Default: ''
+    Description: RAVEN_DSN_STACKTRACE
+  CUPRequestValidation:
+    Type: String
+    Default: 'false'
+    AllowedValues: [true, false]
+    Description: CUP_REQUEST_VALIDATION (Enables Request Validation)
+  LogStashHost:
+    Type: String
+    Default: ''
+    Description: LOGSTASH_HOST
+  LogStashPort:
+    Type: String
+    Default: ''
+    Description: LOGSTASH_PORT
+  ELKHost:
+    Type: String
+    Default: ''
+    Description: ELK_HOST
+  ELKPort:
+    Type: String
+    Default: ''
+    Description: ELK_PORT
+  EmailSender:
+    Type: String
+    Default: ''
+    Description: EMAIL_SENDER
+  EmailRecipients:
+    Type: String
+    Default: ''
+    Description: EMAIL_RECIPIENTS
+  SentryStacktraceApiKey:
+    Type: String
+    Default: ''
+    Description: SENTRY_STACKTRACE_API_KEY
+  CrashTracker:
+    Type: String
+    Default: 'Sentry'
+    AllowedValues: ['Sentry', 'ELK']
+    Description: CRASH_TRACKER
   DjangoSettingsModule:
     Type: String
     Default: 'omaha_server.settings_prod'
@@ -131,7 +220,7 @@ Outputs:
     Value: !Ref PublicOmahaEnvironment
   PublicUrl:
     Value: !Sub
-      - "https://${Hostname}.${DNSZone}/admin"
+      - "https://${Hostname}.${DNSZone}"
       - DNSZone: !Ref DNSZoneDomain
         Hostname: !If [UseCustomPublicDNSHostname, !Ref CustomPublicDNSHostname, !Sub "${AWS::Region}-${AWS::StackName}-public"]
 
@@ -340,40 +429,6 @@ Resources:
           ToPort: "6379"
           SourceSecurityGroupId: !Ref CacheAccessSecurityGroup
       Tags: !If [hasTags, !GetAtt GetResourceTags.result, !Ref "AWS::NoValue"]
-  LoadBalancerSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      SecurityGroupIngress:
-      - ToPort: '443'
-        IpProtocol: tcp
-        FromPort: '443'
-        CidrIp: 0.0.0.0/0
-      - ToPort: '443'
-        IpProtocol: tcp
-        FromPort: '443'
-        CidrIpv6: ::/0
-      VpcId: !GetAtt InfrastructureStack.Outputs.VPC
-      GroupDescription: An ELB group allowing access only to from the corresponding component
-      Tags: !If [hasTags, !GetAtt GetResourceTags.result, !Ref "AWS::NoValue"]
-  OmahaSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      SecurityGroupIngress:
-      - ToPort: '443'
-        IpProtocol: tcp
-        FromPort: '443'
-        SourceSecurityGroupId: !Ref LoadBalancerSecurityGroup
-      - ToPort: '22'
-        FromPort: '22'
-        IpProtocol: tcp
-        CidrIp: 0.0.0.0/0
-      - ToPort: '22'
-        FromPort: '22'
-        IpProtocol: tcp
-        CidrIpv6: ::/0
-      VpcId: !GetAtt InfrastructureStack.Outputs.VPC
-      GroupDescription: Sentry instance security group, gives access to from load balancer
-      Tags: !If [hasTags, !GetAtt GetResourceTags.result, !Ref "AWS::NoValue"]
 
   ###### PostgreSQL Database #######
   RDS:
@@ -381,7 +436,7 @@ Resources:
     Properties:
       AllocatedStorage: '30'
       Engine: 'postgres'
-      DBInstanceClass: 'db.t2.small'
+      DBInstanceClass: !Ref DBInstanceType
       DBName: !Ref DBName
       MasterUsername: !Ref DBUsername
       MasterUserPassword: !Ref DBPassword
@@ -490,6 +545,12 @@ Resources:
                     - ''
                     - - !GetAtt OmahaS3Bucket.Arn
                       - "/*"
+  EBPrivateSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId: !GetAtt InfrastructureStack.Outputs.VPC
+      GroupDescription: Empty SecurityGroup for private Env, you need to manage this manually for now
+      Tags: !If [hasTags, !GetAtt GetResourceTags.result, !Ref "AWS::NoValue"]
 
   ###### Elastic Beanstalk ######
   OmahaApplication:
@@ -514,10 +575,10 @@ Resources:
         Value: !GetAtt InfrastructureStack.Outputs.PublicSubnets
       - Namespace: aws:autoscaling:asg
         OptionName: MinSize
-        Value: '1'
+        Value: !Ref OmahaASGMinSize
       - Namespace: aws:autoscaling:asg
         OptionName: MaxSize
-        Value: '2'
+        Value: !Ref OmahaASGMaxSize
       - Namespace: aws:elasticbeanstalk:application
         OptionName: Application Healthcheck URL
         Value: '/healthcheck/status/'
@@ -541,7 +602,7 @@ Resources:
         Value: 1
       - Namespace: aws:autoscaling:launchconfiguration
         OptionName: InstanceType
-        Value: t2.small
+        Value: !Ref OmahaInstanceType
       - Namespace: aws:autoscaling:launchconfiguration
         OptionName: EC2KeyName
         Value: !If [UseSSHKeyPairName, !Ref SSHKeyPairName, !Ref "AWS::NoValue"]
@@ -601,11 +662,50 @@ Resources:
         OptionName: RAVEN_DSN
         Value: !Ref RavenDSN
       - Namespace: 'aws:elasticbeanstalk:application:environment'
+        OptionName: SENTRY_DSN
+        Value: !Ref RavenDSN
+      - Namespace: 'aws:elasticbeanstalk:application:environment'
         OptionName: OMAHA_ONLY_HTTPS
         Value: 'true'
       - Namespace: 'aws:elasticbeanstalk:application:environment'
         OptionName: DJANGO_SETTINGS_MODULE
         Value: !Ref DjangoSettingsModule
+      - Namespace: 'aws:elasticbeanstalk:application:environment'
+        OptionName: CUP_REQUEST_VALIDATION
+        Value: !Ref CUPRequestValidation
+      - Namespace: 'aws:elasticbeanstalk:application:environment'
+        OptionName: RAVEN_DSN_STACKTRACE
+        Value: !Ref RavenDSNStacktrace
+      - Namespace: 'aws:elasticbeanstalk:application:environment'
+        OptionName: SENTRY_STACKTRACE_API_KEY
+        Value: !Ref SentryStacktraceApiKey
+      - Namespace: 'aws:elasticbeanstalk:application:environment'
+        OptionName: CRASH_TRACKER
+        Value: !Ref CrashTracker
+      - Namespace: 'aws:elasticbeanstalk:application:environment'
+        OptionName: LOGSTASH_HOST
+        Value: !Ref LogStashHost
+      - Namespace: 'aws:elasticbeanstalk:application:environment'
+        OptionName: LOGSTASH_PORT
+        Value: !Ref LogStashPort
+      - Namespace: 'aws:elasticbeanstalk:application:environment'
+        OptionName: ELK_HOST
+        Value: !Ref ELKHost
+      - Namespace: 'aws:elasticbeanstalk:application:environment'
+        OptionName: ELK_PORT
+        Value: !Ref ELKPort
+      - Namespace: 'aws:elasticbeanstalk:application:environment'
+        OptionName: EMAIL_SENDER
+        Value: !Ref EmailSender
+      - Namespace: 'aws:elasticbeanstalk:application:environment'
+        OptionName: EMAIL_RECIPIENTS
+        Value: !Ref EmailRecipients
+      - Namespace: 'aws:elasticbeanstalk:application:environment'
+        OptionName: REDIS_DB
+        Value: !Ref RedisDB
+      - Namespace: 'aws:elasticbeanstalk:application:environment'
+        OptionName: REDIS_STAT_DB
+        Value: !Ref RedisStatDB
 
   OmahaApplicationVersion:
     Type: AWS::ElasticBeanstalk::ApplicationVersion
@@ -642,6 +742,12 @@ Resources:
       - Namespace: aws:elb:loadbalancer
         OptionName: SSLCertificateId
         Value: !Ref ACMOmahaPrivateSSLCert
+      - Namespace: aws:elb:loadbalancer
+        OptionName: SecurityGroups
+        Value: !GetAtt EBPrivateSecurityGroup.GroupId
+      - Namespace: aws:elb:loadbalancer
+        OptionName: ManagedSecurityGroup
+        Value: !Ref EBPrivateSecurityGroup
 
   OmahaPrivateDNSRecord:
     Type: AWS::Route53::RecordSet
