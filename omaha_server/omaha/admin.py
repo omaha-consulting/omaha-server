@@ -22,16 +22,10 @@ import copy
 from django.contrib import admin
 from django.contrib.admin import utils
 from django.utils.encoding import smart_text
-
-from dynamic_preferences.models import GlobalPreferenceModel, UserPreferenceModel
 from versionfield import VersionField
 
 from omaha.models import Channel, Platform, Application, Version, Action, PartialUpdate, Data
 from omaha.forms import ApplicationAdminForm, VersionAdminForm, ActionAdminForm, DataAdminForm
-
-
-admin.site.unregister(GlobalPreferenceModel)
-admin.site.unregister(UserPreferenceModel)
 
 @admin.register(Platform)
 class PlatformAdmin(admin.ModelAdmin):

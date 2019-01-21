@@ -3,5 +3,4 @@ docker-compose build django
 docker-compose up -d django
 
 docker-compose exec -T django python manage.py migrate
-docker-compose exec -T django python manage.py collectstatic --noinput
-docker-compose exec -T django python manage.py createadmin.py
+docker-compose exec -T django python createadmin.py

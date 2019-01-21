@@ -13,7 +13,6 @@ import os
 from datetime import timedelta
 
 from django.core.urlresolvers import reverse_lazy
-from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_DIR = BASE_DIR
@@ -44,9 +43,10 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'debug': True,
-            'context_processors': TCP + [
-                'django.core.context_processors.request',
+            'context_processors': [
+                'django.template.context_processors.request',
                 'absolute.context_processors.absolute',
+                'django.contrib.auth.context_processors.auth',
             ],
         },
     },
@@ -193,7 +193,7 @@ STATICFILES_DIRS = (
 REDIS_PORT = os.environ.get('REDIS_PORT', '6379')
 REDIS_HOST = os.environ.get('REDIS_HOST', '127.0.0.1')
 REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD', None)
-REDIS_AUTH = 'redis://:{}@'.format(REDIS_PASSWORD) if REDIS_PASSWORD else ''
+REDIS_AUTH = 'redis://:{}@'.format(REDIS_PASSWORD) if REDIS_PASSWORD else 'redis://'
 
 REDIS_STAT_PORT = os.environ.get('REDIS_STAT_PORT', REDIS_PORT)
 REDIS_STAT_HOST = os.environ.get('REDIS_STAT_HOST', REDIS_HOST)
@@ -202,7 +202,7 @@ REDIS_STAT_DB = os.environ.get('REDIS_STAT_DB', 15)
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': '{REDIS_AUTH}{REDIS_HOST}:{REDIS_PORT}:{REDIS_DB}'.format(
+        'LOCATION': '{REDIS_AUTH}{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}'.format(
             REDIS_AUTH=REDIS_AUTH,
             REDIS_PORT=REDIS_PORT,
             REDIS_HOST=REDIS_HOST,
@@ -213,7 +213,7 @@ CACHES = {
     },
     'statistics': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': '{REDIS_AUTH}{REDIS_HOST}:{REDIS_PORT}:{REDIS_DB}'.format(
+        'LOCATION': '{REDIS_AUTH}{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}'.format(
             REDIS_AUTH=REDIS_AUTH,
             REDIS_PORT=REDIS_STAT_PORT,
             REDIS_HOST=REDIS_STAT_HOST,
