@@ -30,8 +30,8 @@ sudo apt-get install docker-ce
 # checkout the code, assuming you're in your favorite source directory already
 git clone git@github.com:dentalwings/omaha-server.git
 
-# start server, because of boot timing issues we start the db first
-docker-compose up db && sleep 5 && docker-compose up
+# start dev environment
+./startp.sh
 
 # stop server
 docker-compose stop
