@@ -38,7 +38,7 @@ def parse_request(request):
     """
         >>> request = b'''<?xml version="1.0" encoding="UTF-8"?>
         ... <request protocol="3.0"
-        ...          version="1.3.23.0"
+        ...          updaterversion="1.3.23.0"
         ...          ismachine="0"
         ...          sessionid="{5FAD27D4-6BFA-4daa-A1B3-5A1F821FEE0F}"
         ...          userid="{D0BBD725-742D-44ae-8D46-0231E881D58E}"
