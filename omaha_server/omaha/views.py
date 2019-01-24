@@ -27,16 +27,12 @@ from django.conf import settings
 
 from django_select2.views import AutoResponseView
 from lxml.etree import XMLSyntaxError
-from raven import Client
 
 from omaha.builder import build_response
 from omaha_server.utils import get_client_ip
 from omaha.models import Request
 
 logger = logging.getLogger(__name__)
-client = Client(getattr(settings, 'RAVEN_DSN_STACKTRACE', None), name=getattr(settings, 'HOST_NAME', None),
-                release=getattr(settings, 'APP_VERSION', None))
-
 
 class UpdateView(View):
     http_method_names = ['post']

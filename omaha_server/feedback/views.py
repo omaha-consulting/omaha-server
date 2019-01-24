@@ -23,7 +23,7 @@ import StringIO
 
 from google.protobuf.descriptor import FieldDescriptor
 from protobuf_to_dict import protobuf_to_dict, TYPE_CALLABLE_MAP
-from raven import Client
+from sentry_sdk import capture_message
 from celery import signature
 
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -37,16 +37,6 @@ from feedback.tasks import send_email_feedback
 from feedback.proto_gen.extension_pb2 import ExtensionSubmit
 from omaha_server.utils import get_client_ip
 from utils import get_file_extension
-
-dsn = getattr(settings, 'RAVEN_CONFIG', None)
-if dsn:
-    dsn = dsn['dsn']
-raven = Client(
-    dsn,
-    name=getattr(settings, 'HOST_NAME', None),
-    release=getattr(settings, 'APP_VERSION', None)
-)
-
 
 class FeedbackFormView(FormView):
     http_method_names = ('post',)
@@ -108,8 +98,8 @@ class FeedbackFormView(FormView):
         if file_description['file_extension']:
             blackbox_name += '.%s' % file_description['file_extension']
         else:
-            raven.captureMessage(
-                'This is file type not supported, mime type: %s' % file_description['mime_type']
+            capture_message(
+                'This is file type not supported, mime type: %s' % file_description['mime_type'], level='error'
             )
         return blackbox_name
 
@@ -125,5 +115,5 @@ class FeedbackFormView(FormView):
 
     def form_invalid(self, form):
         message = 'Invalid feedback form: ' + form.errors.as_json()
-        raven.captureMessage(message=message, extra=form.cleaned_data)
+        capture_message(message=message, extra=form.cleaned_data, level='error')
         return HttpResponseBadRequest(message)

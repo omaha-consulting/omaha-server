@@ -14,14 +14,15 @@ from datetime import timedelta
 
 from django.core.urlresolvers import reverse_lazy
 
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
+sentry_sdk.init(integrations=[DjangoIntegration()])
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_DIR = BASE_DIR
 
 IS_PRIVATE = True if os.getenv('OMAHA_SERVER_PRIVATE', '').title() == 'True' else False
-
-RAVEN_CONFIG = {
-    'dsn': os.environ.get('RAVEN_DNS'),
-}
 
 if os.getenv('OMAHA_ONLY_HTTPS'):
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

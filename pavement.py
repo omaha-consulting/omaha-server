@@ -20,12 +20,8 @@ the License.
 
 import os
 
-from raven import Client
 from paver.easy import task, needs
 from paver.easy import sh
-
-
-client = Client(os.environ.get('RAVEN_DNS'))
 
 
 @task
@@ -165,7 +161,6 @@ def docker_run():
         configure_filebeat()
         sh('/usr/bin/supervisord')
     except:
-        client.captureException()
         raise
 
 

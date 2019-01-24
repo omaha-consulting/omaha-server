@@ -130,8 +130,6 @@ eb deploy {PrivateEnvironment|PublicEnvironment}
 | AWS_ACCESS_KEY_ID         | AWS Access Key       |                            |
 | AWS_SECRET_ACCESS_KEY     | AWS Secret Key       |                            |
 | AWS_STORAGE_BUCKET_NAME   | S3 storage bucket    |                            |
-| RAVEN_DNS                 | Sentry url           |                            |
-| RAVEN_DSN_STACKTRACE      | Sentry url           | RAVEN_DNS                  |
 | REDIS_HOST                | Redis host           | 127.0.0.1                  |
 | REDIS_PORT                | Redis port           | 6379                       |
 | REDIS_DB                  | Redis db             | 1                          |
@@ -145,7 +143,7 @@ eb deploy {PrivateEnvironment|PublicEnvironment}
 | DB_PUBLIC_PASSWORD        |                      |                            |
 | AWS_ROLE                  |                      |                            |
 | OMAHA_URL_PREFIX          | no trailing slash!   |                            |
-| SENTRY_STACKTRACE_API_KEY | Auth API token       |                            |
+| SENTRY_DSN                | Sentry DSN           |                            |
 | OMAHA_ONLY_HTTPS          | HTTPS-only           | False                      |
 | CUP_REQUEST_VALIDATION    |                      | False                      |
 | CRASH_TRACKER             | Sentry, ELK          | Sentry                     |

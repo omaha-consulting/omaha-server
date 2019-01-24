@@ -34,31 +34,8 @@ AWS_PRELOAD_METADATA = True
 AWS_IS_GZIPPED = True
 AWS_DEFAULT_ACL = 'authenticated-read'
 
-
-RAVEN_CONFIG = {
-    'dsn': os.environ.get('RAVEN_DNS'),
-    'name': HOST_NAME,
-    'release': APP_VERSION,
-}
-
-RAVEN_DSN_STACKTRACE = os.environ.get('RAVEN_DSN_STACKTRACE', RAVEN_CONFIG['dsn'])
-SENTRY_STACKTRACE_API_KEY = os.environ.get('SENTRY_STACKTRACE_API_KEY')
-
-if RAVEN_DSN_STACKTRACE:
-    f = furl(RAVEN_DSN_STACKTRACE)
-    SENTRY_STACKTRACE_DOMAIN = f.netloc
-    project_id = f.path.segments[0]
-    if SENTRY_STACKTRACE_API_KEY:
-        SENTRY_STACKTRACE_ORG_SLUG = get_sentry_organization_slug(SENTRY_STACKTRACE_DOMAIN, SENTRY_STACKTRACE_API_KEY)
-        SENTRY_STACKTRACE_PROJ_SLUG = get_sentry_project_slug(SENTRY_STACKTRACE_DOMAIN, SENTRY_STACKTRACE_ORG_SLUG,
-                                                              project_id, SENTRY_STACKTRACE_API_KEY)
-
 FILEBEAT_HOST = os.environ.get('FILEBEAT_HOST', 'localhost')
 FILEBEAT_PORT = os.environ.get('FILEBEAT_PORT', 9021)
-
-INSTALLED_APPS = INSTALLED_APPS + (
-    'raven.contrib.django.raven_compat',
-)
 
 CELERYD_HIJACK_ROOT_LOGGER = False
 
@@ -67,7 +44,7 @@ LOGGING = {
     'disable_existing_loggers': True,
     'root': {
         'level': 'INFO',
-        'handlers': ['sentry', 'console'],
+        'handlers': ['console'],
     },
     'formatters': {
         'verbose': {
@@ -78,10 +55,6 @@ LOGGING = {
         }
     },
     'handlers': {
-        'sentry': {
-            'level': 'ERROR',
-            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
-        },
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
@@ -96,16 +69,6 @@ LOGGING = {
         },
         'django.request': {
             'level': 'ERROR',
-            'handlers': ['console'],
-            'propagate': False,
-        },
-        'raven': {
-            'level': 'DEBUG',
-            'handlers': ['console', 'sentry'],
-            'propagate': False,
-        },
-        'sentry.errors': {
-            'level': 'DEBUG',
             'handlers': ['console'],
             'propagate': False,
         },

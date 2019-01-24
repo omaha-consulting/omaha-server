@@ -29,7 +29,6 @@ services:
       AWS_ROLE: ''
       DB_PUBLIC_USER: 'omaha_public'
       DB_PUBLIC_PASSWORD: 'omaha_public_password'
-      RAVEN_DNS: ''
       UWSGI_PROCESSES: 10
       UWSGI_THREADS: 8
       FILEBEAT_HOST: 'localhost'
@@ -37,3 +36,4 @@ services:
       ELK_HOST: ''
       ELK_PORT: ''
       FILEBEAT_DESTINATION: ''
+      SENTRY_DSN: 'https://2b426b31861249db9e68d7ac755976b9@sentry.aws.dwos.com/3'

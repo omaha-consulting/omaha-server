@@ -20,12 +20,10 @@ Metadata:
           default: "Optional Omaha Server Settings"
         Parameters:
           - DjangoSettingsModule
-          - RavenDSN
+          - SentryDSN
           - CustomPublicDNSHostname
           - CustomPrivateDNSHostname
           - CUPRequestValidation
-          - RavenDSNStacktrace
-          - SentryStacktraceApiKey
           - CrashTracker
           - LogStashHost
           - LogStashPort
@@ -136,14 +134,10 @@ Parameters:
     Default: OmahaPassword
     Description: Password for default database user
     NoEcho: true
-  RavenDSN:
+  SentryDSN:
     Type: String
     Default: ''
-    Description: RavenDSN
-  RavenDSNStacktrace:
-    Type: String
-    Default: ''
-    Description: RAVEN_DSN_STACKTRACE
+    Description: SENTRY_DSN
   CUPRequestValidation:
     Type: String
     Default: 'false'
@@ -173,10 +167,6 @@ Parameters:
     Type: String
     Default: ''
     Description: EMAIL_RECIPIENTS
-  SentryStacktraceApiKey:
-    Type: String
-    Default: ''
-    Description: SENTRY_STACKTRACE_API_KEY
   CrashTracker:
     Type: String
     Default: 'Sentry'
@@ -659,11 +649,8 @@ Resources:
         OptionName: SECRET_KEY
         Value: !Ref OmahaSecretKey
       - Namespace: 'aws:elasticbeanstalk:application:environment'
-        OptionName: RAVEN_DSN
-        Value: !Ref RavenDSN
-      - Namespace: 'aws:elasticbeanstalk:application:environment'
         OptionName: SENTRY_DSN
-        Value: !Ref RavenDSN
+        Value: !Ref SentryDSN
       - Namespace: 'aws:elasticbeanstalk:application:environment'
         OptionName: OMAHA_ONLY_HTTPS
         Value: 'true'
@@ -673,12 +660,6 @@ Resources:
       - Namespace: 'aws:elasticbeanstalk:application:environment'
         OptionName: CUP_REQUEST_VALIDATION
         Value: !Ref CUPRequestValidation
-      - Namespace: 'aws:elasticbeanstalk:application:environment'
-        OptionName: RAVEN_DSN_STACKTRACE
-        Value: !Ref RavenDSNStacktrace
-      - Namespace: 'aws:elasticbeanstalk:application:environment'
-        OptionName: SENTRY_STACKTRACE_API_KEY
-        Value: !Ref SentryStacktraceApiKey
       - Namespace: 'aws:elasticbeanstalk:application:environment'
         OptionName: CRASH_TRACKER
         Value: !Ref CrashTracker
