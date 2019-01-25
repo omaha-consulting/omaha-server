@@ -1,1 +1,0 @@
-FROM crystalnix/omaha-server:gcp

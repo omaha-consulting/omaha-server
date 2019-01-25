@@ -12,8 +12,7 @@ from django.template import defaultfilters as filters
 
 import boto
 from boto.s3.key import Key
-from raven import Client
-
+from sentry_sdk import capture_message
 
 from omaha.models import Version as OmahaVersion
 from omaha.utils import valuedispatch
@@ -22,11 +21,6 @@ from crash.models import Crash, Symbols
 from feedback.models import Feedback
 
 from dynamic_preferences_registry import global_preferences_manager as gpm
-
-dsn = getattr(settings, 'RAVEN_CONFIG', None)
-if dsn:
-    dsn = dsn['dsn']
-raven = Client(dsn, name=getattr(settings, 'HOST_NAME', None), release=getattr(settings, 'APP_VERSION', None))
 
 @valuedispatch
 def bulk_delete(cls, qs):
@@ -204,37 +198,37 @@ def delete_size_is_exceeded(app, model_name, limit=None):
 def monitoring_size():
     size = OmahaVersion.objects.get_size()
     if size > gpm['Version__limit_size'] * 1024 * 1024 * 1024:
-        raven.captureMessage("[Limitation]Size limit of omaha versions is exceeded. Current size is %s [%d]" %
+        capture_message("[Limitation]Size limit of omaha versions is exceeded. Current size is %s [%d]" %
                              (filters.filesizeformat(size).replace(u'\xa0', u' '), time.time()),
-                             data={'level': 30, 'logger': 'limitation'})
+                             category='limitations', level="error")
     cache.set('omaha_version_size', size)
 
     size = SparkleVersion.objects.get_size()
     if size > gpm['SparkleVersion__limit_size'] * 1024 * 1024 * 1024:
-        raven.captureMessage("[Limitation]Size limit of sparkle versions is exceeded. Current size is %s [%d]" %
+        capture_message("[Limitation]Size limit of sparkle versions is exceeded. Current size is %s [%d]" %
                              (filters.filesizeformat(size).replace(u'\xa0', u' '), time.time()),
-                             data={'level': 30, 'logger': 'limitation'})
+                             category='limitations', level="error")
     cache.set('sparkle_version_size', size)
 
     size = Feedback.objects.get_size()
     if size > gpm['Feedback__limit_size'] * 1024 * 1024 * 1024:
-        raven.captureMessage("[Limitation]Size limit of feedbacks is exceeded. Current size is %s [%d]" %
+        capture_message("[Limitation]Size limit of feedbacks is exceeded. Current size is %s [%d]" %
                              (filters.filesizeformat(size).replace(u'\xa0', u' '), time.time()),
-                             data={'level': 30, 'logger': 'limitation'})
+                             category='limitations', level="error")
     cache.set('feedbacks_size', size)
 
     size = Crash.objects.get_size()
     if size > gpm['Crash__limit_size'] * 1024 * 1024 * 1024:
-        raven.captureMessage("[Limitation]Size limit of crashes is exceeded. Current size is %s [%d]" %
+        capture_message("[Limitation]Size limit of crashes is exceeded. Current size is %s [%d]" %
                              (filters.filesizeformat(size).replace(u'\xa0', u' '), time.time()),
-                             data={'level': 30, 'logger': 'limitation'})
+                             category='limitations', level="error")
     cache.set('crashes_size', size)
 
     size = Symbols.objects.get_size()
     if size > gpm['Symbols__limit_size'] * 1024 * 1024 * 1024:
-        raven.captureMessage("[Limitation]Size limit of symbols is exceeded. Current size is %s [%d]" %
+        capture_message("[Limitation]Size limit of symbols is exceeded. Current size is %s [%d]" %
                              (filters.filesizeformat(size).replace(u'\xa0', u' '), time.time()),
-                             data={'level': 30, 'logger': 'limitation'})
+                             category='limitations', level="error")
     cache.set('symbols_size', size)
 
 

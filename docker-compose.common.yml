@@ -1,36 +1,39 @@
-db:
-  image: postgres:9.4
+version: '2'
+services:
+  db:
+    image: postgres:9.4
 
-redis:
-  image: redis:3
+  redis:
+    image: redis:3
 
-web:
-  image: crystalnix/omaha-server:dev
-  privileged: true
-  ports:
-    - "9090:80"
-  environment:
-    DB_HOST: db
-    DB_PORT: 5432
-    DB_USER: postgres
-    DB_NAME: postgres
-    DB_PASSWORD: ''
-    HOST_NAME: '*'
-    SECRET_KEY: 'SECRET_KEY'
-    DJANGO_SETTINGS_MODULE: 'omaha_server.settings'
-    AWS_ACCESS_KEY_ID: 'AWS_ACCESS_KEY_ID'
-    AWS_SECRET_ACCESS_KEY: 'AWS_SECRET_ACCESS_KEY'
-    AWS_STORAGE_BUCKET_NAME: 'AWS_STORAGE_BUCKET_NAME'
-    REDIS_HOST: redis
-    REDIS_PORT: 6379
-    OMAHA_SERVER_PRIVATE: 'True'
-    AWS_ROLE: 'omaha-private'
-    DB_PUBLIC_USER: 'omaha_public'
-    DB_PUBLIC_PASSWORD: 'omaha_public_password'
-    UWSGI_PROCESSES: 10
-    UWSGI_THREADS: 8
-    FILEBEAT_HOST: 'localhost'
-    FILEBEAT_PORT: '9021'
-    ELK_HOST: ''
-    ELK_PORT: ''
-    FILEBEAT_DESTINATION: ''
+  django:
+    privileged: true
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_NAME: postgres
+      DB_PASSWORD: ''
+      HOST_NAME: '*'
+      SECRET_KEY: 'asdfghjklqwertzuiop'
+      DJANGO_SETTINGS_MODULE: 'omaha_server.settings_dev'
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_STORAGE_BUCKET_NAME: ''
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      OMAHA_SERVER_PRIVATE: 'True'
+      AWS_ROLE: ''
+      DB_PUBLIC_USER: 'omaha_public'
+      DB_PUBLIC_PASSWORD: 'omaha_public_password'
+      UWSGI_PROCESSES: 10
+      UWSGI_THREADS: 8
+      FILEBEAT_HOST: 'localhost'
+      FILEBEAT_PORT: '9021'
+      ELK_HOST: ''
+      ELK_PORT: ''
+      FILEBEAT_DESTINATION: ''
+      SENTRY_DSN: 'https://2b426b31861249db9e68d7ac755976b9@sentry.aws.dwos.com/3'

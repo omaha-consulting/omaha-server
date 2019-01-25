@@ -33,7 +33,8 @@
                 <xs:element maxOccurs='unbounded' ref='app'/>
             </xs:choice>
             <xs:attribute name='protocol' use='required' type='xs:decimal' fixed="3.0"/>
-            <xs:attribute name='version' use='required' type='xs:NMTOKEN'/>
+            <xs:attribute name='version' use='optional' type='xs:NMTOKEN'/>
+            <xs:attribute name='updaterversion' use='optional' type='xs:NMTOKEN'/>
             <xs:attribute name='ismachine' use='required' type='IsMachineType'/>
             <xs:attribute name='requestid' type='GuidType' use='required'/>
             <xs:attribute name='sessionid' type='GuidType' use='required'/>

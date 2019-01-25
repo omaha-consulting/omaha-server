@@ -6,6 +6,8 @@ from django.http import HttpResponse
 from django.utils import timezone
 
 import pytz
+import boto
+import os
 from omaha.dynamic_preferences_registry import global_preferences_manager as gpm
 from ecdsa import SigningKey
 from ecdsa.util import sigencode_der
@@ -35,6 +37,15 @@ class CUP2Middleware(object):
         # Loading signature keys to memory
         for keyid, private_key in settings.CUP_PEM_KEYS.iteritems():
             self.sk[keyid] = SigningKey.from_pem(open(private_key).read())
+
+        # try to load keys from AWS S3 bucket, use filename as keyid
+        if os.getenv('AWS_STORAGE_BUCKET_NAME'):
+            conn = boto.connect_s3()
+            bucket = conn.get_bucket(settings.AWS_STORAGE_BUCKET_NAME)
+            for key in bucket.list(prefix='cups_pem_keys/'):
+                if key.name.endswith(".pem"):
+                    keyid = os.path.splitext(os.path.basename(key.name))[0]
+                    self.sk[keyid] = SigningKey.from_pem(key.read())
 
     def process_request(self, request):
         if getattr(settings, 'CUP_REQUEST_VALIDATION', False) and self.is_cup2_request(request):

@@ -1,23 +1,25 @@
-db:
-  extends:
-    file: docker-compose.common.yml
-    service: db
+version: '2'
+services:
+  db:
+    extends:
+      file: docker-compose.common.yml
+      service: db
 
-redis:
-  extends:
-    file: docker-compose.common.yml
-    service: redis
+  redis:
+    extends:
+      file: docker-compose.common.yml
+      service: redis
 
-sut:
-  command: 'true'
-  extends:
-    file: docker-compose.common.yml
-    service: web
-  build: .
-  links:
-    - db
-    - redis
-  volumes:
-    - ./:/srv/omaha
-  environment:
-    DJANGO_SETTINGS_MODULE: 'omaha_server.settings_test'
+  sut:
+    command: 'true'
+    extends:
+      file: docker-compose.common.yml
+      service: django
+    build: .
+    links:
+      - db
+      - redis
+    volumes:
+      - ./:/srv/omaha
+    environment:
+      DJANGO_SETTINGS_MODULE: 'omaha_server.settings_test'

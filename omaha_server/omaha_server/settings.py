@@ -13,16 +13,16 @@ import os
 from datetime import timedelta
 
 from django.core.urlresolvers import reverse_lazy
-from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
+
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
+sentry_sdk.init(integrations=[DjangoIntegration()])
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_DIR = BASE_DIR
 
 IS_PRIVATE = True if os.getenv('OMAHA_SERVER_PRIVATE', '').title() == 'True' else False
-
-RAVEN_CONFIG = {
-    'dsn': os.environ.get('RAVEN_DNS'),
-}
 
 if os.getenv('OMAHA_ONLY_HTTPS'):
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -43,9 +43,11 @@ TEMPLATES = [
         ],
         'APP_DIRS': True,
         'OPTIONS': {
-            'context_processors': TCP + [
-                'django.core.context_processors.request',
+            'debug': True,
+            'context_processors': [
+                'django.template.context_processors.request',
                 'absolute.context_processors.absolute',
+                'django.contrib.auth.context_processors.auth',
             ],
         },
     },
@@ -80,8 +82,6 @@ OMAHA_URL_PREFIX = os.environ.get('OMAHA_URL_PREFIX') # no trailing slash!
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -127,6 +127,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'omaha_server.middlewares.CUP2Middleware',
 )
 
 if IS_PRIVATE:
@@ -137,7 +138,6 @@ if IS_PRIVATE:
         'django.contrib.messages.middleware.MessageMiddleware',
         'omaha_server.middlewares.LoggingMiddleware',
         'omaha_server.middlewares.TimezoneMiddleware',
-        'omaha_server.middlewares.CUP2Middleware',
     ) + MIDDLEWARE_CLASSES
 
 ROOT_URLCONF = 'omaha_server.urls'
@@ -151,11 +151,11 @@ WSGI_APPLICATION = 'omaha_server.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('DB_NAME', 'postgres'),
-        'USER': os.environ.get('DB_USER', 'postgres'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
-        'HOST': os.environ.get('DB_HOST', '127.0.0.1'),
-        'PORT': os.environ.get('DB_PORT', '5432'),
+        'NAME': os.environ.get('DB_NAME', os.environ.get('RDS_DB_NAME', 'postgres')),
+        'USER': os.environ.get('DB_USER', os.environ.get('RDS_USERNAME', 'postgres')),
+        'PASSWORD': os.environ.get('DB_PASSWORD', os.environ.get('RDS_PASSWORD', '')),
+        'HOST': os.environ.get('DB_HOST', os.environ.get('RDS_HOSTNAME', '127.0.0.1')),
+        'PORT': os.environ.get('DB_PORT', os.environ.get('RDS_PORT', '5432')),
         'CONN_MAX_AGE': 60,
     }
 }
@@ -194,7 +194,7 @@ STATICFILES_DIRS = (
 REDIS_PORT = os.environ.get('REDIS_PORT', '6379')
 REDIS_HOST = os.environ.get('REDIS_HOST', '127.0.0.1')
 REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD', None)
-REDIS_AUTH = 'redis://:{}@'.format(REDIS_PASSWORD) if REDIS_PASSWORD else ''
+REDIS_AUTH = 'redis://:{}@'.format(REDIS_PASSWORD) if REDIS_PASSWORD else 'redis://'
 
 REDIS_STAT_PORT = os.environ.get('REDIS_STAT_PORT', REDIS_PORT)
 REDIS_STAT_HOST = os.environ.get('REDIS_STAT_HOST', REDIS_HOST)
@@ -203,7 +203,7 @@ REDIS_STAT_DB = os.environ.get('REDIS_STAT_DB', 15)
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': '{REDIS_AUTH}{REDIS_HOST}:{REDIS_PORT}:{REDIS_DB}'.format(
+        'LOCATION': '{REDIS_AUTH}{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}'.format(
             REDIS_AUTH=REDIS_AUTH,
             REDIS_PORT=REDIS_PORT,
             REDIS_HOST=REDIS_HOST,
@@ -214,7 +214,7 @@ CACHES = {
     },
     'statistics': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': '{REDIS_AUTH}{REDIS_HOST}:{REDIS_PORT}:{REDIS_DB}'.format(
+        'LOCATION': '{REDIS_AUTH}{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}'.format(
             REDIS_AUTH=REDIS_AUTH,
             REDIS_PORT=REDIS_STAT_PORT,
             REDIS_HOST=REDIS_STAT_HOST,

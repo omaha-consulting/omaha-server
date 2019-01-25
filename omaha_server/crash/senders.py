@@ -2,7 +2,7 @@ import logging
 
 from django.conf import settings
 
-from raven import Client
+import sentry_sdk
 from celery import signature
 
 from omaha_server.utils import add_extra_to_log_message
@@ -20,19 +20,16 @@ class SentrySender(BaseSender):
     name="Sentry"
 
     def __init__(self):
-        self.client = Client(
-            getattr(settings, 'RAVEN_DSN_STACKTRACE', None),
-            name=getattr(settings, 'HOST_NAME', None),
-            release=getattr(settings, 'APP_VERSION', None)
-        )
+        self.client = sentry_sdk.init()
 
     def send(self, message, extra={}, tags={}, sentry_data={}, crash_obj=None):
-        event_id = self.client.capture(
+        event_id = self.client.capture_message(
             'raven.events.Message',
             message=message,
             extra=extra,
             tags=tags,
-            data=data
+            data=data,
+            level='error'
         )
         signature("tasks.get_sentry_link", args=(crash_obj.pk, event_id)).apply_async(queue='private', countdown=1)
 
