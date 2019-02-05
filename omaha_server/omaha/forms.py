@@ -70,12 +70,12 @@ class VersionAdminForm(forms.ModelForm):
 
 
 class ActionAdminForm(forms.ModelForm):
-    SUCCESSSACTION_CHOICES = (
+    ONSUCCESS_CHOICES = (
         ('default', 'default'),
         ('exitsilently', 'exitsilently'),
         ('exitsilentlyonlaunchcmd', 'exitsilentlyonlaunchcmd')
     )
-    successsaction = forms.ChoiceField(choices=SUCCESSSACTION_CHOICES)
+    onsuccess = forms.ChoiceField(choices=ONSUCCESS_CHOICES)
 
     class Meta:
         model = Action

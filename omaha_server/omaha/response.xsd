@@ -96,7 +96,6 @@
             <xs:attribute name="arguments" use="optional" type="xs:string"/>
             <xs:attribute name="successurl" use="optional" type="xs:string"/>
             <xs:attribute name="terminateallbrowsers" use="optional" type="xs:string"/>
-            <xs:attribute name="successsaction" use="optional" type="xs:string"/>
             <xs:attribute name="onsuccess" use="optional" type="xs:string"/>
             <xs:attribute name="version" use="optional" type="xs:string"/>
         </xs:complexType>

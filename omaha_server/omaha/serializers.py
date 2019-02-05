@@ -73,7 +73,7 @@ class ActionSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Action
         fields = ('id', 'version', 'event', 'run', 'arguments', 'successurl',
-                  'terminateallbrowsers', 'successsaction', 'other')
+                  'terminateallbrowsers', 'onsuccess', 'other')
 
 
 class VersionSerializer(serializers.HyperlinkedModelSerializer):

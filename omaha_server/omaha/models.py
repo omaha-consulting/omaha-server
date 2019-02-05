@@ -182,7 +182,7 @@ class Action(BaseModel):
     terminateallbrowsers = models.BooleanField(
         default=False,
         help_text='If "true", close all browser windows before starting the installer binary.')
-    successsaction = models.CharField(
+    onsuccess = models.CharField(
         null=True, max_length=255, blank=True,
         help_text='Contains a fixed string denoting some action to take '
                   'in response to a successful install')

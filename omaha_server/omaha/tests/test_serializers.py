@@ -86,7 +86,7 @@ class ActionSerializerTest(TestCase):
         action = ActionFactory(**data)
         self.assertDictEqual(ActionSerializer(action).data,
                              dict(id=action.pk,
-                                  successsaction=action.successsaction,
+                                  onsuccess=action.onsuccess,
                                   run=action.run,
                                   event=action.event,
                                   other=action.other,
