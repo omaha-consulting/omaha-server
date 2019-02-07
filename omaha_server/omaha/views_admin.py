@@ -181,7 +181,6 @@ class RequestListView(StaffMemberRequiredMixin, SingleTableView):
         except Application.DoesNotExist:
             raise Http404
 
-        qs = qs.distinct()
         self.filter = AppRequestFilter(self.request.GET, queryset=qs)
         return self.filter.qs
 
