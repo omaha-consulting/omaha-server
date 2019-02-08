@@ -143,22 +143,6 @@ def get_users_statistics_months(app_id, platform=None, year=None, start=1, end=1
     return res
 
 
-def get_users_statistics_weeks(app_id=None):
-    now = timezone.now()
-    event_name = 'request:%s' % app_id if app_id else 'request'
-    year = now.year
-    current_week = now.isocalendar()[1]
-    previous_week = (now - timedelta(weeks=1)).isocalendar()[1]
-    yesterday = now - timedelta(days=1)
-    data = [
-        ('Previous week', len(WeekEvents(event_name, year, previous_week))),
-        ('Current week', len(WeekEvents(event_name, year, current_week))),
-        ('Yesterday', len(DayEvents(event_name, year, yesterday.month, yesterday.day))),
-        ('Today', len(DayEvents(event_name, year, now.month, now.day))),
-    ]
-    return data
-
-
 def get_channel_statistics(app_id, date=None):
     if not date:
         date = timezone.now()
