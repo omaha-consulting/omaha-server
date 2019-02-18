@@ -2,7 +2,7 @@
 
 ## Partial update Collection [/api/partialupdate{?version,is_enabled,percent,start_date,end_date,exclude_new_users,active_users}]
 
-### List all Partial Update [GET]
+### List all Partial Updates [GET]
 
 
 + Request (application/json)
@@ -27,7 +27,7 @@
                 }
             ]
 
-### Create Partial Update [POST]
+### Create a Partial Update [POST]
 
 + Parameters
     * version (required, number, `12`) ... Version ID
@@ -65,3 +65,99 @@
             "exclude_new_users": false,
             "active_users": 1
         }
+
+## Partial Update [/api/partialupdate/{id}/]
+
++ Parameters
+    * id (required, number, `42`)
+
+
+### Retrieve a Partial Update [GET]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
++ Response 200 (application/json)
+
+        {
+            "id": 42,
+            "version": 128,
+            "is_enabled": false,
+            "percent": 50.0,
+            "start_date": "2018-03-07",
+            "end_date": "2018-03-07",
+            "exclude_new_users": false,
+            "active_users": 1
+        }
+
+
+### Patch a Partial Update [PATCH]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+
+            {
+                "is_enabled": true,
+            }
+
++ Response 200 (application/json)
+
+        {
+            "id": 1,
+            "version": 128,
+            "is_enabled": true,
+            "percent": 50.0,
+            "start_date": "2018-03-07",
+            "end_date": "2018-03-07",
+            "exclude_new_users": false,
+            "active_users": 1
+        }
+
+### Update a Partial Update [PUT]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
+    + Body
+
+            {
+                "is_enabled": true,
+                "version": 128,
+                "percent": 50.0,
+                "start_date": "2018-03-07",
+                "end_date": "2018-03-07"
+            }
+
++ Response 200 (application/json)
+
+        {
+            "id": 1,
+            "version": 128,
+            "is_enabled": true,
+            "percent": 50.0,
+            "start_date": "2018-03-07",
+            "end_date": "2018-03-07",
+            "exclude_new_users": false,
+            "active_users": 1
+        }
+
+### Remove a Partial Update [DELETE]
+
++ Request
+
+    + Headers
+
+            Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+
++ Response 204
