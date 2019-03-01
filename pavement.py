@@ -171,8 +171,6 @@ def docker_run():
 
 @task
 def docker_run_test():
-    sh('apt-get install -y python-dev libxslt-dev libpq-dev')
-    sh('pip install -r requirements/test.txt --use-mirrors')
     test()
     test_postgres()
 
@@ -180,6 +178,7 @@ def docker_run_test():
 @task
 def run_test_in_docker():
     try:
+        # sh('docker-compose -f docker-compose.tests.yml -p omaha_testing build sut')
         sh('docker-compose -f docker-compose.tests.yml -p omaha_testing run --rm sut paver docker_run_test')
     except:
         pass

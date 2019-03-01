@@ -23,12 +23,6 @@ RUN \
   mkdir /srv/omaha_s3 && \
   rm /usr/src/v1.78.tar.gz
 
-RUN \
-  apt-get update && \
-  apt-get install -y --fix-missing curl && \
-  curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.0.0-amd64.deb && \
-  dpkg -i filebeat-6.0.0-amd64.deb && \
-  mkdir /tmp/filebeat/
 
 RUN mkdir -p $omaha/requirements
 WORKDIR ${omaha}
@@ -46,7 +40,7 @@ RUN \
   NGINX_VERSION=`nginx -v 2>&1 | grep -o '[[:digit:]].*$'` && \
   wget http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz && \
   tar -xzvf nginx-$NGINX_VERSION.tar.gz && \
-  wget https://api.github.com/repos/openresty/lua-nginx-module/tarball/v0.10.13  -O lua-nginx-module.tar && \
+  wget -qO- https://api.github.com/repos/openresty/lua-nginx-module/tags | grep -m 1 tarball_url | cut -d '"' -f 4 | xargs wget -O lua-nginx-module.tar && \
   mkdir -p /tmp/lua-nginx-module && tar -xvf lua-nginx-module.tar -C /tmp/lua-nginx-module --strip-components=1 && \
   wget -qO- https://api.github.com/repos/simpl/ngx_devel_kit/tags | grep -m 1 tarball_url | cut -d '"' -f 4 | xargs wget -O ngx_devel_kit.tar && \
   mkdir -p /tmp/ngx_devel_kit && tar -xvf ngx_devel_kit.tar -C /tmp/ngx_devel_kit --strip-components=1 && \

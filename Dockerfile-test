@@ -2,7 +2,7 @@ FROM crystalnix/omaha-server-base:alpine
 
 ADD . $omaha
 
-# setup all the configfiles
+# Setup all the configfiles
 RUN \
   mkdir /etc/nginx/sites-enabled/ && \
   rm /etc/filebeat/filebeat.yml && \
@@ -15,6 +15,12 @@ RUN \
   ln -s /srv/omaha/conf/supervisord.conf /etc/ && \
   ln -s /srv/omaha/conf/filebeat.yml /etc/filebeat/ && \
   chmod go-w /etc/filebeat/filebeat.yml
+
+# Dependencies for Pillow
+RUN apk add jpeg-dev libjpeg
+
+# Install Dev and Test requirements
+RUN pip install -r requirements/dev.txt
 
 EXPOSE 80
 EXPOSE 8080

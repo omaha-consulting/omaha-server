@@ -1,0 +1,54 @@
+FROM python:2.7-alpine3.9
+
+ENV OMAHA_SERVER_PATH /srv/omaha
+WORKDIR ${OMAHA_SERVER_PATH}
+
+# Add low-level dependencies
+RUN \
+  apk add bash ca-certificates \
+  && apk add nginx supervisor uwsgi uwsgi-python \
+  && apk add --virtual dev-deps build-base \
+  && apk add py-lxml py-psycopg2 py-pillow \
+  && apk add fuse-dev libxml2-dev libxslt-dev libcurl curl-dev libstdc++ \
+  && apk add --virtual fuse-deps autoconf automake libtool pkgconfig openssl-dev wget tar \
+  && apk add linux-headers pcre-dev zlib-dev \
+  && apk add openssl pcre zlib \
+  && apk add build-base lua5.1-dev lua-lzlib \
+  && apk add --no-cache postgresql-libs postgresql-dev libc6-compat gzip
+
+# S3FS
+RUN \
+  mkdir /usr/src/omaha-server \
+  && wget --no-check-certificate https://github.com/s3fs-fuse/s3fs-fuse/archive/v1.78.tar.gz -O /usr/src/omaha-server/v1.78.tar.gz \
+  && tar xvz -C /usr/src/omaha-server -f /usr/src/omaha-server/v1.78.tar.gz \
+  && cd /usr/src/omaha-server/s3fs-fuse-1.78 \
+  && ./autogen.sh \
+  && ./configure --prefix=/usr \
+  && make \
+  && make install \
+  && mkdir -p /srv/omaha_s3 \
+  && rm /usr/src/omaha-server/v1.78.tar.gz
+
+# Filebeat
+ARG FILEBEAT_PACKEGE=filebeat-6.0.0-linux-x86_64
+RUN \
+  wget https://artifacts.elastic.co/downloads/beats/filebeat/${FILEBEAT_PACKEGE}.tar.gz -O /usr/src/omaha-server/${FILEBEAT_PACKEGE}.tar.gz \
+  && tar xzvf /usr/src/omaha-server/${FILEBEAT_PACKEGE}.tar.gz -C /etc/ \
+  && mv /etc/${FILEBEAT_PACKEGE} /etc/filebeat \
+  && mkdir /tmp/filebeat/
+
+
+# Clean Up
+RUN \
+  rm -rf /var/cache/apk/* \
+  && apk del fuse-deps dev-deps
+
+# Setup application dependencies
+RUN mkdir -p $OMAHA_SERVER_PATH/requirements
+ADD ./requirements/ $OMAHA_SERVER_PATH/requirements/
+
+RUN \
+  pip install paver && \
+  pip install --upgrade six && \
+  pip install -r requirements/base.txt
+
