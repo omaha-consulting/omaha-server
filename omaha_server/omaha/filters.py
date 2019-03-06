@@ -117,8 +117,8 @@ class EventTypeFilter(django_filters.ChoiceFilter):
 
 
 class FilterByUserIdWidget(HeavySelect2Widget):
-    def build_attrs(self, extra_attrs=None, **kwargs):
-        attrs = super(FilterByUserIdWidget, self).build_attrs(**kwargs)
+    def build_attrs(self, *args, **kwargs):
+        attrs = super(FilterByUserIdWidget, self).build_attrs(*args,**kwargs)
         attrs['data-minimum-input-length'] = 2
         return attrs
 

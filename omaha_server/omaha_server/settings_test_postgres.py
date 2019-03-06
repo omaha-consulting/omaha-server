@@ -1,13 +1,15 @@
 # coding: utf8
 
 import os
+from .settings import *
+
+ALLOWED_HOSTS = ('example.com',)
 
 os.environ.setdefault('DB_PUBLIC_USER', 'test_public_user')
 os.environ.setdefault('DB_PUBLIC_PASSWORD', 'test_public_password')
 
 os.environ.setdefault('OMAHA_SERVER_PRIVATE', 'True')
 
-from .settings import *
 DB_PUBLIC_ROLE = os.environ.get('DB_PUBLIC_ROLE', 'test_public_users')
 
 DATABASES = {

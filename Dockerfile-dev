@@ -1,5 +1,11 @@
 FROM crystalnix/omaha-server-base:alpine
 
+# Dependencies for Pillow
+RUN apk add jpeg-dev libjpeg
+
+# Install Dev and Test requirements
+RUN pipenv install --system --dev
+
 ADD . $omaha
 
 # Setup all the configfiles
@@ -15,13 +21,6 @@ RUN \
   ln -s /srv/omaha/conf/supervisord.conf /etc/ && \
   ln -s /srv/omaha/conf/filebeat.yml /etc/filebeat/ && \
   chmod go-w /etc/filebeat/filebeat.yml
-
-# Dependencies for Pillow
-RUN apk add jpeg-dev libjpeg
-
-# Install Dev and Test requirements
-# RUN pip install -r requirements/dev.txt
-RUN pipenv install --system --dev
 
 EXPOSE 80
 EXPOSE 8080
