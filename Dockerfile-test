@@ -20,7 +20,8 @@ RUN \
 RUN apk add jpeg-dev libjpeg
 
 # Install Dev and Test requirements
-RUN pip install -r requirements/dev.txt
+# RUN pip install -r requirements/dev.txt
+RUN pipenv install --system --dev
 
 EXPOSE 80
 EXPOSE 8080

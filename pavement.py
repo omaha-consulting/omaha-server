@@ -178,7 +178,7 @@ def docker_run_test():
 @task
 def run_test_in_docker():
     try:
-        # sh('docker-compose -f docker-compose.tests.yml -p omaha_testing build sut')
+        sh('docker-compose -f docker-compose.tests.yml -p omaha_testing build sut')
         sh('docker-compose -f docker-compose.tests.yml -p omaha_testing run --rm sut paver docker_run_test')
     except:
         pass
