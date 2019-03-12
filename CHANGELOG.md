@@ -1,4 +1,4 @@
-## [0.7.2] - 2019-03-06
+## [0.7.2] - 2019-03-12
 Changed base image from Ubuntu:14.04 to Alpine:3.9 version. Update Django library from 1.9.6 to 1.11.0 version.
 
 #### Fixed Django's deprecated issues
