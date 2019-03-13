@@ -11,9 +11,9 @@ RUN \
   && apk add py-lxml py-psycopg2 py-pillow \
   && apk add fuse-dev libxml2-dev libxslt-dev libcurl curl-dev libstdc++ \
   && apk add --virtual fuse-deps autoconf automake libtool pkgconfig openssl-dev wget tar \
-  && apk add linux-headers pcre-dev zlib-dev gd-dev geoip-dev \
-  && apk add openssl pcre zlib \
-  && apk add build-base lua5.3-dev \
+  && apk add linux-headers pcre-dev gd-dev geoip-dev \
+  && apk add openssl pcre zlib zlib-dev \
+  && apk add build-base lua5.1-dev luarocks \
   && apk add --no-cache postgresql-libs postgresql-dev libc6-compat gzip \
   && apk add py-lxml
 
@@ -31,6 +31,7 @@ ENV LUAJIT_INC /usr/local/include/luajit-2.1
 
 # Build Lua module for Nginx
 RUN \
+  luarocks-5.1 install lua-zlib && \
   cd /tmp && \
   NGINX_VERSION=`nginx -v 2>&1 | grep -o '[[:digit:]].*$'` && \
   wget http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz && \

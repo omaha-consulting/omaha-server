@@ -32,7 +32,7 @@ class SentrySender(BaseSender):
             message=message,
             extra=extra,
             tags=tags,
-            data=data
+            data=sentry_data
         )
         signature("tasks.get_sentry_link", args=(crash_obj.pk, event_id)).apply_async(queue='private', countdown=1)
 
