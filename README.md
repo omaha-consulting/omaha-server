@@ -15,15 +15,15 @@ Currently, our implementation is integrated into the updating processes of sever
 
 **Requirements:**
 
-- Linux Alpine 3.9 (64-bit)
+- Ubuntu Trusty 14.04 (LTS) (64-bit)
 - [pipenv](https://pipenv.readthedocs.io/en/latest/)
 - [docker](docker.com) or [boot2docker](https://github.com/boot2docker/boot2docker) for OS X & Windows
 - [docker-compose](https://docs.docker.com/compose/install/)
 
 ```shell
-$ sudo apk update
-$ sudo apk add docker
-$ sudo apk add python py-pip
+$ sudo apt-get update
+$ sudo apt-get install docker.io
+$ sudo apt-get install python python-pip
 $ sudo pip install -U pipenv
 $ sudo pip install -U docker-compose
 $ git clone https://github.com/Crystalnix/omaha-server.git

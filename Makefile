@@ -33,6 +33,10 @@ virtual-env:
 test:
 	pipenv run paver run_test_in_docker
 
+.PHONY: test-without-docker
+test-without-docker:
+	pipenv run paver test
+
 .PHONY: up
 up:
 	pipenv run paver up_local_dev_server

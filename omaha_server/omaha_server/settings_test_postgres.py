@@ -5,8 +5,9 @@ from .settings import *
 
 ALLOWED_HOSTS = ('example.com',)
 
-os.environ.setdefault('DB_PUBLIC_USER', 'test_public_user')
-os.environ.setdefault('DB_PUBLIC_PASSWORD', 'test_public_password')
+os.environ.setdefault('DB_PUBLIC_USER', 'omaha_public')
+os.environ.setdefault('DB_PUBLIC_PASSWORD', 'omaha_public_password')
+
 
 os.environ.setdefault('OMAHA_SERVER_PRIVATE', 'True')
 
@@ -36,7 +37,6 @@ NOSE_ARGS = [
     '--with-coverage',
     '--cover-package=omaha_server,omaha,crash,feedback,sparkle,healthcheck',
     '--cover-inclusive',
-    '--nologcapture',
     '-s',
 ]
 
