@@ -40,6 +40,9 @@ class SparkleVersionAdminForm(forms.ModelForm):
             'app': LinkedSelect,
             'release_notes': TinyMCE(),
             'file_size': widgets.TextInput(attrs=dict(disabled='disabled')),
+            'version': widgets.TextInput(),
+            'short_version': widgets.TextInput(),
+            'minimum_system_version': widgets.TextInput()
         }
 
     def clean_file_size(self):

@@ -25,6 +25,10 @@ install-dev:
 lock:
 	pipenv lock
 
+.PHONY: virtual-env
+virtual-env:
+	pipenv shell
+
 .PHONY: test
 test:
 	pipenv run paver run_test_in_docker

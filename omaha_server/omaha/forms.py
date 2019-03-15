@@ -60,6 +60,7 @@ class VersionAdminForm(forms.ModelForm):
             'app': LinkedSelect,
             'release_notes': TinyMCE(),
             'file_size': widgets.TextInput(attrs=dict(disabled='disabled')),
+            'version': widgets.TextInput(),
         }
 
     def clean_file_size(self):
