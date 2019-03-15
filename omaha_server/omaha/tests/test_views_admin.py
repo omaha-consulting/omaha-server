@@ -120,7 +120,7 @@ class AdminViewPreferencesTest(TestCase):
         self.client.post(url, dict(Timezone__timezone=timezone), follow=True)
         response = self.client.get(url)
         self.assertEqual(self.client.session["django_timezone"], timezone)
-        self.assertContains(response, '<option value="Asia/Omsk" selected="selected">Asia/Omsk +0600</option>')
+        self.assertContains(response, '<option value="Asia/Omsk" selected>Asia/Omsk +0600</option>')
 
 
 class FilteringAppRequestsByUserIdTest(TestCase):

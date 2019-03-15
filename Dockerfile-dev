@@ -1,8 +1,14 @@
 FROM crystalnix/omaha-server-base:alpine
 
+# Dependencies for Pillow
+RUN apk add jpeg-dev libjpeg
+
+# Install Dev and Test requirements
+RUN pipenv install --system --dev
+
 ADD . $omaha
 
-# setup all the configfiles
+# Setup all the configfiles
 RUN \
   mkdir /etc/nginx/sites-enabled/ && \
   rm /etc/filebeat/filebeat.yml && \
@@ -11,7 +17,7 @@ RUN \
   rm /etc/supervisord.conf && \
   ln -s /srv/omaha/conf/nginx.conf /etc/nginx/ && \
   ln -s /srv/omaha/conf/nginx-app.conf /etc/nginx/sites-enabled/ && \
-  ln -s /srv/omaha/conf/inflate_request.lua /var/lib/nginx/ && \
+  ln -s /srv/omaha/conf/inflate_request.lua /var/lib/nginx && \
   ln -s /srv/omaha/conf/supervisord.conf /etc/ && \
   ln -s /srv/omaha/conf/filebeat.yml /etc/filebeat/ && \
   chmod go-w /etc/filebeat/filebeat.yml

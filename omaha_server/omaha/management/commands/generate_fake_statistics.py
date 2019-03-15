@@ -92,18 +92,6 @@ def run_worker(data, versions, channels, year):
 
 class Command(BaseCommand):
     help = 'A command for generating fake statistics'
-    option_list = BaseCommand.option_list + (
-        make_option('--count',
-                    dest='count',
-                    default='1000',
-                    type=int,
-                    help='Total number of data values (default: 1000)'),
-        make_option('--year',
-                    dest='year',
-                    default=datetime.now().year,
-                    type=int,
-                    help='Year of statistics (default: Current year)'),
-    )
 
     def handle(self, *args, **options):
         user_count = options['count'] + 1
@@ -119,3 +107,20 @@ class Command(BaseCommand):
         pool.imap_unordered(partial(run_worker, versions=versions, channels=channels, year=year), job_data)
         pool.close()
         pool.join()
+
+    def add_arguments(self, parser):
+        parser.add_argument('app_id')
+        parser.add_argument(
+            '--count',
+            dest='count',
+            default='1000',
+            type=int,
+            help='Total number of data values (default: 1000)'
+        )
+        parser.add_argument(
+            '--year',
+            dest='year',
+            default=datetime.now().year,
+            type=int,
+            help='Year of statistics (default: Current year)'
+        )

@@ -16,6 +16,7 @@ matrix:
       env:
         - TOX_ENV=py27
         - DJANGO_SETTINGS_MODULE=omaha_server.settings_test_postgres
+        - OMAHA_SERVER_PRIVATE=True
     - python: "2.7"
       env:
         - TOX_ENV=py27

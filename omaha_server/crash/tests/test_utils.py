@@ -119,7 +119,6 @@ class SendStackTraceTest(test.TestCase):
             version='1.0.0.1',
         )
         crash = Crash(
-            pk=123,
             upload_file_minidump=SimpleUploadedFile('./dump.dat', False),
             stacktrace=stacktrace,
             stacktrace_json=parse_stacktrace(stacktrace),

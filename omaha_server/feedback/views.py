@@ -63,7 +63,6 @@ class FeedbackFormView(FormView):
         }
         submit = ExtensionSubmit()
         submit.ParseFromString(self.request.body)
-
         type_callable_map = copy(TYPE_CALLABLE_MAP)
         type_callable_map[FieldDescriptor.TYPE_BYTES] = lambda x: '[binary content]'
         pb_dict = protobuf_to_dict(
