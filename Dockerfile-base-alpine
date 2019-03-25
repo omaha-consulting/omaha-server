@@ -15,7 +15,7 @@ RUN \
   && apk add openssl pcre zlib zlib-dev \
   && apk add build-base lua5.1-dev luarocks \
   && apk add --no-cache postgresql-libs postgresql-dev libc6-compat gzip \
-  && apk add py-lxml
+  && pip install lxml
 
 # Prepare for building Nginx. Intsall LuaJIT.
 RUN \
@@ -123,6 +123,9 @@ RUN \
 # Setup application dependencies
 RUN mkdir -p $OMAHA_SERVER_PATH/requirements
 ADD Pipfile Pipfile.lock $OMAHA_SERVER_PATH/
+
+# Dependencies for Pillow
+RUN apk add jpeg-dev libjpeg
 
 RUN \
   pip install pipenv \
