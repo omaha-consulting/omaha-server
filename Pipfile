@@ -65,7 +65,7 @@ protobuf-to-dict = "==0.1.0"
 ecdsa = "==0.13"
 google-cloud = "*"
 python-magic = "==0.4.15"
-Markdown = "*"
+Markdown = "<3.0.0"
 paver = "==1.2.4"
 Pillow = "*"
 

@@ -15,5 +15,5 @@ Changed base image from Ubuntu:14.04 to Alpine:3.9 version. Update Django librar
 - django-bootstrap3: `7.0.1` -> `latest`
 - django-select2: `5.8.4` -> `latest`
 - nose: `1.3.7` -> `latest`
-- markdown: `2.6.6` -> `latest`
+- markdown: `2.6.6` -> `2.6.11`
 - protobuf: `3.3.0` -> `latest`

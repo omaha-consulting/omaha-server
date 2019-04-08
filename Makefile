@@ -5,6 +5,10 @@ DEVELOP_IMAGE_TAG=develop
 STABLE_IMAGE_TAG=stable
 DOCKER_COMPOSE=docker-compose -f docker-compose.dev.yml -p dev
 
+.PHONY: build-dev-web
+build-dev-web:
+	$(DOCKER_COMPOSE) build web
+
 .PHONY: build-base
 build-base:
 	docker build -t $(DOCKER_REGISTRY_BASE):$(BASE_IMAGE_TAG) -f Dockerfile-base-alpine .
@@ -38,7 +42,7 @@ test-without-docker:
 	pipenv run paver test
 
 .PHONY: up
-up:
+up: build-dev-web
 	pipenv run paver up_local_dev_server
 
 .PHONY: exec
