@@ -205,8 +205,7 @@ REDIS_STAT_DB = os.environ.get('REDIS_STAT_DB', 15)
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': '{REDIS_AUTH}{REDIS_HOST}:{REDIS_PORT}:{REDIS_DB}'.format(
-            REDIS_AUTH=REDIS_AUTH,
+        'LOCATION': 'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}'.format(
             REDIS_PORT=REDIS_PORT,
             REDIS_HOST=REDIS_HOST,
             REDIS_DB=os.environ.get('REDIS_DB', 1)),
@@ -216,8 +215,7 @@ CACHES = {
     },
     'statistics': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': '{REDIS_AUTH}{REDIS_HOST}:{REDIS_PORT}:{REDIS_DB}'.format(
-            REDIS_AUTH=REDIS_AUTH,
+        'LOCATION': 'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}'.format(
             REDIS_PORT=REDIS_STAT_PORT,
             REDIS_HOST=REDIS_STAT_HOST,
             REDIS_DB=REDIS_STAT_DB),
