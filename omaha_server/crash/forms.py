@@ -59,7 +59,7 @@ class CrashFrom(forms.ModelForm):
                 t_file = BytesIO(file.read())
                 t_file = tarfile.open(fileobj=t_file, mode='r')
                 self.cleaned_data['archive_file'] = file
-                dump_name = filter(lambda i: i.endswith('.dmp'), t_file.getnames())
+                dump_name = [i for i in t_file.getnames() if i.endswith('.dmp')]
                 try:
                     file_name = next(dump_name)
                     file = t_file.extractfile(file_name)
@@ -120,7 +120,7 @@ class SymbolsAdminForm(forms.ModelForm):
             meta = parse_debug_meta_info(head, exception=forms.ValidationError)
             self.cleaned_data.update(meta)
         except:
-            raise forms.ValidationError(u"The file contains invalid data.")
+            raise forms.ValidationError("The file contains invalid data.")
         return file
 
     def clean_file_size(self):

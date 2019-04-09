@@ -33,7 +33,7 @@ class CUP2Middleware(object):
     def __init__(self):
         self.sk = {}
         # Loading signature keys to memory
-        for keyid, private_key in settings.CUP_PEM_KEYS.iteritems():
+        for keyid, private_key in settings.CUP_PEM_KEYS.items():
             self.sk[keyid] = SigningKey.from_pem(open(private_key).read())
 
     def process_request(self, request):
@@ -63,7 +63,7 @@ class CUP2Middleware(object):
         cup2hreq = request.GET.get('cup2hreq')
 
         keyid, k = cup2key.split(':')
-        if keyid not in self.sk.keys():
+        if keyid not in list(self.sk.keys()):
             raise CUP2Exception('There is no key with id %s' % keyid)
 
         request_hash = sha256(request.body).hexdigest()

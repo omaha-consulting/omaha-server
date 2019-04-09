@@ -102,11 +102,11 @@ class StatisticsTest(TestCase):
 
     def test_get_live_statistics_with_enabled_version(self):
         data = self.generate_version(is_enabled=True)
-        assert len(data['win'].keys()) == 1
+        assert len(list(data['win'].keys())) == 1
 
     def test_get_live_statistics_with_disabled_version(self):
         data = self.generate_version(is_enabled=False)
-        assert len(data['win'].keys()) == 1
+        assert len(list(data['win'].keys())) == 1
 
     @patch('omaha.statistics.add_app_statistics')
     def test_userid_counting(self, mock_add_app_statistics):
@@ -541,8 +541,8 @@ class GetStatisticsTest(TestCase):
         uninstalls = [(datetime(now.year, x, 1).strftime("%Y-%m"), 1) for x in range(1, 13)]
         mac_updates = [(datetime(now.year, x, 1).strftime("%Y-%m"), x - 1) for x in range(1, 13)]
         mac_installs = [(datetime(now.year, x, 1).strftime("%Y-%m"), 1) for x in range(1, 13)]
-        total_installs = map(lambda x, y: (x[0], x[1] + y[1]), win_installs, mac_installs)
-        total_updates = map(lambda x, y: (x[0], x[1] + y[1]), win_updates, mac_updates)
+        total_installs = list(map(lambda x, y: (x[0], x[1] + y[1]), win_installs, mac_installs))
+        total_updates = list(map(lambda x, y: (x[0], x[1] + y[1]), win_updates, mac_updates))
         self.users_statistics = dict(new=total_installs, updates=total_updates, uninstalls=uninstalls)
         self.win_users_statistics = dict(new=win_installs, updates=win_updates, uninstalls=uninstalls)
         self.mac_users_statistics = dict(new=mac_installs, updates=mac_updates)

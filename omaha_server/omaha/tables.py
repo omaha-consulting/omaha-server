@@ -39,7 +39,7 @@ def get_badge(event):
 
 class EventsColumn(tables.Column):
     def render(self, record):
-        res = map(get_badge, record.events.all())
+        res = list(map(get_badge, record.events.all()))
         return format_html(' '.join(res))
 
 

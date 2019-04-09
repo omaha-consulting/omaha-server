@@ -73,7 +73,7 @@ def get_sentry_project_slug(domain, organization, project_id, api_key):
         auth=(api_key, '')
     ).json()
 
-    projects = filter(lambda x: x['id'] == project_id, projects)
+    projects = [x for x in projects if x['id'] == project_id]
 
     return projects[0]['slug']
 

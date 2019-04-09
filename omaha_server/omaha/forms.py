@@ -111,7 +111,7 @@ class CrashManualCleanupForm(ManualCleanupForm):
         fields = OrderedDict()
         for key in ("limit_duplicated", "limit_days", "limit_size"):
             fields[key] = self.fields.pop(key)
-        for key, value in self.fields.items():
+        for key, value in list(self.fields.items()):
             fields[key] = value
         self.fields = fields
 

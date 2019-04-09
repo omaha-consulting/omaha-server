@@ -113,7 +113,7 @@ class TestRequestScheme(TestCase, XmlTestMixin):
 
         self.assertXmlNode(root, tag='package', text=None)
 
-        for key, val in self.package_attr.items():
+        for key, val in list(self.package_attr.items()):
             self.assertXmlHasAttribute(root, key, expected_value=val)
 
     def test_packages(self):
@@ -122,7 +122,7 @@ class TestRequestScheme(TestCase, XmlTestMixin):
         self.assertXmlNode(root, tag='packages', text=None)
         self.assertXpathsExist(root, ('./package',))
 
-        for key, val in self.package_attr.items():
+        for key, val in list(self.package_attr.items()):
             self.assertXpathsExist(root, ('./package[@{0}="{1}"]'.format(key, val),))
 
     def test_action(self):
@@ -130,7 +130,7 @@ class TestRequestScheme(TestCase, XmlTestMixin):
 
         self.assertXmlNode(root, tag='action', text=None)
 
-        for key, val in self.action_attr.items():
+        for key, val in list(self.action_attr.items()):
             self.assertXmlHasAttribute(root, key, expected_value=val)
 
     def test_actions(self):
@@ -139,7 +139,7 @@ class TestRequestScheme(TestCase, XmlTestMixin):
         self.assertXmlNode(root, tag='actions', text=None)
         self.assertXpathsExist(root, ('./action',))
 
-        for key, val in self.action_attr.items():
+        for key, val in list(self.action_attr.items()):
             self.assertXpathsExist(root, ('./action[@{0}="{1}"]'.format(key, val),))
 
     def test_manifest(self):
@@ -152,10 +152,10 @@ class TestRequestScheme(TestCase, XmlTestMixin):
         self.assertXpathsExist(root, ('./packages',))
         self.assertXpathsExist(root, ('./actions',))
 
-        for key, val in self.action_attr.items():
+        for key, val in list(self.action_attr.items()):
             self.assertXpathsExist(root, ('./actions/action[@{0}="{1}"]'.format(key, val),))
 
-        for key, val in self.package_attr.items():
+        for key, val in list(self.package_attr.items()):
             self.assertXpathsExist(root, ('./packages/package[@{0}="{1}"]'.format(key, val),))
 
     def test_updatecheck(self):
@@ -183,10 +183,10 @@ class TestRequestScheme(TestCase, XmlTestMixin):
         self.assertXpathsExist(root, ('./urls',))
         self.assertXpathsExist(root, ('./manifest',))
 
-        for key, val in self.action_attr.items():
+        for key, val in list(self.action_attr.items()):
             self.assertXpathsExist(root, ('./manifest/actions/action[@{0}="{1}"]'.format(key, val),))
 
-        for key, val in self.package_attr.items():
+        for key, val in list(self.package_attr.items()):
             self.assertXpathsExist(root, ('./manifest/packages/package[@{0}="{1}"]'.format(key, val),))
 
     def test_app(self):

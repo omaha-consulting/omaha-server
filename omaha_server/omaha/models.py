@@ -18,7 +18,7 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
-from __future__ import unicode_literals
+
 from django.utils.encoding import python_2_unicode_compatible
 
 import os
@@ -161,7 +161,7 @@ EVENT_DICT_CHOICES = dict(
     update=3,
 )
 
-EVENT_CHOICES = zip(EVENT_DICT_CHOICES.values(), EVENT_DICT_CHOICES.keys())
+EVENT_CHOICES = list(zip(list(EVENT_DICT_CHOICES.values()), list(EVENT_DICT_CHOICES.keys())))
 
 
 class Action(BaseModel):
@@ -211,7 +211,7 @@ ACTIVE_USERS_DICT_CHOICES = dict(
     month=2,
 )
 
-ACTIVE_USERS_CHOICES = zip(ACTIVE_USERS_DICT_CHOICES.values(), ACTIVE_USERS_DICT_CHOICES.keys())
+ACTIVE_USERS_CHOICES = list(zip(list(ACTIVE_USERS_DICT_CHOICES.values()), list(ACTIVE_USERS_DICT_CHOICES.keys())))
 
 
 class PartialUpdate(models.Model):
@@ -231,7 +231,7 @@ NAME_DATA_DICT_CHOICES = dict(
     untrusted=1,
 )
 
-NAME_DATA_CHOICES = zip(NAME_DATA_DICT_CHOICES.values(), NAME_DATA_DICT_CHOICES.keys())
+NAME_DATA_CHOICES = list(zip(list(NAME_DATA_DICT_CHOICES.values()), list(NAME_DATA_DICT_CHOICES.keys())))
 
 
 class Data(BaseModel):
@@ -275,7 +275,7 @@ class Request(models.Model):
     testsource = models.CharField(max_length=40, null=True, blank=True)
     updaterchannel = models.CharField(max_length=10, null=True, blank=True)
     created = models.DateTimeField(db_index=True, default=datetime_now, editable=False, blank=True)
-    ip = models.GenericIPAddressField(blank=True, null=True)
+    ip = models.GenericIPAddressField(blank=True, null=True, protocol='IPv4')
 
 
 class Event(models.Model):

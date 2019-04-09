@@ -19,7 +19,7 @@ the License.
 """
 
 from copy import copy
-import StringIO
+import io
 
 from google.protobuf.descriptor import FieldDescriptor
 from protobuf_to_dict import protobuf_to_dict, TYPE_CALLABLE_MAP
@@ -36,7 +36,7 @@ from feedback.forms import FeedbackForm
 from feedback.tasks import send_email_feedback
 from feedback.proto_gen.extension_pb2 import ExtensionSubmit
 from omaha_server.utils import get_client_ip
-from utils import get_file_extension
+from .utils import get_file_extension
 
 dsn = getattr(settings, 'RAVEN_CONFIG', None)
 if dsn:
@@ -86,7 +86,7 @@ class FeedbackFormView(FormView):
             )
         if submit.blackbox.data:
             blackbox_name = self.handle_file_extension(
-                StringIO.StringIO(submit.blackbox.data).read(1024)
+                io.StringIO(submit.blackbox.data).read(1024)
             )
             files['blackbox'] = SimpleUploadedFile(
                 blackbox_name, submit.blackbox.data
@@ -94,7 +94,7 @@ class FeedbackFormView(FormView):
         for attach in submit.product_specific_binary_data:
             key = 'attached_file'
             logs_key = 'system_logs'
-            if attach.name == u'system_logs.zip' and logs_key not in files:
+            if attach.name == 'system_logs.zip' and logs_key not in files:
                 key = logs_key
             files[key] = SimpleUploadedFile(attach.name, attach.data)
 

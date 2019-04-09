@@ -79,7 +79,7 @@ class VersionModelTest(OverloadTestStorageMixin, test.TestCase):
                          'http://cache.pack.google.com/edgedl/chrome/install/782.112/chrome_installer.exe')
         self.assertEqual(version.file_package_name, 'chrome_installer.exe')
         self.assertEqual(version.file_url,
-                         u'http://cache.pack.google.com/edgedl/chrome/install/782.112/')
+                         'http://cache.pack.google.com/edgedl/chrome/install/782.112/')
 
     @temporary_media_root()
     @test.override_settings(OMAHA_URL_PREFIX='http://example.com')
@@ -89,7 +89,7 @@ class VersionModelTest(OverloadTestStorageMixin, test.TestCase):
               % (version.app.name, version.channel.name, version.platform.name)
         self.assertEqual(version.file_absolute_url, _url)
         self.assertEqual(version.file_package_name, 'chrome_installer.exe')
-        _url = u'http://example.com/static/media/build/%s/%s/%s/37.0.2062.124/' \
+        _url = 'http://example.com/static/media/build/%s/%s/%s/37.0.2062.124/' \
                % (version.app.name, version.channel.name, version.platform.name)
         self.assertEqual(version.file_url, _url)
 
