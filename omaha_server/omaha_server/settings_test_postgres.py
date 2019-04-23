@@ -59,7 +59,7 @@ CACHES['default'] = {
 
 CACHES['statistics'] = {
     'BACKEND': 'django_redis.cache.RedisCache',
-    'LOCATION': '{REDIS_HOST}:{REDIS_PORT}:{REDIS_DB}'.format(
+    'LOCATION': 'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}'.format(
         REDIS_PORT=REDIS_STAT_PORT,
         REDIS_HOST=REDIS_STAT_HOST,
         REDIS_DB=REDIS_STAT_DB),

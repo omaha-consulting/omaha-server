@@ -15,6 +15,7 @@ RUN \
   && apk add openssl pcre zlib zlib-dev \
   && apk add build-base lua5.1-dev luarocks \
   && apk add --no-cache postgresql-libs postgresql-dev libc6-compat gzip \
+  && apk add --no-cache libffi-dev \
   && pip install lxml
 
 # Prepare for building Nginx. Intsall LuaJIT.

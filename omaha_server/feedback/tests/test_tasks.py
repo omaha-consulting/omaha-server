@@ -75,9 +75,9 @@ class FeedbackTaskTest(test.TestCase):
         mock_email.assert_called_once()
         mock_email_obj.send.assert_called_once()
         expected_attach_calls = [
-            call('screenshot.png', ''),
-            call('blackbox.tar', ''),
-            call('sys_logs.zip', ''),
-            call('attach.zip', '')
+            call('screenshot.png', b''),
+            call('blackbox.tar', b''),
+            call('sys_logs.zip', b''),
+            call('attach.zip', b'')
         ]
         assert expected_attach_calls == mock_email_obj.attach.mock_calls

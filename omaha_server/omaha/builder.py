@@ -51,7 +51,7 @@ def on_data(data_list, data, version):
         _data = Data('untrusted')
     elif name == 'install':
         index = data.get('index')
-        data_obj_list = [d for d in version.app.data_set.all() if d.index == index]
+        data_obj_list = filter(lambda d: d.index == index, version.app.data_set.all())
         try:
             _data = Data('install', index=index, text=next(data_obj_list).value)
         except StopIteration:

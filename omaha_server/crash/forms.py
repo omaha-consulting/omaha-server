@@ -59,7 +59,7 @@ class CrashFrom(forms.ModelForm):
                 t_file = BytesIO(file.read())
                 t_file = tarfile.open(fileobj=t_file, mode='r')
                 self.cleaned_data['archive_file'] = file
-                dump_name = [i for i in t_file.getnames() if i.endswith('.dmp')]
+                dump_name = filter(lambda i: i.endswith('.dmp'), t_file.getnames())
                 try:
                     file_name = next(dump_name)
                     file = t_file.extractfile(file_name)
@@ -67,7 +67,7 @@ class CrashFrom(forms.ModelForm):
                 except StopIteration:
                     return None
             except tarfile.TarError as err:
-                raise forms.ValidationError('The tar file is broken, error: {0}'.format(err.message))
+                raise forms.ValidationError('The tar file is broken, error: {0}'.format(err))
         return file
 
     def clean_minidump_size(self):

@@ -86,7 +86,7 @@ class FeedbackFormView(FormView):
             )
         if submit.blackbox.data:
             blackbox_name = self.handle_file_extension(
-                io.StringIO(submit.blackbox.data).read(1024)
+                io.BytesIO(submit.blackbox.data).read(1024)
             )
             files['blackbox'] = SimpleUploadedFile(
                 blackbox_name, submit.blackbox.data

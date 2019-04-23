@@ -247,6 +247,7 @@ from kombu import Queue
 BROKER_URL = CELERY_RESULT_BACKEND = '{}{}:{}/{}'.format(REDIS_AUTH or 'redis://', REDIS_HOST, REDIS_PORT, 3)
 CELERY_DISABLE_RATE_LIMITS = True
 CELERY_RESULT_SERIALIZER = 'msgpack'
+CELERY_TASK_SERIALIZER = 'pickle'
 CELERY_MESSAGE_COMPRESSION = 'zlib'
 CELERY_QUEUES = (
     Queue('transient', routing_key='transient', delivery_mode=1),

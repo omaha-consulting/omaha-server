@@ -60,7 +60,7 @@ class ManualCleanupFormTest(TestCase):
         form = ManualCleanupForm(data=data, initial=dict(type='feedback__Feedback'))
 
         self.assertFalse(form.is_valid())
-        self.assertItemsEqual(list(form.errors.keys()), ['limit_size', 'limit_days'])
+        self.assertCountEqual(list(form.errors.keys()), ['limit_size', 'limit_days'])
 
 
 class CrashManualCleanupFormTest(TestCase):
@@ -86,4 +86,4 @@ class CrashManualCleanupFormTest(TestCase):
         form = CrashManualCleanupForm(data=data, initial=dict(type='crash__Crash'))
 
         self.assertFalse(form.is_valid())
-        self.assertItemsEqual(list(form.errors.keys()), ['limit_duplicated', 'limit_days', 'limit_size'])
+        self.assertCountEqual(list(form.errors.keys()), ['limit_duplicated', 'limit_days', 'limit_size'])

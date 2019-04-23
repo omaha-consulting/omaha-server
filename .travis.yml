@@ -1,38 +1,27 @@
+dist: xenial
 language: python
-dist: trusty
+python:
+  - "3.7"
+
 matrix:
-  allow_failures:
-    - env: TOX_ENV=py34
   include:
-    - python: "2.7"
-      env:
-        - TOX_ENV=py27
-        - OMAHA_SERVER_PRIVATE=True
-    - python: "2.7"
-      env:
-        - TOX_ENV=py27
-        - OMAHA_SERVER_PRIVATE=False
-    - python: "2.7"
-      env:
-        - TOX_ENV=py27
-        - DJANGO_SETTINGS_MODULE=omaha_server.settings_test_postgres
-        - OMAHA_SERVER_PRIVATE=True
-    - python: "2.7"
-      env:
-        - TOX_ENV=py27
-        - PATH_TO_TEST=omaha.tests.test_public
-        - DJANGO_SETTINGS_MODULE=omaha_server.settings_test_postgres
-        - OMAHA_SERVER_PRIVATE=False
-    - python: "3.4"
-      env: TOX_ENV=py34
-    - python: "2.7"
-      env: TOX_ENV=coverage
-
-cache: pip
-sudo: false
-
-virtualenv:
-  system_site_packages: true
+    - env:
+      - TOX_ENV=py37
+      - OMAHA_SERVER_PRIVATE=True
+    - env:
+      - TOX_ENV=py37
+      - OMAHA_SERVER_PRIVATE=False
+    - env:
+      - TOX_ENV=py37
+      - DJANGO_SETTINGS_MODULE=omaha_server.settings_test_postgres
+      - OMAHA_SERVER_PRIVATE=True
+    - env:
+      - TOX_ENV=py37
+      - PATH_TO_TEST=omaha.tests.test_public
+      - DJANGO_SETTINGS_MODULE=omaha_server.settings_test_postgres
+      - OMAHA_SERVER_PRIVATE=False
+    - env:
+      - TOX_ENV=coverage
 
 addons:
   apt:
@@ -47,11 +36,15 @@ env:
     - SECRET_KEY: 'SECRET_KEY'
     - GRPC_PYTHON_BUILD_WITH_CYTHON: 1
 
+cache: pip
+sudo: false
+
 services:
   - redis-server
+  - postgresql
 
 install:
-  - pip install tox==2.2.1
+  - pip install tox==3.9.0
   - pip install google-compute-engine
 
 script:
