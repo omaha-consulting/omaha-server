@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 from datetime import timedelta
 
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_DIR = BASE_DIR
@@ -124,23 +124,22 @@ INSTALLED_APPS = (
     'tinymce',
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-)
+]
 
 if IS_PRIVATE:
-    MIDDLEWARE_CLASSES = (
+    MIDDLEWARE = [
         'django.contrib.sessions.middleware.SessionMiddleware',
         'django.contrib.auth.middleware.AuthenticationMiddleware',
-        'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
         'django.contrib.messages.middleware.MessageMiddleware',
         'omaha_server.middlewares.LoggingMiddleware',
         'omaha_server.middlewares.TimezoneMiddleware',
         'omaha_server.middlewares.CUP2Middleware',
-    ) + MIDDLEWARE_CLASSES
+     ] + MIDDLEWARE
 
 ROOT_URLCONF = 'omaha_server.urls'
 
@@ -187,7 +186,7 @@ STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
 MEDIA_ROOT = os.path.join(STATIC_ROOT, 'media')
 
 STATIC_URL = '/static/'
-MEDIA_URL = '/static/media/'
+MEDIA_URL = '/media/'
 
 STATICFILES_DIRS = (
     os.path.join(PROJECT_DIR, 'assets'),

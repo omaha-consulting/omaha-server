@@ -30,7 +30,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, ListView, TemplateView
 from django.views.generic.edit import FormView
 from django_tables2 import SingleTableView
-from django.core.urlresolvers import reverse_lazy, reverse
+from django.urls import reverse_lazy, reverse
 from django.shortcuts import get_object_or_404
 from django.http import Http404
 from django.core.cache import cache

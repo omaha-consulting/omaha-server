@@ -22,7 +22,7 @@ import os
 
 from django import test
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.conf import settings
 from django.db import DataError
 

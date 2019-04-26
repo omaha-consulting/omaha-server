@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='crash',
             name='archive',
-            field=models.FileField(null=True, upload_to=b'minidump_archive/%Y/%m/%d', blank=True),
+            field=models.FileField(null=True, upload_to='minidump_archive/%Y/%m/%d', blank=True),
             preserve_default=True,
         ),
     ]

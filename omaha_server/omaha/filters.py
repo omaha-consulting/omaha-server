@@ -97,7 +97,7 @@ class EventResultFilter(django_filters.ChoiceFilter):
             value = int(value)
         except (ValueError, TypeError):
             value = ''
-        return self.options[value][1](qs, self.name)
+        return self.options[value][1](qs, self.field_name)
 
 
 class EventTypeFilter(django_filters.ChoiceFilter):
@@ -113,7 +113,7 @@ class EventTypeFilter(django_filters.ChoiceFilter):
             value = int(value)
         except (ValueError, TypeError):
             value = ''
-        return self.options[value][1](qs, self.name)
+        return self.options[value][1](qs, self.field_name)
 
 
 class FilterByUserIdWidget(HeavySelect2Widget):

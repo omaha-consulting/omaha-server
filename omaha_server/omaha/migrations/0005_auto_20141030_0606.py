@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='partialupdate',
             name='active_users',
-            field=models.PositiveSmallIntegerField(default=1, help_text=b'Active users in the past ...', choices=[(1, b'week'), (0, b'all'), (2, b'month')]),
+            field=models.PositiveSmallIntegerField(default=1, help_text='Active users in the past ...', choices=[(1, 'week'), (0, 'all'), (2, 'month')]),
             preserve_default=True,
         ),
         migrations.AddField(

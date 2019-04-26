@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='crash',
             name='channel',
-            field=models.CharField(blank=True, default=b'', max_length=32, null=True),
+            field=models.CharField(blank=True, default='', max_length=32, null=True),
         ),
     ]

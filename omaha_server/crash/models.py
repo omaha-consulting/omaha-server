@@ -88,7 +88,7 @@ class Crash(BaseModel):
 
 
 class CrashDescription(BaseModel):
-    crash = models.OneToOneField(Crash, related_name='crash_description')
+    crash = models.OneToOneField(Crash, related_name='crash_description', on_delete=models.CASCADE)
     summary = models.CharField(max_length=500)
     description = models.TextField(null=True, blank=True)
 

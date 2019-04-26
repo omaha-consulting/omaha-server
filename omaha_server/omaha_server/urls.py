@@ -1,4 +1,5 @@
 from django.conf.urls import include, url
+from django.urls import include, path
 from django.conf import settings
 from django.contrib import admin
 
@@ -38,7 +39,7 @@ urlpatterns = [
 if settings.IS_PRIVATE:
     urlpatterns += [
         url(r'', include('downloads.urls')),
-        url(r'^admin/', include(admin.site.urls)),
+        url(r'^admin/', admin.site.urls),
         url(r'^api/statistics/channels/(?P<app_name>[a-zA-Z0-9_ -]+)/$', omaha.api.StatisticsChannelsView.as_view(),
             name="api-statistics-channels"),
         url(r'^api/statistics/versions/(?P<app_name>[a-zA-Z0-9_ -]+)/$', omaha.api.StatisticsVersionsView.as_view(),
@@ -54,12 +55,13 @@ if settings.IS_PRIVATE:
             name='select2_userid_filter'),
     ]
 
-if settings.DEBUG:
-    try:
-        import debug_toolbar
+# if settings.DEBUG:
+#     try:
+#         import debug_toolbar
 
-        urlpatterns += [
-            url(r'^__debug__/', include(debug_toolbar.urls)),
-        ]
-    except ImportError:
-        pass
+#         urlpatterns += [
+#             path('__debug__/', include(debug_toolbar.urls)),
+#             # url(r'^__debug__/', debug_toolbar.urls),
+#         ]
+#     except ImportError:
+#         pass

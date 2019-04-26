@@ -22,7 +22,7 @@ from datetime import datetime, timedelta
 
 from django.test import TestCase
 from django.test.client import Client
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db.models import signals
 from django.core.files.storage import DefaultStorage

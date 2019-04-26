@@ -24,7 +24,7 @@ import base64
 from datetime import datetime, timedelta, date
 from uuid import UUID
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings

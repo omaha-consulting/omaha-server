@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='version',
             name='dsa_signature',
-            field=models.CharField(help_text=b'Only for sparkle update', max_length=140, null=True, verbose_name=b'DSA signature', blank=True),
+            field=models.CharField(help_text='Only for sparkle update', max_length=140, null=True, verbose_name='DSA signature', blank=True),
             preserve_default=True,
         ),
         migrations.AlterField(

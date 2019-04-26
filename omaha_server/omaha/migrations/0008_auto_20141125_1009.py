@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='version',
             name='version',
-            field=versionfield.VersionField(help_text=b'Format: 255.255.65535.65535', db_index=True),
+            field=versionfield.VersionField(help_text='Format: 255.255.65535.65535', db_index=True),
             preserve_default=True,
         ),
     ]
