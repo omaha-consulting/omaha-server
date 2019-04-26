@@ -41,6 +41,7 @@ class SparkleVersionSerializerTest(TestCase):
             channel=version.channel.id,
             version=version.version,
             short_version=version.short_version,
+            minimum_system_version=version.minimum_system_version,
             release_notes=version.release_notes,
             file=version.file.url,
             file_size=version.file_size,
