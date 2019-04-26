@@ -29,6 +29,12 @@ class FeedbackQuerySet(QuerySet):
     def get_size(self):
         return self.aggregate(size=Sum(F('screenshot_size') + F('blackbox_size') + F('system_logs_size') + F('attached_file_size')))['size'] or 0
 
+    def get_feedbacks_description(self, *args, **kwargs):
+        return self.exclude(description__startswith='BlackBox', *args, **kwargs).order_by('-id')
+
+    def get_feedbacks(self, *args, **kwargs):
+        return self.filter(description__startswith='BlackBox', *args, **kwargs).order_by('-id')
+
 class FeedbackManager(models.Manager):
     def get_queryset(self):
         return FeedbackQuerySet(self.model, using=self._db)

@@ -27,7 +27,7 @@ class FeedbackFactory(factory.DjangoModelFactory):
     class Meta:
         model = 'feedback.Feedback'
 
-    description = factory.Sequence(lambda n: 'Description #%s' % n)
+    description = factory.Sequence(lambda n: 'BlackBox Description #%s' % n)
     email = factory.Sequence(lambda n: 'user%s@example.com' % n)
     page_url = factory.Sequence(lambda n: 'http://url%s.com/' % n)
 
@@ -44,3 +44,7 @@ class FeedbackFactory(factory.DjangoModelFactory):
             'user_email': 'user@example.com',
       }
     }
+
+
+class FeedbackDescriptionFactory(FeedbackFactory):
+    description = factory.Sequence(lambda n: 'Description #%s' % n)
