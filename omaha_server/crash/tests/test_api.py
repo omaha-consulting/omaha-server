@@ -20,7 +20,7 @@ the License.
 
 import os
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 from rest_framework import status
@@ -81,7 +81,7 @@ class SymbolsTest(BaseTest, APITestCase):
         data = dict()
         response = self.client.post(reverse(self.url), data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data, {'file': [u'No file was submitted.']})
+        self.assertEqual(response.data, {'file': ['No file was submitted.']})
 
     @is_private()
     def test_duplicate(self):

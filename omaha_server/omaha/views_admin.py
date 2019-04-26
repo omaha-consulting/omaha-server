@@ -30,13 +30,13 @@ from django.utils.decorators import method_decorator
 from django.views.generic import DetailView, ListView, TemplateView
 from django.views.generic.edit import FormView
 from django_tables2 import SingleTableView
-from django.core.urlresolvers import reverse_lazy, reverse
+from django.urls import reverse_lazy, reverse
 from django.shortcuts import get_object_or_404
 from django.http import Http404
 from django.core.cache import cache
 
 from dynamic_preferences.forms import global_preference_form_builder
-from dynamic_preferences_registry import global_preferences_manager as gpm
+from .dynamic_preferences_registry import global_preferences_manager as gpm
 
 from omaha.models import Application, AppRequest, Version, Platform
 from omaha.filters import AppRequestFilter
@@ -46,6 +46,7 @@ from omaha.tables import AppRequestTable, VersionsUsageTable
 from omaha.forms import CrashManualCleanupForm, ManualCleanupForm
 from omaha.dynamic_preferences_registry import global_preferences
 from sparkle.models import SparkleVersion
+from functools import reduce
 
 logger = logging.getLogger(__name__)
 
@@ -234,13 +235,13 @@ class PreferenceFormView(StaffMemberRequiredMixin, FormView):
     def get_context_data(self, *args, **kwargs):
         context = super(PreferenceFormView, self).get_context_data(*args, **kwargs)
         context['sections'] = self.registry.sections()
-        context['sections'].sort()
+        sorted(context['sections'])
         context['cur_section'] = self.kwargs.get('section')
         form = context['form']
         order_fields = ['Crash__limit_size', 'Crash__limit_storage_days', 'Crash__duplicate_number',
                         'Feedback__limit_size', 'Feedback__limit_storage_days', 'SparkleVersion__limit_size',
                         'Symbols__limit_size', 'Version__limit_size', 'Timezone__timezone']
-        form.fields = OrderedDict((k, form.fields[k]) for k in order_fields if k in form.fields.keys())
+        form.fields = OrderedDict((k, form.fields[k]) for k in order_fields if k in list(form.fields.keys()))
         return context
 
     def form_valid(self, form):
@@ -273,11 +274,11 @@ class MonitoringFormView(StaffMemberRequiredMixin, TemplateView):
             crashes=dict(label='Crashes',  size=crashes_size, limit=gpm['Crash__limit_size'], percent=crashes_size/gpm['Crash__limit_size']*100),
             symbols=dict(label='Symbols',  size=symbols_size, limit=gpm['Symbols__limit_size'], percent=symbols_size/gpm['Symbols__limit_size']*100),
         )
-        full_size = reduce(lambda res, x: res + x['size'], data.values(), 0)
+        full_size = reduce(lambda res, x: res + x['size'], list(data.values()), 0)
         context.update(data)
         piechart = None
         if full_size:
-            pie_data = [(x['label'], x['size']/full_size * 100) for x in data.values()]
+            pie_data = [(x['label'], x['size']/full_size * 100) for x in list(data.values())]
             piechart = make_piechart('used_space', pie_data, unit="%")
         context.update({'used_space': piechart})
         return context

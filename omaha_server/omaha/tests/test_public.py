@@ -6,7 +6,7 @@ from django.test import LiveServerTestCase, override_settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings
 from django.db import connections
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 import requests
 
@@ -19,6 +19,8 @@ from feedback.tests.test_views import PB_FILE
 
 
 class PublicTests(LiveServerTestCase):
+    if connections['default'].settings_dict['ENGINE'] == 'django.db.backends.postgresql_psycopg2':
+        databases = ['default', 'root']
 
     def setUp(self):
         if settings.IS_PRIVATE or connections['default'].settings_dict['ENGINE'] != 'django.db.backends.postgresql_psycopg2':

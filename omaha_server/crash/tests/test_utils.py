@@ -26,7 +26,8 @@ from mock import patch
 
 from django import test
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.core.urlresolvers import reverse
+from django.urls import reverse
+
 
 from omaha_server.utils import is_private
 from crash.utils import (

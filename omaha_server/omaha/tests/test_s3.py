@@ -29,7 +29,7 @@ class BaseS3Test(object):
     file_fields = None
     files = None
 
-    @moto.mock_s3
+    @moto.mock_s3_deprecated
     def test_model_delete(self):
         conn = boto.connect_s3()
         conn.create_bucket('test')
@@ -44,7 +44,7 @@ class BaseS3Test(object):
         keys = conn.get_bucket('test').get_all_keys()
         self.assertFalse(keys)
 
-    @moto.mock_s3
+    @moto.mock_s3_deprecated
     def test_model_update(self):
         conn = boto.connect_s3()
         conn.create_bucket('test')
@@ -62,7 +62,7 @@ class BaseS3Test(object):
         new_keys = conn.get_bucket('test').get_all_keys()
         self.assertFalse(set(old_keys) & set(new_keys))
 
-    @moto.mock_s3
+    @moto.mock_s3_deprecated
     def test_bulk_delete(self):
         conn = boto.connect_s3()
         conn.create_bucket('test')
@@ -81,7 +81,7 @@ class BaseS3Test(object):
         keys = conn.get_bucket('test').get_all_keys()
         self.assertFalse(keys)
 
-    @moto.mock_s3
+    @moto.mock_s3_deprecated
     def test_dangling_delete_db(self):
         conn = boto.connect_s3()
         conn.create_bucket('test')
@@ -96,7 +96,7 @@ class BaseS3Test(object):
         )
         self.assertEqual(result['status'], 'Send notifications')
 
-    @moto.mock_s3
+    @moto.mock_s3_deprecated
     def test_dangling_delete_s3(self):
         # create bucket and send file in s3
         conn = boto.connect_s3()
@@ -105,7 +105,7 @@ class BaseS3Test(object):
         prefix = get_prefix(self.model)
         for f in self.files:
             k = Key(bucket, '%s/%s' % (f['prefix'], f['file_path']))
-            with open(f['file_path']) as test_file:
+            with open(f['file_path'], 'rb') as test_file:
                 k.send_file(test_file)
         # create 2 files in db
         self.factory.create_batch(2)

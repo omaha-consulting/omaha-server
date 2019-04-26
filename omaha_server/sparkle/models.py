@@ -18,7 +18,7 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
-from __future__ import unicode_literals
+
 from django.utils.encoding import python_2_unicode_compatible
 
 import os
@@ -42,8 +42,8 @@ def version_upload_to(obj, filename):
 class SparkleVersion(BaseModel):
     is_enabled = models.BooleanField(default=True)
     is_critical = models.BooleanField(default=False)
-    app = models.ForeignKey(Application)
-    channel = models.ForeignKey(Channel, db_index=True)
+    app = models.ForeignKey(Application, on_delete=models.CASCADE)
+    channel = models.ForeignKey(Channel, db_index=True, on_delete=models.CASCADE)
     version = VersionField(help_text='Format: 65535.65535',
                            number_bits=(16, 16), db_index=True)
     short_version = VersionField(help_text='Format: 255.255.65535.65535',

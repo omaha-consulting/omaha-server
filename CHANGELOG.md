@@ -1,3 +1,20 @@
+## [0.7.3] - 2019-04-09
+Update Python version to 3.7
+
+#### Updated dependencies
+- django-debug-panel: `0.8.2` -> `latest`
+- xmlunittest: `0.3.2` -> `latest`
+- django: `1.11.0` -> `1.11.17`
+- django-absolute: `0.3` -> `latest`
+- django-redis: `4.4.3` -> `latest`
+- django-cacheops: `2.4.3` -> `latest`
+- django-ace: `1.0.2` -> `latest`
+- django-select2: `latest` -> `6.3.1`
+- celery: `3.1.23` -> `4.3.0`
+- redis: `2.10.6` -> `latest`
+- raven: `5.17.0` -> `latest`
+- protobuf-to-dict -> protobuf3-to-dict
+
 ## [0.7.2] - 2019-03-12
 Changed base image from Ubuntu:14.04 to Alpine:3.9 version. Update Django library from 1.9.6 to 1.11.0 version.
 

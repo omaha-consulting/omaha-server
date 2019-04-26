@@ -17,14 +17,14 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
 """
-from __future__ import unicode_literals
+
 from builtins import bytes, range
 
 import base64
 from datetime import datetime, timedelta, date
 from uuid import UUID
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings

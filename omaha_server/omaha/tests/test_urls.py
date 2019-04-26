@@ -18,7 +18,7 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
-from django.core.urlresolvers import resolve, reverse
+from django.urls import reverse, resolve
 from django.test import TestCase
 
 from omaha_server.utils import is_private
