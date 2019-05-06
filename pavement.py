@@ -150,6 +150,11 @@ def configure_elasticsearch(elk_host, elk_port):
    filter_path = os.path.abspath("conf/standard_filter.json")
    sh("curl -XPUT '%s:%s/_ingest/pipeline/standard_filter?pretty' -H 'Content-Type: application/json' -d @%s" % (elk_host, elk_port, filter_path))
 
+def configure_rsyslog():
+    RSYSLOG_ENABLE = True if os.environ.get('RSYSLOG_ENABLE', '').title() == 'True' else False
+    if RSYSLOG_ENABLE:
+        rsyslog_conf_path = os.path.abspath("conf/rsyslog.conf")
+        sh(f'rsyslogd -f {rsyslog_conf_path}')
 
 @task
 def docker_run():
@@ -163,6 +168,7 @@ def docker_run():
             collectstatic()
         configure_nginx()
         configure_filebeat()
+        configure_rsyslog()
         sh('/usr/bin/supervisord')
     except:
         client.captureException()
