@@ -252,6 +252,7 @@ CELERY_QUEUES = (
     Queue('transient', routing_key='transient', delivery_mode=1),
     Queue('default', routing_key='default'),
 )
+CELERY_ACCEPT_CONTENT = ['pickle', 'msgpack']
 
 if IS_PRIVATE:
     CELERY_QUEUES += (
