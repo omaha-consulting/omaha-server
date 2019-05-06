@@ -35,12 +35,13 @@ class SparkleVersionSerializer(serializers.HyperlinkedModelSerializer):
     channel = serializers.PrimaryKeyRelatedField(queryset=Channel.objects.all())
     version = serializers.CharField()
     short_version = serializers.CharField(required=False)
+    minimum_system_version = serializers.CharField(required=False)
 
     class Meta:
         model = SparkleVersion
         fields = ('id', 'is_enabled', 'is_critical', 'app', 'channel', 'version', 'short_version',
-                  'release_notes', 'file', 'file_size', 'dsa_signature',
-                  'created', 'modified')
+                  'minimum_system_version', 'release_notes', 'file', 'file_size', 'dsa_signature',
+                  'created', 'modified',)
         read_only_fields = ('created', 'modified')
 
     def create(self, validated_data):

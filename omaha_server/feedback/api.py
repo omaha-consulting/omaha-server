@@ -26,10 +26,16 @@ from omaha.api import StandardResultsSetPagination
 from feedback.serializers import FeedbackSerializer
 from feedback.models import Feedback
 
-
-class FeedbackViewSet(mixins.ListModelMixin,
-                      mixins.RetrieveModelMixin,
-                      viewsets.GenericViewSet):
-    queryset = Feedback.objects.all().order_by('-id')
+class BaseFeedbackViewSet(mixins.ListModelMixin,
+                          mixins.RetrieveModelMixin,
+                          viewsets.GenericViewSet):
     serializer_class = FeedbackSerializer
     pagination_class = StandardResultsSetPagination
+
+
+class FeedbackViewSet(BaseFeedbackViewSet):
+    queryset = Feedback.objects.get_feedbacks()
+
+
+class FeedbackDescriptionViewSet(BaseFeedbackViewSet):
+    queryset = Feedback.objects.get_feedbacks_description()

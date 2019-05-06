@@ -126,7 +126,8 @@ RUN mkdir -p $OMAHA_SERVER_PATH/requirements
 ADD Pipfile Pipfile.lock $OMAHA_SERVER_PATH/
 
 # Dependencies for Pillow
-RUN apk add jpeg-dev libjpeg
+RUN apk add jpeg-dev libjpeg \
+  && apk add rsyslog
 
 RUN \
   pip install pipenv \

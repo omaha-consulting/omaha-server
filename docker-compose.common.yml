@@ -34,3 +34,4 @@ web:
     ELK_HOST: ''
     ELK_PORT: ''
     FILEBEAT_DESTINATION: ''
+    RSYSLOG_ENABLE: 'True'

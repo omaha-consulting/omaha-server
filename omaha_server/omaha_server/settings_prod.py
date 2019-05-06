@@ -57,6 +57,7 @@ if RAVEN_DSN_STACKTRACE:
 
 FILEBEAT_HOST = os.environ.get('FILEBEAT_HOST', 'localhost')
 FILEBEAT_PORT = os.environ.get('FILEBEAT_PORT', 9021)
+RSYSLOG_ENABLE = True if os.environ.get('RSYSLOG_ENABLE', '').title() == 'True' else False
 
 INSTALLED_APPS = INSTALLED_APPS + (
     'raven.contrib.django.raven_compat',
@@ -88,6 +89,12 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
             'formatter': 'verbose'
+        },
+        'rsyslog': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.SysLogHandler',
+            'formatter': 'filebeat_format',
+            'address': '/dev/log'
         }
     },
     'loggers': {
@@ -128,3 +135,8 @@ if FILEBEAT_HOST and FILEBEAT_PORT:
     }
     LOGGING['root']['handlers'].append('filebeat')
     LOGGING['loggers']['django.request']['handlers'].append('filebeat')
+
+if RSYSLOG_ENABLE:
+    LOGGING['root']['handlers'].append('rsyslog')
+    LOGGING['loggers']['django.request']['handlers'].append('rsyslog')
+    LOGGING['loggers']['celery.beat']['handlers'].append('rsyslog')
