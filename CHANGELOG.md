@@ -1,4 +1,4 @@
-## [0.7.3] - 2019-04-09
+## [0.7.2] - 2019-05-07
 Update Python version to 3.7
 
 #### Updated dependencies
