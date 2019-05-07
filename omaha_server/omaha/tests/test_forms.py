@@ -46,7 +46,7 @@ class ManualCleanupFormTest(TestCase):
         self.assertEqual(form.cleaned_data['limit_days'], 10)
         self.assertEqual(form.cleaned_data['limit_size'], 10)
         self.assertEqual(type(form.fields), OrderedDict)
-        self.assertEqual(form.fields.keys(), ['limit_days', 'limit_size'])
+        self.assertEqual(list(form.fields.keys()), ['limit_days', 'limit_size'])
 
         with mock.patch('omaha.tasks.deferred_manual_cleanup.apply_async') as mocked:
             form.cleanup()
@@ -60,7 +60,7 @@ class ManualCleanupFormTest(TestCase):
         form = ManualCleanupForm(data=data, initial=dict(type='feedback__Feedback'))
 
         self.assertFalse(form.is_valid())
-        self.assertItemsEqual(form.errors.keys(), ['limit_size', 'limit_days'])
+        self.assertCountEqual(list(form.errors.keys()), ['limit_size', 'limit_days'])
 
 
 class CrashManualCleanupFormTest(TestCase):
@@ -72,7 +72,7 @@ class CrashManualCleanupFormTest(TestCase):
         self.assertEqual(form.cleaned_data['limit_size'], 10)
         self.assertEqual(form.cleaned_data['limit_duplicated'], 10)
         self.assertEqual(type(form.fields), OrderedDict)
-        self.assertEqual(form.fields.keys(), ['limit_duplicated', 'limit_days', 'limit_size'])
+        self.assertEqual(list(form.fields.keys()), ['limit_duplicated', 'limit_days', 'limit_size'])
 
         with mock.patch('omaha.tasks.deferred_manual_cleanup.apply_async') as mocked:
             form.cleanup()
@@ -86,4 +86,4 @@ class CrashManualCleanupFormTest(TestCase):
         form = CrashManualCleanupForm(data=data, initial=dict(type='crash__Crash'))
 
         self.assertFalse(form.is_valid())
-        self.assertItemsEqual(form.errors.keys(), ['limit_duplicated', 'limit_days', 'limit_size'])
+        self.assertCountEqual(list(form.errors.keys()), ['limit_duplicated', 'limit_days', 'limit_size'])

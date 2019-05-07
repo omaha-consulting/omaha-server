@@ -37,8 +37,8 @@ from crash.managers import CrashManager, SymbolsManager
 def upload_to(directory, obj, filename):
     now = timezone.now()
     max_length = 255
-    path = os.path.join(*map(str, [directory, now.year, now.month,
-                                   now.day, uuid.uuid4(), filename]))
+    path = os.path.join(*list(map(str, [directory, now.year, now.month,
+                                   now.day, uuid.uuid4(), filename])))
     if len(path) > max_length:
         name, ext = os.path.splitext(path)
         ext_length = len(ext)
@@ -67,7 +67,7 @@ class Crash(BaseModel):
     stacktrace = models.TextField(null=True, blank=True)
     stacktrace_json = JSONField(null=True, blank=True)
     signature = models.CharField(max_length=255, db_index=True, null=True, blank=True)
-    ip = models.GenericIPAddressField(blank=True, null=True, protocol="ipv4")
+    ip = models.GenericIPAddressField(blank=True, null=True, protocol='IPv4')
     groupid = models.CharField(max_length=38, null=True, blank=True)
     eventid = models.CharField(max_length=38, null=True, blank=True)
     os = models.CharField(max_length=32, null=True, blank=True)
@@ -80,7 +80,7 @@ class Crash(BaseModel):
         verbose_name_plural = 'Crashes'
 
     def __unicode__(self):
-        return u"Crash #{0}".format(self.id) + (" ({0})".format(self.signature) if self.signature else '')
+        return "Crash #{0}".format(self.id) + (" ({0})".format(self.signature) if self.signature else '')
 
     @property
     def size(self):
@@ -88,7 +88,7 @@ class Crash(BaseModel):
 
 
 class CrashDescription(BaseModel):
-    crash = models.OneToOneField(Crash, related_name='crash_description')
+    crash = models.OneToOneField(Crash, related_name='crash_description', on_delete=models.CASCADE)
     summary = models.CharField(max_length=500)
     description = models.TextField(null=True, blank=True)
 

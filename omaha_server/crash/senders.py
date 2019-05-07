@@ -32,7 +32,7 @@ class SentrySender(BaseSender):
             message=message,
             extra=extra,
             tags=tags,
-            data=data
+            data=sentry_data
         )
         signature("tasks.get_sentry_link", args=(crash_obj.pk, event_id)).apply_async(queue='private', countdown=1)
 
@@ -74,5 +74,5 @@ def get_sender(tracker_name=None):
     try:
         sender_class = senders_dict[tracker_name]
     except KeyError:
-        raise KeyError("Unknown tracker, use one of %s" % senders_dict.keys())
+        raise KeyError("Unknown tracker, use one of %s" % list(senders_dict.keys()))
     return sender_class()

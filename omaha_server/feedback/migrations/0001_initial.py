@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django.db import models, migrations
 import django.utils.timezone
@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
                 ('blackbox', models.FileField(null=True, upload_to=feedback.models.blackbox_upload_to, blank=True)),
                 ('system_logs', models.FileField(null=True, upload_to=feedback.models.logs_upload_to, blank=True)),
                 ('attached_file', models.FileField(null=True, upload_to=feedback.models.attach_upload_to, blank=True)),
-                ('feedback_data', jsonfield.fields.JSONField(help_text=b'JSON format', null=True, verbose_name=b'Feedback data', blank=True)),
+                ('feedback_data', jsonfield.fields.JSONField(help_text='JSON format', null=True, verbose_name='Feedback data', blank=True)),
             ],
             options={
                 'abstract': False,

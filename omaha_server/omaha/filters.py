@@ -71,12 +71,12 @@ EVENT_TYPE = {
 
 EVENT_RESULT_OPTIONS = dict([
     (k, (v.title(), (lambda k: lambda qs, name: qs.filter(events__eventresult=k+0))(k)))
-    for k, v in EVENT_RESULT.items()
+    for k, v in list(EVENT_RESULT.items())
 ])
 
 EVENT_TYPE_OPTIONS = dict([
     (k, (v.title(), (lambda k: lambda qs, name: qs.filter(events__eventtype=k+0))(k)))
-    for k, v in EVENT_TYPE.items()
+    for k, v in list(EVENT_TYPE.items())
 ])
 
 EVENT_RESULT_OPTIONS[''] = ('Any', lambda qs, name: qs.all())
@@ -89,7 +89,7 @@ class EventResultFilter(django_filters.ChoiceFilter):
 
     def __init__(self, *args, **kwargs):
         kwargs['choices'] = [
-            (key, value[0]) for key, value in self.options.items()]
+            (key, value[0]) for key, value in list(self.options.items())]
         super(EventResultFilter, self).__init__(*args, **kwargs)
 
     def filter(self, qs, value):
@@ -97,7 +97,7 @@ class EventResultFilter(django_filters.ChoiceFilter):
             value = int(value)
         except (ValueError, TypeError):
             value = ''
-        return self.options[value][1](qs, self.name)
+        return self.options[value][1](qs, self.field_name)
 
 
 class EventTypeFilter(django_filters.ChoiceFilter):
@@ -105,7 +105,7 @@ class EventTypeFilter(django_filters.ChoiceFilter):
 
     def __init__(self, *args, **kwargs):
         kwargs['choices'] = [
-            (key, value[0]) for key, value in self.options.items()]
+            (key, value[0]) for key, value in list(self.options.items())]
         super(EventTypeFilter, self).__init__(*args, **kwargs)
 
     def filter(self, qs, value):
@@ -113,18 +113,18 @@ class EventTypeFilter(django_filters.ChoiceFilter):
             value = int(value)
         except (ValueError, TypeError):
             value = ''
-        return self.options[value][1](qs, self.name)
+        return self.options[value][1](qs, self.field_name)
 
 
 class FilterByUserIdWidget(HeavySelect2Widget):
-    def build_attrs(self, extra_attrs=None, **kwargs):
-        attrs = super(FilterByUserIdWidget, self).build_attrs(**kwargs)
+    def build_attrs(self, *args, **kwargs):
+        attrs = super(FilterByUserIdWidget, self).build_attrs(*args,**kwargs)
         attrs['data-minimum-input-length'] = 2
         return attrs
 
     def _get_media(self):
         media = super(FilterByUserIdWidget, self)._get_media()
-        override_index = media._js.index(u'django_select2/django_select2.js')
+        override_index = media._js.index('django_select2/django_select2.js')
         media._js[override_index] = 'django-select2/js/select2_appid.js'
         return media
 

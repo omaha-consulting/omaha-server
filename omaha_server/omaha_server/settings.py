@@ -12,8 +12,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 from datetime import timedelta
 
-from django.core.urlresolvers import reverse_lazy
-from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
+from django.urls import reverse_lazy
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_DIR = BASE_DIR
@@ -43,15 +42,18 @@ TEMPLATES = [
         ],
         'APP_DIRS': True,
         'OPTIONS': {
-            'context_processors': TCP + [
-                'django.core.context_processors.request',
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
                 'absolute.context_processors.absolute',
             ],
         },
     },
 ]
 
-APP_VERSION = "0.7.1"
+APP_VERSION = "0.7.2"
 
 SUIT_CONFIG = {
     'ADMIN_NAME': 'Omaha Server [{}]'.format(APP_VERSION),
@@ -122,23 +124,22 @@ INSTALLED_APPS = (
     'tinymce',
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-)
+]
 
 if IS_PRIVATE:
-    MIDDLEWARE_CLASSES = (
+    MIDDLEWARE = [
         'django.contrib.sessions.middleware.SessionMiddleware',
         'django.contrib.auth.middleware.AuthenticationMiddleware',
-        'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
         'django.contrib.messages.middleware.MessageMiddleware',
         'omaha_server.middlewares.LoggingMiddleware',
         'omaha_server.middlewares.TimezoneMiddleware',
         'omaha_server.middlewares.CUP2Middleware',
-    ) + MIDDLEWARE_CLASSES
+     ] + MIDDLEWARE
 
 ROOT_URLCONF = 'omaha_server.urls'
 
@@ -156,7 +157,7 @@ DATABASES = {
         'PASSWORD': os.environ.get('DB_PASSWORD', ''),
         'HOST': os.environ.get('DB_HOST', '127.0.0.1'),
         'PORT': os.environ.get('DB_PORT', '5432'),
-        'CONN_MAX_AGE': 60,
+        'CONN_MAX_AGE': 0,
     }
 }
 
@@ -185,7 +186,7 @@ STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
 MEDIA_ROOT = os.path.join(STATIC_ROOT, 'media')
 
 STATIC_URL = '/static/'
-MEDIA_URL = '/static/media/'
+MEDIA_URL = '/media/'
 
 STATICFILES_DIRS = (
     os.path.join(PROJECT_DIR, 'assets'),
@@ -203,8 +204,7 @@ REDIS_STAT_DB = os.environ.get('REDIS_STAT_DB', 15)
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': '{REDIS_AUTH}{REDIS_HOST}:{REDIS_PORT}:{REDIS_DB}'.format(
-            REDIS_AUTH=REDIS_AUTH,
+        'LOCATION': 'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}'.format(
             REDIS_PORT=REDIS_PORT,
             REDIS_HOST=REDIS_HOST,
             REDIS_DB=os.environ.get('REDIS_DB', 1)),
@@ -214,8 +214,7 @@ CACHES = {
     },
     'statistics': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': '{REDIS_AUTH}{REDIS_HOST}:{REDIS_PORT}:{REDIS_DB}'.format(
-            REDIS_AUTH=REDIS_AUTH,
+        'LOCATION': 'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}'.format(
             REDIS_PORT=REDIS_STAT_PORT,
             REDIS_HOST=REDIS_STAT_HOST,
             REDIS_DB=REDIS_STAT_DB),
@@ -247,11 +246,13 @@ from kombu import Queue
 BROKER_URL = CELERY_RESULT_BACKEND = '{}{}:{}/{}'.format(REDIS_AUTH or 'redis://', REDIS_HOST, REDIS_PORT, 3)
 CELERY_DISABLE_RATE_LIMITS = True
 CELERY_RESULT_SERIALIZER = 'msgpack'
+CELERY_TASK_SERIALIZER = 'pickle'
 CELERY_MESSAGE_COMPRESSION = 'zlib'
 CELERY_QUEUES = (
     Queue('transient', routing_key='transient', delivery_mode=1),
     Queue('default', routing_key='default'),
 )
+CELERY_ACCEPT_CONTENT = ['pickle', 'msgpack']
 
 if IS_PRIVATE:
     CELERY_QUEUES += (

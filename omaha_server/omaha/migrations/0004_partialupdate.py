@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 
+import django.db.models.deletion
 from django.db import models, migrations
 import omaha.fields
 
@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('percent', omaha.fields.PercentField()),
                 ('start_date', models.DateField()),
                 ('end_date', models.DateField()),
-                ('version', models.OneToOneField(to='omaha.Version')),
+                ('version', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='omaha.Version')),
             ],
             options={
             },

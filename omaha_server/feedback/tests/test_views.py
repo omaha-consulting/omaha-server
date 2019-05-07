@@ -22,7 +22,7 @@ import os
 import mock
 
 from django import test
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.conf import settings
 
 from feedback.models import Feedback
@@ -48,7 +48,7 @@ class FeedbackViewTest(test.TestCase):
         with open(PB_FILE, 'rb') as f:
             body = f.read()
         description = 'Test tar'
-        email = ''
+        email = None
         page_url = 'chrome://newtab/'
 
         self.assertEqual(Feedback.objects.all().count(), 0)
@@ -86,7 +86,6 @@ class FeedbackViewTest(test.TestCase):
         with open(PB_FILE, 'rb') as f:
             body = f.read()
         description = 'Test tar'
-        email = ''
         page_url = 'chrome://newtab/'
 
         self.assertEqual(Feedback.objects.all().count(), 0)
@@ -104,7 +103,7 @@ class FeedbackViewTest(test.TestCase):
         with open(PB_GZ_FILE, 'rb') as f:
             body = f.read()
         description = 'Test tar gz'
-        email = ''
+        email = None
         page_url = 'chrome://newtab/'
 
         self.assertEqual(Feedback.objects.all().count(), 0)
@@ -138,7 +137,7 @@ class FeedbackViewTest(test.TestCase):
             with open(PB_FILE, 'rb') as f:
                 body = f.read()
             description = 'Test tar'
-            email = ''
+            email = None
             page_url = 'chrome://newtab/'
 
             self.assertEqual(Feedback.objects.all().count(), 0)
@@ -166,6 +165,8 @@ class FeedbackViewTest(test.TestCase):
         with open(DESC_ONLY_FILE, 'rb') as f:
             body = f.read()
         description = 'Description only'
+        email = None
+        page_url = None
 
         self.assertEqual(Feedback.objects.all().count(), 0)
         response = self.client.post(
@@ -178,8 +179,8 @@ class FeedbackViewTest(test.TestCase):
         obj = Feedback.objects.get()
         self.assertEqual(response.content.decode(), str(obj.pk))
         self.assertEqual(obj.description, description)
-        self.assertEqual(obj.email, '')
-        self.assertEqual(obj.page_url, '')
+        self.assertEqual(obj.email, email)
+        self.assertEqual(obj.page_url, page_url)
         self.assertFalse(obj.screenshot)
         self.assertFalse(obj.blackbox)
         self.assertFalse(obj.system_logs)

@@ -18,7 +18,7 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
-from __future__ import print_function
+
 from builtins import range, bytes
 
 import random
@@ -90,16 +90,16 @@ def get_random_uuid():
 
 def get_random_date():
     now = datetime.now()
-    month = random.choice(range(1, 13))
-    day = random.choice(range(1, 28))
+    month = random.choice(list(range(1, 13)))
+    day = random.choice(list(range(1, 28)))
     return datetime(now.year, month, day, hour=8)
 
 
 def generate_events(app_id, **options):
     versions = Version.objects.filter_by_enabled(app__id=app_id)
 
-    userid_list = list(map(lambda x: get_random_uuid(), range(1, 25)))
-    sessionid_list = list(map(lambda x: get_random_uuid(), range(1, 50)))
+    userid_list = list([get_random_uuid() for x in range(1, 25)])
+    sessionid_list = list([get_random_uuid() for x in range(1, 50)])
 
     for i in range(1, options['count'] + 1):
         if i % 10 == 0:
@@ -128,15 +128,17 @@ def generate_events(app_id, **options):
 
 
 class Command(BaseCommand):
-    args = '<app_id>'
     help = 'A command for generating fake data such as requests, events and statistics'
-    option_list = BaseCommand.option_list + (
-        make_option('--count',
-                    dest='count',
-                    default='100',
-                    type=int,
-                    help='Total number of data values (default: 100)'),
-    )
 
     def handle(self, app_id, *args, **options):
         generate_events(app_id, **options)
+
+    def add_arguments(self, parser):
+        parser.add_argument('app_id')
+        parser.add_argument(
+            '--count',
+            dest='count',
+            default='100',
+            type=int,
+            help='Total number of data values (default: 100)'
+        )
