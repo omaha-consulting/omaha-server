@@ -1,13 +1,16 @@
 # coding: utf8
 
 import os
+from .settings import *
 
-os.environ.setdefault('DB_PUBLIC_USER', 'test_public_user')
-os.environ.setdefault('DB_PUBLIC_PASSWORD', 'test_public_password')
+ALLOWED_HOSTS = ('example.com',)
+
+os.environ.setdefault('DB_PUBLIC_USER', 'omaha_public')
+os.environ.setdefault('DB_PUBLIC_PASSWORD', 'omaha_public_password')
+
 
 os.environ.setdefault('OMAHA_SERVER_PRIVATE', 'True')
 
-from .settings import *
 DB_PUBLIC_ROLE = os.environ.get('DB_PUBLIC_ROLE', 'test_public_users')
 
 DATABASES = {
@@ -34,7 +37,6 @@ NOSE_ARGS = [
     '--with-coverage',
     '--cover-package=omaha_server,omaha,crash,feedback,sparkle,healthcheck',
     '--cover-inclusive',
-    '--nologcapture',
     '-s',
 ]
 
@@ -57,7 +59,7 @@ CACHES['default'] = {
 
 CACHES['statistics'] = {
     'BACKEND': 'django_redis.cache.RedisCache',
-    'LOCATION': '{REDIS_HOST}:{REDIS_PORT}:{REDIS_DB}'.format(
+    'LOCATION': 'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}'.format(
         REDIS_PORT=REDIS_STAT_PORT,
         REDIS_HOST=REDIS_STAT_HOST,
         REDIS_DB=REDIS_STAT_DB),

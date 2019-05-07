@@ -43,8 +43,8 @@ class DeleteOldTest(TestCase):
         self.assertEqual(Crash.objects.all().count(), 10)
 
         deleted = list(Crash.objects.values_list('id', 'created', 'signature', 'userid', 'appid'))
-        deleted = map(lambda x: dict(id=x[0], element_created=x[1].strftime("%d. %B %Y %I:%M%p"), signature=x[2],
-                                     userid=x[3], appid=x[4]), deleted)
+        deleted = [dict(id=x[0], element_created=x[1].strftime("%d. %B %Y %I:%M%p"), signature=x[2],
+                                     userid=x[3], appid=x[4]) for x in deleted]
 
         result = delete_older_than('crash', 'Crash')
 
@@ -60,7 +60,7 @@ class DeleteOldTest(TestCase):
         self.assertEqual(Feedback.objects.all().count(), 10)
 
         deleted = list(Feedback.objects.values_list('id', 'created'))
-        deleted = map(lambda x: dict(id=x[0], element_created=x[1].strftime("%d. %B %Y %I:%M%p")), deleted)
+        deleted = [dict(id=x[0], element_created=x[1].strftime("%d. %B %Y %I:%M%p")) for x in deleted]
 
         result = delete_older_than('feedback', 'Feedback')
 
@@ -80,8 +80,8 @@ class SizeExceedTest(TestCase):
 
         del_count = 98
         deleted = list(Crash.objects.values_list('id', 'created', 'signature', 'userid', 'appid'))[:del_count]
-        deleted = map(lambda x: dict(id=x[0], element_created=x[1].strftime("%d. %B %Y %I:%M%p"), signature=x[2],
-                                      userid=x[3], appid=x[4]), deleted)
+        deleted = [dict(id=x[0], element_created=x[1].strftime("%d. %B %Y %I:%M%p"), signature=x[2],
+                                      userid=x[3], appid=x[4]) for x in deleted]
 
         result = delete_size_is_exceeded('crash', 'Crash')
 
@@ -97,7 +97,7 @@ class SizeExceedTest(TestCase):
 
         del_count = 98
         deleted = list(Feedback.objects.values_list('id', 'created'))
-        deleted = map(lambda x: dict(id=x[0], element_created=x[1].strftime("%d. %B %Y %I:%M%p")), deleted)[:del_count]
+        deleted = [dict(id=x[0], element_created=x[1].strftime("%d. %B %Y %I:%M%p")) for x in deleted][:del_count]
 
         result = delete_size_is_exceeded('feedback', 'Feedback')
         self.assertDictEqual(result, dict(count=del_count, size=del_count * feedback_size, elements=deleted))
@@ -116,8 +116,8 @@ class DeleteDuplicateTest(TestCase):
         self.assertEqual(Crash.objects.filter(signature='test2').count(), 9)
 
         deleted = list(Crash.objects.filter(signature='test1').order_by('created').values_list('id', 'created', 'signature', 'userid', 'appid'))[:15]
-        deleted = map(lambda x: dict(id=x[0], element_created=x[1].strftime("%d. %B %Y %I:%M%p"), signature=x[2],
-                                     userid=x[3], appid=x[4]), deleted)
+        deleted = [dict(id=x[0], element_created=x[1].strftime("%d. %B %Y %I:%M%p"), signature=x[2],
+                                     userid=x[3], appid=x[4]) for x in deleted]
 
         result = delete_duplicate_crashes()
 

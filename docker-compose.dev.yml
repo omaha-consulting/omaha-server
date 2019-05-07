@@ -13,6 +13,7 @@ web:
     file: docker-compose.common.yml
     service: web
   build: .
+  dockerfile: Dockerfile-dev
   links:
     - db
     - redis

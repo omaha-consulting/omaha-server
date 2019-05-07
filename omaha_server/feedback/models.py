@@ -35,8 +35,8 @@ from feedback.managers import FeedbackManager
 def upload_to(directory, obj, filename):
     now = timezone.now()
     max_length = 100
-    path = os.path.join(*map(str, [directory, now.year, now.month,
-                                   now.day, uuid.uuid4(), filename]))
+    path = os.path.join(*list(map(str, [directory, now.year, now.month,
+                                   now.day, uuid.uuid4(), filename])))
     if len(path) > max_length:
         name, ext = os.path.splitext(path)
         ext_length = len(ext)
@@ -73,7 +73,7 @@ class Feedback(BaseModel):
     attached_file = models.FileField(upload_to=attach_upload_to, blank=True, null=True)
     attached_file_size = models.PositiveIntegerField(null=True, blank=True)
     feedback_data = JSONField(verbose_name='Feedback data', help_text='JSON format', null=True, blank=True)
-    ip = models.GenericIPAddressField(blank=True, null=True)
+    ip = models.GenericIPAddressField(blank=True, null=True, protocol='IPv4')
 
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)

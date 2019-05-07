@@ -13,8 +13,9 @@ class DisableMigrations(object):
         return True
 
     def __getitem__(self, item):
-        return "notmigrations"
+        return None
 
+ALLOWED_HOSTS = ('example.com',)
 
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
@@ -61,7 +62,7 @@ CACHES['default'] = {
 
 CACHES['statistics'] = {
     'BACKEND': 'django_redis.cache.RedisCache',
-    'LOCATION': '{REDIS_HOST}:{REDIS_PORT}:{REDIS_DB}'.format(
+    'LOCATION': 'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}'.format(
         REDIS_PORT=REDIS_STAT_PORT,
         REDIS_HOST=REDIS_STAT_HOST,
         REDIS_DB=REDIS_STAT_DB),

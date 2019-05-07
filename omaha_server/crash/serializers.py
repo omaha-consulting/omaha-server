@@ -53,7 +53,7 @@ class SymbolsSerializer(serializers.HyperlinkedModelSerializer):
                 meta = parse_debug_meta_info(head, exception=serializers.ValidationError)
                 validated_data.update(meta)
             except:
-                raise serializers.ValidationError(u"The file contains invalid data.")
+                raise serializers.ValidationError("The file contains invalid data.")
         if not validated_data.get('file_size'):
             file = validated_data['file']
             validated_data['file_size'] = file.size

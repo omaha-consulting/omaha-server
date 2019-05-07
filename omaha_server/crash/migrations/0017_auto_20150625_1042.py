@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 
+import django.db.models.deletion
 from django.db import models, migrations
 import django.utils.timezone
 import django_extensions.db.fields
@@ -30,6 +30,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='crashdescription',
             name='crash',
-            field=models.OneToOneField(related_name='crash_description', to='crash.Crash'),
+            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='crash_description', to='crash.Crash'),
         ),
     ]

@@ -18,7 +18,7 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
-import __builtin__
+import builtins
 import random
 from datetime import datetime
 from uuid import uuid4
@@ -54,7 +54,7 @@ def generate_statistics(i, versions, channels, year):
     year = year
 
     if i % 100 == 0:
-        print('=> %s' % i)
+        print(('=> %s' % i))
     version = random.choice(versions)
     platform = version.platform.name if getattr(version, 'platform', None) else 'mac'
     channel = random.choice(channels)
@@ -70,8 +70,8 @@ def generate_statistics(i, versions, channels, year):
             version=str(version.short_version),
             tag=version.channel
         )
-    month = random.choice(range(1, 13))
-    day = random.choice(range(1, 28))
+    month = random.choice(list(range(1, 13)))
+    day = random.choice(list(range(1, 28)))
     date = datetime(year, month, day)
     userid = get_random_uuid(platform)
     if platform == 'mac':
@@ -92,23 +92,11 @@ def run_worker(data, versions, channels, year):
 
 class Command(BaseCommand):
     help = 'A command for generating fake statistics'
-    option_list = BaseCommand.option_list + (
-        make_option('--count',
-                    dest='count',
-                    default='1000',
-                    type=int,
-                    help='Total number of data values (default: 1000)'),
-        make_option('--year',
-                    dest='year',
-                    default=datetime.now().year,
-                    type=int,
-                    help='Year of statistics (default: Current year)'),
-    )
 
     def handle(self, *args, **options):
         user_count = options['count'] + 1
         year = options['year']
-        users = range(1, user_count)
+        users = list(range(1, user_count))
         versions = list(Version.objects.select_related('app', 'platform').filter_by_enabled())
         versions += list(SparkleVersion.objects.select_related('app').filter_by_enabled())
         channels = list(Channel.objects.all())
@@ -119,3 +107,20 @@ class Command(BaseCommand):
         pool.imap_unordered(partial(run_worker, versions=versions, channels=channels, year=year), job_data)
         pool.close()
         pool.join()
+
+    def add_arguments(self, parser):
+        parser.add_argument('app_id')
+        parser.add_argument(
+            '--count',
+            dest='count',
+            default='1000',
+            type=int,
+            help='Total number of data values (default: 1000)'
+        )
+        parser.add_argument(
+            '--year',
+            dest='year',
+            default=datetime.now().year,
+            type=int,
+            help='Year of statistics (default: Current year)'
+        )

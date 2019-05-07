@@ -49,6 +49,9 @@ class AttachedFileFilter(BooleanFilter):
 def short_url(obj):
     limit = 60
     res = obj.page_url
+    if res is None:
+        return ""
+
     return res if len(res) < limit else res[:limit] + '...'
 short_url.short_description = 'Page URL'
 

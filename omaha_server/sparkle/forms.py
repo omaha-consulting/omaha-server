@@ -24,7 +24,7 @@ from django.core.files.uploadedfile import UploadedFile
 
 
 from suit.widgets import LinkedSelect
-from tinymce.widgets import TinyMCE
+from omaha.widgets import CustomTinyMCE
 
 from sparkle.models import SparkleVersion
 
@@ -38,8 +38,11 @@ class SparkleVersionAdminForm(forms.ModelForm):
         exclude = []
         widgets = {
             'app': LinkedSelect,
-            'release_notes': TinyMCE(),
+            'release_notes': CustomTinyMCE(),
             'file_size': widgets.TextInput(attrs=dict(disabled='disabled')),
+            'version': widgets.TextInput(),
+            'short_version': widgets.TextInput(),
+            'minimum_system_version': widgets.TextInput()
         }
 
     def clean_file_size(self):

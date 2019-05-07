@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django.db import models, migrations
 
@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='crash',
             name='ip',
-            field=models.GenericIPAddressField(null=True, protocol=b'ipv4', blank=True),
+            field=models.GenericIPAddressField(null=True, protocol='ipv4', blank=True),
         ),
     ]

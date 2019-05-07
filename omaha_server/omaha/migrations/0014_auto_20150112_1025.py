@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 
+import django.db.models.deletion
 from django.db import models, migrations
 
 
@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='data',
             name='app',
-            field=models.ForeignKey(to='omaha.Application'),
+            field=models.ForeignKey(to='omaha.Application', on_delete=django.db.models.deletion.CASCADE),
             preserve_default=True,
         ),
     ]

@@ -73,8 +73,7 @@ class TextInputFilter(admin.filters.FieldListFilter):
 
     def queryset(self, request, queryset):
         if self.form.is_valid():
-            filter_params = dict(filter(lambda x: bool(x[1]),
-                                        self.form.cleaned_data.items()))
+            filter_params = dict([x for x in list(self.form.cleaned_data.items()) if bool(x[1])])
             return queryset.filter(**filter_params)
         else:
             return queryset

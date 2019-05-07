@@ -67,7 +67,7 @@ class CrashFrom(forms.ModelForm):
                 except StopIteration:
                     return None
             except tarfile.TarError as err:
-                raise forms.ValidationError('The tar file is broken, error: {0}'.format(err.message))
+                raise forms.ValidationError('The tar file is broken, error: {0}'.format(err))
         return file
 
     def clean_minidump_size(self):
@@ -120,7 +120,7 @@ class SymbolsAdminForm(forms.ModelForm):
             meta = parse_debug_meta_info(head, exception=forms.ValidationError)
             self.cleaned_data.update(meta)
         except:
-            raise forms.ValidationError(u"The file contains invalid data.")
+            raise forms.ValidationError("The file contains invalid data.")
         return file
 
     def clean_file_size(self):

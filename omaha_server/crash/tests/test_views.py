@@ -22,7 +22,7 @@ import os
 
 from django import test
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.conf import settings
 from django.db import DataError
 
@@ -65,7 +65,7 @@ class CrashViewTest(test.TestCase):
         self.assertEqual(obj.appid, form_data['appid'])
         self.assertEqual(obj.userid, form_data['userid'])
         self.assertIsNotNone(obj.upload_file_minidump)
-        self.assertEquals(obj.ip, '8.8.8.8')
+        self.assertEqual(obj.ip, '8.8.8.8')
 
     @test.override_settings(
         CELERY_ALWAYS_EAGER=False,
@@ -96,7 +96,7 @@ class CrashViewTest(test.TestCase):
             self.assertEqual(obj.appid, form_data['appid'])
             self.assertEqual(obj.userid, form_data['userid'])
             self.assertIsNotNone(obj.upload_file_minidump)
-            self.assertEquals(obj.ip, None)
+            self.assertEqual(obj.ip, None)
 
     @test.override_settings(
         CELERY_ALWAYS_EAGER=False,
@@ -171,14 +171,14 @@ class CrashDescriptionViewTest(test.TestCase):
         response = self.client.get(
             reverse('crash_description', kwargs=dict(pk=10))
         )
-        self.assertEquals(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
         # crash with description added
         description = CrashDescriptionFactory()
         response = self.client.get(
             reverse('crash_description', kwargs=dict(pk=description.crash.pk))
         )
-        self.assertEquals(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
     def test_get_good(self):
         crash = CrashFactory()
@@ -190,8 +190,8 @@ class CrashDescriptionViewTest(test.TestCase):
             reverse('crash_description', kwargs=dict(pk=crash.pk)),
             data
         )
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(response.context['form'].initial['description'], comment)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['form'].initial['description'], comment)
 
     def test_post_bad(self):
         summary = 'Test summary'
@@ -206,7 +206,7 @@ class CrashDescriptionViewTest(test.TestCase):
             reverse('crash_description', kwargs=dict(pk=10)),
             form_data
         )
-        self.assertEquals(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
         # crash with description added
         description = CrashDescriptionFactory()
@@ -214,7 +214,7 @@ class CrashDescriptionViewTest(test.TestCase):
             reverse('crash_description', kwargs=dict(pk=description.crash.pk)),
             form_data
         )
-        self.assertEquals(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
     def test_post_good(self):
         crash = CrashFactory()
@@ -235,6 +235,6 @@ class CrashDescriptionViewTest(test.TestCase):
         self.assertIn('crash/crash_description_submitted.html', response.template_name)
         self.assertEqual(CrashDescription.objects.all().count(), 1)
         obj = CrashDescription.objects.get()
-        self.assertEquals(obj.crash, crash)
-        self.assertEquals(obj.summary, summary)
-        self.assertEquals(obj.description, description)
+        self.assertEqual(obj.crash, crash)
+        self.assertEqual(obj.summary, summary)
+        self.assertEqual(obj.description, description)

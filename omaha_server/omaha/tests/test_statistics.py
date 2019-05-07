@@ -102,11 +102,11 @@ class StatisticsTest(TestCase):
 
     def test_get_live_statistics_with_enabled_version(self):
         data = self.generate_version(is_enabled=True)
-        assert len(data['win'].keys()) == 1
+        assert len(list(data['win'].keys())) == 1
 
     def test_get_live_statistics_with_disabled_version(self):
         data = self.generate_version(is_enabled=False)
-        assert len(data['win'].keys()) == 1
+        assert len(list(data['win'].keys())) == 1
 
     @patch('omaha.statistics.add_app_statistics')
     def test_userid_counting(self, mock_add_app_statistics):
@@ -292,7 +292,7 @@ class StatisticsTest(TestCase):
         request = parse_request(fixtures.request_event)
         req = parse_req(request)
         self.assertIsInstance(req, Request)
-        self.assertEqual(req.version, Request._meta.get_field_by_name('version')[0].to_python('1.3.23.0'))
+        self.assertEqual(req.version, Request._meta.get_field('version').to_python('1.3.23.0'))
         self.assertEqual(req.ismachine, 1)
         self.assertEqual(req.sessionid, '{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}')
         self.assertEqual(req.userid, '{D0BBD725-742D-44ae-8D46-0231E881D58E}')
@@ -312,7 +312,7 @@ class StatisticsTest(TestCase):
         app = apps[0]
         self.assertIsInstance(app, AppRequest)
         self.assertEqual(app.version, None)
-        self.assertEqual(app.nextversion, Request._meta.get_field_by_name('version')[0].to_python('13.0.782.112'))
+        self.assertEqual(app.nextversion, Request._meta.get_field('version').to_python('13.0.782.112'))
         self.assertEqual(app.lang, 'en')
         self.assertEqual(app.tag, 'stable')
         self.assertEqual(app.installage, 6)
@@ -368,7 +368,7 @@ class StatisticsTest(TestCase):
         self.assertEqual(os.sp, '')
         self.assertEqual(os.arch, 'x64')
 
-        self.assertEqual(req.version, Request._meta.get_field_by_name('version')[0].to_python('1.3.23.0'))
+        self.assertEqual(req.version, Request._meta.get_field('version').to_python('1.3.23.0'))
         self.assertEqual(req.ismachine, 1)
         self.assertEqual(req.sessionid, '{2882CF9B-D9C2-4edb-9AAF-8ED5FCF366F7}')
         self.assertEqual(req.userid, '{D0BBD725-742D-44ae-8D46-0231E881D58E}')
@@ -379,7 +379,7 @@ class StatisticsTest(TestCase):
         self.assertEqual(req.hw, None)
 
         self.assertEqual(app_req.version, None)
-        self.assertEqual(app_req.nextversion, Request._meta.get_field_by_name('version')[0].to_python('13.0.782.112'))
+        self.assertEqual(app_req.nextversion, Request._meta.get_field('version').to_python('13.0.782.112'))
         self.assertEqual(app_req.lang, 'en')
         self.assertEqual(app_req.tag, 'stable')
         self.assertEqual(app_req.installage, 6)
@@ -541,8 +541,8 @@ class GetStatisticsTest(TestCase):
         uninstalls = [(datetime(now.year, x, 1).strftime("%Y-%m"), 1) for x in range(1, 13)]
         mac_updates = [(datetime(now.year, x, 1).strftime("%Y-%m"), x - 1) for x in range(1, 13)]
         mac_installs = [(datetime(now.year, x, 1).strftime("%Y-%m"), 1) for x in range(1, 13)]
-        total_installs = map(lambda x, y: (x[0], x[1] + y[1]), win_installs, mac_installs)
-        total_updates = map(lambda x, y: (x[0], x[1] + y[1]), win_updates, mac_updates)
+        total_installs = list(map(lambda x, y: (x[0], x[1] + y[1]), win_installs, mac_installs))
+        total_updates = list(map(lambda x, y: (x[0], x[1] + y[1]), win_updates, mac_updates))
         self.users_statistics = dict(new=total_installs, updates=total_updates, uninstalls=uninstalls)
         self.win_users_statistics = dict(new=win_installs, updates=win_updates, uninstalls=uninstalls)
         self.mac_users_statistics = dict(new=mac_installs, updates=mac_updates)

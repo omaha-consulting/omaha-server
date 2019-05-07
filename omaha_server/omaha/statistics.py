@@ -70,11 +70,11 @@ def add_app_statistics(userid, platform, app, now=None):
     events = app.findall('event')
     nextversion = app.get('nextversion')
 
-    err_events = filter(lambda x: x.get('eventresult') not in ['1', '2', '3'], events)
+    err_events = [x for x in events if x.get('eventresult') not in ['1', '2', '3']]
     if err_events:
         return
 
-    install_event = filter(lambda x: x.get('eventtype') == '2', events)
+    install_event = [x for x in events if x.get('eventtype') == '2']
     if is_new_install(appid, userid):
         if install_event:
             mark('new_install:%s' % appid, userid)
@@ -94,11 +94,11 @@ def add_app_statistics(userid, platform, app, now=None):
             mark('request:{}:{}:{}'.format(appid, platform, nextversion), userid, track_hourly=True)
             mark('request:{}:{}:{}:{}'.format(appid, platform, channel, nextversion), userid, track_hourly=True)
 
-    uninstall_event = filter(lambda x: x.get('eventtype') == '4', events)
+    uninstall_event = [x for x in events if x.get('eventtype') == '4']
     if uninstall_event:
         mark('uninstall:%s' % appid, userid)
         mark('uninstall:{}:{}'.format(appid, platform), userid)
-    update_event = filter(lambda x: x.get('eventtype') == '3', events)
+    update_event = [x for x in events if x.get('eventtype') == '3']
     if update_event:
         unmark_event('request:{}:{}'.format(appid, version), userid, track_hourly=True)
         unmark_event('request:{}:{}:{}'.format(appid, platform, version), userid, track_hourly=True)
@@ -166,7 +166,7 @@ def get_channel_statistics(app_id, date=None):
     event_name = 'request:{}:{}'
     channels = [c.name for c in Channel.objects.all()]
     data = [(channel, len(MonthEvents(event_name.format(app_id, channel), date.year, date.month))) for channel in channels]
-    data = filter(lambda x: x[1], data)
+    data = [x for x in data if x[1]]
     return data
 
 
@@ -177,7 +177,7 @@ def get_users_versions_by_platform(app_id, platform, date):
         versions = [str(v) for v in Version.objects.filter_by_enabled(app__id=app_id, platform__name=platform).values_list('version', flat=True)]
     event_name = 'request:{}:{}:{}'
     data = [(v, len(MonthEvents(event_name.format(app_id, platform, v), date.year, date.month))) for v in versions]
-    data = filter(lambda x: x[1], data)
+    data = [x for x in data if x[1]]
     return dict(data)
 
 
@@ -212,7 +212,7 @@ def get_hourly_data_by_platform(app_id, end, n_hours, versions, platform, channe
                   len(HourEvents.from_date(build_event_name(app_id, platform, channel, v), hour))]
                  for hour in hours])
             for v in versions]
-    data = filter(lambda version_data: sum([data[1] for data in version_data[1]]), data)
+    data = [version_data for version_data in data if sum([data[1] for data in version_data[1]])]
     return dict(data)
 
 
@@ -230,7 +230,7 @@ def get_daily_data_by_platform(app_id, end, n_days, versions, platform, channel)
                   len(DayEvents.from_date(build_event_name(app_id, platform, channel, v), day))]
                  for day in days])
             for v in versions]
-    data = filter(lambda version_data: sum([data[1] for data in version_data[1]]), data)
+    data = [version_data for version_data in data if sum([data[1] for data in version_data[1]])]
     return dict(data)
 
 
@@ -348,7 +348,7 @@ def collect_statistics(request, ip=None):
     if userid:
         userid_counting(userid, apps, request.os.get('platform'))
 
-    if not filter(lambda app: bool(app.findall('event')), apps):
+    if not [app for app in apps if bool(app.findall('event'))]:
         return
 
     req = parse_req(request, ip)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 
+import django.db.models.deletion
 from django.db import models, migrations
 import django.utils.timezone
 import django_extensions.db.fields
@@ -25,9 +25,9 @@ class Migration(migrations.Migration):
                 ('release_notes', models.TextField(null=True, blank=True)),
                 ('file', models.FileField(upload_to=sparkle.models.version_upload_to)),
                 ('file_size', models.PositiveIntegerField(null=True, blank=True)),
-                ('dsa_signature', models.CharField(max_length=140, verbose_name=b'DSA signature')),
-                ('app', models.ForeignKey(to='omaha.Application')),
-                ('channel', models.ForeignKey(to='omaha.Channel')),
+                ('dsa_signature', models.CharField(max_length=140, verbose_name='DSA signature')),
+                ('app', models.ForeignKey(to='omaha.Application', on_delete=django.db.models.deletion.CASCADE)),
+                ('channel', models.ForeignKey(to='omaha.Channel', on_delete=django.db.models.deletion.CASCADE)),
             ],
             options={
             },

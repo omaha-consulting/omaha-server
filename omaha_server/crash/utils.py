@@ -143,7 +143,7 @@ def parse_debug_meta_info(head, exception=Exception):
     head = head.decode()
     head_list = head.split(' ', 4)
     if head_list[0] != 'MODULE':
-        raise exception(u"The file contains invalid data.")
+        raise exception("The file contains invalid data.")
     return dict(debug_id=head_list[-2],
                 debug_file=head_list[-1])
 

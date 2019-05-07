@@ -18,7 +18,7 @@ License for the specific language governing permissions and limitations under
 the License.
 """
 
-from __future__ import unicode_literals
+
 
 from datetime import datetime
 
@@ -103,7 +103,7 @@ def Urls(urls_list):
         </urls>
     """
     urls = E.urls()
-    list(map(lambda url: urls.append(Url(url)), urls_list))
+    list([urls.append(Url(url)) for url in urls_list])
     return urls
 
 

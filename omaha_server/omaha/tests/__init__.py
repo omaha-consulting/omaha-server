@@ -13,7 +13,7 @@ class OverloadTestStorageMixin(object):
     field_name = 'file'
 
     def setUp(self):
-        self._file_field = self.model._meta.get_field_by_name(self.field_name)[0]
+        self._file_field = self.model._meta.get_field(self.field_name)
         self._default_storage = self._file_field.storage
         test_storage = self.storage_class()
         self._file_field.storage = test_storage

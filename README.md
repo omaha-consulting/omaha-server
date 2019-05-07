@@ -7,7 +7,9 @@
 [![Apache License, Version 2.0](https://img.shields.io/badge/license-Apache%202.0-red.svg)](https://github.com/Crystalnix/omaha-server/blob/master/LICENSE)
 [![](https://badge.imagelayers.io/crystalnix/omaha-server:master.svg)](https://imagelayers.io/?images=crystalnix/omaha-server:master 'Get your own badge on imagelayers.io')
 
-Google Omaha server implementation and Sparkle (mac) feed management. 
+**Omaha server no longer supports Python version 2 and Django 1.11 or lower version. If you need the old version of the application, then check the old_master branch.**
+
+Google Omaha server implementation and Sparkle (mac) feed management.
 
 Currently, our implementation is integrated into the updating processes of several organisations for products that require sophisticated update logic and advanced usage statistics. We provide additional support and further enhancement on a contract basis. For a case study and enquiries please refer [our website](https://www.crystalnix.com/case-study/google-omaha)
 
@@ -16,21 +18,23 @@ Currently, our implementation is integrated into the updating processes of sever
 **Requirements:**
 
 - Ubuntu Trusty 14.04 (LTS) (64-bit)
-- [paver](http://paver.github.io/paver/)
+- [pipenv](https://pipenv.readthedocs.io/en/latest/)
 - [docker](docker.com) or [boot2docker](https://github.com/boot2docker/boot2docker) for OS X & Windows
 - [docker-compose](https://docs.docker.com/compose/install/)
 
 ```shell
 $ sudo apt-get update
 $ sudo apt-get install docker.io
-$ sudo apt-get install python-paver python-pip
+$ sudo apt-get install python python-pip
+$ sudo pip install -U pipenv
 $ sudo pip install -U docker-compose
 $ git clone https://github.com/Crystalnix/omaha-server.git
 $ cd omaha-server
-$ sudo paver up_local_dev_server
+# Up local environment
+$ make up
 
 # Stop server
-$ sudo docker-compose stop
+$ make stop
 ```
 
 Open `http://{DOCKER_HOST}:9090/admin/`
@@ -42,31 +46,31 @@ Open `http://{DOCKER_HOST}:9090/admin/`
 
 **Requirements:**
 
-- python 2.7
-- [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/)
+- python 2.7.15
+- [pipenv](https://pipenv.readthedocs.io/en/latest/)
 - PostgreSQL
 - Redis
 
 ```shell
-$ mkvirtualenv omaha-server
-$ pip install -r requirements/dev.txt
+$ sudo pip install -U pipenv
+$ make install-dev
+```
+
+## Activate virtual environment
+
+```shell
+$ pipenv shell
 ```
 
 ### Tests
 
 ```shell
-$ paver test
-```
-
-or
-
-```shell
-$ paver run_test_in_docker
+$ make test
 ```
 
 ## Statistics
 
-All statistics are stored in Redis. In order not to lose all data, we recommend to set up the backing up process. The proposed solution uses ElastiCache which supports [automatic backups](https://aws.amazon.com/en/blogs/aws/backup-and-restore-elasticache-redis-nodes/). 
+All statistics are stored in Redis. In order not to lose all data, we recommend to set up the backing up process. The proposed solution uses ElastiCache which supports [automatic backups](https://aws.amazon.com/en/blogs/aws/backup-and-restore-elasticache-redis-nodes/).
 In the case of a self-hosted solution do not forget to set up backups.
 
 Required `userid`. [Including user id into request](https://github.com/Crystalnix/omaha/wiki/Omaha-Client-working-with-protocol#including-user-id-into-request)
@@ -247,7 +251,7 @@ app:
 
 - [uWSGI Options](http://uwsgi-docs.readthedocs.org/en/latest/Options.html) & [Environment variables](http://uwsgi-docs.readthedocs.org/en/latest/Configuration.html#environment-variables)
 - [Sentry](https://github.com/getsentry/sentry)
-- Sentry API key is stored on the way Sentry Organization page -> API Keys 
+- Sentry API key is stored on the way Sentry Organization page -> API Keys
 
 ### Initialize your ElasticBeanstalk application
 
