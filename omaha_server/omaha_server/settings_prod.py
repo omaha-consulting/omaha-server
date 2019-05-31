@@ -123,6 +123,16 @@ LOGGING = {
             'handlers': ['console'],
             'propagate': False,
         },
+        'celery.task': {
+            'level': 'INFO',
+            'handlers': ['console'],
+            'propagate': False,
+        },
+        'limitation': {
+            'level': 'INFO',
+            'handlers': ['console'],
+            'propagate': False,
+        }
     },
 }
 
@@ -140,3 +150,5 @@ if RSYSLOG_ENABLE:
     LOGGING['root']['handlers'].append('rsyslog')
     LOGGING['loggers']['django.request']['handlers'].append('rsyslog')
     LOGGING['loggers']['celery.beat']['handlers'].append('rsyslog')
+    LOGGING['loggers']['celery.task']['handlers'].append('rsyslog')
+    LOGGING['loggers']['limitation']['handlers'].append('rsyslog')
