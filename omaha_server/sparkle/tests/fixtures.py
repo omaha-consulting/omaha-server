@@ -28,6 +28,7 @@ response_sparkle = b"""<?xml version="1.0" encoding="utf-8"?>
 
             <item>
                 <title>chrome 782.112</title>
+                <sparkle:minimumSystemVersion>10.14.4</sparkle:minimumSystemVersion>
                 <description><![CDATA[
 
                 ]]>
@@ -52,6 +53,7 @@ first_crit_response_sparkle = b"""<?xml version="1.0" encoding="utf-8"?>
 
             <item>
                 <title>chrome 782.110</title>
+                <sparkle:minimumSystemVersion>10.14.4</sparkle:minimumSystemVersion>
                 <description><![CDATA[
 
                 ]]>
@@ -64,6 +66,7 @@ first_crit_response_sparkle = b"""<?xml version="1.0" encoding="utf-8"?>
             </item>
             <item>
                 <title>chrome 782.111</title>
+                <sparkle:minimumSystemVersion>10.14.4</sparkle:minimumSystemVersion>
                 <description><![CDATA[
 
                 ]]>
@@ -87,6 +90,7 @@ second_crit_response_sparkle = b"""<?xml version="1.0" encoding="utf-8"?>
         <language>en</language>
             <item>
                 <title>chrome 782.111</title>
+                <sparkle:minimumSystemVersion>10.14.4</sparkle:minimumSystemVersion>
                 <description><![CDATA[
 
                 ]]>
@@ -99,6 +103,7 @@ second_crit_response_sparkle = b"""<?xml version="1.0" encoding="utf-8"?>
             </item>
             <item>
                 <title>chrome 782.112</title>
+                <sparkle:minimumSystemVersion>10.14.4</sparkle:minimumSystemVersion>
                 <description><![CDATA[
 
                 ]]>
@@ -111,6 +116,7 @@ second_crit_response_sparkle = b"""<?xml version="1.0" encoding="utf-8"?>
             </item>
             <item>
                 <title>chrome 782.113</title>
+                <sparkle:minimumSystemVersion>10.14.4</sparkle:minimumSystemVersion>
                 <description><![CDATA[
 
                 ]]>
@@ -135,6 +141,7 @@ response_sparkle_with_dsa = b"""<?xml version="1.0" encoding="utf-8"?>
 
             <item>
                 <title>chrome_dsa 782.112</title>
+                <sparkle:minimumSystemVersion>10.14.4</sparkle:minimumSystemVersion>
                 <description><![CDATA[
 
                 ]]>
@@ -160,7 +167,7 @@ response_sparkle_with_minimum_system_version = b"""<?xml version="1.0" encoding=
 
             <item>
                 <title>chrome 782.112</title>
-                <sparkle:minimumSystemVersion>10.8.6</sparkle:minimumSystemVersion>
+                <sparkle:minimumSystemVersion>10.14.4</sparkle:minimumSystemVersion>
                 <description><![CDATA[
 
                 ]]>
