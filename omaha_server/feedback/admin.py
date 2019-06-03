@@ -65,7 +65,7 @@ class FeedbackAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         qs = super(FeedbackAdmin, self).get_queryset(request)
-        return qs.filter(description__startswith='BlackBox')
+        return qs.get_feedbacks()
 
 
 @admin.register(FeedbackDescription)
@@ -78,4 +78,4 @@ class FeedbackDescriptionAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         qs = super(FeedbackDescriptionAdmin, self).get_queryset(request)
-        return qs.exclude(description__startswith='BlackBox')
+        return qs.get_feedbacks_description()

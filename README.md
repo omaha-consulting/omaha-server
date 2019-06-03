@@ -246,6 +246,7 @@ app:
 | LOG_NGINX_TO_FILEBEAT     | Send logs to filebeat| 'True'                     |
 | EMAIL_SENDER              | Verified SES email   |                            |
 | EMAIL_RECIPIENTS          | Feedback recepients  |                            |
+| RSYSLOG_ENABLE            | Send logs to rsyslog | ''                         |
 
 
 
