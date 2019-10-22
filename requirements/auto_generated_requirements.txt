@@ -48,7 +48,7 @@ msgpack-python==0.4.7
 orderedmultidict==1.0
 paver==1.2.4
 persisting-theory==0.2.1
-pillow==6.0.0
+pillow==6.2.0
 protobuf3-to-dict==0.1.5
 protobuf==3.7.1
 psycopg2==2.7.3.2
