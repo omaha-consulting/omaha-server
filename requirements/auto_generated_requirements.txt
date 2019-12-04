@@ -27,7 +27,7 @@ django-suit==0.2.26
 django-tables2==2.0.6
 django-tinymce==2.6.1
 django-versionfield3==0.1.8
-django==2.2
+django==1.11.23
 djangorestframework==3.7.7
 docutils==0.14
 ecdsa==0.13
@@ -86,7 +86,7 @@ cssselect==1.0.3
 django-debug-panel==0.8.3
 django-debug-toolbar==1.11
 django-nose==1.4.6
-django==2.2
+django==1.11.23
 docker-pycreds==0.4.0
 docker==3.7.2
 docutils==0.14
