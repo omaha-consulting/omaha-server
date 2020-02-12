@@ -1,6 +1,6 @@
 six==1.10.0
 future==0.15.2
-django==1.11.0
+django==1.11.28
 django-extensions==1.6.7
 django-suit==0.2.24
 jsonfield==1.0.3
