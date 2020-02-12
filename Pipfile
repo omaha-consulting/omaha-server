@@ -23,7 +23,7 @@ factory_boy = "==2.8.1"
 
 [packages]
 uwsgi = "*"
-Django = "==2.2.0"
+Django = "==2.2.10"
 djangorestframework = "==3.7.7"
 django-suit = "==0.2.26"
 django-extensions = "==2.1.6"
