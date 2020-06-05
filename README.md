@@ -6,7 +6,7 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Crystalnix/omaha-server/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Crystalnix/omaha-server/?branch=master)
 [![Apache License, Version 2.0](https://img.shields.io/badge/license-Apache%202.0-red.svg)](https://github.com/Crystalnix/omaha-server/blob/master/LICENSE)
 
-**This is the Python 2 version of omaha-server. To obtain the Python 3 version of omaha-server with the latest security patches, please get in touch via our [web site](https://omaha-consulting.com/contact).**
+**This is the Python 2 version of omaha-server. To obtain the Python 3 version of omaha-server with the latest security fixes, please get in touch via our [web site](https://omaha-consulting.com/contact).**
 
 Google Omaha server implementation and Sparkle (mac) feed management. 
 
