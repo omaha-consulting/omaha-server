@@ -6,11 +6,11 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Crystalnix/omaha-server/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Crystalnix/omaha-server/?branch=master)
 [![Apache License, Version 2.0](https://img.shields.io/badge/license-Apache%202.0-red.svg)](https://github.com/Crystalnix/omaha-server/blob/master/LICENSE)
 
-**Omaha server no longer supports Python version 2 and Django 1.11 or lower version. If you need the old version of the application, then check the old_master branch.**
+**This branch no longer supports Python version 2 and Django 1.11 or lower version. If you need the old version of the application, then check the master branch.**
 
 Google Omaha server implementation and Sparkle (mac) feed management.
 
-Currently, our implementation is integrated into the updating processes of several organisations for products that require sophisticated update logic and advanced usage statistics. We provide additional support and further enhancement on a contract basis. For a case study and enquiries please refer [our website](https://www.crystalnix.com/case-study/google-omaha)
+Currently, our implementation is integrated into the updating processes of several organisations for products that require sophisticated update logic and advanced usage statistics. We provide additional support and further enhancement on a contract basis. For a case study and enquiries please refer [our website](https://omaha-consulting.com).
 
 ## Setting up a development server
 
@@ -300,7 +300,9 @@ Thanks to [Abiral Shrestha](https://twitter.com/proabiral) for the security repo
 
 This software is licensed under the Apache 2 license, quoted below.
 
-Copyright 2014 [Crystalnix Limited](http://crystalnix.com)
+Copyright 2020+ [Omaha Consulting](https://omaha-consulting.com)
+
+Copyright 2014-2019 [Crystalnix Limited](http://crystalnix.com)
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not
 use this file except in compliance with the License. You may obtain a copy of
