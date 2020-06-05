@@ -5,7 +5,6 @@
 [![Code Health](https://landscape.io/github/Crystalnix/omaha-server/master/landscape.svg?style=flat)](https://landscape.io/github/Crystalnix/omaha-server/master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Crystalnix/omaha-server/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Crystalnix/omaha-server/?branch=master)
 [![Apache License, Version 2.0](https://img.shields.io/badge/license-Apache%202.0-red.svg)](https://github.com/Crystalnix/omaha-server/blob/master/LICENSE)
-[![](https://badge.imagelayers.io/crystalnix/omaha-server:master.svg)](https://imagelayers.io/?images=crystalnix/omaha-server:master 'Get your own badge on imagelayers.io')
 
 Google Omaha server implementation and Sparkle (mac) feed management. 
 
