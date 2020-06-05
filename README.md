@@ -8,9 +8,7 @@
 
 **This is the Python 2 version of omaha-server. To obtain the Python 3 version with the latest security updates, please get in touch via our [web site](https://omaha-consulting.com/contact).**
 
-Google Omaha server implementation and Sparkle (mac) feed management. 
-
-omaha-server is integrated into the updating processes of many organisations for products that require sophisticated update logic and advanced usage statistics. We provide additional support and further enhancement on a contract basis. For case studies and enquiries please visit [our website](https://omaha-consulting.com)
+omaha-server is a server implementation for Google's [Omaha update protocol](github.com/google/omaha), which is for instance used to update Chrome. Because Omaha is typically used to update Windows applications, omaha-server also supports the Sparkle framework for updating Mac applications. omaha-server is used by many organisations large and small for products that require sophisticated update logic and advanced usage statistics. If you would like the latest Python 3 version of the server, help with setting up Omaha for your project or other additional support, please visit [our website](https://omaha-consulting.com)
 
 ## Setting up a development server
 
