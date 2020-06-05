@@ -298,6 +298,7 @@ Thanks to [Abiral Shrestha](https://twitter.com/proabiral) for the security repo
 This software is licensed under the Apache 2 license, quoted below.
 
 Copyright 2020+ [Omaha Consulting](https://omaha-consulting.com)
+
 Copyright 2014 - 2019 [Crystalnix Limited](http://crystalnix.com)
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not
