@@ -106,6 +106,9 @@ A command for generating fake live data for Mac:
 $ ./manage.py generate_fake_mac_live_data Application alpha
 ```
 
+## Deploying Omaha-Server to AWS ECS
+- https://github.com/tuladhar/omaha-server-on-aws
+
 ## Deploying Omaha-Server to AWS Elastic Beanstalk
 
 **Requirements:**
