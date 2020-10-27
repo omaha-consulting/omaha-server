@@ -6,6 +6,8 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Crystalnix/omaha-server/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Crystalnix/omaha-server/?branch=master)
 [![Apache License, Version 2.0](https://img.shields.io/badge/license-Apache%202.0-red.svg)](https://github.com/Crystalnix/omaha-server/blob/master/LICENSE)
 
+**This is the Python 2 version of omaha-server. To obtain the Python 3 version with the latest security updates, please go to our [web site](https://omaha-consulting.com/contact).**
+
 omaha-server implements the server side of Google's [Omaha update protocol](github.com/google/omaha), which for example powers Chrome's automatic update mechanism. Because Omaha is typically used to update Windows applications, omaha-server also supports the Sparkle framework for updating Mac applications. omaha-server is used by organisations large and small for products that require sophisticated update logic and advanced usage statistics. As mentioned above, this repository only contains the Python 2 implementation of the server. If you would like the latest Python 3 version of the server, help with setting up Omaha for your project or other additional support, please get in touch via [our website](https://omaha-consulting.com).
 
 ## Setting up a development server
